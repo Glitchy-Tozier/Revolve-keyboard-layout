@@ -9,10 +9,15 @@ Design:
 - Daten als Listen, die der Tastatur entsprechen: Reihen und Spalten. 
 - Für jede Taste ein Tuple mit den verschiedenen Bedeutungen. Mods: (None, Shift, Mod3, Mod4, Shift+Mod3, Mod3+Mod4)
 - find_key() -> (reihe, spalte, index)
+- two_char_repeats_from_file() -> [iste mit allen 2 char repeats, auch mehrfach.
+- two_chars_on_same_finger(keys) -> sind min 2 Buchstaben auf dem gleichen Finger? -> Finger
+
+
+Später:
 - Einfache Funktionen zum Austauschen. 
 - Eine Kostenfunktion -> Text + Layout = Kosten. 
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
-- Später: Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
+- Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
 
 """
 
@@ -86,6 +91,19 @@ def finger_keys(finger_name):
     idx = FINGER_NAMES.index(finger_name)
     keys = [str(get_key(pos)) for pos in FINGER_POSITIONS[idx]]
     return keys
+
+def key_to_finger(key):
+    """Get the finger name used to hit the given key.
+
+    >>> key_to_finger("a")
+    'Mittel_L'
+    """
+    pos = find_key(key)
+    for i in range(len(FINGER_POSITIONS)):
+        if pos in FINGER_POSITIONS[i]:
+            return FINGER_NAMES[i]
+    return None
+    
 
 ### Self-Test 
 
