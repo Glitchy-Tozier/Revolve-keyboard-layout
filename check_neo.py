@@ -42,7 +42,7 @@ NEO_LAYOUT_lx = [
     [(),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),()],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
-NEO_LAYOUT_lxwq = [
+NEO_LAYOUT_lxwq = [ # 25% weniger Fingerwiederholungen als Neo, fast 50% weniger als Qwertz
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("q"),("k"),("h"),("g"),("f"),("w"),("ß"),("´"),()], # Reihe 1
     [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),("\n")], # Reihe 2
