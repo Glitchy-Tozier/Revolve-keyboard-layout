@@ -25,7 +25,7 @@ Später:
 NEO_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("x"),("v"),("l"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
-    [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),()], # Reihe 2
+    [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),("\n")], # Reihe 2
     [(),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),()],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
@@ -122,7 +122,29 @@ def finger_repeats_from_file(path):
             repeats.append((finger1, key1+key2))
     return repeats
             
+def repeats_in_file_sorted(path):
+    """Sort the repeats in a file by the number of occurrances.
 
+    >>> repeats_in_file_sorted("testfile")[:2]
+    [(1, '\\na'), (1, '\\ne')]
+    """
+    f = open(path)
+    data = f.read()
+    f.close()
+    repeats = []
+    for i in range(len(data)-1):
+        repeats.append(data[i] + data[i+1])
+    counter = {}
+    for i in repeats:
+        if i in counter:
+            counter[i] += 1
+        else:
+            counter[i] = 1
+
+    sorted_repeats = [(counter[i], i) for i in counter]
+    sorted_repeats.sort()
+    return sorted_repeats
+    
 
 ### Self-Test 
 
