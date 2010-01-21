@@ -7,8 +7,13 @@ Premise: The base row should remain unchanged.
 
 Usage:
 
-- check_neo.py --help
-- check_neo.py --file <file>
+- check_neo.py --help (display this text)
+- check_neo.py --test (run doctests)
+- check_neo.py --file <file> [--switch <lx,wq>] [-q]
+  run the script on the file. 
+  --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
+  --q reduces the output. 
+
 
 
 Design: 
