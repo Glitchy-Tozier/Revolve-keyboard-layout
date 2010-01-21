@@ -25,18 +25,67 @@ NEO_LAYOUT = [
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
-def find_key(key, layout): 
+#: The positions which are by default accessed by the given finger. 
+FINGER_POSITIONS = [
+    [(1, 1, 0), (2, 1, 0), (3, 1, 0), (3, 2, 0)],
+    [(1, 2, 0), (2, 2, 0), (3, 3, 0)],
+    [(1, 3, 0), (2, 3, 0), (3, 4, 0)],
+    [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], 
+    [(4, 3, 0)],
+    [(4, 3, 0)],
+    [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], 
+    [(1, 8, 0), (2, 8, 0), (3, 9, 0)],
+    [(1, 9, 0), (2, 9, 0), (3, 10, 0)],
+    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0)]
+    ]
+#: The names of the fingers for which we gave the positions above.
+FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
+                "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
+
+def find_key(key, layout=NEO_LAYOUT): 
     """Find the position of the key in the layout.
     
-    >>> find_key("a", NEO_LAYOUT)
+    >>> find_key("a")
+    (2, 3, 0)
     """
     pos = None
     for row in range(len(layout)): 
-	for col in range(len(layout[row])): 
-	    for idx in range(len(layout[row][col]]))
-		in layout[row][col][idx] == key: 
-		    pos = (row, col, idx)
+        for col in range(len(layout[row])): 
+            for idx in range(len(layout[row][col])):
+                if layout[row][col][idx] == key: 
+                    pos = (row, col, idx)
     return pos
+
+
+def get_key(pos, layout=NEO_LAYOUT):
+    """Get the key at the given position.
+
+    >>> get_key((2, 3, 0))
+    'a'
+    """
+    try: 
+        return layout[pos[0]][pos[1]][pos[2]]
+    except: return None
+
+def finger_keys(finger_name):
+    """Get the keys corresponding to the given finger name.
+
+    >>> for name in FINGER_NAMES:
+    ...    name, finger_keys(name)
+    ('Klein_L', ['x', 'u', 'None', 'ü'])
+    ('Ring_L', ['v', 'i', 'ö'])
+    ('Mittel_L', ['l', 'a', 'ä'])
+    ('Zeige_L', ['c', 'e', 'p', 'w', 'o', 'z'])
+    ('Daumen_L', [' '])
+    ('Daumen_R', [' '])
+    ('Zeige_R', ['k', 's', 'b', 'h', 'n', 'm'])
+    ('Mittel_R', ['g', 'r', ','])
+    ('Ring_R', ['f', 't', '.'])
+    ('Klein_R', ['q', 'd', 'j', 'ß', 'y', '´', 'None'])
+    """
+    idx = FINGER_NAMES.index(finger_name)
+    keys = [str(get_key(pos)) for pos in FINGER_POSITIONS[idx]]
+    return keys
 
 ### Self-Test 
 
