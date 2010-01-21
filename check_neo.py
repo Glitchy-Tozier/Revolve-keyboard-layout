@@ -104,6 +104,25 @@ def key_to_finger(key):
             return FINGER_NAMES[i]
     return None
     
+def finger_repeats_from_file(path):
+    """Get a list of two char strings from the file, which repeat the same finger.
+
+    >>> finger_repeats_from_file("testfile")
+    [('Zeige_L', 'eo'), ('Mittel_R', 'rg'), ('Mittel_L', 'aa')]
+    """
+    f = open(path)
+    data = f.read()
+    f.close()
+    repeats = []
+    for i in range(len(data)-1):
+        key1 = data[i]
+        key2 = data[i+1]
+        finger1 = key_to_finger(key1)
+        if finger1 == key_to_finger(key2):
+            repeats.append((finger1, key1+key2))
+    return repeats
+            
+
 
 ### Self-Test 
 
