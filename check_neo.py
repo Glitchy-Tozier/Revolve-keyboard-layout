@@ -14,7 +14,7 @@ __usage__ = """Usage:
   --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
-- check_neo.py --evolve
+- check_neo.py --evolve <iterations>
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
 
 """
@@ -487,7 +487,7 @@ if __name__ == "__main__":
             cost = key_position_cost_from_file(data, layout=QWERTZ_LAYOUT)
             print(cost / len(data), "mean key position cost in file", path)
 
-    if argv[1:] and argv[1] == "--evolve":
+    if argv[2:] and argv[1] == "--evolve":
         print("Evolving Neo")
         data1 = read_file("1gramme.txt")
         letters = letters_in_file_precalculated(data1)
@@ -497,7 +497,7 @@ if __name__ == "__main__":
         repeats = repeats_in_file_precalculated(data2)
         datalen2 = sum([i for i, s in repeats])
 
-        lay, cost = evolve(letters, repeats)
+        lay, cost = evolve(letters, repeats, iterations=int(argv[2]))
 
         print("\nMutated Layout")
         from pprint import pprint
