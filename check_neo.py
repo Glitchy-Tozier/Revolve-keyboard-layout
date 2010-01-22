@@ -29,6 +29,7 @@ Später:
 - Eine Kostenfunktion -> Text + Layout = Kosten. 
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
 - Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
+- Evolution durch Mutation und Kostenminimierung (switch miltiple times (3?) => keep if lower cost)
 
 Vorgehensweise zur Optimierung:
 - Annahme: Es gibt eine Idealtastatur. Auf ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
