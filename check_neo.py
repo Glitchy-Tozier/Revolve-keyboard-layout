@@ -191,19 +191,28 @@ def key_to_finger(key, layout=NEO_LAYOUT):
             return FINGER_NAMES[i]
     return ""
 
+def read_file(path):
+    """Get the data from a file.
+
+    >>> read_file("testfile")[:2]
+    'ui'
+    """
+
+    f = open(path)
+    data = f.read()
+    f.close()
+    return data
+
 def repeats_in_file(path):
     """Sort the repeats in a file by the number of occurrances.
 
     >>> repeats_in_file("testfile")[:2]
     [(1, 'ui'), (1, 'td')]
     """
-    f = open(path)
-    data = f.read()
-    f.close()
-    # TODO: Take uppercase correctly into account
+    data = read_file(path)
+    # TODO: Take uppercase correctly into account -> triple with shift
     data = data.lower()
     repeats = {}
-    # TODO: Refactor to use a more efficient format: (number of occurrances, pair)
     for i in range(len(data)-1):
         rep = data[i] + data[i+1]
         if rep in repeats:
