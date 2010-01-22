@@ -78,6 +78,10 @@ __doc__ += __usage__ + __design__
 
 __version__ = "0.1.0"
 
+__copyright__ = """2010 © Arne Babenhauserheide
+
+License: GPLv3 or later
+"""
 
 ### Constants
 
