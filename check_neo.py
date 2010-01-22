@@ -442,8 +442,11 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     from random import choice
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
     for i in range(iterations): 
-        # 2 switches per iteration
-        keypairs = [choice(abc)+choice(abc) for i in range(2)]
+        # one big step, then some smaller ones
+        if not i % 5: 
+            keypairs = [choice(abc)+choice(abc) for i in range(3)]
+        else:
+            keypairs = [choice(abc)+choice(abc) for i in range(1)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
         if new_cost < cost:
