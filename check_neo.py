@@ -33,18 +33,34 @@ Später:
 
 Vorgehensweise zur Optimierung:
 - Annahme: Es gibt eine Idealtastatur. Auf ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
-- Reale Tastaturen können sich dem ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
-- Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es quantisieung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage) gelten mehr als reine Zahlenspielerei.
+- Reale Tastaturen können sich dem Ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
+- Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei.
 - Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
 - Als Daten-Grundlage dient die Liste der N-Gramme. 
 
-Kostenfaktoren: Zeit
+Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten.
-- Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. 
+- Einen Finger mehrfach hintereinander verwenden. => Strafpunkte.
+- Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. 
 
-Kostenfaktoren: Belastung
+Kostenfaktor: Belastung
 - Ungleichmäßige Belastung beider Hände.
-- Ungleichmäßige Belastung der einzelnen Finger.
+- Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden).
+
+Kostenfaktor: Natürliche Handbewegung
+- Von innen nach außen mit Handwechsel. => von außen nach innen gibt Strafpunkte.
+- Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. 
+
+Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo)
+- Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. 
+
+
+Notizen:
+- Ulf Bro nutzt für Kosten der Einzeltasten das folgende:
+  5 3 3 3 4         4 3 3 3 5 7
+  1 0 0 0 2         2 0 0 0 1 7
+  6 5 5 5 7         7 5 5 5 6
+  Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben. 
 
 
 
