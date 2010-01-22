@@ -75,6 +75,14 @@ Notizen:
 
 """
 
+__results__ = """
+
+After 5000 iterations:
+
+
+
+"""
+
 __doc__ += __usage__ + __design__
 
 __version__ = "0.1.0"
@@ -343,7 +351,6 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
             continue
         cost += num * COST_PER_KEY[pos[0]][pos[1]]
     return cost
-    
 
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
@@ -398,8 +405,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
-    TODO: REPORT BUG python: Running testmod makes the actual run fail
-
     >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
     >>> get_key((1, 1, 0), layout=lay)
     'l'
@@ -437,7 +442,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     from random import choice
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
     for i in range(iterations): 
-        # 3 switches per iteration
+        # 2 switches per iteration
         keypairs = [choice(abc)+choice(abc) for i in range(2)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
@@ -450,7 +455,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
                 print(lay)
         else:
             if not quiet: 
-                print(keypairs, "worse")
+                print(keypairs, "worse", "-", i)
     
     return layout, cost
             
@@ -548,6 +553,13 @@ if __name__ == "__main__":
         print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
         cost = key_position_cost_from_file(letters=letters)#, layout=QWERTZ_LAYOUT)
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+
+        if not QUIET:         
+            print("Qwertz for comparision")
+            frep = finger_repeats_from_file(repeats=repeats, layout=QWERTZ_LAYOUT)
+            print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+            cost = key_position_cost_from_file(letters=letters, layout=QWERTZ_LAYOUT)
+            print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
         #print(unique_sort(frep))
         
