@@ -273,6 +273,24 @@ def repeats_in_file_sorted(data):
     repeats.reverse()
     return repeats
 
+def repeats_in_file_precalculated(data):
+    """Get the repeats from a precalculated file.
+
+    >>> data = read_file("2gramme.txt")
+    >>> repeats_in_file_precalculated(data)[:2]
+    [('10162743', 'en'), ('10028050', 'er')]
+    """
+    return [tuple(line.split()) for line in data.splitlines() if line.split()[1:]]
+    
+def letters_in_file_precalculated(data):
+    """Get the repeats from a precalculated file.
+
+    >>> data = read_file("1gramme.txt")
+    >>> letters_in_file_precalculated(data)[:2]
+    [('44034982', 'e'), ('27012723', 'n')]
+    """
+    return [tuple(line.split()) for line in data.splitlines() if line.split()[1:]]
+    
 
 ### Cost Functions
 
