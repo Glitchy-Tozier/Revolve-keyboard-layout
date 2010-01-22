@@ -100,6 +100,14 @@ QWERTZ_LAYOUT = [
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
+COST_PER_KEY  = [ # 0 heißt nicht beachtet
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
+        [0,6,3,3,3,4,4,3,3,3,6,7,8,0], # Reihe 1
+        [0,2,1,1,1,3,3,1,1,1,2,6,0,9], # Reihe 2
+        [0,4,5,5,5,5,7,7,5,5,5,5,0],     # Reihe 3
+        [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
+]
+
 
 #: The positions which are by default accessed by the given finger. 
 FINGER_POSITIONS = [
@@ -113,7 +121,7 @@ FINGER_POSITIONS = [
     [(1, 8, 0), (2, 8, 0), (3, 9, 0)],
     [(1, 9, 0), (2, 9, 0), (3, 10, 0)],
     [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0)]
-    ]
+]
 #: The names of the fingers for which we gave the positions above.
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
@@ -189,6 +197,7 @@ def repeats_in_file(path):
     # TODO: Take uppercase correctly into account
     data = data.lower()
     repeats = []
+    # TODO: Refactor to use a more efficient format: (number of occurrances, pair)
     for i in range(len(data)-1):
         repeats.append(data[i] + data[i+1])
     return repeats
