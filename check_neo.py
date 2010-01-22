@@ -30,6 +30,24 @@ Später:
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
 - Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
 
+Vorgehensweise zur Optimierung:
+- Annahme: Es gibt eine Idealtastatur. Auf ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
+- Reale Tastaturen können sich dem ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
+- Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es quantisieung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage) gelten mehr als reine Zahlenspielerei.
+- Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
+- Als Daten-Grundlage dient die Liste der N-Gramme. 
+
+Kostenfaktoren: Zeit
+- Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten.
+- Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. 
+
+Kostenfaktoren: Belastung
+- Ungleichmäßige Belastung beider Hände.
+- Ungleichmäßige Belastung der einzelnen Finger.
+
+
+
+
 """
 
 #: Die Layout-Datei für Neo = Tastenbelegung - aktuell nur für Reihe 0, 1, 2 und 3 ohne Modifikator-Tasten nutzbar => nur Kleinbuchstaben. 
