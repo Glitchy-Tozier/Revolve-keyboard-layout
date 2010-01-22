@@ -3,7 +3,6 @@
 
 """Check the neo keyboard for double-usage of the same finger.
 
-Premise: The base row should remain unchanged.
 """
 __usage__ = """Usage:
 
@@ -76,6 +75,8 @@ Notizen:
 """
 
 __doc__ += __usage__ + __design__
+
+__version__ = "0.1.0"
 
 
 ### Constants
