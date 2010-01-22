@@ -17,6 +17,7 @@ __usage__ = """Usage:
 - check_neo.py --evolve <iterations>
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
 
+
 """
 __design__ = """
 Design: 
@@ -39,25 +40,25 @@ Später:
 Vorgehensweise zur Optimierung:
 - Annahme: Es gibt eine Idealtastatur. Auf ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
 - Reale Tastaturen können sich dem Ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
-- Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei. Die Muschine kann aber Vorarbeit leisten und stupides prüfen übernehmen. 
+- Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei. Die Maschine kann aber Vorarbeit leisten und stupides Prüfen übernehmen. 
 - Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
 - Als Daten-Grundlage dient die Liste der N-Gramme. Für die aktuellen brauchen wir nur mono- und bigramme.
 
 Kostenfaktor: Zeit
-- Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten.
-- Einen Finger mehrfach hintereinander verwenden. => Strafpunkte.
-- Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. 
+- Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done
+- Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
+- Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - TODO
 
 Kostenfaktor: Belastung
-- Ungleichmäßige Belastung beider Hände.
-- Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden).
+- Ungleichmäßige Belastung beider Hände. - TODO
+- Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). - TODO
 
 Kostenfaktor: Natürliche Handbewegung
-- Von innen nach außen mit Handwechsel. => von außen nach innen gibt Strafpunkte.
-- Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. 
+- Von innen nach außen mit Handwechsel. => von außen nach innen gibt Strafpunkte. - TODO
+- Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO
 
 Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo)
-- Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. 
+- Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO
 
 
 Notizen:
@@ -66,15 +67,16 @@ Notizen:
   1 0 0 0 2         2 0 0 0 1 7
   6 5 5 5 7         7 5 5 5 6
   Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben.
-  Alternative:
+  Genutzte Alternative:
     6 3 3 3 4         4 3 3 3 6 7 8
-1    2 1 1 1 3         3 1 1 1 2 6 9
+    2 1 1 1 3         3 1 1 1 2 6 9
   4 5 5 5 5 7         7 5 5 5 5
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
 """
 
 __doc__ += __usage__ + __design__
+
 
 ### Constants
 
@@ -124,16 +126,16 @@ COST_PER_KEY  = [ # 0 heißt nicht beachtet
 
 #: The positions which are by default accessed by the given finger. 
 FINGER_POSITIONS = [
-    [(1, 1, 0), (2, 1, 0), (3, 1, 0), (3, 2, 0)],
-    [(1, 2, 0), (2, 2, 0), (3, 3, 0)],
-    [(1, 3, 0), (2, 3, 0), (3, 4, 0)],
-    [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], 
-    [(4, 3, 0)],
-    [(4, 3, 0)],
-    [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], 
-    [(1, 8, 0), (2, 8, 0), (3, 9, 0)],
-    [(1, 9, 0), (2, 9, 0), (3, 10, 0)],
-    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0)]
+    [(1, 1, 0), (2, 1, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
+    [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
+    [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
+    [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
+    [(4, 3, 0)], # Daumen_L
+    [(4, 3, 0)], # Daumen_R
+    [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
+    [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
+    [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
+    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0)] # Klein_R
 ]
 #: The names of the fingers for which we gave the positions above.
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
