@@ -141,9 +141,11 @@ FINGER_POSITIONS = [
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
+
 ### Imports
 
 from copy import deepcopy
+
 
 ### Helper Functions
 
@@ -377,7 +379,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
     total = WEIGHT_FINGER_REPEATS * frep_num + WEIGHT_POSITION * position_cost
     return total, frep_num, position_cost
     
-
 
 ### Evolution
 
