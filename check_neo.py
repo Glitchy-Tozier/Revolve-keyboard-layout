@@ -9,10 +9,11 @@ Usage:
 
 - check_neo.py --help (display this text)
 - check_neo.py --test (run doctests)
-- check_neo.py --file <file> [--switch <lx,wq>] [-q]
+- check_neo.py --file <file> [--switch <lx,wq>] [-q] [-v]
   run the script on the file. 
   --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
-  --q reduces the output. 
+  -q removes the qwertz comparision.
+  -v adds the list of finger repeats.
 
 
 
@@ -37,7 +38,7 @@ Vorgehensweise zur Optimierung:
 - Reale Tastaturen können sich dem Ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
 - Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei. Die Muschine kann aber Vorarbeit leisten und stupides prüfen übernehmen. 
 - Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
-- Als Daten-Grundlage dient die Liste der N-Gramme. 
+- Als Daten-Grundlage dient die Liste der N-Gramme. Für die aktuellen brauchen wir nur mono- und bigramme.
 
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten.
@@ -203,13 +204,13 @@ def read_file(path):
     f.close()
     return data
 
-def repeats_in_file(path):
+def repeats_in_file(data):
     """Sort the repeats in a file by the number of occurrances.
 
-    >>> repeats_in_file("testfile")[:2]
+    >>> data = read_file("testfile")
+    >>> repeats_in_file(data)[:2]
     [(1, 'ui'), (1, 'td')]
     """
-    data = read_file(path)
     # TODO: Take uppercase correctly into account -> triple with shift
     data = data.lower()
     repeats = {}
@@ -223,6 +224,26 @@ def repeats_in_file(path):
     sorted_repeats.sort()
     sorted_repeats.reverse()
     return sorted_repeats
+
+def letters_in_file(data):
+    """Sort the repeats in a file by the number of occurrances.
+
+    >>> data = read_file("testfile")
+    >>> repeats_in_file(data)[:2]
+    [(1, 'ui'), (1, 'td')]
+    """
+    # TODO: Take uppercase correctly into account -> triple with shift
+    data = data.lower()
+    letters = {}
+    for letter in data:
+        if letter in letters:
+            letters[letter] += 1
+        else:
+            letters[letter] = 1
+    sort = [(letters[i], i) for i in letters]
+    sort.sort()
+    sort.reverse()
+    return sort
 
 def unique_sort(liste):
     """Count the occurrence of each item in a list.
@@ -241,28 +262,47 @@ def unique_sort(liste):
     sorted_repeats.sort()
     return sorted_repeats   
 
-def repeats_in_file_sorted(path):
+def repeats_in_file_sorted(data):
     """Sort the repeats in a file by the number of occurrances.
 
-    >>> repeats_in_file_sorted("testfile")[:2]
+    >>> data = read_file("testfile")
+    >>> repeats_in_file_sorted(data)[:2]
     [(1, '\\na'), (1, '\\ne')]
     """
-    repeats = repeats_in_file(path)
+    repeats = repeats_in_file(data)
     repeats.reverse()
     return repeats
 
 
 ### Cost Functions
 
-def finger_repeats_from_file(path, count_same_key=False, layout=NEO_LAYOUT):
+def key_position_cost_from_file(data, layout=NEO_LAYOUT):
+    """Count the total cost due to key positions.
+
+    >>> data = read_file("testfile")
+    >>> key_position_cost_from_file(data)
+    47
+    """
+    letters = letters_in_file(data)
+    cost = 0
+    for num, letter in letters:
+        pos = find_key(letter, layout=layout)
+        if pos is None: # not found => next letter
+            continue
+        cost += num * COST_PER_KEY[pos[0]][pos[1]]
+    return cost
+    
+
+def finger_repeats_from_file(data, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
-    >>> finger_repeats_from_file("testfile")
+    >>> data = read_file("testfile")
+    >>> finger_repeats_from_file(data)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
-    >>> finger_repeats_from_file("testfile", count_same_key=True)
+    >>> finger_repeats_from_file(data, count_same_key=True)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa')]
     """
-    repeats = repeats_in_file(path)
+    repeats = repeats_in_file(data)
     finger_repeats = []
     for number, pair in repeats:
         key1 = pair[0]
@@ -273,6 +313,19 @@ def finger_repeats_from_file(path, count_same_key=False, layout=NEO_LAYOUT):
     if not count_same_key:
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
     return finger_repeats
+
+def total_cost(data, layout=NEO_LAYOUT):
+    """Compute a total cost from all costs we have available, wheighted.
+
+    >>> data = read_file("testfile")
+    >>> total_cost(data)
+
+    """
+    # the raw costs
+    finger_repeats = finger_repeats_from_file(data, layout=layout)
+    position_cost = key_position_cost_from_file(data, layout=layout)
+    
+    
 
 
 ### Evolution
@@ -306,6 +359,12 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     return lay
 
 
+def evolve(data, layout=NEO_LAYOUT, iterations=100):
+    """Repeatedly switch a layout randomly and do the same with the new layout,
+    if it provides a better total score. Can't be tested easily => Check the source."""
+    
+
+
 ### Self-Test 
 
 if __name__ == "__main__": 
@@ -321,30 +380,43 @@ if __name__ == "__main__":
         argv.remove("-q")
     else: QUIET = False
     
+    if "-v" in argv:
+        VERBOSE = True
+        argv.remove("-v")
+    else: VERBOSE = False
+    
     if "--help" in argv or not argv[2:]:
         print(__doc__)
         exit()
 
     if argv[1] == "--file":
         path = argv[2]
+        data = read_file(path)
         
         if argv[4:] and argv[3] == "--switch":
             switchlist = argv[4].split(",")
             lay = switch_keys(switchlist, layout = NEO_LAYOUT)
             print("Neo", switchlist, "autogenerated")
-            frep = finger_repeats_from_file(path, layout=lay)
-            print(sum([num for num, fing, rep in frep]), "finger repeats in file", path)
+            frep = finger_repeats_from_file(data, layout=lay)
+            print(sum([num for num, fing, rep in frep]) / len(data), "% finger repeats in file", path)
+            cost = key_position_cost_from_file(data, layout=lay)
+            print(cost / len(data), "relative key position cost in file", path)
         else:
             print("Neo")
-            frep = finger_repeats_from_file(path)#, layout=QWERTZ_LAYOUT)
-            print(sum([num for num, fing, rep in frep]), "finger repeats in file", path)
+            frep = finger_repeats_from_file(data)
+            print(sum([num for num, fing, rep in frep]) / len(data), "% finger repeats in file", path)
+            cost = key_position_cost_from_file(data)
+            print(cost / len(data), "relative key position cost in file", path)
 
-        if not QUIET: 
+        if VERBOSE: 
             print(unique_sort(frep))
-        
-            print("Qwertz")
-            frep = finger_repeats_from_file(path, layout=QWERTZ_LAYOUT)
-            print(sum([num for num, fing, rep in frep]), "finger repeats in file", path)
+
+        if not QUIET:         
+            print("Qwertz for comparision")
+            frep = finger_repeats_from_file(data, layout=QWERTZ_LAYOUT)
+            print(sum([num for num, fing, rep in frep]) / len(data), "% finger repeats in file", path)
+            cost = key_position_cost_from_file(data, layout=QWERTZ_LAYOUT)
+            print(cost / len(data), "relative key position cost in file", path)
         #print(unique_sort(frep))
         
         #rep = repeats_in_file_sorted(path)
