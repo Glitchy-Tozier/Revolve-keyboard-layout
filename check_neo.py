@@ -63,7 +63,7 @@ Notizen:
   Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben.
   Alternative:
     6 3 3 3 4         4 3 3 3 6 7 8
-    2 1 1 1 3         3 1 1 1 2 6
+    2 1 1 1 3         3 1 1 1 2 6 9
   4 5 5 5 5 7         7 5 5 5 5
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
