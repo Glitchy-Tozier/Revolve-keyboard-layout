@@ -17,6 +17,7 @@ Usage:
 
 
 Design: 
+- Der Code ist in die Abschnitte Constants, Helper functions, Cost functions und Evolution aufgeteilt.
 - Daten als Listen, die der Tastatur entsprechen: Reihen und Spalten. 
 - Für jede Taste ein Tuple mit den verschiedenen Bedeutungen. Mods: (None, Shift, Mod3, Mod4, Shift+Mod3, Mod3+Mod4)
 - find_key() -> (reihe, spalte, index)
@@ -68,6 +69,8 @@ Notizen:
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
 """
+
+### Constants
 
 #: Die Layout-Datei für Neo = Tastenbelegung - aktuell nur für Reihe 0, 1, 2 und 3 ohne Modifikator-Tasten nutzbar => nur Kleinbuchstaben. 
 NEO_LAYOUT = [
@@ -125,6 +128,9 @@ FINGER_POSITIONS = [
 #: The names of the fingers for which we gave the positions above.
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
+
+
+### Helper Functions
 
 def find_key(key, layout=NEO_LAYOUT): 
     """Find the position of the key in the layout.
@@ -219,6 +225,19 @@ def unique_sort(liste):
     sorted_repeats.sort()
     return sorted_repeats   
 
+def repeats_in_file_sorted(path):
+    """Sort the repeats in a file by the number of occurrances.
+
+    >>> repeats_in_file_sorted("testfile")[:2]
+    [(1, '\\na'), (1, '\\ne')]
+    """
+    repeats = repeats_in_file(path)
+    sorted_repeats = unique_sort(repeats)
+    return sorted_repeats
+
+
+### Cost Functions
+
 def finger_repeats_from_file(path, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
@@ -239,16 +258,9 @@ def finger_repeats_from_file(path, count_same_key=False, layout=NEO_LAYOUT):
         finger_repeats = [r for r in finger_repeats if not r[1][0] == r[1][1]]
     return finger_repeats
 
-def repeats_in_file_sorted(path):
-    """Sort the repeats in a file by the number of occurrances.
 
-    >>> repeats_in_file_sorted("testfile")[:2]
-    [(1, '\\na'), (1, '\\ne')]
-    """
-    repeats = repeats_in_file(path)
-    sorted_repeats = unique_sort(repeats)
-    return sorted_repeats
-    
+### Evolution
+
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
