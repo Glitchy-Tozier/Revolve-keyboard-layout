@@ -4,8 +4,8 @@
 """Check the neo keyboard for double-usage of the same finger.
 
 Premise: The base row should remain unchanged.
-
-Usage:
+"""
+__usage__ = """Usage:
 
 - check_neo.py --help (display this text)
 - check_neo.py --test (run doctests)
@@ -15,10 +15,10 @@ Usage:
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
 - check_neo.py --evolve
-  randomly permutate Neo keys to see if a better layout emerges. 
+  randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
 
-
-
+"""
+__design__ = """
 Design: 
 - Der Code ist in die Abschnitte Constants, Imports, Helper functions, Cost functions und Evolution aufgeteilt.
 - Daten als Listen, die der Tastatur entsprechen: Reihen und Spalten. 
@@ -73,6 +73,8 @@ Notizen:
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
 """
+
+__doc__ += __usage__ + __design__
 
 ### Constants
 
@@ -453,7 +455,7 @@ if __name__ == "__main__":
     else: VERBOSE = False
     
     if "--help" in argv:
-        print(__doc__)
+        print(__usage__)
         exit()
 
     if argv[1:] and argv[1] == "--file":
