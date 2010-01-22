@@ -60,10 +60,12 @@ Notizen:
   5 3 3 3 4         4 3 3 3 5 7
   1 0 0 0 2         2 0 0 0 1 7
   6 5 5 5 7         7 5 5 5 6
-  Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben. 
-
-
-
+  Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben.
+  Alternative:
+  6 3 3 3 4         4 3 3 3 6 8
+  2 1 1 1 3         3 1 1 1 2 6
+  5 5 5 5 7         7 5 5 5 5
+  Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
 """
 
@@ -207,7 +209,7 @@ def unique_sort(liste):
     sorted_repeats = [(counter[i], i) for i in counter]
     sorted_repeats.sort()
     return sorted_repeats   
-    
+
 def finger_repeats_from_file(path, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
@@ -241,7 +243,7 @@ def repeats_in_file_sorted(path):
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
-    TODO: REPORT BUG py 3.2: Running testmod makes the actual run fail
+    TODO: REPORT BUG python: Running testmod makes the actual run fail
 
     >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
     >>> get_key((1, 1, 0), layout=lay)
@@ -265,8 +267,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
         lay[pos1[0]][pos1[1]] = tmp1
     
     return lay
-        
-    
+
 
 ### Self-Test 
 
