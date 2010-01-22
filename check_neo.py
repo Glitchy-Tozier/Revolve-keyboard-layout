@@ -382,7 +382,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> total_cost(data)
-    (63, 3, 47)
+    (62, 3, 47)
     """
     # the raw costs
     if data is not None: 
