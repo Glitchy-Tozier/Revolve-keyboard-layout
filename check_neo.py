@@ -34,10 +34,11 @@ Design:
 
 Später:
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
+- Groß- und Kleinschrebung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. 
 
 
 Vorgehensweise zur Optimierung:
-- Annahme: Es gibt eine Idealtastatur. Auf ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
+- Annahme: Es gibt eine Idealtastatur. Mit ihr können Gedanken ohne Zeitverlust und ohne Aufwand aufgezeichnet werden.
 - Reale Tastaturen können sich dem Ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
 - Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei. Die Maschine kann aber Vorarbeit leisten und stupides Prüfen übernehmen. 
 - Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
@@ -74,6 +75,14 @@ Notizen:
 
 """
 
+__results__ = """
+
+After 5000 iterations:
+
+
+
+"""
+
 __doc__ += __usage__ + __design__
 
 __version__ = "0.1.0"
@@ -88,6 +97,13 @@ License: GPLv3 or later
 # Gewichtung der unterschiedlichen Kosten
 WEIGHT_FINGER_REPEATS = 5
 WEIGHT_POSITION = 1 # referenz
+
+#: Die zu mutierenden Buchstaben.
+abc = "abcdefghijklmnopqrstuvwxyzäöüß"
+#: Die zu mutierenden Buchstaben. Vokale und xvc bleiben. 
+#abc = "bdfghjklmnpqrstwyzäöüß"
+#: Die zu mutierenden Buchstaben. Grundreihe + üöä bleiben. 
+#abc = "bcfghjklmpqsvwxyzß"
 
 #: Die Layout-Datei für Neo = Tastenbelegung - aktuell nur für Reihe 0, 1, 2 und 3 ohne Modifikator-Tasten nutzbar => nur Kleinbuchstaben. 
 NEO_LAYOUT = [
@@ -335,7 +351,6 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
             continue
         cost += num * COST_PER_KEY[pos[0]][pos[1]]
     return cost
-    
 
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
@@ -390,8 +405,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
-    TODO: REPORT BUG python: Running testmod makes the actual run fail
-
     >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
     >>> get_key((1, 1, 0), layout=lay)
     'l'
@@ -419,14 +432,17 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     return lay
 
 
-def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, quiet=False):
+def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
-    if it provides a better total score. Can't be tested easily => Check the source."""
+    if it provides a better total score. Can't be tested easily => Check the source.
+
+    To only mutate a subset of keys, just pass them as
+    @param abc: the keys to permutate over.
+    """
     from random import choice
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
-    abc = "abcdefghijklmnopqrstuvwxyzäöüß"
     for i in range(iterations): 
-        # 3 switches per iteration
+        # 2 switches per iteration
         keypairs = [choice(abc)+choice(abc) for i in range(2)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
@@ -439,7 +455,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, quiet=False):
                 print(lay)
         else:
             if not quiet: 
-                print(keypairs, "worse")
+                print(keypairs, "worse", "-", i)
     
     return layout, cost
             
@@ -497,14 +513,17 @@ if __name__ == "__main__":
             cost = key_position_cost_from_file(data, layout=QWERTZ_LAYOUT)
             print(cost / len(data), "mean key position cost in file", path)
 
-    if argv[2:] and argv[1] == "--evolve":
+    elif argv[2:] and argv[1] == "--evolve":
         print("Mutating Neo")
+#        data = read_file("/tmp/sskreszta")
         data1 = read_file("1gramme.txt")
         letters = letters_in_file_precalculated(data1)
+#        letters = letters_in_file(data)
         datalen1 = sum([i for i, s in letters])
         
         data2 = read_file("2gramme.txt")
         repeats = repeats_in_file_precalculated(data2)
+#        repeats = repeats_in_file(data)
         datalen2 = sum([i for i, s in repeats])
 
         lay, cost = evolve(letters, repeats, iterations=int(argv[2]), quiet=QUIET)
@@ -534,6 +553,13 @@ if __name__ == "__main__":
         print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
         cost = key_position_cost_from_file(letters=letters)#, layout=QWERTZ_LAYOUT)
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+
+        if not QUIET:         
+            print("Qwertz for comparision")
+            frep = finger_repeats_from_file(repeats=repeats, layout=QWERTZ_LAYOUT)
+            print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+            cost = key_position_cost_from_file(letters=letters, layout=QWERTZ_LAYOUT)
+            print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
         #print(unique_sort(frep))
         
