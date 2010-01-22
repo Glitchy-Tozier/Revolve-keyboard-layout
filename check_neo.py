@@ -442,7 +442,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     from random import choice
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
     for i in range(iterations): 
-        # one big step, then some smaller ones
+        # one big step, then some smaller ones to avoid deterministic purely local minima.
         if not i % 5: 
             keypairs = [choice(abc)+choice(abc) for i in range(3)]
         else:
