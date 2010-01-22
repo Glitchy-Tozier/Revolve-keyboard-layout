@@ -460,7 +460,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
         else:
             consecutive_fails += 1
             if not quiet: 
-                print(keypairs, "worse", "-", i)
+                print(keypairs, "worse", "-", i, "/", iterations)
     
     return layout, cost
             
