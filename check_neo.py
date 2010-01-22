@@ -440,18 +440,17 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     @param abc: the keys to permutate over.
     """
     from random import choice
+    from math import log10
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
+    consecutive_fails = 0
     for i in range(iterations): 
-        # one big step, then some smaller ones to avoid deterministic purely local minima.
-        if not i % 5: 
-            keypairs = [choice(abc)+choice(abc) for i in range(3)]
-        elif not i % 27: 
-            keypairs = [choice(abc)+choice(abc) for i in range(6)]
-        else:
-            keypairs = [choice(abc)+choice(abc) for i in range(1)]
+        # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
+        step = int(log10(consecutive_fails / 10 + 1) + 1)
+        keypairs = [choice(abc)+choice(abc) for i in range(step)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
         if new_cost < cost:
+            consecutive_fails = 0
             # save the good mutation
             layout = lay
             cost = new_cost
@@ -459,6 +458,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
                 print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
                 print(lay)
         else:
+            consecutive_fails += 1
             if not quiet: 
                 print(keypairs, "worse", "-", i)
     
