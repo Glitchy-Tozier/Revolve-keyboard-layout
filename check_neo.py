@@ -85,7 +85,7 @@ After 5000 iterations:
 
 __doc__ += __usage__ + __design__
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __copyright__ = """2010 © Arne Babenhauserheide
 
