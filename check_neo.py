@@ -109,22 +109,22 @@ abc = "abcdefghijklmnopqrstuvwxyzäöüß"
 NEO_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("x"),("v"),("l"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
-    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇩"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
+    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lx = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
-    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇩"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
+    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lxwq = [ # 25% weniger Fingerwiederholungen als Neo, fast 50% weniger als Qwertz
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("q"),("k"),("h"),("g"),("f"),("w"),("ß"),("´"),()], # Reihe 1
-    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇩"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
+    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -132,7 +132,7 @@ QWERTZ_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
     [(),("q"),("w"),("e"),("r"),("t"),("z"),("u"),("i"),("o"),("p"),("ü"),("+"),()], # Reihe 1
     [(),("a"),("s"),("d"),("f"),("g"),("h"),("j"),("k"),("l"),("ö"),("ä"),(),("\n")], # Reihe 2
-    [("⇧"),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),("⇧")],	# Reihe 3
+    [("⇧"),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),("⇗")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -147,7 +147,7 @@ COST_PER_KEY  = [ # 0 heißt nicht beachtet
 
 #: The positions which are by default accessed by the given finger. 
 FINGER_POSITIONS = [
-    [(1, 1, 0), (2, 1, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
+    [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
     [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
     [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
     [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
@@ -156,7 +156,7 @@ FINGER_POSITIONS = [
     [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
     [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
     [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
-    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0)] # Klein_R
+    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
 ]
 #: The names of the fingers for which we gave the positions above.
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
@@ -201,7 +201,7 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
 
     >>> for name in FINGER_NAMES:
     ...    name, finger_keys(name)
-    ('Klein_L', ['x', 'u', 'None', 'ü'])
+    ('Klein_L', ['x', '⇩', 'u', '⇧', 'None', 'ü'])
     ('Ring_L', ['v', 'i', 'ö'])
     ('Mittel_L', ['l', 'a', 'ä'])
     ('Zeige_L', ['c', 'e', 'p', 'w', 'o', 'z'])
@@ -210,7 +210,7 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
     ('Zeige_R', ['k', 's', 'b', 'h', 'n', 'm'])
     ('Mittel_R', ['g', 'r', ','])
     ('Ring_R', ['f', 't', '.'])
-    ('Klein_R', ['q', 'd', 'j', 'ß', 'y', '´', 'None', '\\n'])
+    ('Klein_R', ['q', 'd', 'j', 'ß', 'y', '´', '⇘', '\\n', '⇗'])
     """
     idx = FINGER_NAMES.index(finger_name)
     keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[idx]]
@@ -223,6 +223,10 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     'Mittel_L'
     >>> key_to_finger("«")
     ''
+    >>> key_to_finger("⇩")
+    'Klein_L'
+    >>> key_to_finger("⇧")
+    'Klein_L'
     """
     pos = find_key(key, layout=layout)
     for i in range(len(FINGER_POSITIONS)):
@@ -244,6 +248,8 @@ def read_file(path):
 
 def split_uppercase_repeats(reps):
     """Split uppercase repeats into two to three lowercase repeats.
+
+    TODO: treat left and right shift differently. Currently we always use left shift and never right shift (⇗).
 
     >>> reps = [(4, "ab"), (3, "Ab"), (2, "aB"), (1, "AB")]
     >>> split_uppercase_repeats(reps)
@@ -288,15 +294,34 @@ def repeats_in_file(data):
     reps = split_uppercase_repeats(sorted_repeats)
     return reps
 
+def split_uppercase_letters(reps):
+    """Split uppercase letters into two lowercase letters (with shift).
+
+    >>> letters = [(4, "a"), (3, "A")]
+    >>> split_uppercase_letters(letters)
+    [(4, 'a'), (3, '⇧'), (3, 'a')]
+    """
+    # replace uppercase by ⇧ + char1 and char1 + char2
+    upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
+    reps = [rep for rep in reps if not rep in upper]
+    up = []
+    for num, rep in upper: # Ab = ⇧a,ab aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
+        up.append((num, "⇧"))
+        up.append((num, rep.lower()))
+                
+    reps.extend(up)
+    reps = [(int(num), r) for num, r in reps]
+    reps.sort()
+    reps.reverse()
+    return reps
+
 def letters_in_file(data):
     """Sort the repeats in a file by the number of occurrances.
 
     >>> data = read_file("testfile")
     >>> letters_in_file(data)[:3]
-    [(7, 'a'), (4, '\\n'), (2, 'r')]
+    [(5, 'a'), (4, '\\n'), (2, '⇧')]
     """
-    # TODO: Take uppercase correctly into account -> triple with shift
-    data = data.lower()
     letters = {}
     for letter in data:
         if letter in letters:
@@ -306,6 +331,7 @@ def letters_in_file(data):
     sort = [(letters[i], i) for i in letters]
     sort.sort()
     sort.reverse()
+    sort = split_uppercase_letters(sort)
     return sort
 
 def unique_sort(liste):
