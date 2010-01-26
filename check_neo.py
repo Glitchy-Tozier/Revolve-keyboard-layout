@@ -110,21 +110,21 @@ NEO_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("x"),("v"),("l"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
     [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),("\n")], # Reihe 2
-    [(),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),()],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lx = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
     [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),("\n")], # Reihe 2
-    [(),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),()],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lxwq = [ # 25% weniger Fingerwiederholungen als Neo, fast 50% weniger als Qwertz
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("q"),("k"),("h"),("g"),("f"),("w"),("ß"),("´"),()], # Reihe 1
     [(),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),(),("\n")], # Reihe 2
-    [(),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),()],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇧")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -132,7 +132,7 @@ QWERTZ_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
     [(),("q"),("w"),("e"),("r"),("t"),("z"),("u"),("i"),("o"),("p"),("ü"),("+"),()], # Reihe 1
     [(),("a"),("s"),("d"),("f"),("g"),("h"),("j"),("k"),("l"),("ö"),("ä"),(),("\n")], # Reihe 2
-    [(),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),()],	# Reihe 3
+    [("⇧"),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),("⇧")],	# Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -242,15 +242,39 @@ def read_file(path):
     f.close()
     return data
 
+def split_uppercase_repeats(reps):
+    """Split uppercase repeats into two to three lowercase repeats.
+
+    >>> reps = [(4, "ab"), (3, "Ab"), (2, "aB"), (1, "AB")]
+    >>> split_uppercase_repeats(reps)
+    [(4, 'ab'), (3, '⇧a'), (3, 'ab'), (2, '⇧b'), (2, 'a⇧'), (1, '⇧b'), (1, '⇧a'), (1, 'a⇧')]
+    """
+    # replace uppercase by ⇧ + char1 and char1 + char2
+    upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
+    reps = [rep for rep in reps if not rep in upper]
+    up = []
+    for num, rep in upper: # Ab = ⇧a,ab aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
+        if not rep[0] == rep[0].lower():
+            up.append((num, "⇧"+rep[0].lower()))
+        if not rep[1] == rep[1].lower():
+            up.append((num, "⇧"+rep[1].lower()))
+            up.append((num, rep[0].lower() + "⇧"))
+        else:
+            up.append((num, rep[0].lower()+rep[1].lower()))
+                
+    reps.extend(up)
+    reps = [(int(num), r) for num, r in reps if r[1:]]
+    reps.sort()
+    reps.reverse()
+    return reps
+
 def repeats_in_file(data):
     """Sort the repeats in a file by the number of occurrances.
 
     >>> data = read_file("testfile")
-    >>> repeats_in_file(data)[:2]
-    [(1, 'ui'), (1, 'td')]
+    >>> repeats_in_file(data)[:3]
+    [(2, '⇧a'), (2, 'aa'), (2, 'a\\n')]
     """
-    # TODO: Take uppercase correctly into account -> triple with shift
-    data = data.lower()
     repeats = {}
     for i in range(len(data)-1):
         rep = data[i] + data[i+1]
@@ -261,14 +285,15 @@ def repeats_in_file(data):
     sorted_repeats = [(repeats[i], i) for i in repeats]
     sorted_repeats.sort()
     sorted_repeats.reverse()
-    return sorted_repeats
+    reps = split_uppercase_repeats(sorted_repeats)
+    return reps
 
 def letters_in_file(data):
     """Sort the repeats in a file by the number of occurrances.
 
     >>> data = read_file("testfile")
-    >>> repeats_in_file(data)[:2]
-    [(1, 'ui'), (1, 'td')]
+    >>> letters_in_file(data)[:3]
+    [(7, 'a'), (4, '\\n'), (2, 'r')]
     """
     # TODO: Take uppercase correctly into account -> triple with shift
     data = data.lower()
@@ -318,8 +343,12 @@ def repeats_in_file_precalculated(data):
     >>> repeats_in_file_precalculated(data)[:2]
     [(10162743, 'en'), (10028050, 'er')]
     """
-    rep = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    return [(int(num), r) for num, r in rep if rep[1:]]
+    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    reps = [(int(num), r) for num, r in reps if r[1:]]
+    reps = split_uppercase_repeats(reps)
+    
+    
+    return reps
     
 def letters_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
@@ -339,7 +368,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> key_position_cost_from_file(data)
-    47
+    60
     """
     if data is not None: 
         letters = letters_in_file(data)
@@ -360,7 +389,7 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     >>> finger_repeats_from_file(data)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
     >>> finger_repeats_from_file(data, count_same_key=True)
-    [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa')]
+    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa')]
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -383,7 +412,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> total_cost(data)
-    (62, 3, 47)
+    (75, 3, 60)
     """
     # the raw costs
     if data is not None: 
