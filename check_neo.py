@@ -177,11 +177,12 @@ def find_key(key, layout=NEO_LAYOUT):
     (2, 3, 0)
     """
     pos = None
-    for row in range(len(layout)): 
-        for col in range(len(layout[row])): 
-            for idx in range(len(layout[row][col])):
-                if layout[row][col][idx] == key: 
-                    pos = (row, col, idx)
+    for row in range(len(layout)):
+        for col in range(len(layout[row])):
+            if key in layout[row][col]: 
+                for idx in range(len(layout[row][col])):
+                    if layout[row][col][idx] == key: 
+                        pos = (row, col, idx)
     return pos
 
 
