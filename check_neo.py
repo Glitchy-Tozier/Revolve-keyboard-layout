@@ -445,7 +445,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     consecutive_fails = 0
     for i in range(iterations): 
         # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
-        step = int(log10(consecutive_fails / 10 + 1) + 1)
+        step = int(log10(consecutive_fails + 1) / 2 + 1)
         keypairs = [choice(abc)+choice(abc) for i in range(step)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
