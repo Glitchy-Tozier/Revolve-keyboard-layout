@@ -104,6 +104,15 @@ Evolved Layout
 0.0286983455234 % finger repeats in file 2gramme.txt
 1.87007403505 mean key position cost in file 1gramme.txt
 
+Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'v', 'j', '´', ()],
+ ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'p', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+0.0286983455234 % finger repeats in file 2gramme.txt
+1.87007403505 mean key position cost in file 1gramme.txt
+
 lucky strike: after 100; only 15 switches: qb yw lv qß vm vb mg vk fg lh pq jß wv ßz bv
 
 Evolved Layout
