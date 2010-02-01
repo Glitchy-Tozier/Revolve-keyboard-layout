@@ -77,8 +77,51 @@ Notizen:
 
 __results__ = """
 
-After 5000 iterations:
+After 25000 iterations with fixed baseline:
 
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'x', 'h', 'z', 'c', 'p', 'f', 'm', 'l', 'g', 'k', 'j', '´', ()],
+ ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'v', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'b', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+0.0263404096176 % finger repeats in file 2gramme.txt
+1.88826949945 mean key position cost in file 1gramme.txt
+
+Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'p', 'j', '´', ()],
+ ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'v', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+0.0286983455234 % finger repeats in file 2gramme.txt
+1.87007403505 mean key position cost in file 1gramme.txt
+
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'v', 'j', '´', ()],
+ ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'p', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+0.0286983455234 % finger repeats in file 2gramme.txt
+1.87007403505 mean key position cost in file 1gramme.txt
+
+lucky strike: after 100; only 15 switches: qb yw lv qß vm vb mg vk fg lh pq jß wv ßz bv
+
+Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'x', 'h', 'f', 'c', 'y', 'w', 'l', 'm', 'g', 'k', 'p', '´', ()],
+ ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'b', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ö', 'ä', 'q', 'ß', 'j', 'v', ',', '.', 'z', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+0.0275394878237 % finger repeats in file 2gramme.txt
+1.91234715913 mean key position cost in file 1gramme.txt
+
+For reference: 
+Neo
+0.0477912399131 % finger repeats in file 2gramme.txt
+1.94298448139 mean key position cost in file 1gramme.txt
+Qwertz for comparision
+0.0709701084443 % finger repeats in file 2gramme.txt
+3.11621325676 mean key position cost in file 1gramme.txt
 
 
 """
