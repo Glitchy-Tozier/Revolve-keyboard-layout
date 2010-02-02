@@ -539,6 +539,21 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     
     return lay
 
+def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
+        """Do one random switch. Keep it, if it is beneficial."""
+        from random import choice
+        keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
+        lay = switch_keys(keypairs, layout=deepcopy(layout))
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+        if new_cost < cost:
+            if not quiet: 
+                print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
+                print(lay)
+            return lay, new_cost, cost - new_cost
+        else: 
+            if not quiet: 
+                print("worse", keypairs, end = " ")
+            return layout, cost, 0
 
 def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
@@ -547,28 +562,21 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     To only mutate a subset of keys, just pass them as
     @param abc: the keys to permutate over.
     """
-    from random import choice
     from math import log10
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
     consecutive_fails = 0
     for i in range(iterations): 
         # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
         step = int(log10(consecutive_fails + 1) / 2 + 1)
-        keypairs = [choice(abc)+choice(abc) for i in range(step)]
-        lay = switch_keys(keypairs, layout=deepcopy(layout))
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
-        if new_cost < cost:
+        lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+        if better:
             consecutive_fails = 0
             # save the good mutation
             layout = lay
-            cost = new_cost
-            if not quiet: 
-                print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                print(lay)
         else:
             consecutive_fails += 1
-            if not quiet: 
-                print(keypairs, "worse", "-", i, "/", iterations)
+        if not quiet: 
+            print("-", i, "/", iterations)
     
     return layout, cost
             
