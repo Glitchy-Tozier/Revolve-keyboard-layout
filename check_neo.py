@@ -162,21 +162,21 @@ NEO_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("x"),("v"),("l"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
     [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],        # Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lx = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
     [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],        # Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 NEO_LAYOUT_lxwq = [ # 25% weniger Fingerwiederholungen als Neo, fast 50% weniger als Qwertz
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),()], # Zahlenreihe (0)
     [(),("l"),("v"),("x"),("c"),("q"),("k"),("h"),("g"),("f"),("w"),("ß"),("´"),()], # Reihe 1
     [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],	# Reihe 3
+    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],        # Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -184,7 +184,7 @@ QWERTZ_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
     [(),("q"),("w"),("e"),("r"),("t"),("z"),("u"),("i"),("o"),("p"),("ü"),("+"),()], # Reihe 1
     [(),("a"),("s"),("d"),("f"),("g"),("h"),("j"),("k"),("l"),("ö"),("ä"),(),("\n")], # Reihe 2
-    [("⇧"),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),("⇗")],	# Reihe 3
+    [("⇧"),(),("y"),("x"),("c"),("v"),("b"),("n"),("m"),(","),("."),("-"),("⇗")],        # Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -556,54 +556,68 @@ def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, qui
             return layout, cost, 0
 
 def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
-        """Do the most beneficial change. Keep it, if the new layout is better than the old.
+    """Do the most beneficial change. Keep it, if the new layout is better than the old.
         
-        >>> data = read_file("testfile")
-        >>> repeats = repeats_in_file(data)
-        >>> letters = letters_in_file(data)
-        >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, abc, 75, False)
-        ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'd', 's', 'n', 'r', 't', 'o', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
-        """
-        from random import choice
-        # First create one long list of possible switches
-        keypairs = []
-        for key1 in abc: 
-            for key2 in abc[abc.index(key1):]: 
-                keypairs.append(key1+key2)
-        
-        # then combine it into possible switch tuples (O(N²))
-        switches = []
-        for i in range(num_switches): 
-            switches.append([]) # layers
-        for pair1 in keypairs: 
-            # pair 1 list
-            for i in range(len(keypairs) ** min(1, num_switches - 1)): # ** (num_switches - 1)): 
-                switches[0].append(pair1) # [[1, 1, 1]]
-            for i in range(min(1, num_switches - 1)): # num_switches - 1): # TODO: Make it work for num > 2. 
-                #for j in range(len(keypairs) ** max(0, (num_switches - 2))): 
-                    for pair_x in keypairs: #[keypairs.index(pair1)+1:]: 
-                        # add additional possible pairs. 
-                        switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]
-        switches = list(zip(*switches[:2]))
-        
-        # results for 1 step: [(cost, frep, pos_cost, layout), ...]
-        step_results = []
-        for keypairs in switches: 
-            lay = switch_keys(keypairs, layout=deepcopy(layout))
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
-            step_results.append((new_cost, frep, pos_cost, lay))
-            #print(keypairs, new_cost)
-        if min(step_results)[0] < cost:
-            if not quiet: 
-                #print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                #print(lay)
-                pass
-            lay, new_cost = min(step_results)[-1], min(step_results)[0]
-            return lay, new_cost, cost - new_cost
-        else: 
-            if not quiet: 
-                print("worse", keypairs, end = " ")
-            return layout, cost, 0
+    >>> data = read_file("testfile")
+    >>> repeats = repeats_in_file(data)
+    >>> letters = letters_in_file(data)
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 75, False)
+    checked switch ('rr',) 75
+    checked switch ('re',) 65
+    checked switch ('ro',) 67
+    checked switch ('ee',) 75
+    checked switch ('eo',) 77
+    checked switch ('oo',) 75
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
+    checked switch ('rr',) 75
+    checked switch ('re',) 65
+    checked switch ('ro',) 67
+    checked switch ('ee',) 75
+    checked switch ('eo',) 77
+    checked switch ('oo',) 75
+    worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
+    """
+    from random import choice
+    # First create one long list of possible switches
+    keypairs = []
+    for key1 in abc: 
+        for key2 in abc[abc.index(key1):]: 
+            keypairs.append(key1+key2)
+    
+    # then combine it into possible switch tuples (O(N²))
+    switches = []
+    for i in range(num_switches): 
+        switches.append([]) # layers
+    for pair1 in keypairs: 
+        # pair 1 list
+        for i in range(len(keypairs) ** min(1, num_switches - 1)): # ** (num_switches - 1)): 
+            switches[0].append(pair1) # [[1, 1, 1]]
+        for i in range(min(1, num_switches - 1)): # num_switches - 1): # TODO: Make it work for num > 2. 
+            #for j in range(len(keypairs) ** max(0, (num_switches - 2))): 
+                for pair_x in keypairs: #[keypairs.index(pair1)+1:]: 
+                    # add additional possible pairs. 
+                    switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]
+    switches = list(zip(*switches[:2]))
+    
+    # results for 1 step: [(cost, frep, pos_cost, layout), ...]
+    step_results = []
+    for keypairs in switches: 
+        lay = switch_keys(keypairs, layout=deepcopy(layout))
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+        step_results.append((new_cost, frep, pos_cost, lay))
+        print("# checked switch", keypairs, new_cost)
+    if min(step_results)[0] < cost:
+        if not quiet: 
+            print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
+            print(lay)
+            pass
+        lay, new_cost = min(step_results)[-1], min(step_results)[0]
+        return lay, new_cost, cost - new_cost
+    else: 
+        if not quiet: 
+            print("worse", keypairs, end = " ")
+        return layout, cost, 0
 
 def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
@@ -619,6 +633,8 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
         # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
         step = int(log10(consecutive_fails + 1) / 2 + 1)
         lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+        # commented out: only do the best possible step instead => too damn expensive to expose via CLI. For a single switch about 10 min per run. 
+        # lay, cost, better = controlled_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
         if better:
             consecutive_fails = 0
             # save the good mutation
