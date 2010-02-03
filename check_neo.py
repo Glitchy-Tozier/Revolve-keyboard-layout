@@ -555,6 +555,56 @@ def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, qui
                 print("worse", keypairs, end = " ")
             return layout, cost, 0
 
+def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
+        """Do the most beneficial change. Keep it, if the new layout is better than the old.
+        
+        >>> data = read_file("testfile")
+        >>> repeats = repeats_in_file(data)
+        >>> letters = letters_in_file(data)
+        >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, abc, 75, False)
+        ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'd', 's', 'n', 'r', 't', 'o', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
+        """
+        from random import choice
+        # First create one long list of possible switches
+        keypairs = []
+        for key1 in abc: 
+            for key2 in abc[abc.index(key1):]: 
+                keypairs.append(key1+key2)
+        
+        # then combine it into possible switch tuples (O(N²))
+        switches = []
+        for i in range(num_switches): 
+            switches.append([]) # layers
+        for pair1 in keypairs: 
+            # pair 1 list
+            for i in range(len(keypairs) ** min(1, num_switches - 1)): # ** (num_switches - 1)): 
+                switches[0].append(pair1) # [[1, 1, 1]]
+            for i in range(min(1, num_switches - 1)): # num_switches - 1): # TODO: Make it work for num > 2. 
+                #for j in range(len(keypairs) ** max(0, (num_switches - 2))): 
+                    for pair_x in keypairs: #[keypairs.index(pair1)+1:]: 
+                        # add additional possible pairs. 
+                        switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]
+        switches = list(zip(*switches[:2]))
+        
+        # results for 1 step: [(cost, frep, pos_cost, layout), ...]
+        step_results = []
+        for keypairs in switches: 
+            lay = switch_keys(keypairs, layout=deepcopy(layout))
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+            step_results.append((new_cost, frep, pos_cost, lay))
+            #print(keypairs, new_cost)
+        if min(step_results)[0] < cost:
+            if not quiet: 
+                #print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
+                #print(lay)
+                pass
+            lay, new_cost = min(step_results)[-1], min(step_results)[0]
+            return lay, new_cost, cost - new_cost
+        else: 
+            if not quiet: 
+                print("worse", keypairs, end = " ")
+            return layout, cost, 0
+
 def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
