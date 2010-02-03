@@ -572,8 +572,8 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     # checked switch ('ee',) 75
     # checked switch ('eo',) 77
     # checked switch ('oo',) 75
-    7.5e-05 ('oo',) finger repetition: 3e-06 position cost: 6e-05
-    [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
+    7.5e-05 finger repetition: 1e-06 position cost: 6e-05
+    [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
     ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
     # checked switch ('rr',) 75
@@ -614,11 +614,11 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
         step_results.append((new_cost, frep, pos_cost, lay))
         print("# checked switch", keypairs, new_cost)
     if min(step_results)[0] < cost:
-        if not quiet: 
-            print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-            print(lay)
-            pass
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
+        if not quiet: 
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+            print(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
+            print(lay)
         return lay, new_cost, cost - new_cost
     else: 
         if not quiet: 
