@@ -7,14 +7,18 @@
 __usage__ = """Usage:
 
 - check_neo.py --help (display this text)
+
 - check_neo.py --test (run doctests)
+
 - check_neo.py [--file <file>] [--switch <lx,wq>] [-q] [-v]
   run the script on the file. 
   --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
-- check_neo.py --evolve <iterations>
+
+- check_neo.py --evolve <iterations> [-q] [-v] [--controlled-evolution]
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
+  --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step. 
 
 
 """
@@ -619,22 +623,26 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
             print("worse", keypairs, end = " ")
         return layout, cost, 0
 
-def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
+def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
     To only mutate a subset of keys, just pass them as
     @param abc: the keys to permutate over.
+    @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen? 
     """
     from math import log10
     cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
     consecutive_fails = 0
     for i in range(iterations): 
-        # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
-        step = int(log10(consecutive_fails + 1) / 2 + 1)
-        lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
-        # commented out: only do the best possible step instead => too damn expensive to expose via CLI. For a single switch about 10 min per run. 
-        # lay, cost, better = controlled_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+        if not controlled: 
+            # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
+            step = int(log10(consecutive_fails + 1) / 2 + 1)
+            lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+        else: 
+            step = int((consecutive_fails) / 10 + 1)
+            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
+            lay, cost, better = controlled_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
         if better:
             consecutive_fails = 0
             # save the good mutation
@@ -666,6 +674,11 @@ if __name__ == "__main__":
         VERBOSE = True
         argv.remove("-v")
     else: VERBOSE = False
+    
+    if "--controlled-evolution" in argv:
+        CONTROLLED_EVOLUTION = True
+        argv.remove("--controlled-evolution")
+    else: CONTROLLED_EVOLUTION = False
     
     if "--help" in argv:
         print(__usage__)
@@ -713,7 +726,7 @@ if __name__ == "__main__":
 #        repeats = repeats_in_file(data)
         datalen2 = sum([i for i, s in repeats])
 
-        lay, cost = evolve(letters, repeats, iterations=int(argv[2]), quiet=QUIET)
+        lay, cost = evolve(letters, repeats, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
 
         print("\nEvolved Layout")
         from pprint import pprint
