@@ -566,20 +566,22 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 75, False)
-    checked switch ('rr',) 75
-    checked switch ('re',) 65
-    checked switch ('ro',) 67
-    checked switch ('ee',) 75
-    checked switch ('eo',) 77
-    checked switch ('oo',) 75
+    # checked switch ('rr',) 75
+    # checked switch ('re',) 65
+    # checked switch ('ro',) 67
+    # checked switch ('ee',) 75
+    # checked switch ('eo',) 77
+    # checked switch ('oo',) 75
+    7.5e-05 ('oo',) finger repetition: 3e-06 position cost: 6e-05
+    [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
     ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
-    checked switch ('rr',) 75
-    checked switch ('re',) 65
-    checked switch ('ro',) 67
-    checked switch ('ee',) 75
-    checked switch ('eo',) 77
-    checked switch ('oo',) 75
+    # checked switch ('rr',) 75
+    # checked switch ('re',) 65
+    # checked switch ('ro',) 67
+    # checked switch ('ee',) 75
+    # checked switch ('eo',) 77
+    # checked switch ('oo',) 75
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
