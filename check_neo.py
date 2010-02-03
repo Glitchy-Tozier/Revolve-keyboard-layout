@@ -642,7 +642,7 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
             step = int(log10(consecutive_fails + 1) / 2 + 1)
             lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
         else: 
-            step = int((consecutive_fails) / 10 + 1)
+            step = int(consecutive_fails / 2 + 1)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
             lay, cost, better = controlled_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
         if better:
