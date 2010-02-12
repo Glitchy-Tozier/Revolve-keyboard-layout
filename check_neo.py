@@ -19,7 +19,7 @@ __usage__ = """Usage:
 - check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution]
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
   --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
-  --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100 to get a mostly random keyboard layout as starting point.
+  --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100000 to get a mostly random keyboard layout as starting point.
 
 
 """
@@ -558,11 +558,11 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         from random import choice
         keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        return lay
+        return lay, keypairs
 
 def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
         """Do one random switch. Keep it, if it is beneficial."""
-        lay = randomize_keyboard(abc, num_switches, layout)
+        lay, keypairs = randomize_keyboard(abc, num_switches, layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
         if new_cost < cost:
             if not quiet: 
@@ -750,8 +750,10 @@ if __name__ == "__main__":
 #        repeats = repeats_in_file(data)
         datalen2 = sum([i for i, s in repeats])
 
-        if PRERANDOMIZE: 
-            lay = randomize_keyboard(abc, num_switches=PRERANDOMIZE, layout=NEO_LAYOUT)
+        if PRERANDOMIZE:
+            if not QUIET:
+                print("doing", PRERANDOMIZE, "prerandomization switches.")
+            lay, keypairs = randomize_keyboard(abc, num_switches=PRERANDOMIZE, layout=NEO_LAYOUT)
         else: lay = NEO_LAYOUT
 
         lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
