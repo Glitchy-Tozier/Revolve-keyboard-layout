@@ -551,11 +551,17 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     
     return lay
 
-def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
-        """Do one random switch. Keep it, if it is beneficial."""
+def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
+        """Do num_switches random keyswitches on the layout and
+        @return: the randomized layout."""
         from random import choice
         keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
         lay = switch_keys(keypairs, layout=deepcopy(layout))
+        return lay
+
+def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
+        """Do one random switch. Keep it, if it is beneficial."""
+        lay = randomize_keyboard(abc, num_switches, layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
         if new_cost < cost:
             if not quiet: 
@@ -689,6 +695,13 @@ if __name__ == "__main__":
         CONTROLLED_EVOLUTION = True
         argv.remove("--controlled-evolution")
     else: CONTROLLED_EVOLUTION = False
+
+    if "--prerandomize" in argv: 
+        PRERANDOMIZE = argv[argv.index("--prerandomize") + 1]
+        argv.remove("--prerandomize")
+        argv.remove(PRERANDOMIZE)
+        PRERANDOMIZE = int(PRERANDOMIZE)
+    else: PRERANDOMIZE = False
     
     if "--help" in argv:
         print(__usage__)
@@ -736,7 +749,11 @@ if __name__ == "__main__":
 #        repeats = repeats_in_file(data)
         datalen2 = sum([i for i, s in repeats])
 
-        lay, cost = evolve(letters, repeats, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
+        if PRERANDOMIZE: 
+            lay = randomize_keyboard(abc, num_switches=PRERANDOMIZE, layout=NEO_LAYOUT)
+        else: lay = NEO_LAYOUT
+
+        lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
 
         print("\nEvolved Layout")
         from pprint import pprint
