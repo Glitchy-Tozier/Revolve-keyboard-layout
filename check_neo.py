@@ -16,9 +16,10 @@ __usage__ = """Usage:
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
 
-- check_neo.py --evolve <iterations> [-q] [-v] [--controlled-evolution]
+- check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution]
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
-  --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step. 
+  --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
+  --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100 to get a mostly random keyboard layout as starting point.
 
 
 """
