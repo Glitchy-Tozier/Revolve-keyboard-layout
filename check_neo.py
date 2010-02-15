@@ -438,8 +438,20 @@ def repeats_in_file_precalculated(data):
     reps = [(int(num), r) for num, r in reps if r[1:]]
     reps = split_uppercase_repeats(reps)
     
-    
     return reps
+
+def trigrams_in_file_precalculated(data):
+    """Get the repeats from a precalculated file.
+
+    >>> data = read_file("3gramme.txt")
+    >>> trigrams_in_file_precalculated(data)[:2]
+    [(5679632, 'en '), (4417443, 'er ')]
+    """
+    trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+    #reps = split_uppercase_repeats(reps) TODO: Treat trigrams with uppercase letters correctly. 
+    
+    return trigs
     
 def letters_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
