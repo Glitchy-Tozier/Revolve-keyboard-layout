@@ -580,7 +580,7 @@ def find_the_best_random_keyboard(letters, repeats, num_tries, num_switches=1000
         cost = total_cost(letters=letters, repeats=repeats, layout=lay)[0]
         if not quiet: 
             print("cost of the first random layout:", cost)
-        for i in range(num_tries): 
+        for i in range(max(0, num_tries-1)): 
             if not quiet: 
                 print("-", i, "/", num_tries)
             lay_tmp, keypairs = randomize_keyboard(abc, num_switches, lay)
