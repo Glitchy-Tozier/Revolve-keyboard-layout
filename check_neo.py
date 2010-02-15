@@ -21,6 +21,8 @@ __usage__ = """Usage:
   --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
   --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100000 to get a mostly random keyboard layout as starting point.
 
+- check_neo.py --best-random-layout <num of random layouts to try> [--prerandomize <num_switches>] [-q]
+  --prerandomize selects the number of random switches to do to get a random keyboard.
 
 """
 __design__ = """
@@ -572,6 +574,24 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
 
+def find_the_best_random_keyboard(letters, repeats, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
+        """Create num_tries random keyboards (starting from the layout and doing num_switches random keyswitches), compare them and only keep the best (by total_cost)."""
+        lay, keypairs = randomize_keyboard(abc, num_switches, layout)
+        cost = total_cost(letters=letters, repeats=repeats, layout=lay)[0]
+        if not quiet: 
+            print("cost of the first random layout:", cost)
+        for i in range(num_tries): 
+            if not quiet: 
+                print("-", i, "/", num_tries)
+            lay_tmp, keypairs = randomize_keyboard(abc, num_switches, lay)
+            cost_tmp = total_cost(letters=letters, repeats=repeats, layout=lay_tmp)[0]
+            if cost_tmp < cost: 
+                lay = lay_tmp
+                cost = cost_tmp
+                if not quiet: 
+                    print("better:", cost)
+        return lay, cost	    
+
 def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
         """Do one random switch. Keep it, if it is beneficial."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
@@ -630,7 +650,7 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
             #for j in range(len(keypairs) ** max(0, (num_switches - 2))): 
                 for pair_x in keypairs: #[keypairs.index(pair1)+1:]: 
                     # add additional possible pairs. 
-                    switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]
+                    switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]  
     switches = list(zip(*switches[:2]))
     
     # results for 1 step: [(cost, frep, pos_cost, layout), ...]
@@ -779,7 +799,28 @@ if __name__ == "__main__":
         cost = key_position_cost_from_file(letters=letters, layout=lay)
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
+    elif argv[2:] and argv[1] == "--best-random-layout":
+        print("Selecting the best from", argv[2],"random layouts.")
+        data1 = read_file("1gramme.txt")
+        letters = letters_in_file_precalculated(data1)
+        datalen1 = sum([i for i, s in letters])
+        
+        data2 = read_file("2gramme.txt")
+        repeats = repeats_in_file_precalculated(data2)
+        datalen2 = sum([i for i, s in repeats])
+        if PRERANDOMIZE: 
+            lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        else: 
+            lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
 
+        print("\nBest Layout")
+        from pprint import pprint
+        pprint(lay)
+        
+        frep = finger_repeats_from_file(repeats=repeats, layout=lay)
+        print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+        cost = key_position_cost_from_file(letters=letters, layout=lay)
+        print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
     else: 
         print("Neo")
