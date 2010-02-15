@@ -813,7 +813,7 @@ if __name__ == "__main__":
         else: 
             lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
 
-        print("\nBest Layout")
+        print("\nBest of the ramdom layouts")
         from pprint import pprint
         pprint(lay)
         
