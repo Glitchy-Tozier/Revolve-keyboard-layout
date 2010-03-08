@@ -770,7 +770,7 @@ if __name__ == "__main__":
             print(cost / len(data), "mean key position cost in file", path)
 
     elif argv[2:] and argv[1] == "--evolve":
-        print("Mutating Neo")
+        print("# Mutating Neo")
 #        data = read_file("/tmp/sskreszta")
         data1 = read_file("1gramme.txt")
         letters = letters_in_file_precalculated(data1)
@@ -790,14 +790,14 @@ if __name__ == "__main__":
 
         lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
 
-        print("\nEvolved Layout")
+        print("\n# Evolved Layout")
         from pprint import pprint
         pprint(lay)
         
         frep = finger_repeats_from_file(repeats=repeats, layout=lay)
-        print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+        print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
         cost = key_position_cost_from_file(letters=letters, layout=lay)
-        print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+        print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
 
     elif argv[2:] and argv[1] == "--best-random-layout":
         print("Selecting the best from", argv[2],"random layouts.")
