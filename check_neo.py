@@ -205,7 +205,7 @@ License: GPLv3 or later
 ### Constants
 
 # Gewichtung der unterschiedlichen Kosten
-WEIGHT_FINGER_REPEATS = 20
+WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower than a switch from center to upper left.
 WEIGHT_POSITION = 1 # referenz
 
 #: Die zu mutierenden Buchstaben.
