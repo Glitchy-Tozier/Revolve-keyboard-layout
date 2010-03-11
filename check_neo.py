@@ -41,7 +41,8 @@ Design:
 
 Später:
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
-- Groß- und Kleinschrebung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. 
+- Groß- und Kleinschreibung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. - DONE
+- TODO: Kosten und Finger für Shift. 
 
 
 Vorgehensweise zur Optimierung:
@@ -91,11 +92,44 @@ Notizen:
   4 5 5 5 5 7         7 5 5 5 5
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
+### Kosten für die Tasten (linke Hand)
+
+Grundpositionen: 
+- Der Zeigefinger ist der schnellste. Damit der Mittelfinger teurer aber nicht gleich doppelt so teuer ist, nehmen wir 2.
+- Mittelfinger teurer: 3
+- Ringfinger ist in Grundposition etwa gleich schnell (in anderen langsamer): 3
+- Kleiner Finger sollte nicht zu sehr belastet werden: 5
+
+Streck:
+- Zeige rechts ist etwa so schnell wie der Kleine Finger: 5
+- Zeige oben rechts ist etwas langsamer als Ring oben (s.u.): 10
+- Zeige oben ist noch etwas schneller als Zeige rechts: 4
+- Mittel oben ist signifikant langsamer: 6
+- Ring oben ist kreutzlangsam: 9
+- Aber Kleiner oben noch schlimmer (er ist kürzer und sollte nicht zu stark belastet werden): 12 (ist es OK, dass der Kleine oben 6 mal so viel kostet wie der Zeigefinger? Meiner Erfaahrung nach ja.)
+
+Unten: 
+- Zeige unten geht ganz gut, ist aber etwas langsamer als Mittel oben: 7
+- Zeige unten streck ist ekelhaft (v.a. wegen der Rückbewegezeit - vll. forcierung des Handwechsels hier); wie kleiner oben: 12
+- Mittel unten ist auch nervig, aber nicht ganz so schlimm; trotzdem schlimmer als Ring oben: 11
+- Ring unten ist etwas besser als Mittel unten (kürzer): 11
+- Kleiner unten ist besser als Ring und Mitte, aber schlechter als alles andere: 10
+
+Unterschied rechte Hand:
+- Zeige unten Streck ist billiger: 10
+- Kleiner hat Zusatztasten:
+  * oben streck 1: 15
+  * oben streck 2: 18
+  * rechts, schlimmer als Ring streck und Ring unten (auch wegen Belastung): 12
+  * ganz rechts ist grausig, wie oben streck 1: 15
+
+
 Mehrere Leute nutzen einen „Tastaturwettbewerb”: Mit zufälligen anfangen, die besten behalten und aus ihnen neue mutieren. -> http://klausler.com/evolved.html
 
 Quellen für Wortlisten:
 - Natural language toolkit: http://code.google.com/p/nltk/
-- 
+-   * http://lists.neo-layout.org/pipermail/diskussion/2009-November/015057.html (mit Link auf den Korpus)
+    * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme) 
 
 """
 
@@ -171,7 +205,7 @@ License: GPLv3 or later
 ### Constants
 
 # Gewichtung der unterschiedlichen Kosten
-WEIGHT_FINGER_REPEATS = 5
+WEIGHT_FINGER_REPEATS = 20
 WEIGHT_POSITION = 1 # referenz
 
 #: Die zu mutierenden Buchstaben.
@@ -220,12 +254,20 @@ COST_PER_KEY_OLD  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
-COST_PER_KEY  = [ # 0 heißt nicht beachtet
+COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
         [0,6,3,3,3,4,4,3,3,3,6,7,8,0], # Reihe 1
         [0,3,2,2,1,3,3,1,2,2,3,6,0,9], # Reihe 2
         [0,5,5,5,5,5,7,7,5,5,5,5,0],     # Reihe 3
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
+]
+
+COST_PER_KEY  = [ # 0 heißt nicht beachtet
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
+        [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
+        [0,  5,3,3,2,5,5,2,3,3,5,12,0,18], # Reihe 2 
+        [0,0,10,11,11,7,12,8,7,11,11,10,15],     # Reihe 3
+        [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
 
