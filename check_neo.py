@@ -747,8 +747,8 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
     consecutive_fails = 0
     for i in range(iterations): 
         if not controlled: 
-            # increase the size of the changes when the system seems to become stable (100 consecutive fails) to avoid deterministic purely local minima.
-            step = int(log10(consecutive_fails + 1) / 2 + 1)
+            # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
+            step = int(log10(consecutive_fails + 1) / 3 + 1)
             lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
         else: 
             step = int(consecutive_fails / 2 + 1)
