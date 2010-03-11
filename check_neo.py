@@ -210,7 +210,7 @@ WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower 
 WEIGHT_POSITION = 1 # referenz
 
 #: Die zu mutierenden Buchstaben.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß"
+abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
 #: Die zu mutierenden Buchstaben. Vokale und xvc bleiben. 
 #abc = "bdfghjklmnpqrstwyzäöüß"
 #: Die zu mutierenden Buchstaben. Grundreihe + üöä bleiben. 
