@@ -43,7 +43,7 @@ Später:
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
 - Groß- und Kleinschreibung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. - DONE
 - TODO: Kosten und Finger für Shift.
-- Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (von a biz z: zufällig Position aus 1 oder 2, falls schon belegt, die Pos aus dem anderen, falls auch schon belegt, dann tauschen). 
+- Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (for i in [a:z]: if rand_bool(): 1.switch(1, 2.key_at(1.pos(i))])
 
 
 Vorgehensweise zur Optimierung:
