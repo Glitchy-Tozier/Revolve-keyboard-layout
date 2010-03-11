@@ -246,6 +246,7 @@ QWERTZ_LAYOUT = [
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
+# Ulfs All fingers equal but the small one
 COST_PER_KEY_OLD  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
         [0,6,3,3,3,4,4,3,3,3,6,7,8,0], # Reihe 1
@@ -254,6 +255,7 @@ COST_PER_KEY_OLD  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
+# First reweighting
 COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
         [0,6,3,3,3,4,4,3,3,3,6,7,8,0], # Reihe 1
@@ -262,6 +264,7 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
+# Structured reweighting (but still mostly from experience and deducing from the work of others). 
 COST_PER_KEY  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
         [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
