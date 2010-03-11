@@ -49,22 +49,33 @@ Vorgehensweise zur Optimierung:
 - Reale Tastaturen können sich dem Ideal immer nur annähern. Daher arbeiten wir mit „Kosten im Vergleich zur Idealtastatur“. Die Minimierung der Kosten gibt einen Hinweis darauf, wie eine der Idealtastatur möglichst nahe kommende Tastatur aussehen kann.
 - Ein Programm kann nur die einfachsten Faktoren berücksichtigen, da es Quantisierung benötigt. Deshalb muss eine Optimierung von Menschen geprüft werden, und Ästethik und Intuition (also menschliches Feingefühle mit viel komplexerer Grundlage: Quantitative + Qualitative Faktoren) gelten mehr als reine Zahlenspielerei. Die Maschine kann aber Vorarbeit leisten und stupides Prüfen übernehmen. 
 - Die deutsche Standardtastatur gilt als „Infrastauktur“. Das Layout muss auf ihr funktionieren. 
-- Als Daten-Grundlage dient die Liste der N-Gramme. Für die aktuellen brauchen wir nur mono- und bigramme.
+- Als Daten-Grundlage dient die Liste der N-Gramme. Für die aktuellen brauchen wir nur Mono- und Bigramme, aber auch Trigramme sind vorbereitet.
+  (aus dem Korpus der Uni Leipzig generiert:
+  * http://lists.neo-layout.org/pipermail/diskussion/2009-November/015057.html (mit Link auf den Korpus)
+  * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme)
+  )
 
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - TODO
+- Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - TODO
+- Der Zeige- und Mittelfinger sind schneller oben und unten als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
+  (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
 
 Kostenfaktor: Belastung
-- Ungleichmäßige Belastung beider Hände. - TODO
-- Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). - TODO
+- Ungleichmäßige Belastung beider Hände. => indirekt durch Strafpunkte bei fehlendem Handwechsel- TODO
+- Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => ?? Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - TODO
 
 Kostenfaktor: Natürliche Handbewegung
-- Von innen nach außen mit Handwechsel. => von außen nach innen gibt Strafpunkte. - TODO
+- Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. - TODO
 - Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO
+- Zwei Finger nebeneinander auf der gleichen Hand, von außen nach innen, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen und von außen nach innen gehen (zweites schon durch „von außen nach innen” abgadeckt) => wenn die „einzelne Hand” in der Mitte liegt, gibt es Strafpunkte. - TODO
+  (von http://www.michaelcapewell.com/projects/keyboard/layout_capewell.htm und http://mkweb.bcgsc.ca/carpalx/?typing_effort)
+- Einen Finger oben, dann einen Finger der gleichen Hand unten (außer den Zeigefinger) => Strafpunkte, wegen Handverrenkung :) - TODO
+- Den gleichen Finger erst oben, dann unten => sehr sehr viele Strafpunkte. - TODO
 
-Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo)
+Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo) ?? Sinn zweifelhaft ??
 - Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO
 
 
@@ -79,6 +90,12 @@ Notizen:
     2 1 1 1 3         3 1 1 1 2 6 9
   4 5 5 5 5 7         7 5 5 5 5
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
+
+Mehrere Leute nutzen einen „Tastaturwettbewerb”: Mit zufälligen anfangen, die besten behalten und aus ihnen neue mutieren. -> http://klausler.com/evolved.html
+
+Quellen für Wortlisten:
+- Natural language toolkit: http://code.google.com/p/nltk/
+- 
 
 """
 
