@@ -765,7 +765,20 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
             print("-", i, "/", iterations)
     
     return layout, cost
-            
+
+
+def combine_genetically(layout1, layout2):
+    """Combine two layouts genetically (randomly)."""
+    from random import randint
+    switchlist = []
+    for letter in abc:
+        if randint(0, 1) == 1:
+            pos = find_key(letter, layout=layout1)
+            replacement = get_key(pos, layout=layout2)
+            switchlist.append(letter+replacement)
+    res = deepcopy(switch_keys(switchlist, layout=layout1))
+    return res
+
 
 ### UI ###
 
@@ -801,7 +814,7 @@ def check_with_datafile(args, quiet, verbose):
         print(cost / len(data), "mean key position cost in file", path)
     
 
-def evolve_a_layout(args, prerandomize, quiet):
+def evolve_a_layout(args, prerandomize, controlled, quiet):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
     #data = read_file("/tmp/sskreszta")
@@ -814,14 +827,14 @@ def evolve_a_layout(args, prerandomize, quiet):
     repeats = repeats_in_file_precalculated(data2)
     #repeats = repeats_in_file(data)
     datalen2 = sum([i for i, s in repeats])
-    
+   
     if prerandomize:
         if not quiet:
-            print("doing", PRERANDOMIZE, "prerandomization switches.")
-        lay, keypairs = randomize_keyboard(abc, num_switches=PRERANDOMIZE, layout=NEO_LAYOUT)
+            print("doing", prerandomize, "prerandomization switches.")
+        lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
     
-    lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
+    lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
     from pprint import pprint
@@ -831,6 +844,70 @@ def evolve_a_layout(args, prerandomize, quiet):
     print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
     cost = key_position_cost_from_file(letters=letters, layout=lay)
     print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
+
+
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=50, abc=abc, prerandomize=1000, quiet=False, controlled=False):
+     """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
+     # Data for evaluating layouts.
+     data1 = read_file("1gramme.txt")
+     letters = letters_in_file_precalculated(data1)
+     datalen1 = sum([i for i, s in letters])
+     data2 = read_file("2gramme.txt")
+     repeats = repeats_in_file_precalculated(data2)    
+     datalen2 = sum([i for i, s in repeats])
+
+
+     from pprint import pprint
+
+     layouts = [] # [(cost, lay), …]
+     if not quiet:
+         print("# create the", challengers, "starting layouts")
+     for i in range(challengers):
+         print("#", i, "of", challengers)
+         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
+         lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
+         layouts.append((cost, lay))
+     # run the challenge
+     for round in range(rounds): 
+         # sort and throw out the worst
+         layouts.sort()
+         if not quiet:
+             print("# round", round)
+             print("# top five")
+             for lay in layouts[:5]:
+                 pprint(lay)
+         layouts = deepcopy(layouts[:int(challengers / 2.0)])
+         # combine the best and worst to get new ones.
+         print("breeding new layouts")
+         for i in range(int(challengers/4)):
+            print(i, "of", int(challengers/2), "from weak and strong")
+            new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
+            # evolve, then append
+            new, cost = deepcopy(evolve(letters, repeats, layout=new, iterations=iterations, quiet=True))
+            layouts.append((cost, new))
+            # also combine the best one with the upper half
+         for i in range(max(0, int(challengers/4) - 1)):
+            print(i+int(challengers/4), "of", int(challengers/2), "from the strongest with the top half")
+            new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
+            new, cost = evolve(letters, repeats, layout=new, iterations=iterations, quiet=True)
+            layouts.append((cost, new))
+         # and add a new random one
+         print("and one random layout")
+         lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
+         lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
+         layouts.append((cost, lay))
+
+     print("# Winner")
+     layouts.sort()
+     cost, lay = layouts[0]
+     from pprint import pprint
+     pprint(lay)
+     
+     frep = finger_repeats_from_file(repeats=repeats, layout=lay)
+     print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+     cost = key_position_cost_from_file(letters=letters, layout=lay)
+     print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
+
 
 def best_random_layout(args, prerandomize):
     """Select the best gf a number of randomly created layouts."""
@@ -881,6 +958,7 @@ def check_the_neo_layout(quiet):
         
 
 
+
 ### Self-Test 
 
 if __name__ == "__main__": 
@@ -921,11 +999,14 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET)
+        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
 
+    elif argv[2:] and argv[1] == "--challenge":
+        evolution_challenge(rounds=int(argv[2])) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
+            
     else:
         check_the_neo_layout(quiet=QUIET)
         
