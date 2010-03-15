@@ -846,7 +846,7 @@ def evolve_a_layout(args, prerandomize, controlled, quiet):
     print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
 
 
-def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=50, abc=abc, prerandomize=1000, quiet=False, controlled=False):
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
      data1 = read_file("1gramme.txt")
