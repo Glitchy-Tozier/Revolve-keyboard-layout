@@ -572,7 +572,8 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         key1 = pair[0]
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
-        if finger1 == key_to_finger(key2, layout=layout):
+        finger2 = key_to_finger(key2, layout=layout)
+        if finger1 and finger2 and finger1 == finger2:
             finger_repeats.append((number, finger1, key1+key2))
     if not count_same_key:
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
