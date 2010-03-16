@@ -60,7 +60,7 @@ Vorgehensweise zur Optimierung:
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
-- Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - TODO
+- Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
 - Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - TODO
 - Der Zeige- und Mittelfinger sind schneller oben und unten als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
   (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
@@ -210,7 +210,8 @@ License: GPLv3 or later
 
 # Gewichtung der unterschiedlichen Kosten
 WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower than a switch from center to upper left.
-WEIGHT_POSITION = 1 # referenz
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 # 2 times a normal repeat, since it's really slow. better two outside low or up than an up-down repeat. 
+WEIGHT_POSITION = 1 # reference
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -539,7 +540,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> key_position_cost_from_file(data)
-    60
+    120
     """
     if data is not None: 
         letters = letters_in_file(data)
@@ -579,12 +580,23 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
     return finger_repeats
 
+def finger_repeats_top_and_bottom(finger_repeats):
+    """Check which of the finger repeats go from the top to the bottom row or vice versa."""
+    top_down_repeats = []
+    for number, finger, letters in finger_repeats:
+        pos0 = find_key(letters[0])
+        pos1 = find_key(letters[1])
+        # count it as top down, if the finger has to move over more than one col.
+        if pos0 and pos1 and abs(pos0[0] - pos1[0]) > 1: 
+            top_down_repeats.append((number, finger, letters))
+    return top_down_repeats
+
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
     """Compute a total cost from all costs we have available, wheighted.
 
     >>> data = read_file("testfile")
     >>> total_cost(data)
-    (75, 3, 60)
+    (144, 3, 120, 0)
     """
     # the raw costs
     if data is not None: 
@@ -595,11 +607,17 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
     else:
         finger_repeats = finger_repeats_from_file(repeats=repeats, layout=layout)
         position_cost = key_position_cost_from_file(letters=letters, layout=layout)
-
+    
     frep_num = sum([num for num, fing, rep in finger_repeats])
+    finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
+    frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
-    total = WEIGHT_FINGER_REPEATS * frep_num + WEIGHT_POSITION * position_cost
-    return total, frep_num, position_cost
+    # add all together and weight them
+    total = WEIGHT_POSITION * position_cost
+    total += WEIGHT_FINGER_REPEATS * frep_num
+    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
+
+    return total, frep_num, position_cost, frep_num_top_bottom
     
 
 ### Evolution
@@ -679,23 +697,23 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 75, False)
-    # checked switch ('rr',) 75
-    # checked switch ('re',) 65
-    # checked switch ('ro',) 67
-    # checked switch ('ee',) 75
-    # checked switch ('eo',) 77
-    # checked switch ('oo',) 75
-    7.5e-05 finger repetition: 1e-06 position cost: 6e-05
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 144, quiet=False)
+    # checked switch ('rr',) 144
+    # checked switch ('re',) 128
+    # checked switch ('ro',) 130
+    # checked switch ('ee',) 144
+    # checked switch ('eo',) 147
+    # checked switch ('oo',) 144
+    0.000144 finger repetition: 1e-06 position cost: 0.00012
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 65, 10)
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 128, 16)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
-    # checked switch ('rr',) 75
-    # checked switch ('re',) 65
-    # checked switch ('ro',) 67
-    # checked switch ('ee',) 75
-    # checked switch ('eo',) 77
-    # checked switch ('oo',) 75
+    # checked switch ('rr',) 144
+    # checked switch ('re',) 128
+    # checked switch ('ro',) 130
+    # checked switch ('ee',) 144
+    # checked switch ('eo',) 147
+    # checked switch ('oo',) 144
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
@@ -948,19 +966,15 @@ def check_the_neo_layout(quiet):
     repeats = repeats_in_file_precalculated(data2)
     datalen2 = sum([i for i, s in repeats])
     
-    frep = finger_repeats_from_file(repeats=repeats)#, layout=QWERTZ_LAYOUT)
-    print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-    cost = key_position_cost_from_file(letters=letters)#, layout=QWERTZ_LAYOUT)
+    total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats)[:4]#, layout=QWERTZ_LAYOUT)
+    print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
     print(cost / datalen1, "mean key position cost in file 1gramme.txt")
     
     if not quiet:         
         print("Qwertz for comparision")
-        frep = finger_repeats_from_file(repeats=repeats, layout=QWERTZ_LAYOUT)
-        print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-        cost = key_position_cost_from_file(letters=letters, layout=QWERTZ_LAYOUT)
+        total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT)[:4]
+        print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
-        
-
 
 
 ### Self-Test 
