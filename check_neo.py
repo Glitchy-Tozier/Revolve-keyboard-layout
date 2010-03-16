@@ -383,22 +383,26 @@ def read_file(path):
 def split_uppercase_repeats(reps):
     """Split uppercase repeats into two to three lowercase repeats.
 
-    TODO: treat left and right shift differently. Currently we always use left shift and never right shift (⇗).
+    TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts.
 
-    >>> reps = [(4, "ab"), (3, "Ab"), (2, "aB"), (1, "AB")]
+    >>> reps = [(12, "ab"), (6, "Ab"), (4, "aB"), (1, "AB")]
     >>> split_uppercase_repeats(reps)
-    [(4, 'ab'), (3, '⇧a'), (3, 'ab'), (2, '⇧b'), (2, 'a⇧'), (1, '⇧b'), (1, '⇧a'), (1, 'a⇧')]
+    [(12, 'ab'), (6, 'ab'), (3, '⇧a'), (3, '⇗a'), (2, '⇧b'), (2, '⇗b'), (2, 'a⇧'), (2, 'a⇗'), (1, '⇧b'), (1, '⇧a'), (1, '⇗b'), (1, '⇗a'), (1, 'a⇧'), (1, 'a⇗')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
     for num, rep in upper: # Ab = ⇧a,ab aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
+        # use both shifts, but half weight each
         if not rep[0] == rep[0].lower():
-            up.append((num, "⇧"+rep[0].lower()))
+            up.append((max(1, int(num/2)), "⇧"+rep[0].lower()))
+            up.append((max(1, int(num/2)), "⇗"+rep[0].lower()))
         if not rep[1] == rep[1].lower():
-            up.append((num, "⇧"+rep[1].lower()))
-            up.append((num, rep[0].lower() + "⇧"))
+            up.append((max(1, int(num/2)), "⇧"+rep[1].lower()))
+            up.append((max(1, int(num/2)), rep[0].lower() + "⇧"))
+            up.append((max(1, int(num/2)), "⇗"+rep[1].lower()))
+            up.append((max(1, int(num/2)), rep[0].lower() + "⇗"))
         else:
             up.append((num, rep[0].lower()+rep[1].lower()))
                 
@@ -413,7 +417,7 @@ def repeats_in_file(data):
 
     >>> data = read_file("testfile")
     >>> repeats_in_file(data)[:3]
-    [(2, '⇧a'), (2, 'aa'), (2, 'a\\n')]
+    [(2, 'aa'), (2, 'a\\n'), (1, '⇧a')]
     """
     repeats = {}
     for i in range(len(data)-1):
