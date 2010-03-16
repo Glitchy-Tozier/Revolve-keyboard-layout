@@ -81,7 +81,7 @@ Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimi
 - Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO
 
 Sonstiges:
-- XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%) - TODO. 
+- XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%). Vielleicht auch Z dazu (undo). - TODO. 
 
 
 Notizen:
