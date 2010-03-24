@@ -530,8 +530,8 @@ def split_uppercase_trigrams(trigs):
     """
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, trig) for num, trig in trigs if not trig == trig.lower()]
-    # and remove them temporarily from the list of trigrams
-    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()]
+    # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
+    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()] 
     up = []
     # since this gets a bit more complex and the chance to err is high,
     # we do this dumbly, just checking for the exact cases.
