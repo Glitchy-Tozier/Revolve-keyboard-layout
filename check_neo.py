@@ -524,13 +524,14 @@ def split_uppercase_trigrams(trigs):
     TODO: treat left and right shift differently. Currently we always use left shift and never right shift (⇗).
 
     >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> #split_uppercase_trigrams(trigs)
+    >>> split_uppercase_trigrams(trigs)
+    [(8, 'abc'), (7, 'abc'), (3, '⇧bc'), (3, '⇧ab'), (3, '⇗bc'), (3, '⇗ab'), (3, 'a⇧b'), (3, 'a⇗b'), (2, '⇧bc'), (2, '⇗bc'), (2, 'b⇧c'), (2, 'b⇗c'), (2, 'a⇧b'), (2, 'a⇗b'), (2, 'ab⇧'), (2, 'ab⇗'), (1, '⇧b⇧'), (1, '⇧b⇧'), (1, '⇧b⇗'), (1, '⇧b⇗'), (1, '⇧a⇧'), (1, '⇧a⇧'), (1, '⇧a⇗'), (1, '⇧a⇗'), (1, '⇧ab'), (1, '⇗b⇧'), (1, '⇗b⇧'), (1, '⇗b⇗'), (1, '⇗b⇗'), (1, '⇗a⇧'), (1, '⇗a⇧'), (1, '⇗a⇗'), (1, '⇗a⇗'), (1, '⇗ab'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'a⇧b'), (1, 'a⇧b'), (1, 'a⇗b'), (1, 'a⇗b'), (1, 'ab⇧'), (1, 'ab⇗')]
     >>> #[(8, 'abc'), (7, '⇧ab'), (7, 'abc'), (6, '⇧bc'), (6, 'a⇧b'), (5, 'b⇧c'), (5, 'ab⇧'), (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc'), (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c'), (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c'), (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, trig) for num, trig in trigs if not trig == trig.lower()]
     # and remove them temporarily from the list of trigrams
-    trigs = [rep for rep in reps if not rep in upper]
+    trigs = [trig for trig in trigs if not trig in upper]
     up = []
     # since this gets a bit more complex and the chance to err is high,
     # we do this dumbly, just checking for the exact cases. 
@@ -539,14 +540,76 @@ def split_uppercase_trigrams(trigs):
         if not trig[0] == trig[0].lower() and trig[1] == trig[1].lower() and trig[2] == trig[2].lower():
             up.append((max(1, int(num/2)), "⇧"+trig[:2].lower()))
             up.append((max(1, int(num/2)), "⇗"+trig[:2].lower()))
-            up.append(num, trig.lower())
+            up.append((num, trig.lower()))
         # aBc
         elif trig[0] == trig[0].lower() and not trig[1] == trig[1].lower() and trig[2] == trig[2].lower():
-            pass
-        # TODO: Complete the cases. 
-        else:
-            up.append((num, rep[0].lower()+rep[1].lower()))
-                
+            up.append((max(1, int(num/2)), "⇧"+trig[1:].lower()))
+            up.append((max(1, int(num/2)), "⇗"+trig[1:].lower()))
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇗"+trig[1].lower()))
+            
+        # abC
+        elif trig[0] == trig[0].lower() and trig[1] == trig[1].lower() and not trig[2] == trig[2].lower():
+            up.append((max(1, int(num/2)), trig[:2].lower() + "⇧"))
+            up.append((max(1, int(num/2)), trig[:2].lower() + "⇗"))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇧"+trig[2].lower()))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇗"+trig[2].lower()))
+            
+        # ABc (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc')
+        elif not trig[0] == trig[0].lower() and not trig[1] == trig[1].lower() and trig[2] == trig[2].lower():
+            up.append((max(1, int(num/4)), "⇧"+trig[0].lower()+"⇧"))
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, int(num/2)),  "⇧" + trig[1:].lower()))
+            
+            up.append((max(1, int(num/4)), "⇗"+trig[0].lower()+"⇧"))
+            up.append((max(1, int(num/4)), "⇧"+trig[0].lower()+"⇗"))
+            up.append((max(1, int(num/4)), "⇗"+trig[0].lower()+"⇗"))
+
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇗"+trig[1].lower()))
+            up.append((max(1, int(num/2)),  "⇗" + trig[1:].lower()))
+            
+        # aBC (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c')
+        elif trig[0] == trig[0].lower() and not trig[1] == trig[1].lower() and not trig[2] == trig[2].lower():
+            up.append((max(1, int(num/4)), "⇧"+trig[1].lower()+"⇧"))
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, int(num/4)), "⇗"+trig[1].lower()+"⇧"))
+            up.append((max(1, int(num/4)), "⇧"+trig[1].lower()+"⇗"))
+            up.append((max(1, int(num/4)), "⇗"+trig[1].lower()+"⇗"))
+
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇗"+trig[1].lower()))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇗"+trig[2].lower()))
+            
+        # AbC (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c')
+        elif not trig[0] == trig[0].lower() and trig[1] == trig[1].lower() and not trig[2] == trig[2].lower():
+            up.append((max(1, int(num/2)),  "⇧" + trig[:2].lower()))
+            up.append((max(1, int(num/2)),  trig[:2].lower() + "⇧"))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, int(num/2)),  "⇗" + trig[:2].lower()))
+            up.append((max(1, int(num/2)),  trig[:2].lower() + "⇗"))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇗"+trig[2].lower()))
+
+        # ABC (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')
+        elif not trig[0] == trig[0].lower() and not trig[1] == trig[1].lower() and not trig[2] == trig[2].lower():
+            up.append((max(1, int(num/4)), "⇧"+trig[0].lower()+"⇧"))
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, int(num/4)), "⇧"+trig[1].lower()+"⇧"))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, int(num/4)), "⇗"+trig[0].lower()+"⇧"))
+            up.append((max(1, int(num/4)), "⇧"+trig[0].lower()+"⇗"))
+            up.append((max(1, int(num/4)), "⇗"+trig[0].lower()+"⇗"))
+
+            up.append((max(1, int(num/4)), "⇗"+trig[1].lower()+"⇧"))
+            up.append((max(1, int(num/4)), "⇧"+trig[1].lower()+"⇗"))
+            up.append((max(1, int(num/4)), "⇗"+trig[1].lower()+"⇗"))
+
+            up.append((max(1, int(num/2)), trig[0].lower()+"⇗"+trig[1].lower()))
+            up.append((max(1, int(num/2)), trig[1].lower()+"⇗"+trig[2].lower()))
+
+    
     trigs.extend(up)
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
     trigs.sort()
