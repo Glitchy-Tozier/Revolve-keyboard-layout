@@ -531,10 +531,12 @@ def split_uppercase_trigrams(trigs):
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, trig) for num, trig in trigs if not trig == trig.lower()]
     # and remove them temporarily from the list of trigrams
-    trigs = [trig for trig in trigs if not trig in upper]
+    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()]
     up = []
     # since this gets a bit more complex and the chance to err is high,
-    # we do this dumbly, just checking for the exact cases. 
+    # we do this dumbly, just checking for the exact cases.
+    # TODO: Do it more elegantly: Replace every uppercase letter by "⇧"+lowercase
+    #       and then turn the x-gram into multiple 3grams (four[:-1], four[1:]; five… ).
     for num, trig in upper: 
         # Abc
         if not trig[0] == trig[0].lower() and trig[1] == trig[1].lower() and trig[2] == trig[2].lower():
@@ -620,13 +622,15 @@ def split_uppercase_trigrams(trigs):
 def trigrams_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
+    CAREFUL: SLOW!
+
     >>> data = read_file("3gramme.txt")
     >>> trigrams_in_file_precalculated(data)[:2]
     [(5679632, 'en '), (4417443, 'er ')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
-    #trigs = split_uppercase_trigrams(trigs) TODO: Treat trigrams with uppercase letters correctly. 
+    trigs = split_uppercase_trigrams(trigs)
     
     return trigs
 
