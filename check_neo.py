@@ -56,6 +56,7 @@ Vorgehensweise zur Optimierung:
   * http://lists.neo-layout.org/pipermail/diskussion/2009-November/015057.html (mit Link auf den Korpus)
   * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme)
   )
+- Paradigmen: http://wiki.neo-layout.org/wiki/Paradigmen
 
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done ; 
