@@ -58,7 +58,9 @@ Vorgehensweise zur Optimierung:
   )
 
 Kostenfaktor: Zeit
-- Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done
+- Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done ; 
+  TODO: Gesamtbelastung der Finger auskoppeln und rein auf Erreichberkeit der Tasten gehen. 
+  Die Zusatzkosten fur den kleinen Finger sollten nur durch die Gesamtbelistung kommen. 
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
 - Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - TODO
