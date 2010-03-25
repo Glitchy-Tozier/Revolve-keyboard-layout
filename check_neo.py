@@ -824,7 +824,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     >>> data = read_file("testfile")
     >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
-    (195, 3, 150, 0)
+    (195, 3, 150, 0, 3.3380918415851206)
     """
     # the raw costs
     if data is not None: 
@@ -851,7 +851,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += int(WEIGHT_FINGER_REPEATS_TOP_BOTTOM * 0.5 * frep_num_top_bottom)
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
 
-    return total, frep_num, position_cost, frep_num_top_bottom
+    return total, frep_num, position_cost, frep_num_top_bottom, disbalance
     
 
 ### Evolution
@@ -1054,10 +1054,10 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         from pprint import pprint
         pprint(layout)
 
-    total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=layout)[:4]
+    total, frep_num, cost, frep_top_bottom, disbalance = total_cost(letters=letters, repeats=repeats, layout=layout)[:5]
 
-    print("#", finger_balance(letters, layout=layout) / 1000000, "million keystrokes disbalance of the fingers")
     print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
+    print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
     print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
     print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa") 
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
