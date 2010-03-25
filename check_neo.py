@@ -780,8 +780,8 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
-    total += WEIGHT_FINGER_REPEATS * frep_num
-    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
+    total += WEIGHT_FINGER_REPEATS * 0.5 * frep_num # 0.5, since each key is part of 2 repeats
+    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * 0.5 * frep_num_top_bottom
 
     return total, frep_num, position_cost, frep_num_top_bottom
     
