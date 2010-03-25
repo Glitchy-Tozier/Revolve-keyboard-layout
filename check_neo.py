@@ -24,6 +24,14 @@ __usage__ = """Usage:
 - check_neo.py --best-random-layout <num of random layouts to try> [--prerandomize <num_switches>] [-q]
   --prerandomize selects the number of random switches to do to get a random keyboard.
 
+- check_neo.py --check " [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\\`', ()],
+[(), 'ß', '.', 'o', 'l', 'w', 'z', 'h', 'a', 'f', 'ö', 'x', '\\´', ()],
+ ['⇩', 'r', 'i', 't', 'n', 'c', 'g', 'd', 'e', 's', 'u', 'y', '⇘', '\\n'],
+ ['⇧', (), ',', 'p', 'j', 'm', 'q', 'k', 'b', 'ä', 'v', 'ü', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+" [-q]
+  check the layout passed on the commandline (mind the shell escapes!)
+
 """
 __design__ = """
 Design: 
@@ -925,14 +933,14 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
-def print_layout_with_statistics(layout, letters, repeats, number_of_letters, number_of_bigrams, print_layout=True):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True):
     """Print a layout along with statistics."""
-    if letters is None: 
+    if letters is None or number_of_letters is None: 
         data1 = read_file("1gramme.txt")
         letters = letters_in_file_precalculated(data1)
         number_of_letters = sum([i for i, s in letters])
         
-    if repeats is None: 
+    if repeats is None or number_of_bigrams is None:  
         data2 = read_file("2gramme.txt")
         repeats = repeats_in_file_precalculated(data2)
         number_of_bigrams = sum([i for i, s in repeats])
@@ -1108,6 +1116,12 @@ def check_the_neo_layout(quiet):
         print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
 
 
+def check_a_layout_from_shell(layout_data, quiet):
+    """Check a layout we get passed as shell argument."""
+    layout = eval(layout_data)
+    print_layout_with_statistics(layout, print_layout=not quiet)
+
+
 ### Self-Test 
 
 if __name__ == "__main__": 
@@ -1155,6 +1169,9 @@ if __name__ == "__main__":
 
     elif argv[2:] and argv[1] == "--challenge":
         evolution_challenge(rounds=int(argv[2])) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
+
+    elif argv[2:] and argv[1] == "--check":
+        check_a_layout_from_shell(argv[2], quiet=QUIET)
             
     else:
         check_the_neo_layout(quiet=QUIET)
