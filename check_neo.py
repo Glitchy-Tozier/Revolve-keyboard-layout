@@ -1099,7 +1099,7 @@ def check_the_neo_layout(quiet):
         print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
-        print("And the NordTast Layout")
+        print("And the Nordtast Layout")
         total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=NORDTAST_LAYOUT)[:4]
         print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
