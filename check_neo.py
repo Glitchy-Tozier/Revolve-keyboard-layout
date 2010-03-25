@@ -766,6 +766,21 @@ def finger_repeats_top_and_bottom(finger_repeats):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
+def load_per_finger(letters, layout=NEO_LAYOUT):
+    """Calculate the number of times each finger is being used.
+
+    >>> letters = "uiaeosnrtd"
+    >>> load_per_finger(letters)
+    {'Zeige_R': 2, 'Ring_L': 1, 'Klein_L': 1, 'Mittel_R': 1, 'Mittel_L': 1, 'Zeige_L': 2, 'Klein_R': 1, 'Ring_R': 1}
+    """
+    fingers = {}
+    for key in letters:
+        finger = key_to_finger(key, layout=layout)
+        if finger in fingers:
+            fingers[finger] += 1
+        else: fingers[finger] = 1
+    return fingers
+
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Compute a total cost from all costs we have available, wheighted.
 
