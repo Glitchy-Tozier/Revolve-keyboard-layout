@@ -925,8 +925,32 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
+def print_layout_with_statistics(layout, letters, repeats, number_of_letters, number_of_bigrams, print_layout=True):
+    """Print a layout along with statistics."""
+    if letters is None: 
+        data1 = read_file("1gramme.txt")
+        letters = letters_in_file_precalculated(data1)
+        number_of_letters = sum([i for i, s in letters])
+        
+    if repeats is None: 
+        data2 = read_file("2gramme.txt")
+        repeats = repeats_in_file_precalculated(data2)
+        number_of_bigrams = sum([i for i, s in repeats])
+        
+    if print_layout: 
+        from pprint import pprint
+        pprint(layout)
+
+    total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=layout)[:4]
+    
+    print("#", frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
+    print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
+
+
 def check_with_datafile(args, quiet, verbose):
     """Check the neo layout (optionally with a number of changes) with a given textfile.
+
+    TODO: Use print_layout_with_statistics() for output.
     """
     path = argv[2]
     data = read_file(path)
@@ -980,13 +1004,7 @@ def evolve_a_layout(args, prerandomize, controlled, quiet):
     lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
-    from pprint import pprint
-    pprint(lay)
-    
-    frep = finger_repeats_from_file(repeats=repeats, layout=lay)
-    print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-    cost = key_position_cost_from_file(letters=letters, layout=lay)
-    print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
 
 
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
@@ -998,7 +1016,6 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      data2 = read_file("2gramme.txt")
      repeats = repeats_in_file_precalculated(data2)    
      datalen2 = sum([i for i, s in repeats])
-
 
      from pprint import pprint
 
@@ -1018,7 +1035,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              print("# round", round)
              print("# top five")
              for lay in layouts[:5]:
-                 pprint(lay)
+                 print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
          layouts = deepcopy(layouts[:int(challengers / 4.0)])
          # combine the best and worst to get new ones.
          print("breeding new layouts")
@@ -1048,14 +1065,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")]: 
          cost, lay = layouts[num]
          print(name)
-         from pprint import pprint
-         pprint(lay)
-     
-         frep = finger_repeats_from_file(repeats=repeats, layout=lay)
-         print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-         cost = key_position_cost_from_file(letters=letters, layout=lay)
-         print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
-         
+         print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2)
 
 def best_random_layout(args, prerandomize):
     """Select the best gf a number of randomly created layouts."""
@@ -1073,13 +1083,8 @@ def best_random_layout(args, prerandomize):
         lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
         
     print("\nBest of the ramdom layouts")
-    from pprint import pprint
-    pprint(lay)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
     
-    frep = finger_repeats_from_file(repeats=repeats, layout=lay)
-    print(sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-    cost = key_position_cost_from_file(letters=letters, layout=lay)
-    print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
 def check_the_neo_layout(quiet):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
@@ -1092,20 +1097,13 @@ def check_the_neo_layout(quiet):
     repeats = repeats_in_file_precalculated(data2)
     datalen2 = sum([i for i, s in repeats])
     
-    total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats)[:4]#, layout=QWERTZ_LAYOUT)
-    print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
-    print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
     
-    if not quiet:         
+    if not quiet:
         print("Qwertz for comparision")
-        total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT)[:4]
-        print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
-        print(cost / datalen1, "mean key position cost in file 1gramme.txt")
-
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
         print("And the Nordtast Layout")
-        total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=NORDTAST_LAYOUT)[:4]
-        print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
-        print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
 
 
 ### Self-Test 
