@@ -1042,17 +1042,20 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
              layouts.append((cost, lay))
 
-     print("# Winner")
+     print("# Top 3")
      layouts.sort()
-     cost, lay = layouts[0]
-     from pprint import pprint
-     pprint(lay)
-     
-     frep = finger_repeats_from_file(repeats=repeats, layout=lay)
-     print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
-     cost = key_position_cost_from_file(letters=letters, layout=lay)
-     print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
 
+     for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")]: 
+         cost, lay = layouts[num]
+         print(name)
+         from pprint import pprint
+         pprint(lay)
+     
+         frep = finger_repeats_from_file(repeats=repeats, layout=lay)
+         print("#", sum([num for num, fing, rep in frep]) / datalen2, "% finger repeats in file 2gramme.txt")
+         cost = key_position_cost_from_file(letters=letters, layout=lay)
+         print("#", cost / datalen1, "mean key position cost in file 1gramme.txt")
+         
 
 def best_random_layout(args, prerandomize):
     """Select the best gf a number of randomly created layouts."""
