@@ -260,6 +260,8 @@ License: GPLv3 or later
 WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower than a switch from center to upper left.
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 # 2 times a normal repeat, since it's really slow. better two outside low or up than an up-down repeat. 
 WEIGHT_POSITION = 1 # reference
+WEIGHT_FINGER_DISBALANCE = 10 # multiplied with the standard deviation of the finger usage - value guessed
+WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER = 2 # multiplied with the number of usages of the small finger to offload it.
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -769,29 +771,66 @@ def finger_repeats_top_and_bottom(finger_repeats):
 def load_per_finger(letters, layout=NEO_LAYOUT):
     """Calculate the number of times each finger is being used.
 
-    >>> letters = "uiaeosnrtd"
+    >>> letters = [(1, "u"), (5, "i"), (10, "2")]
     >>> load_per_finger(letters)
-    {'Zeige_R': 2, 'Ring_L': 1, 'Klein_L': 1, 'Mittel_R': 1, 'Mittel_L': 1, 'Zeige_L': 2, 'Klein_R': 1, 'Ring_R': 1}
+    {'': 10, 'Klein_L': 1, 'Ring_L': 5}
     """
     fingers = {}
-    for key in letters:
+    for num, key in letters:
         finger = key_to_finger(key, layout=layout)
         if finger in fingers:
-            fingers[finger] += 1
-        else: fingers[finger] = 1
+            fingers[finger] += num
+        else: fingers[finger] = num
     return fingers
 
+def std(numbers):
+    """Calculate the standard deviation from a set of numbers.
+
+    This simple calculation is only valid for more than 100 numbers or so.
+
+    >>> std([1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]*10)
+    1.607945243653783
+    """
+    length = float(len(numbers))
+    mean = sum(numbers)/length
+    var = 0
+    for i in numbers:
+        var += (i - mean)**2
+    var /= (length - 1)
+    from math import sqrt
+    return sqrt(var)
+
+def finger_balance(letters, layout=NEO_LAYOUT):
+    """Calculate a cost based on the balance between the fingers (using the standard deviation).
+
+    Optimum: All fingers get used exactly the same number of times.
+
+    We ignore unmapped keys ('').
+    """
+    #: the usage of each finger: {finger1: num, finger2: num, …}
+    fingers = load_per_finger(letters, layout)
+    # remove the unmapped keys
+    if "" in fingers: 
+        del fingers[""]
+    for small in ["Klein_L", "Klein_R"]:
+        if small in fingers:
+            fingers[small] *= WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER
+    disbalance = std(fingers.values())
+    return disbalance
+
+    
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Compute a total cost from all costs we have available, wheighted.
 
     >>> data = read_file("testfile")
     >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
-    (158, 3, 150, 0)
+    (195, 3, 150, 0)
     """
     # the raw costs
     if data is not None: 
         finger_repeats = finger_repeats_from_file(data, layout=layout)
         position_cost = key_position_cost_from_file(data, layout=layout, cost_per_key=cost_per_key)
+        letters = letters_in_file(data)
     elif letters is None or repeats is None:
         raise Exception("Need either repeats und letters or data")
     else:
@@ -802,10 +841,15 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
+    # the balance between fingers
+    disbalance = finger_balance(letters, layout=layout)
+    number_of_letters = sum([i for i, s in letters])
+
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
-    total += WEIGHT_FINGER_REPEATS * int(0.5 * frep_num) # 0.5, since each key is part of 2 repeats
-    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * int(0.5 * frep_num_top_bottom)
+    total += int(WEIGHT_FINGER_REPEATS * 0.5 * frep_num) # 0.5, since each key is part of 2 repeats
+    total += int(WEIGHT_FINGER_REPEATS_TOP_BOTTOM * 0.5 * frep_num_top_bottom)
+    total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
 
     return total, frep_num, position_cost, frep_num_top_bottom
     
@@ -887,23 +931,23 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 164, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
-    # checked switch ('rr',) 158
-    # checked switch ('re',) 150
-    # checked switch ('ro',) 152
-    # checked switch ('ee',) 158
-    # checked switch ('eo',) 161
-    # checked switch ('oo',) 158
-    0.000164 finger repetition: 1e-06 position cost: 0.00015
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
+    # checked switch ('rr',) 195
+    # checked switch ('re',) 187
+    # checked switch ('ro',) 189
+    # checked switch ('ee',) 195
+    # checked switch ('eo',) 198
+    # checked switch ('oo',) 195
+    0.00019 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 150, 14)
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 187, 3)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
-    # checked switch ('rr',) 158
-    # checked switch ('re',) 150
-    # checked switch ('ro',) 152
-    # checked switch ('ee',) 158
-    # checked switch ('eo',) 161
-    # checked switch ('oo',) 158
+    # checked switch ('rr',) 195
+    # checked switch ('re',) 187
+    # checked switch ('ro',) 189
+    # checked switch ('ee',) 195
+    # checked switch ('eo',) 198
+    # checked switch ('oo',) 195
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
@@ -1012,6 +1056,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
 
     total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=layout)[:4]
 
+    print("#", finger_balance(letters, layout=layout) / 1000000, "million keystrokes disbalance of the fingers")
     print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
     print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
     print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa") 
