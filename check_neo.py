@@ -198,7 +198,7 @@ Evolved Layout
 1.91234715913 mean key position cost in file 1gramme.txt
 
 
-a very good one for testing (full commandline call)
+a very good one for testing finger repeat optimization (full commandline call)
 ./check_neo.py --check "[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', ()],
  [(), 'ß', '.', 'o', 'l', 'w', 'z', 'h', 'a', 'f', 'ö', 'x', '\´', ()],
  ['⇩', 'r', 'i', 't', 'n', 'c', 'g', 'd', 'e', 's', 'u', 'y', '⇘', '\n'],
@@ -211,15 +211,37 @@ a very good one for testing (full commandline call)
 # 0.0953054878469 % finger repeats top to bottom or vice versa
 # 4.09338086197 mean key position cost in file 1gramme.txt
 
+and one for key position costs
+./check_neo.py --check "[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', ()],
+> [(), 'ö', 'f', 'm', 'l', 'w', '.', 'a', 'g', 'k', 'ß', 'x', '´', ()],
+> ['⇩', 'u', 's', 'r', 'n', 'h', 'o', 'e', 't', 'i', 'd', 'y', '⇘', '\\n'],
+> ['⇧', (), 'ü', 'z', 'v', 'b', 'j', 'q', 'c', 'p', 'ä', ',', '⇗'],
+> [(), (), (), ' ', (), (), (), ()]]
+> "
+# 1.205248537 billion total penalty compared to notime-noeffort
+# 2.37585950204 % finger repeats in file 2gramme.txt
+# 0.157557240042 % finger repeats top to bottom or vice versa
+# 3.89605330543 mean key position cost in file 1gramme.txt
+
 
 For reference: 
 Neo
-0.0477912399131 % finger repeats in file 2gramme.txt
-1.94298448139 mean key position cost in file 1gramme.txt
-Qwertz for comparision
-0.0709701084443 % finger repeats in file 2gramme.txt
-3.11621325676 mean key position cost in file 1gramme.txt
+# 1.310067933 billion total penalty compared to notime-noeffort
+# 4.82198888113 % finger repeats in file 2gramme.txt
+# 0.307224610884 % finger repeats top to bottom or vice versa
+# 3.9755737368 mean key position cost in file 1gramme.txt
 
+Qwertz for comparision
+# 1.935446527 billion total penalty compared to notime-noeffort
+# 6.72632774411 % finger repeats in file 2gramme.txt
+# 0.233732243474 % finger repeats top to bottom or vice versa
+# 5.95987411112 mean key position cost in file 1gramme.txt
+
+And the Nordtast Layout
+# 1.263900162 billion total penalty compared to notime-noeffort
+# 1.81675742427 % finger repeats in file 2gramme.txt
+# 0.260071071233 % finger repeats top to bottom or vice versa
+# 4.13572995975 mean key position cost in file 1gramme.txt
 
 """
 
