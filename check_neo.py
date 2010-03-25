@@ -942,8 +942,10 @@ def print_layout_with_statistics(layout, letters, repeats, number_of_letters, nu
         pprint(layout)
 
     total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=layout)[:4]
-    
-    print("#", frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
+
+    print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
+    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
+    print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa") 
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
 
 
@@ -974,7 +976,7 @@ def check_with_datafile(args, quiet, verbose):
         print(unique_sort(frep))
         
     if not quiet:         
-        print("Qwertz for comparision")
+        print("\nQwertz for comparision")
         frep = finger_repeats_from_file(data, layout=QWERTZ_LAYOUT)
         print(sum([num for num, fing, rep in frep]) / len(data), "% finger repeats in file", path)
         cost = key_position_cost_from_file(data, layout=QWERTZ_LAYOUT)
@@ -1097,13 +1099,13 @@ def check_the_neo_layout(quiet):
     repeats = repeats_in_file_precalculated(data2)
     datalen2 = sum([i for i, s in repeats])
     
-    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
+    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet)
     
     if not quiet:
-        print("Qwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
-        print("And the Nordtast Layout")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=False)
+        print("\nQwertz for comparision")
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+        print("\nAnd the Nordtast Layout")
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
 
 
 ### Self-Test 
