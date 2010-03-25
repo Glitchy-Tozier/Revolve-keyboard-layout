@@ -1019,26 +1019,28 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              print("# top five")
              for lay in layouts[:5]:
                  pprint(lay)
-         layouts = deepcopy(layouts[:int(challengers / 2.0)])
+         layouts = deepcopy(layouts[:int(challengers / 4.0)])
          # combine the best and worst to get new ones.
          print("breeding new layouts")
-         for i in range(int(challengers/4)):
-            print(i, "of", int(challengers/2), "from weak and strong")
+         for i in range(int(challengers/8)):
+            print(i, "of", int(challengers/4), "from weak and strong")
             new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
             # evolve, then append
             new, cost = deepcopy(evolve(letters, repeats, layout=new, iterations=iterations, quiet=True))
             layouts.append((cost, new))
             # also combine the best one with the upper half
-         for i in range(max(0, int(challengers/4) - 1)):
-            print(i+int(challengers/4), "of", int(challengers/2), "from the strongest with the top half")
+         for i in range(max(0, int(challengers/8))):
+            print(i+int(challengers/8), "of", int(challengers/4), "from the strongest with the top half")
             new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
             new, cost = evolve(letters, repeats, layout=new, iterations=iterations, quiet=True)
             layouts.append((cost, new))
-         # and add a new random one
-         print("and one random layout")
-         lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
-         lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
-         layouts.append((cost, lay))
+         # and new random ones
+         print("and fill up the ranks with random layouts")
+         for i in range(challengers - len(layouts)):
+             print(i, "of", challengers - len(layouts))
+             lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
+             lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
+             layouts.append((cost, lay))
 
      print("# Winner")
      layouts.sort()
