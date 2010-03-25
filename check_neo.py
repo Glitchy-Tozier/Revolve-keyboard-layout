@@ -326,6 +326,15 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
+# Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
+COST_PER_KEY_OLD3  = [ # 0 heißt nicht beachtet
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
+        [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
+        [0,  5,3,3,2,5,5,2,3,3,5,12,0,15], # Reihe 2 
+        [15,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
+        [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
+]
+
 # Structured reweighting (but still mostly from experience and deducing from the work of others). 
 COST_PER_KEY  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
@@ -701,11 +710,11 @@ def letters_in_file_precalculated(data):
 
 ### Cost Functions
 
-def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
+def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Count the total cost due to key positions.
 
     >>> data = read_file("testfile")
-    >>> key_position_cost_from_file(data)
+    >>> key_position_cost_from_file(data, cost_per_key=COST_PER_KEY_OLD3)
     150
     """
     if data is not None: 
@@ -717,7 +726,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
         pos = find_key(letter, layout=layout)
         if pos is None: # not found => next letter
             continue
-        cost += num * COST_PER_KEY[pos[0]][pos[1]]
+        cost += num * cost_per_key[pos[0]][pos[1]]
     return cost
 
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
@@ -757,22 +766,22 @@ def finger_repeats_top_and_bottom(finger_repeats):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Compute a total cost from all costs we have available, wheighted.
 
     >>> data = read_file("testfile")
-    >>> total_cost(data)
+    >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
     (158, 3, 150, 0)
     """
     # the raw costs
     if data is not None: 
         finger_repeats = finger_repeats_from_file(data, layout=layout)
-        position_cost = key_position_cost_from_file(data, layout=layout)
+        position_cost = key_position_cost_from_file(data, layout=layout, cost_per_key=cost_per_key)
     elif letters is None or repeats is None:
         raise Exception("Need either repeats und letters or data")
     else:
         finger_repeats = finger_repeats_from_file(repeats=repeats, layout=layout)
-        position_cost = key_position_cost_from_file(letters=letters, layout=layout)
+        position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
     
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
@@ -857,13 +866,13 @@ def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, qui
                 print("worse", keypairs, end = " ")
             return layout, cost, 0
 
-def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
+def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY): 
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
         
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 164, quiet=False)
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 164, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
     # checked switch ('rr',) 158
     # checked switch ('re',) 150
     # checked switch ('ro',) 152
@@ -873,7 +882,7 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     0.000164 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
     ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 150, 14)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
     # checked switch ('rr',) 158
     # checked switch ('re',) 150
     # checked switch ('ro',) 152
@@ -908,13 +917,13 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     step_results = []
     for keypairs in switches: 
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
         step_results.append((new_cost, frep, pos_cost, lay))
         print("# checked switch", keypairs, new_cost)
     if min(step_results)[0] < cost:
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
         if not quiet: 
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
             print(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
             print(lay)
         return lay, new_cost, cost - new_cost
