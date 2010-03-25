@@ -254,6 +254,15 @@ QWERTZ_LAYOUT = [
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
+NORDTAST_LAYOUT = [
+    [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
+    [(),("ä"),("u"),("a"),("b"),("p"),("k"),("g"),("l"),("m"),("f"),("x"),("+"),()], # Reihe 1
+    [(),("a"),("i"),("e"),("t"),("c"),("h"),("d"),("n"),("r"),("s"),("ß"),(),("\n")], # Reihe 2
+    [("⇧"),(),("."),(","),("ü"),("ö"),("q"),("y"),("z"),("w"),("v"),("j"),("⇗")],        # Reihe 3
+    [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
+]
+
+
 # Ulfs All fingers equal but the small one
 COST_PER_KEY_OLD  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
@@ -1085,6 +1094,11 @@ def check_the_neo_layout(quiet):
     if not quiet:         
         print("Qwertz for comparision")
         total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT)[:4]
+        print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
+        print(cost / datalen1, "mean key position cost in file 1gramme.txt")
+
+        print("And the NordTast Layout")
+        total, frep_num, cost, frep_top_bottom = total_cost(letters=letters, repeats=repeats, layout=NORDTAST_LAYOUT)[:4]
         print(frep_num / datalen2, "% finger repeats in file 2gramme.txt")
         print(cost / datalen1, "mean key position cost in file 1gramme.txt")
 
