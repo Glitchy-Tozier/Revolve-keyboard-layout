@@ -77,7 +77,7 @@ Kostenfaktor: Zeit
   (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
 
 Kostenfaktor: Belastung
-- Ungleichmäßige Belastung beider Hände. => indirekt durch Strafpunkte bei fehlendem Handwechsel- TODO
+- Ungleichmäßige Belastung beider Hände. => indirekt durch Strafpunkte bei fehlendem Handwechsel und direkt, weil das auch ungleiche Belastung der Finger bewirkt- TODO
 - Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - done (std)
 
 Kostenfaktor: Natürliche Handbewegung
