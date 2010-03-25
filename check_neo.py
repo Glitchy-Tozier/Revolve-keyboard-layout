@@ -706,7 +706,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> key_position_cost_from_file(data)
-    120
+    150
     """
     if data is not None: 
         letters = letters_in_file(data)
@@ -762,7 +762,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> total_cost(data)
-    (144, 3, 120, 0)
+    (158, 3, 150, 0)
     """
     # the raw costs
     if data is not None: 
@@ -780,8 +780,8 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT):
 
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
-    total += WEIGHT_FINGER_REPEATS * 0.5 * frep_num # 0.5, since each key is part of 2 repeats
-    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * 0.5 * frep_num_top_bottom
+    total += WEIGHT_FINGER_REPEATS * int(0.5 * frep_num) # 0.5, since each key is part of 2 repeats
+    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * int(0.5 * frep_num_top_bottom)
 
     return total, frep_num, position_cost, frep_num_top_bottom
     
@@ -863,23 +863,23 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 144, quiet=False)
-    # checked switch ('rr',) 144
-    # checked switch ('re',) 128
-    # checked switch ('ro',) 130
-    # checked switch ('ee',) 144
-    # checked switch ('eo',) 147
-    # checked switch ('oo',) 144
-    0.000144 finger repetition: 1e-06 position cost: 0.00012
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 164, quiet=False)
+    # checked switch ('rr',) 158
+    # checked switch ('re',) 150
+    # checked switch ('ro',) 152
+    # checked switch ('ee',) 158
+    # checked switch ('eo',) 161
+    # checked switch ('oo',) 158
+    0.000164 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 128, 16)
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 150, 14)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False)
-    # checked switch ('rr',) 144
-    # checked switch ('re',) 128
-    # checked switch ('ro',) 130
-    # checked switch ('ee',) 144
-    # checked switch ('eo',) 147
-    # checked switch ('oo',) 144
+    # checked switch ('rr',) 158
+    # checked switch ('re',) 150
+    # checked switch ('ro',) 152
+    # checked switch ('ee',) 158
+    # checked switch ('eo',) 161
+    # checked switch ('oo',) 158
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
