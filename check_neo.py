@@ -50,7 +50,7 @@ Design:
 Später:
 - "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
 - Groß- und Kleinschreibung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. - DONE
-- TODO: Kosten und Finger für Shift.
+- TODO: Kosten und Finger für Shift; teilerledigt: Kleine Finger bedienen Shift.
 - Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (for i in [a:z]: if rand_bool(): 1.switch(1, 2.key_at(1.pos(i))])
 
 
@@ -331,7 +331,7 @@ COST_PER_KEY  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
         [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
         [0,  5,3,3,2,5,5,2,3,3,5,12,0,15], # Reihe 2 
-        [0,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
+        [15,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
         [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
