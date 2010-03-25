@@ -197,6 +197,21 @@ Evolved Layout
 0.0275394878237 % finger repeats in file 2gramme.txt
 1.91234715913 mean key position cost in file 1gramme.txt
 
+
+a very good one for testing (full commandline call)
+./check_neo.py --check "[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', ()],
+ [(), 'ß', '.', 'o', 'l', 'w', 'z', 'h', 'a', 'f', 'ö', 'x', '\´', ()],
+ ['⇩', 'r', 'i', 't', 'n', 'c', 'g', 'd', 'e', 's', 'u', 'y', '⇘', '\n'],
+ ['⇧', (), ',', 'p', 'j', 'm', 'q', 'k', 'b', 'ä', 'v', 'ü', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+
+"
+# 1.22172464 billion total penalty compared to notime-noeffort
+# 1.14188020276 % finger repeats in file 2gramme.txt
+# 0.0953054878469 % finger repeats top to bottom or vice versa
+# 4.09338086197 mean key position cost in file 1gramme.txt
+
+
 For reference: 
 Neo
 0.0477912399131 % finger repeats in file 2gramme.txt
