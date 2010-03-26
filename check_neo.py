@@ -262,6 +262,7 @@ WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 # 2 times a normal repeat, since it's real
 WEIGHT_POSITION = 1 # reference
 WEIGHT_FINGER_DISBALANCE = 5 # multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
 WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER = 2 # multiplied with the number of usages of the small finger to offload it.
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 # how high should it be counted, if the hands aren’t switched in a triple?
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -684,14 +685,34 @@ def split_uppercase_trigrams(trigs):
     return trigs
 
 
+def trigrams_in_file(data):
+    """Sort the trigrams in a file by the number of occurrances.
+
+    >>> data = read_file("testfile")
+    >>> trigrams_in_file(data)[:12]
+    [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
+    """
+    trigs = {}
+    for i in range(len(data)-2):
+        trig = data[i] + data[i+1] + data[i+2]
+        if trig in trigs:
+            trigs[trig] += 1
+        else:
+            trigs[trig] = 1
+    sorted_trigs = [(trigs[i], i) for i in trigs]
+    sorted_trigs.sort()
+    sorted_trigs.reverse()
+    trigs = split_uppercase_trigrams(sorted_trigs)
+    return trigs
+
 def trigrams_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
     CAREFUL: SLOW!
 
     >>> data = read_file("3gramme.txt")
-    >>> trigrams_in_file_precalculated(data)[:2]
-    [(5679632, 'en '), (4417443, 'er ')]
+    >>> trigrams_in_file_precalculated(data)[:6]
+    [(5679632, 'en '), (4417443, 'er '), (2891983, ' de'), (2303238, 'der'), (2273056, 'ie '), (2039537, 'ich')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
@@ -786,7 +807,7 @@ def load_per_finger(letters, layout=NEO_LAYOUT):
 def std(numbers):
     """Calculate the standard deviation from a set of numbers.
 
-    This simple calculation is only valid for more than 100 numbers or so.
+    This simple calculation is only valid for more than 100 numbers or so. That means I use it in the invalid area. But since it’s just an arbitrary metric, that doesn’t hurt.
 
     >>> std([1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]*10)
     1.607945243653783
@@ -818,25 +839,46 @@ def finger_balance(letters, layout=NEO_LAYOUT):
     disbalance = std(fingers.values())
     return disbalance
 
+def no_handswitching(trigrams, layout=NEO_LAYOUT):
+    """Add a penalty when the hands aren’t switched at least once in every three letters.
+
+    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
+    >>> no_handswitching(trigs, layout=NEO_LAYOUT)
+    1
+    """
+    no_switch = 0
+    for num, trig in trigrams:
+        if trig[1:]:
+            finger0 = key_to_finger(trig[0])
+            finger1 = key_to_finger(trig[1])
+            finger2 = key_to_finger(trig[2])
+            if finger0 and finger1 and finger2 and finger0[-1] == finger1[-1] and finger1[-1] == finger2[-1]: 
+                no_switch += num
+    return no_switch
     
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None):
     """Compute a total cost from all costs we have available, wheighted.
 
     >>> data = read_file("testfile")
     >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
-    (195, 3, 150, 0, 3.3380918415851206)
+    (204, 3, 150, 0, 3.3380918415851206, 14)
     """
     # the raw costs
     if data is not None: 
         finger_repeats = finger_repeats_from_file(data, layout=layout)
         position_cost = key_position_cost_from_file(data, layout=layout, cost_per_key=cost_per_key)
         letters = letters_in_file(data)
+        trigrams = trigrams_in_file(data)
     elif letters is None or repeats is None:
         raise Exception("Need either repeats und letters or data")
     else:
         finger_repeats = finger_repeats_from_file(repeats=repeats, layout=layout)
         position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
-    
+
+    # if we didn’t get trigrams, we don’t calculate (the damn expensive) handswitching.
+    if trigrams is not None: 
+        no_handswitches = no_handswitching(trigrams, layout=layout)
+
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
@@ -850,6 +892,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
+
+    if trigrams is not None: 
+        total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
+        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches
 
     return total, frep_num, position_cost, frep_num_top_bottom, disbalance
     
@@ -925,29 +971,30 @@ def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, qui
                 print("worse", keypairs, end = " ")
             return layout, cost, 0
 
-def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY): 
+def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY, trigrams = None): 
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
         
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
-    # checked switch ('rr',) 195
-    # checked switch ('re',) 187
-    # checked switch ('ro',) 189
-    # checked switch ('ee',) 195
-    # checked switch ('eo',) 198
-    # checked switch ('oo',) 195
+    >>> trigrams = trigrams_in_file(data)
+    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3, trigrams=trigrams)
+    # checked switch ('rr',) 204
+    # checked switch ('re',) 188
+    # checked switch ('ro',) 190
+    # checked switch ('ee',) 204
+    # checked switch ('eo',) 207
+    # checked switch ('oo',) 204
     0.00019 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 187, 3)
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 188, 2)
     >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
-    # checked switch ('rr',) 195
-    # checked switch ('re',) 187
-    # checked switch ('ro',) 189
-    # checked switch ('ee',) 195
-    # checked switch ('eo',) 198
-    # checked switch ('oo',) 195
+    # checked switch ('rr',) 190
+    # checked switch ('re',) 174
+    # checked switch ('ro',) 176
+    # checked switch ('ee',) 190
+    # checked switch ('eo',) 193
+    # checked switch ('oo',) 190
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
@@ -976,13 +1023,19 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     step_results = []
     for keypairs in switches: 
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
+        if trigrams is not None: 
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        else: 
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
         step_results.append((new_cost, frep, pos_cost, lay))
         print("# checked switch", keypairs, new_cost)
     if min(step_results)[0] < cost:
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
         if not quiet: 
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
+            if trigrams is not None: 
+                new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+            else: 
+                new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
             print(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
             print(lay)
         return lay, new_cost, cost - new_cost
@@ -991,7 +1044,7 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
             print("worse", keypairs, end = " ")
         return layout, cost, 0
 
-def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False):
+def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False, trigrams=None):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
