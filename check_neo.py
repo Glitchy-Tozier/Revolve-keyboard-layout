@@ -876,7 +876,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     >>> data = read_file("testfile")
     >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
-    (204, 3, 150, 0, 3.3380918415851206, 14)
+    (193, 3, 150, 0, 3.3380918415851206, 3)
     """
     # the raw costs
     if data is not None: 
@@ -954,17 +954,17 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
 
-def find_the_best_random_keyboard(letters, repeats, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
+def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
         """Create num_tries random keyboards (starting from the layout and doing num_switches random keyswitches), compare them and only keep the best (by total_cost)."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
-        cost = total_cost(letters=letters, repeats=repeats, layout=lay)[0]
+        cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[0]
         if not quiet: 
             print("cost of the first random layout:", cost)
         for i in range(max(0, num_tries-1)): 
             if not quiet: 
                 print("-", i, "/", num_tries)
             lay_tmp, keypairs = randomize_keyboard(abc, num_switches, lay)
-            cost_tmp = total_cost(letters=letters, repeats=repeats, layout=lay_tmp)[0]
+            cost_tmp = total_cost(letters=letters, repeats=repeats, layout=lay_tmp, trigrams=trigrams)[0]
             if cost_tmp < cost: 
                 lay = lay_tmp
                 cost = cost_tmp
@@ -972,10 +972,10 @@ def find_the_best_random_keyboard(letters, repeats, num_tries, num_switches=1000
                     print("better:", cost)
         return lay, cost	    
 
-def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet): 
+def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet): 
         """Do one random switch. Keep it, if it is beneficial."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:3]
         if new_cost < cost:
             if not quiet: 
                 print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
@@ -986,30 +986,30 @@ def random_evolution_step(letters, repeats, num_switches, layout, abc, cost, qui
                 print("worse", keypairs, end = " ")
             return layout, cost, 0
 
-def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY, trigrams = None): 
+def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY): 
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
         
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
     >>> trigrams = trigrams_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3, trigrams=trigrams)
-    # checked switch ('rr',) 204
-    # checked switch ('re',) 188
-    # checked switch ('ro',) 190
-    # checked switch ('ee',) 204
-    # checked switch ('eo',) 207
-    # checked switch ('oo',) 204
+    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
+    # checked switch ('rr',) 193
+    # checked switch ('re',) 175
+    # checked switch ('ro',) 178
+    # checked switch ('ee',) 193
+    # checked switch ('eo',) 196
+    # checked switch ('oo',) 193
     0.00019 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 188, 2)
-    >>> controlled_evolution_step(letters, repeats, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
-    # checked switch ('rr',) 190
-    # checked switch ('re',) 174
-    # checked switch ('ro',) 176
-    # checked switch ('ee',) 190
-    # checked switch ('eo',) 193
-    # checked switch ('oo',) 190
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 175, 15)
+    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
+    # checked switch ('rr',) 193
+    # checked switch ('re',) 175
+    # checked switch ('ro',) 178
+    # checked switch ('ee',) 193
+    # checked switch ('eo',) 196
+    # checked switch ('oo',) 193
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
@@ -1038,19 +1038,13 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
     step_results = []
     for keypairs in switches: 
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        if trigrams is not None: 
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
-        else: 
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
         step_results.append((new_cost, frep, pos_cost, lay))
         print("# checked switch", keypairs, new_cost)
     if min(step_results)[0] < cost:
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
         if not quiet: 
-            if trigrams is not None: 
-                new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
-            else: 
-                new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key)[:3]
+            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
             print(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
             print(lay)
         return lay, new_cost, cost - new_cost
@@ -1059,7 +1053,7 @@ def controlled_evolution_step(letters, repeats, num_switches, layout, abc, cost,
             print("worse", keypairs, end = " ")
         return layout, cost, 0
 
-def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False, trigrams=None):
+def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
@@ -1074,11 +1068,11 @@ def evolve(letters, repeats, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=F
         if not controlled: 
             # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
             step = int(log10(consecutive_fails + 1) / 3 + 1)
-            lay, cost, better = random_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+            lay, cost, better = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         else: 
             step = int(consecutive_fails / 2 + 1)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-            lay, cost, better = controlled_evolution_step(letters, repeats, step, layout, abc, cost, quiet)
+            lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         if better:
             consecutive_fails = 0
             # save the good mutation
@@ -1106,7 +1100,7 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None):
     """Print a layout along with statistics."""
     if letters is None or number_of_letters is None: 
         data1 = read_file("1gramme.txt")
@@ -1118,7 +1112,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         repeats = repeats_in_file_precalculated(data2)
         number_of_bigrams = sum([i for i, s in repeats])
 
-    if trigrams is None:
+    if trigrams is None or number_of_trigrams is None:
         data3 = read_file("3gramme.txt")
         trigrams = trigrams_in_file_precalculated(data3)
         number_of_trigrams = sum([i for i, s in trigrams])
@@ -1184,6 +1178,10 @@ def evolve_a_layout(args, prerandomize, controlled, quiet):
     repeats = repeats_in_file_precalculated(data2)
     #repeats = repeats_in_file(data)
     datalen2 = sum([i for i, s in repeats])
+
+    data3 = read_file("3gramme.txt")
+    trigrams = trigrams_in_file_precalculated(data3)
+    number_of_trigrams = sum([i for i, s in trigrams])
    
     if prerandomize:
         if not quiet:
@@ -1191,10 +1189,10 @@ def evolve_a_layout(args, prerandomize, controlled, quiet):
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
     
-    lay, cost = evolve(letters, repeats, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
 
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
@@ -1207,6 +1205,11 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      repeats = repeats_in_file_precalculated(data2)    
      datalen2 = sum([i for i, s in repeats])
 
+     data3 = read_file("3gramme.txt")
+     trigrams = trigrams_in_file_precalculated(data3)
+     number_of_trigrams = sum([i for i, s in trigrams])
+     
+
      from pprint import pprint
 
      layouts = [] # [(cost, lay), …]
@@ -1215,7 +1218,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      for i in range(challengers):
          print("#", i, "of", challengers)
          lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
-         lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
+         lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
          layouts.append((cost, lay))
      # run the challenge
      for round in range(rounds): 
@@ -1225,7 +1228,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              print("# round", round)
              print("# top five")
              for lay in layouts[:5]:
-                 print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+                 print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
          layouts = deepcopy(layouts[:int(challengers / 4.0)])
          # combine the best and worst to get new ones.
          print("breeding new layouts")
@@ -1233,13 +1236,13 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
             print(i, "of", int(challengers/4), "from weak and strong")
             new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
             # evolve, then append
-            new, cost = deepcopy(evolve(letters, repeats, layout=new, iterations=iterations, quiet=True))
+            new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
             layouts.append((cost, new))
             # also combine the best one with the upper half
          for i in range(max(0, int(challengers/8))):
             print(i+int(challengers/8), "of", int(challengers/4), "from the strongest with the top half")
             new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
-            new, cost = evolve(letters, repeats, layout=new, iterations=iterations, quiet=True)
+            new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)
             layouts.append((cost, new))
          # and new random ones
          print("and fill up the ranks with random layouts")
@@ -1255,7 +1258,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")]: 
          cost, lay = layouts[num]
          print(name)
-         print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2)
+         print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
 def best_random_layout(args, prerandomize):
     """Select the best gf a number of randomly created layouts."""
@@ -1267,13 +1270,18 @@ def best_random_layout(args, prerandomize):
     data2 = read_file("2gramme.txt")
     repeats = repeats_in_file_precalculated(data2)
     datalen2 = sum([i for i, s in repeats])
+
+    data3 = read_file("3gramme.txt")
+    trigrams = trigrams_in_file_precalculated(data3)
+    number_of_trigrams = sum([i for i, s in trigrams])
+     
     if prerandomize: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
     else: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
         
     print("\nBest of the ramdom layouts")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
 def check_the_neo_layout(quiet):
