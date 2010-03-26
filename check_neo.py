@@ -846,14 +846,22 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
     1
     """
+    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated plus shift. 
+    key_hand_table = {}
+    for key in abc+"⇧⇗":
+        finger = key_to_finger(key, layout=layout)
+        if finger: 
+            key_hand_table[key] = finger[-1]
+    # now ret the hand for each key
     no_switch = 0
     for num, trig in trigrams:
         if trig[1:]:
-            finger0 = key_to_finger(trig[0])
-            finger1 = key_to_finger(trig[1])
-            finger2 = key_to_finger(trig[2])
-            if finger0 and finger1 and finger2 and finger0[-1] == finger1[-1] and finger1[-1] == finger2[-1]: 
-                no_switch += num
+            hand0 = key_hand_table.get(trig[0], None)
+            hand1 = key_hand_table.get(trig[1], None)
+            hand2 = key_hand_table.get(trig[2], None)
+            if hand0 is not None and hand1 is not None and hand2 is not None:
+                if hand0 == hand1 and hand1 == hand2: 
+                    no_switch += num
     return no_switch
     
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None):
@@ -1091,7 +1099,7 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None):
     """Print a layout along with statistics."""
     if letters is None or number_of_letters is None: 
         data1 = read_file("1gramme.txt")
@@ -1102,17 +1110,23 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         data2 = read_file("2gramme.txt")
         repeats = repeats_in_file_precalculated(data2)
         number_of_bigrams = sum([i for i, s in repeats])
+
+    if trigrams is None:
+        data3 = read_file("3gramme.txt")
+        trigrams = trigrams_in_file(data3)
+        number_of_trigrams = sum([i for i, s in trigrams])
         
     if print_layout: 
         from pprint import pprint
         pprint(layout)
 
-    total, frep_num, cost, frep_top_bottom, disbalance = total_cost(letters=letters, repeats=repeats, layout=layout)[:5]
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:6]
 
     print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
     print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
     print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
-    print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa") 
+    print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
+    print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching.")
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
 
 
