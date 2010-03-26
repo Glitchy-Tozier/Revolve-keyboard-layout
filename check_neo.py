@@ -260,7 +260,7 @@ License: GPLv3 or later
 WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower than a switch from center to upper left.
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 # 2 times a normal repeat, since it's really slow. better two outside low or up than an up-down repeat. 
 WEIGHT_POSITION = 1 # reference
-WEIGHT_FINGER_DISBALANCE = 10 # multiplied with the standard deviation of the finger usage - value guessed
+WEIGHT_FINGER_DISBALANCE = 5 # multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
 WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER = 2 # multiplied with the number of usages of the small finger to offload it.
 
 #: Die zu mutierenden Buchstaben.
