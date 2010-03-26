@@ -597,7 +597,7 @@ def split_uppercase_trigrams(trigs):
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, trig) for num, trig in trigs if not trig == trig.lower()]
     # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
-    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()] 
+    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()]
     up = []
     # since this gets a bit more complex and the chance to err is high,
     # we do this dumbly, just checking for the exact cases.
@@ -840,28 +840,35 @@ def finger_balance(letters, layout=NEO_LAYOUT):
     return disbalance
 
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
-    """Add a penalty when the hands aren’t switched at least once in every three letters.
+    """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
+
+    TODO: If we fix uppercase handling (no longer just add both left and right shift), include tha shifts again. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
     1
     """
-    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated plus shift. 
+    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
-    for key in abc+"⇧⇗":
+    for key in abc:#+"⇧⇗ ":# -> too many false positives when we include the shifts
         finger = key_to_finger(key, layout=layout)
-        if finger: 
+        if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
     # now ret the hand for each key
     no_switch = 0
+    counted = 0
+    not_counted = 0
     for num, trig in trigrams:
-        if trig[1:]:
+        if trig[2:]:
             hand0 = key_hand_table.get(trig[0], None)
             hand1 = key_hand_table.get(trig[1], None)
             hand2 = key_hand_table.get(trig[2], None)
             if hand0 is not None and hand1 is not None and hand2 is not None:
                 if hand0 == hand1 and hand1 == hand2: 
                     no_switch += num
+                counted += num
+            else:
+                not_counted += num
     return no_switch
     
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None):
@@ -1113,7 +1120,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
 
     if trigrams is None:
         data3 = read_file("3gramme.txt")
-        trigrams = trigrams_in_file(data3)
+        trigrams = trigrams_in_file_precalculated(data3)
         number_of_trigrams = sum([i for i, s in trigrams])
         
     if print_layout: 
@@ -1126,7 +1133,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
     print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
     print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
-    print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching.")
+    print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
 
 
