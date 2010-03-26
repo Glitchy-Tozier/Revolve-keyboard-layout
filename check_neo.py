@@ -890,9 +890,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         finger_repeats = finger_repeats_from_file(repeats=repeats, layout=layout)
         position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
 
-    # if we didn’t get trigrams, we don’t calculate (the damn expensive) handswitching.
-    if trigrams is not None: 
-        no_handswitches = no_handswitching(trigrams, layout=layout)
+    no_handswitches = no_handswitching(trigrams, layout=layout)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
@@ -907,13 +905,8 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
-
-    if trigrams is not None: 
-        total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
-        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches
-
-    return total, frep_num, position_cost, frep_num_top_bottom, disbalance
-    
+    total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
+    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches    
 
 ### Evolution
 
@@ -1062,7 +1055,7 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=ab
     @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen? 
     """
     from math import log10
-    cost = total_cost(letters=letters, repeats=repeats, layout=layout)[0]
+    cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
     consecutive_fails = 0
     for i in range(iterations): 
         if not controlled: 
@@ -1280,7 +1273,7 @@ def best_random_layout(args, prerandomize):
     else: 
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
         
-    print("\nBest of the ramdom layouts")
+    print("\nBest of the random layouts")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
