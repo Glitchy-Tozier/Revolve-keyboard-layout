@@ -257,9 +257,9 @@ License: GPLv3 or later
 ### Constants
 
 # Gewichtung der unterschiedlichen Kosten
+WEIGHT_POSITION = 1 #: reference
 WEIGHT_FINGER_REPEATS = 8 #: higher than a switch from center to side, but lower than a switch from center to upper left.
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. 
-WEIGHT_POSITION = 1 #: reference
 WEIGHT_FINGER_DISBALANCE = 5 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
@@ -273,6 +273,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     2,
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
+WEIGHT_XCVZ_ON_BAD_POSITION = 0.1 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -919,7 +920,18 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
             else:
                 not_counted += num
     return no_switch
-    
+
+def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
+    """Check, if x, c, v and z are on the left hand and well positioned (much used shortcuts)."""
+    badly_positioned = []
+    for key in keys: 
+        pos = find_key(key)
+        # well means not yet left stretch
+        if not pos[1] < 5:
+            badly_positioned.append(1)
+    return sum(badly_positioned)
+
+        
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
     """Compute a total cost from all costs we have available, wheighted.
 
@@ -949,12 +961,17 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
     number_of_letters = sum([i for i, s in letters])
 
+    # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
+    badly_positioned = badly_positioned_shortcut_keys(layout=layout)
+
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
+    total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
+    
     return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches    
 
 ### Evolution
