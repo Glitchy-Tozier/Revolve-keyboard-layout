@@ -276,10 +276,6 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
-#: Die zu mutierenden Buchstaben. Vokale und xvc bleiben. 
-#abc = "bdfghjklmnpqrstwyzäöüß"
-#: Die zu mutierenden Buchstaben. Grundreihe + üöä bleiben. 
-#abc = "bcfghjklmpqsvwxyzß"
 
 #: Die Layout-Datei für Neo = Tastenbelegung - aktuell nur für Reihe 0, 1, 2 und 3 ohne Modifikator-Tasten nutzbar => nur Kleinbuchstaben. 
 NEO_LAYOUT = [
@@ -355,14 +351,6 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
-# Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
-COST_PER_KEY_OLD3  = [ # 0 heißt nicht beachtet
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
-        [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
-        [0,  5,3,3,2,5,5,2,3,3,5,12,0,15], # Reihe 2 
-        [15,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
-        [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
-]
 
 # Structured reweighting (but still mostly from experience and deducing from the work of others). 
 COST_PER_KEY  = [ # 0 heißt nicht beachtet
@@ -390,6 +378,36 @@ FINGER_POSITIONS = [
 #: The names of the fingers for which we gave the positions above.
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
+
+
+### Constants for testing
+# Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
+TEST_COST_PER_KEY  = [ # 0 heißt nicht beachtet
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
+        [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
+        [0,  5,3,3,2,5,5,2,3,3,5,12,0,15], # Reihe 2 
+        [15,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
+        [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
+]
+
+# Gewichtung der unterschiedlichen Kosten
+TEST_WEIGHT_FINGER_REPEATS = 8 #: higher than a switch from center to side, but lower than a switch from center to upper left.
+TEST_WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. 
+TEST_WEIGHT_POSITION = 1 #: reference
+TEST_WEIGHT_FINGER_DISBALANCE = 5 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
+TEST_WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
+TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
+    0.5,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0.5] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
+
 
 
 ### Imports
@@ -763,7 +781,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     """Count the total cost due to key positions.
 
     >>> data = read_file("testfile")
-    >>> key_position_cost_from_file(data, cost_per_key=COST_PER_KEY_OLD3)
+    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
     150
     """
     if data is not None: 
@@ -815,12 +833,12 @@ def finger_repeats_top_and_bottom(finger_repeats):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
-def load_per_finger(letters, layout=NEO_LAYOUT):
+def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
 
-    >>> letters = [(1, "u"), (5, "i"), (10, "2")]
+    >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " ")]
     >>> load_per_finger(letters)
-    {'': 10, 'Klein_L': 1, 'Ring_L': 5}
+    {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3}
     """
     fingers = {}
     for num, key in letters:
@@ -828,6 +846,10 @@ def load_per_finger(letters, layout=NEO_LAYOUT):
         if finger in fingers:
             fingers[finger] += num
         else: fingers[finger] = num
+    # Debug: Print the load per finger
+    if print_load_per_finger: 
+        from pprint import pprint
+        pprint(fingers)
     return fingers
 
 def std(numbers):
@@ -847,7 +869,7 @@ def std(numbers):
     from math import sqrt
     return sqrt(var)
 
-def finger_balance(letters, layout=NEO_LAYOUT):
+def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
     """Calculate a cost based on the balance between the fingers (using the standard deviation).
 
     Optimum: All fingers get used exactly the same number of times.
@@ -861,7 +883,7 @@ def finger_balance(letters, layout=NEO_LAYOUT):
         del fingers[""]
     for finger in fingers:
         idx = FINGER_NAMES.index(finger)
-        multiplier = WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY[idx]
+        multiplier = intended_balance[idx]
         fingers[finger] /= multiplier 
     disbalance = std(fingers.values())
     return disbalance
@@ -898,11 +920,11 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
                 not_counted += num
     return no_switch
     
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None):
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
     """Compute a total cost from all costs we have available, wheighted.
 
     >>> data = read_file("testfile")
-    >>> total_cost(data, cost_per_key=COST_PER_KEY_OLD3)
+    >>> total_cost(data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
     (193, 3, 150, 0, 3.3380918415851206, 3)
     """
     # the raw costs
@@ -924,7 +946,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
     # the balance between fingers
-    disbalance = finger_balance(letters, layout=layout)
+    disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
     number_of_letters = sum([i for i, s in letters])
 
     # add all together and weight them
@@ -1013,7 +1035,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
     >>> trigrams = trigrams_in_file(data)
-    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=COST_PER_KEY_OLD3)
+    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=TEST_COST_PER_KEY)
     # checked switch ('rr',) 193
     # checked switch ('re',) 175
     # checked switch ('ro',) 178
@@ -1023,7 +1045,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     0.00019 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
     ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 175, 15)
-    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=COST_PER_KEY_OLD3)
+    >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=TEST_COST_PER_KEY)
     # checked switch ('rr',) 193
     # checked switch ('re',) 175
     # checked switch ('ro',) 178
