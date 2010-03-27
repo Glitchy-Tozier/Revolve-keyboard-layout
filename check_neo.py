@@ -72,12 +72,12 @@ Kostenfaktor: Zeit
   Die Zusatzkosten fur den kleinen Finger sollten nur durch die Gesamtbelistung kommen. 
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
-- Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - TODO
+- Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - done
 - Der Zeige- und Mittelfinger sind schneller oben und unten als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
   (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
 
 Kostenfaktor: Belastung
-- Ungleichmäßige Belastung beider Hände. => indirekt durch Strafpunkte bei fehlendem Handwechsel und direkt, weil das auch ungleiche Belastung der Finger bewirkt- TODO
+- Ungleichmäßige Belastung beider Hände. => indirekt durch Strafpunkte bei fehlendem Handwechsel und direkt, weil das auch ungleiche Belastung der Finger bewirkt- done
 - Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - done (std)
 
 Kostenfaktor: Natürliche Handbewegung
@@ -257,12 +257,22 @@ License: GPLv3 or later
 ### Constants
 
 # Gewichtung der unterschiedlichen Kosten
-WEIGHT_FINGER_REPEATS = 8 # higher than a switch from center to side, but lower than a switch from center to upper left.
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 # 2 times a normal repeat, since it's really slow. better two outside low or up than an up-down repeat. 
-WEIGHT_POSITION = 1 # reference
-WEIGHT_FINGER_DISBALANCE = 5 # multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
-WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER = 2 # multiplied with the number of usages of the small finger to offload it.
-WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 # how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_FINGER_REPEATS = 8 #: higher than a switch from center to side, but lower than a switch from center to upper left.
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. 
+WEIGHT_POSITION = 1 #: reference
+WEIGHT_FINGER_DISBALANCE = 5 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
+    1,
+    2,
+    2,
+    3,
+    1,
+    1,
+    3,
+    2,
+    2,
+    1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -307,6 +317,22 @@ NORDTAST_LAYOUT = [
     [(),("ä"),("u"),("o"),("b"),("p"),("k"),("g"),("l"),("m"),("f"),("x"),("+"),()], # Reihe 1
     [(),("a"),("i"),("e"),("t"),("c"),("h"),("d"),("n"),("r"),("s"),("ß"),(),("\n")], # Reihe 2
     [("⇧"),(),("."),(","),("ü"),("ö"),("q"),("y"),("z"),("w"),("v"),("j"),("⇗")],        # Reihe 3
+    [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
+]
+
+DVORAK_LAYOUT = [
+    [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
+    [(),("’"),(","),("."),("p"),("y"),("f"),("g"),("c"),("r"),("l"),("/"),("="),()], # Reihe 1
+    [(),("a"),("o"),("e"),("u"),("i"),("d"),("h"),("t"),("n"),("s"),("-"),(),("\n")], # Reihe 2
+    [("⇧"),(),(";"),("q"),("j"),("k"),("x"),("b"),("m"),("w"),("v"),("z"),("⇗")],        # Reihe 3
+    [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
+]
+
+COLEMAK_LAYOUT = [
+    [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),()], # Zahlenreihe (0)
+    [(),("q"),("w"),("f"),("p"),("g"),("j"),("l"),("u"),("y"),(";"),("["),("]"),("\\")], # Reihe 1
+    [(),("a"),("r"),("s"),("t"),("d"),("h"),("n"),("e"),("i"),("o"),("`"),(),("\n")], # Reihe 2
+    [("⇧"),(),("z"),("x"),("c"),("v"),("b"),("k"),("m"),(","),("."),("/"),("⇗")],        # Reihe 3
     [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
 ]
 
@@ -833,9 +859,10 @@ def finger_balance(letters, layout=NEO_LAYOUT):
     # remove the unmapped keys
     if "" in fingers: 
         del fingers[""]
-    for small in ["Klein_L", "Klein_R"]:
-        if small in fingers:
-            fingers[small] *= WEIGHT_FINGER_DISBALANCE_SMALL_FINGER_MULTIPLIER
+    for finger in fingers:
+        idx = FINGER_NAMES.index(finger)
+        multiplier = WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY[idx]
+        fingers[finger] /= multiplier 
     disbalance = std(fingers.values())
     return disbalance
 
@@ -1288,13 +1315,21 @@ def check_the_neo_layout(quiet):
     repeats = repeats_in_file_precalculated(data2)
     datalen2 = sum([i for i, s in repeats])
     
-    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet)
+    data3 = read_file("3gramme.txt")
+    trigrams = trigrams_in_file_precalculated(data3)
+    number_of_trigrams = sum([i for i, s in trigrams])
+     
+    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
     if not quiet:
         print("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
         print("\nAnd the Nordtast Layout")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2)
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print("\nAnd Dvorak")
+        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print("\nAnd Colemak")
+        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
 
 def check_a_layout_from_shell(layout_data, quiet):
