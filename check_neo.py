@@ -1286,9 +1286,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          if not quiet:
              print("# round", round)
              print("# top five")
-             for lay in layouts[:5]:
+             for cost, lay in layouts[:5]:
                  print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
-         layouts = deepcopy(layouts[:int(challengers / 4.0)])
+         layouts = deepcopy(layouts[:int(challengers / 4.0)+1])
          # combine the best and worst to get new ones.
          print("breeding new layouts")
          for i in range(int(challengers/8)):
@@ -1308,13 +1308,13 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          for i in range(challengers - len(layouts)):
              print(i, "of", challengers - len(layouts))
              lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
-             lay, cost = evolve(letters, repeats, layout=lay, iterations=iterations, quiet=True)
+             lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
              layouts.append((cost, lay))
 
      print("# Top 3")
      layouts.sort()
 
-     for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")]: 
+     for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")][:len(layouts)]: 
          cost, lay = layouts[num]
          print(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
@@ -1423,7 +1423,13 @@ if __name__ == "__main__":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
 
     elif argv[2:] and argv[1] == "--challenge":
-        evolution_challenge(rounds=int(argv[2])) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
+        if argv[4:] and "--challengers" in argv:
+            challengers = argv[argv.index("--challengers")+1]
+            argv.remove(challengers)
+            argv.remove("--challengers")
+            evolution_challenge(rounds=int(argv[2]), challengers=int(challengers) ) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
+        else: 
+            evolution_challenge(rounds=int(argv[2])) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
 
     elif argv[2:] and argv[1] == "--check":
         check_a_layout_from_shell(argv[2], quiet=QUIET)
