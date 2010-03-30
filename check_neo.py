@@ -489,7 +489,7 @@ def read_file(path):
     'ui'
     """
 
-    f = open(path)
+    f = open(path, encoding="UTF-8")
     data = f.read()
     f.close()
     return data
