@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo create data, small steps
-# for j in {1..130} {200..220} {300..310} {400..410} {1000..1005}; do time ./check_neo.py --evolve $j --prerandomize 10000 -q >> results/2010-03-29-evolve-$j-results.txt; done
+for j in {1..130} {200..220} {300..310} {400..410} [600..610} {1000..1010} {10000..10010} ; do time ./check_neo.py --evolve $j --prerandomize 10000 -q >> results/2010-03-29-evolve-$j-results.txt; done
 echo … and big steps
-# for j in {0..9}; do for i in {0..9}; do time ./check_neo.py --evolve $j --prerandomize 10000 -q >> results/2010-03-29-evolve-$j$i0-results.txt; done; done
+for j in {0..9}; do for i in {0..9}; do time ./check_neo.py --evolve $j --prerandomize 10000 -q >> results/2010-03-29-evolve-$j$i0-results.txt; done; done
 
 echo check and plot the data
 echo … final penalty 
