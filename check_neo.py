@@ -8,8 +8,6 @@ __usage__ = """Usage:
 
 - check_neo.py --help (display this text)
 
-- check_neo.py --test (run doctests)
-
 - check_neo.py [-q] [-v]
   compare the Neo layout with others, using the included datafiles(*gramme.txt). 
   -q only shows the results for the Neo layout.
@@ -36,6 +34,8 @@ __usage__ = """Usage:
  [(), (), (), ' ', (), (), (), ()]]
 " [-q]
   check the layout passed on the commandline (mind the shell escapes!)
+
+- check_neo.py --test (run doctests)
 
 """
 __design__ = """
