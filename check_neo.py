@@ -1412,10 +1412,10 @@ def check_the_neo_layout(quiet, verbose):
         print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def check_a_layout_from_shell(layout_data, quiet):
+def check_a_layout_from_shell(layout_data, quiet, verbose):
     """Check a layout we get passed as shell argument."""
     layout = eval(layout_data)
-    print_layout_with_statistics(layout, print_layout=not quiet)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
 
 
 ### Self-Test 
@@ -1473,7 +1473,7 @@ if __name__ == "__main__":
             evolution_challenge(rounds=int(argv[2])) # layout=NEO_LAYOUT, challengers=400, rounds=argv[2], iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False)
 
     elif argv[2:] and argv[1] == "--check":
-        check_a_layout_from_shell(argv[2], quiet=QUIET)
+        check_a_layout_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE)
             
     else:
         check_the_neo_layout(quiet=QUIET, verbose=VERBOSE)
