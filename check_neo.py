@@ -10,7 +10,12 @@ __usage__ = """Usage:
 
 - check_neo.py --test (run doctests)
 
-- check_neo.py [--file <file>] [--switch <lx,wq>] [-q] [-v]
+- check_neo.py [-q] [-v]
+  compare the Neo layout with others, using the included datafiles(*gramme.txt). 
+  -q only shows the results for the Neo layout.
+  -v shows several additional metrics which are included in the total cost.
+
+- check_neo.py --file <file> [--switch <lx,wq>] [-q] [-v]
   run the script on the file. 
   --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
   -q removes the qwertz comparision.
@@ -86,7 +91,7 @@ Kostenfaktor: Natürliche Handbewegung
 - (Zwei Finger nebeneinander auf der gleichen Hand, von außen nach innen, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen und von außen nach innen gehen (zweites schon durch „von außen nach innen” abgedeckt) => wenn die „einzelne Hand” in der Mitte liegt, gibt es Strafpunkte + Wenn der Ringfinger auf den Mittelfinger folgt gibt es Strafpunkte (bei  bigrammen) - TODO)
   (von http://www.michaelcapewell.com/projects/keyboard/layout_capewell.htm und http://mkweb.bcgsc.ca/carpalx/?typing_effort)
 - Einen Finger oben, dann einen Finger der gleichen Hand unten (außer den Zeigefinger) => Strafpunkte, wegen Handverrenkung :) - TODO
-- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand.
+- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. - done
 
 Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo) ?? Sinn zweifelhaft ??
 - (Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO)
@@ -988,7 +993,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
     # the number of changes between lines on the same hand.
-    line_change = line_changes(repeats=repeats, layout=layout)
+    line_change_same_hand = line_changes(repeats=repeats, layout=layout)
 
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
@@ -1004,9 +1009,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
-    total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change
+    total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
     
-    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change
+    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand
 
 ### Evolution
 
@@ -1193,7 +1198,7 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False):
     """Print a layout along with statistics."""
     if letters is None or number_of_letters is None: 
         data1 = read_file("1gramme.txt")
@@ -1214,14 +1219,16 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         from pprint import pprint
         pprint(layout)
 
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:6]
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
 
     print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
-    print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
-    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
-    print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
-    print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
+    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
+    if verbose: 
+        print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
+        print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
+        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
+        print("#", line_change_same_hand / 1000000000.0, "billion line changes on the same hand (1 per row)")
 
 
 def check_with_datafile(args, quiet, verbose):
@@ -1377,7 +1384,7 @@ def best_random_layout(args, prerandomize):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
-def check_the_neo_layout(quiet):
+def check_the_neo_layout(quiet, verbose):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     print("Neo")
     data1 = read_file("1gramme.txt")
@@ -1392,17 +1399,17 @@ def check_the_neo_layout(quiet):
     trigrams = trigrams_in_file_precalculated(data3)
     number_of_trigrams = sum([i for i, s in trigrams])
      
-    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
     
     if not quiet:
         print("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
         print("\nAnd the Nordtast Layout")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
         print("\nAnd Dvorak")
-        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
         print("\nAnd Colemak")
-        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
 def check_a_layout_from_shell(layout_data, quiet):
@@ -1469,7 +1476,7 @@ if __name__ == "__main__":
         check_a_layout_from_shell(argv[2], quiet=QUIET)
             
     else:
-        check_the_neo_layout(quiet=QUIET)
+        check_the_neo_layout(quiet=QUIET, verbose=VERBOSE)
         
     #print(unique_sort(frep))
     
