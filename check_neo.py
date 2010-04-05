@@ -856,8 +856,10 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         if pos1 and pos2:
             num_rows = abs(pos1[0] - pos2[0])
             if num_rows:
-                # check if we’re on the same hand (else ignore the change)
-                if key_to_finger(key1, layout=layout)[-1] == key_to_finger(key2, layout=layout)[-1]: 
+                # check if we’re on the same hand (else ignore the line change)
+                finger1 = key_to_finger(key1, layout=layout)
+                finger2 = key_to_finger(key2, layout=layout)
+                if finger1 and finger2 and finger1[-1] == finger2[-1]: 
                     line_changes += abs(pos1[0] - pos2[0]) * number
     return line_changes
 
