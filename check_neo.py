@@ -86,7 +86,7 @@ Kostenfaktor: Natürliche Handbewegung
 - (Zwei Finger nebeneinander auf der gleichen Hand, von außen nach innen, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen und von außen nach innen gehen (zweites schon durch „von außen nach innen” abgedeckt) => wenn die „einzelne Hand” in der Mitte liegt, gibt es Strafpunkte + Wenn der Ringfinger auf den Mittelfinger folgt gibt es Strafpunkte (bei  bigrammen) - TODO)
   (von http://www.michaelcapewell.com/projects/keyboard/layout_capewell.htm und http://mkweb.bcgsc.ca/carpalx/?typing_effort)
 - Einen Finger oben, dann einen Finger der gleichen Hand unten (außer den Zeigefinger) => Strafpunkte, wegen Handverrenkung :) - TODO
-
+- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand.
 
 Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo) ?? Sinn zweifelhaft ??
 - (Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO)
@@ -260,6 +260,7 @@ License: GPLv3 or later
 WEIGHT_POSITION = 1 #: reference
 WEIGHT_FINGER_REPEATS = 8 #: higher than a switch from center to side, but lower than a switch from center to upper left.
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
 WEIGHT_FINGER_DISBALANCE = 5 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
@@ -834,6 +835,32 @@ def finger_repeats_top_and_bottom(finger_repeats):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
+def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
+    """Get the number of line changes on the same hand (only change the line in between hand changes). 
+
+    >>> data = read_file("testfile")
+    >>> line_changes(data)
+    7
+    """
+    if data is not None: 
+        repeats = repeats_in_file(data)
+    elif repeats is None:
+        raise Exception("Need either repeats or data")
+    
+    line_changes = 0
+    for number, pair in repeats:
+        key1 = pair[0]
+        key2 = pair[1]
+        pos1 = find_key(key1, layout=layout)
+        pos2 = find_key(key2, layout=layout)
+        if pos1 and pos2:
+            num_rows = abs(pos1[0] - pos2[0])
+            if num_rows:
+                # check if we’re on the same hand (else ignore the change)
+                if key_to_finger(key1, layout=layout)[-1] == key_to_finger(key2, layout=layout)[-1]: 
+                    line_changes += abs(pos1[0] - pos2[0]) * number
+    return line_changes
+
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
 
@@ -937,13 +964,14 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     >>> data = read_file("testfile")
     >>> total_cost(data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
-    (193, 3, 150, 0, 3.3380918415851206, 3)
+    (209.4, 3, 150, 0, 3.3380918415851206, 3, 7)
     """
     # the raw costs
     if data is not None: 
         finger_repeats = finger_repeats_from_file(data, layout=layout)
         position_cost = key_position_cost_from_file(data, layout=layout, cost_per_key=cost_per_key)
         letters = letters_in_file(data)
+        repeats = repeats_in_file(data)
         trigrams = trigrams_in_file(data)
     elif letters is None or repeats is None:
         raise Exception("Need either repeats und letters or data")
@@ -956,6 +984,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
+
+    # the number of changes between lines on the same hand.
+    line_change = line_changes(repeats=repeats, layout=layout)
 
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
@@ -971,8 +1002,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
+    total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change
     
-    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches    
+    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change
 
 ### Evolution
 
