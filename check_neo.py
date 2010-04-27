@@ -1169,14 +1169,14 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
 
-    print("#", total / 1000000000.0, "billion total penalty compared to notime-noeffort")
+    print("#", total / 1000000000, "billion total penalty compared to notime-noeffort")
     print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
     print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
     if verbose: 
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
         print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
-        print("#", line_change_same_hand / 1000000000.0, "billion rows² to cross while on the same hand")
+        print("#", line_change_same_hand / 1000000000, "billion rows² to cross while on the same hand")
 
 
 def check_with_datafile(args, quiet, verbose):
@@ -1275,7 +1275,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              print("# top five")
              for cost, lay in layouts[:5]:
                  print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
-         layouts = deepcopy(layouts[:int(challengers / 4.0)+1])
+         layouts = deepcopy(layouts[:int(challengers / 4)+1])
          # combine the best and worst to get new ones.
          print("breeding new layouts")
          for i in range(int(challengers/8)):
