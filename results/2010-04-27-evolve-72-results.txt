@@ -1,0 +1,30 @@
+# Mutating Neo
+
+# Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'ö', 'z', 'l', 'ß', 'q', 'j', 'f', 's', 'c', 'b', ',', '´', ()],
+ ['⇩', 'm', 'i', 'n', 'o', 'h', 'g', 'a', 'r', 'e', 'u', 'p', '⇘', '\n'],
+ ['⇧', (), 'w', 'v', 't', 'x', 'k', 'd', 'ä', 'y', 'ü', '.', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.981555983 billion total penalty compared to notime-noeffort
+# 4.38074351505 mean key position cost in file 1gramme.txt
+# 4.60920765471 % finger repeats in file 2gramme.txt
+# 7.37249564101 million keystrokes disbalance of the fingers
+# 0.354877220649 % finger repeats top to bottom or vice versa
+# 11.2656008399 % of trigrams have no handswitching (uppercase ignored)
+# 0.22408295 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'ö', 'g', 'ä', 'b', 'u', 'q', ',', 'l', 'r', 'd', 'k', '´', ()],
+ ['⇩', 'e', 'i', 't', 's', 'j', 'w', 'h', 'n', 'z', 'f', 'a', '⇘', '\n'],
+ ['⇧', (), 'ü', 'ß', 'p', 'c', 'x', 'o', '.', 'v', 'm', 'y', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 2.108035388 billion total penalty compared to notime-noeffort
+# 4.41910476613 mean key position cost in file 1gramme.txt
+# 4.95844028504 % finger repeats in file 2gramme.txt
+# 13.2638338089 million keystrokes disbalance of the fingers
+# 0.51460917213 % finger repeats top to bottom or vice versa
+# 10.32326182 % of trigrams have no handswitching (uppercase ignored)
+# 0.258931038 billion rows² to cross while on the same hand
