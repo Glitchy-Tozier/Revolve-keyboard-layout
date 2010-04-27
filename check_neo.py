@@ -988,22 +988,22 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     >>> letters = letters_in_file(data)
     >>> trigrams = trigrams_in_file(data)
     >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=TEST_COST_PER_KEY)
-    # checked switch ('rr',) 193
-    # checked switch ('re',) 175
-    # checked switch ('ro',) 178
-    # checked switch ('ee',) 193
-    # checked switch ('eo',) 196
-    # checked switch ('oo',) 193
+    # checked switch ('rr',) 201.4
+    # checked switch ('re',) 181.4
+    # checked switch ('ro',) 184.4
+    # checked switch ('ee',) 201.4
+    # checked switch ('eo',) 204.4
+    # checked switch ('oo',) 201.4
     0.00019 finger repetition: 1e-06 position cost: 0.00015
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
-    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 175, 15)
+    ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 181.4, 8.599999999999994)
     >>> controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=TEST_COST_PER_KEY)
-    # checked switch ('rr',) 193
-    # checked switch ('re',) 175
-    # checked switch ('ro',) 178
-    # checked switch ('ee',) 193
-    # checked switch ('eo',) 196
-    # checked switch ('oo',) 193
+    # checked switch ('rr',) 201.4
+    # checked switch ('re',) 181.4
+    # checked switch ('ro',) 184.4
+    # checked switch ('ee',) 201.4
+    # checked switch ('eo',) 204.4
+    # checked switch ('oo',) 201.4
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
     from random import choice
