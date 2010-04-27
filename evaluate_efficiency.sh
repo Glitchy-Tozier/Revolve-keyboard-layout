@@ -13,6 +13,7 @@ for j in {1..9} {1..9}0 {1..9}00 {1..9}000; do grep disbalance results/2010-04-2
 echo … key position cost
 for j in {1..9} {1..9}0 {1..9}00 {1..9}000; do grep 1gramme results/2010-04-27-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done > results/2010-04-27-evolve-range-key-position.txt
 
-
+# and old style results
+for j in {1..130} 1{4..9}0 {201..205} {301..305} {401..405} {601..603} {1001..1003} 10000; do grep "billion total" results/2010-04-27-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done >> results/2010-04-27-evolve-range-final-penalty.txt; for j in {1..130} 1{4..9}0 {201..205} {301..305} {401..405} {601..603} {1001..1003} 10000; do grep 2gramme results/2010-04-27-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done >> results/2010-04-27-evolve-range-finger-repeats.txt; for j in {1..130} 1{4..9}0 {201..205} {301..305} {401..405} {601..603} {1001..1003} 10000; do grep disbalance results/2010-04-27-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done >> results/2010-04-27-evolve-range-finger-disbalance.txt; for j in {1..130} 1{4..9}0 {201..205} {301..305} {401..405} {601..603} {1001..1003} 10000; do grep 1gramme results/2010-04-27-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done >> results/2010-04-27-evolve-range-key-position.txt
 echo with pyxplot
 # pyxplot evaluate_efficiency.pyx
