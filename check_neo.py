@@ -71,6 +71,10 @@ Vorgehensweise zur Optimierung:
   )
 - Paradigmen: http://wiki.neo-layout.org/wiki/Paradigmen
 
+### Kostenfaktoren
+
+(in Klammer diejenigen, die noch debattiert werden)
+
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done ; 
   TODO: Gesamtbelastung der Finger auskoppeln und rein auf Erreichberkeit der Tasten gehen. 
@@ -86,12 +90,11 @@ Kostenfaktor: Belastung
 - Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - done (std)
 
 Kostenfaktor: Natürliche Handbewegung
-- (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. - TODO)
+- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen)²- done
+- (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
 - (Zwei Finger nebeneinander auf der gleichen Hand, von außen nach innen, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen und von außen nach innen gehen (zweites schon durch „von außen nach innen” abgedeckt) => wenn die „einzelne Hand” in der Mitte liegt, gibt es Strafpunkte + Wenn der Ringfinger auf den Mittelfinger folgt gibt es Strafpunkte (bei  bigrammen) - TODO)
   (von http://www.michaelcapewell.com/projects/keyboard/layout_capewell.htm und http://mkweb.bcgsc.ca/carpalx/?typing_effort)
-- Einen Finger oben, dann einen Finger der gleichen Hand unten (außer den Zeigefinger) => Strafpunkte, wegen Handverrenkung :) - TODO
-- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. - done
 
 Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimieren für Neo) ?? Sinn zweifelhaft ??
 - (Jede einzelne Änderung von Neo2 weg bringt Strafpunkte => Es kann über Gewichtung festgelegt werden, wie nahe das Ergebnis an Neo liegen soll. - TODO)
@@ -99,6 +102,12 @@ Kostenfaktor: Neulernzeit (die ideale Tastatur kann jeder schon - und wir optimi
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - TODO. 
 
+
+### Kosten für die Tasten
+
+Da die Belastung der Finger bereits *pro Finger* gerechnet wird, sollte darüber auch die Unterscheidung zwischen Fingern gemacht werden. → WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY
+
+Das sollte dann der inversen Geschwindigkeit der Finger entsprechen, normiert auf den Kleinen Finger und modifiziert durch die Belastbarkeit. Die liste sagt “so viel Last wolle nwir auf dem Finger”. Dadurch können dann die Kosten pro Taste alleine auf der Erreichbarkeit der Tasten relativ zur Grundlinie aufgebaut werden. 
 
 Notizen:
 - Ulf Bro nutzt für Kosten der Einzeltasten das folgende:
@@ -112,37 +121,13 @@ Notizen:
   4 5 5 5 5 7         7 5 5 5 5
   Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
 
-### Kosten für die Tasten (linke Hand)
+Vorschläge: 
+→ http://lists.neo-layout.org/pipermail/diskussion/2008-July/007551.html
+→ http://lists.neo-layout.org/pipermail/diskussion/2008-July/007569.html
+→ http://lists.neo-layout.org/pipermail/diskussion/2008-July/007570.html
 
-Grundpositionen: 
-- Der Zeigefinger ist der schnellste. Damit der Mittelfinger teurer aber nicht gleich doppelt so teuer ist, nehmen wir 2.
-- Mittelfinger teurer: 3
-- Ringfinger ist in Grundposition etwa gleich schnell (in anderen langsamer): 3
-- Kleiner Finger sollte nicht zu sehr belastet werden: 5
 
-Streck:
-- Zeige rechts ist etwa so schnell wie der Kleine Finger: 5
-- Zeige oben rechts ist etwas langsamer als Ring oben (s.u.): 10
-- Zeige oben ist noch etwas schneller als Zeige rechts: 4
-- Mittel oben ist signifikant langsamer: 6
-- Ring oben ist kreutzlangsam: 9
-- Aber Kleiner oben noch schlimmer (er ist kürzer und sollte nicht zu stark belastet werden): 12 (ist es OK, dass der Kleine oben 6 mal so viel kostet wie der Zeigefinger? Meiner Erfaahrung nach ja.)
-
-Unten: 
-- Zeige unten geht ganz gut, ist aber etwas langsamer als Mittel oben: 7
-- Zeige unten streck ist ekelhaft (v.a. wegen der Rückbewegezeit - vll. forcierung des Handwechsels hier); wie kleiner oben: 12
-- Mittel unten ist auch nervig, aber nicht ganz so schlimm; trotzdem schlimmer als Ring oben: 11
-- Ring unten ist etwas besser als Mittel unten (kürzer): 11
-- Kleiner unten ist besser als Ring und Mitte, aber schlechter als alles andere: 10
-
-Unterschied rechte Hand:
-- Zeige unten Streck ist billiger: 10
-- Kleiner hat Zusatztasten:
-  * oben streck 1: 15
-  * oben streck 2: 18
-  * rechts, schlimmer als Ring streck und Ring unten (auch wegen Belastung): 12
-  * ganz rechts ist grausig, wie oben streck 1: 15
-
+### Weitere Notizen
 
 Mehrere Leute nutzen einen „Tastaturwettbewerb”: Mit zufälligen anfangen, die besten behalten und aus ihnen neue mutieren. -> http://klausler.com/evolved.html
 
@@ -865,7 +850,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 finger1 = key_to_finger(key1, layout=layout)
                 finger2 = key_to_finger(key2, layout=layout)
                 if finger1 and finger2 and finger1[-1] == finger2[-1]: 
-                    line_changes += abs(pos1[0] - pos2[0]) * number
+                    line_changes += abs(pos1[0] - pos2[0])**2 * number
     return line_changes
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
