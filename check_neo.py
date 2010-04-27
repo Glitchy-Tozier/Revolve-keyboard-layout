@@ -155,8 +155,8 @@ License: GPLv3 or later
 
 # Gewichtung der unterschiedlichen Kosten
 WEIGHT_POSITION = 1 #: reference
-WEIGHT_FINGER_REPEATS = 8 #: higher than a switch from center to side, but lower than a switch from center to upper left.
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 16 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. 
+WEIGHT_FINGER_REPEATS = 16 #: higher than two switches from center to side, but lower than two switches from center to upper left.
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 32 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
 WEIGHT_FINGER_DISBALANCE = 5 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus.
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
@@ -164,10 +164,10 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
     2,
     2,
-    3,
+    2,
     1,
     1,
-    3,
+    2,
     2,
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
@@ -1099,6 +1099,44 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
+def format_keyboard_layout(layout):
+    """Format a keyboard layout to look like a real keyboard."""
+    neo = """
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ Back │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│Tab │ x │ v │ l │ c │ w │ k │ h │ g │ f │ q │ ß │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│ M3  │ u │ i │ a │ e │ o │ s │ n │ r │ t │ d │ y │ M3 │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│Ums │ M4│ ü │ ö │ ä │ p │ z │ b │ m │ , │ . │ j │  Umsch  │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+
+    """
+    lay = "┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐\n"
+    lay +="│ "
+    lay += " │ ".join([l[0] for l in layout[0][:-1]])
+    lay += " │ Back │\n"
+    lay += "├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤\n"
+    lay += "│Tab │ "
+    lay += " │ ".join([l[0] for l in layout[1][1:-1]])
+    lay += " │ Ret │\n"
+    lay += "├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │\n"
+    lay += "│ M3  │ "
+    lay += " │ ".join([l[0] for l in layout[2][1:-2]])
+    lay += " │ M3 │   │\n"
+    lay += "├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤\n"
+    lay += "│Ums │ M4│ "
+    lay += " │ ".join([l[0] for l in layout[3][2:-1]])
+    lay += " │  Umsch  │\n"
+    lay += """├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘"""
+    return lay
+    
+
 def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False):
     """Print a layout along with statistics."""
     if letters is None or number_of_letters is None: 
@@ -1116,7 +1154,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         trigrams = trigrams_in_file_precalculated(data3)
         number_of_trigrams = sum([i for i, s in trigrams])
         
-    if print_layout: 
+    if print_layout:
+        print(format_keyboard_layout(layout))
         from pprint import pprint
         pprint(layout)
 
