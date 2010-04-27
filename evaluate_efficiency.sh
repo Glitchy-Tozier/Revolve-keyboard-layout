@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -lt 2 ]; then 
+if [ $# -lt 1 ]; then 
     echo "usage: $0 <identifier>"
     exit 0
 fi
@@ -11,7 +11,9 @@ if [ "$1" == "--help" ]; then
 fi
 
 echo create data
-for j in {1..9} {1..9}0 {1..9}00 {1..9}000 ; do time ./check_neo.py --evolve $j --prerandomize 10000 -v -q >> results/$1-evolve-$j-results.txt; done
+#for j in {1..9} {1..9}0 {1..9}00 {1..9}000 
+#    do time ./check_neo.py --evolve $j --prerandomize 10000 -v -q >> results/$1-evolve-$j-results.txt
+#done
 
 echo check and plot the data
 echo … final penalty 
