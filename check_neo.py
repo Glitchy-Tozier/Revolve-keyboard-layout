@@ -256,7 +256,9 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # “How much does the hand hurt when reaching for the key” :)
 # rationale: reaching for the Neo2 x hurts thrice as much as just hitting the Neo2 u → 10 vs. 3.
 # the upper keys on the right hand can be reached a bit better, since movement is aligned with the hand
-# (except for q, since the pinky is too short for that). 
+# (except for q, since the pinky is too short for that).
+# theoretical minimum (assigning the lowest cost to the most frequent char, counting only the chars on layer 1):
+# 1123111113 = 3.3490913205386508 mean key position cost
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
     [0,    10, 6, 6, 8, 9,    10, 5, 5, 5, 8, 6,18, 0], # Reihe 1
