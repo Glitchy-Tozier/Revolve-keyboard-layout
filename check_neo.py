@@ -98,6 +98,7 @@ Kostenfaktor: Natürliche Handbewegung
 
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - done. 
+- . sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO
 
 
 ### Kosten für die Tasten
