@@ -250,13 +250,17 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 ]
 
 
-# Structured reweighting (but still mostly from experience and deducing from the work of others). 
-COST_PER_KEY  = [ # 0 heißt nicht beachtet
-    [0,    0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
-    [0,   12, 9, 6, 4,10,    10, 4, 6, 9,12,15,18, 0], # Reihe 1
-    [0,    5, 3, 3, 2, 5,     5, 2, 3, 3, 5,12, 0,15], # Reihe 2
-    [15,0,10,11,11, 7,   12, 10, 7,11,11,10,15],     # Reihe 3
-    [0,0,0,               5    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
+# Structured reweighting (but still mostly from experience and deducing from the work of others).
+# The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
+# THis shows the reachability of the keys, ignoring the different speed of the fingers.
+# “How much does the hand hurt when reaching for the key” :)
+# rationale: reaching for the Neo2 x hurts thrice as much as just hitting the Neo2 u → 10 vs. 3.
+COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
+    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
+    [0,    10, 6, 6, 8, 8,    10, 5, 5, 5, 8,10,18, 0], # Reihe 1
+    [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 6,10,18], # Reihe 2
+    [15,10,12,12,12, 7,   12, 7, 6,11,11,10,15],     # Reihe 3
+    [0,0,0,               3    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
 
 
