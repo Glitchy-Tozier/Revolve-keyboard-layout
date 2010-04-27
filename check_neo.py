@@ -1161,7 +1161,7 @@ def check_with_datafile(args, quiet, verbose):
                                      number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
     
 
-def evolve_a_layout(args, prerandomize, controlled, quiet):
+def evolve_a_layout(args, prerandomize, controlled, quiet, verbose):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
     #data = read_file("/tmp/sskreszta")
@@ -1188,7 +1188,7 @@ def evolve_a_layout(args, prerandomize, controlled, quiet):
     lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
@@ -1354,7 +1354,7 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION)
+        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
