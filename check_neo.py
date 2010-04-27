@@ -255,10 +255,12 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # THis shows the reachability of the keys, ignoring the different speed of the fingers.
 # “How much does the hand hurt when reaching for the key” :)
 # rationale: reaching for the Neo2 x hurts thrice as much as just hitting the Neo2 u → 10 vs. 3.
+# the upper keys on the right hand can be reached a bit better, since movement is aligned with the hand
+# (except for q, since the pinky is too short for that). 
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
-    [0,    10, 6, 6, 8, 8,    10, 5, 5, 5, 8,10,18, 0], # Reihe 1
-    [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 6,10,18], # Reihe 2
+    [0,    10, 6, 6, 8, 9,    10, 5, 5, 5, 8, 6,18, 0], # Reihe 1
+    [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,12,12, 7,   12, 7, 6,11,11,10,15],     # Reihe 3
     [0,0,0,               3    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
