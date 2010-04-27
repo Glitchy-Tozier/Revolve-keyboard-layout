@@ -106,6 +106,8 @@ Da die Belastung der Finger bereits *pro Finger* gerechnet wird, sollte darüber
 
 Das sollte dann der inversen Geschwindigkeit der Finger entsprechen, normiert auf den Kleinen Finger und modifiziert durch die Belastbarkeit. Die liste sagt “so viel Last wolle nwir auf dem Finger”. Dadurch können dann die Kosten pro Taste alleine auf der Erreichbarkeit der Tasten relativ zur Grundlinie aufgebaut werden. 
 
+Bisher verwende ich 
+
 Notizen:
 - Ulf Bro nutzt für Kosten der Einzeltasten das folgende:
   5 3 3 3 4         4 3 3 3 5 7
@@ -122,7 +124,7 @@ Vorschläge:
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007551.html
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007569.html
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007570.html
-
+→ http://lists.neo-layout.org/pipermail/diskussion/2010-March/016156.html
 
 ### Weitere Notizen
 
@@ -250,12 +252,13 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 
 # Structured reweighting (but still mostly from experience and deducing from the work of others). 
 COST_PER_KEY  = [ # 0 heißt nicht beachtet
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
-        [0, 12,9,6,4,10,10,4,6,9,12,15,18,0], # Reihe 1
-        [0,  5,3,3,2,5,5,2,3,3,5,12,0,15], # Reihe 2 
-        [15,0,10,11,11,7,12,10,7,11,11,10,15],     # Reihe 3
-        [0,0,0,     5     ,0,0,0,0] # Reihe 4 mit Leertaste
+    [0,    0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
+    [0,   12, 9, 6, 4,10,    10, 4, 6, 9,12,15,18, 0], # Reihe 1
+    [0,    5, 3, 3, 2, 5,     5, 2, 3, 3, 5,12, 0,15], # Reihe 2
+    [15,0,10,11,11, 7,   12, 10, 7,11,11,10,15],     # Reihe 3
+    [0,0,0,               5    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
+
 
 
 #: The positions which are by default accessed by the given finger. 
