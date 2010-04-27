@@ -140,104 +140,11 @@ Quellen für Wortlisten:
 
 __results__ = """
 
-After 25000 iterations with fixed baseline:
-
-[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 'x', 'h', 'z', 'c', 'p', 'f', 'm', 'l', 'g', 'k', 'j', '´', ()],
- ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'v', '⇘', '\n'],
- ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'b', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-0.0263404096176 % finger repeats in file 2gramme.txt
-1.88826949945 mean key position cost in file 1gramme.txt
-
-Evolved Layout
-[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'p', 'j', '´', ()],
- ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'v', '⇘', '\n'],
- ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-0.0286983455234 % finger repeats in file 2gramme.txt
-1.87007403505 mean key position cost in file 1gramme.txt
-
-[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'v', 'j', '´', ()],
- ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'p', '⇘', '\n'],
- ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-0.0286983455234 % finger repeats in file 2gramme.txt
-1.87007403505 mean key position cost in file 1gramme.txt
-
-Evolved Layout
-[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 'x', 'h', 'g', 'c', 'z', 'f', 'm', 'l', 'b', 'v', 'j', '´', ()],
- ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'p', '⇘', '\n'],
- ['⇧', (), 'ü', 'ö', 'ä', 'y', 'q', 'ß', 'w', ',', '.', 'k', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-0.0286983455234 % finger repeats in file 2gramme.txt
-1.87007403505 mean key position cost in file 1gramme.txt
-
-lucky strike: after 100; only 15 switches: qb yw lv qß vm vb mg vk fg lh pq jß wv ßz bv
-
-Evolved Layout
-[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 'x', 'h', 'f', 'c', 'y', 'w', 'l', 'm', 'g', 'k', 'p', '´', ()],
- ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'b', '⇘', '\n'],
- ['⇧', (), 'ü', 'ö', 'ä', 'q', 'ß', 'j', 'v', ',', '.', 'z', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-0.0275394878237 % finger repeats in file 2gramme.txt
-1.91234715913 mean key position cost in file 1gramme.txt
-
-
-a very good one for testing finger repeat optimization (full commandline call)
-./check_neo.py --check "[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', ()],
- [(), 'ß', '.', 'o', 'l', 'w', 'z', 'h', 'a', 'f', 'ö', 'x', '\´', ()],
- ['⇩', 'r', 'i', 't', 'n', 'c', 'g', 'd', 'e', 's', 'u', 'y', '⇘', '\n'],
- ['⇧', (), ',', 'p', 'j', 'm', 'q', 'k', 'b', 'ä', 'v', 'ü', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-
-"
-# 1.22172464 billion total penalty compared to notime-noeffort
-# 1.14188020276 % finger repeats in file 2gramme.txt
-# 0.0953054878469 % finger repeats top to bottom or vice versa
-# 4.09338086197 mean key position cost in file 1gramme.txt
-
-and one for key position costs
-./check_neo.py --check "[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', ()],
-> [(), 'ö', 'f', 'm', 'l', 'w', '.', 'a', 'g', 'k', 'ß', 'x', '´', ()],
-> ['⇩', 'u', 's', 'r', 'n', 'h', 'o', 'e', 't', 'i', 'd', 'y', '⇘', '\\n'],
-> ['⇧', (), 'ü', 'z', 'v', 'b', 'j', 'q', 'c', 'p', 'ä', ',', '⇗'],
-> [(), (), (), ' ', (), (), (), ()]]
-> "
-# 1.205248537 billion total penalty compared to notime-noeffort
-# 2.37585950204 % finger repeats in file 2gramme.txt
-# 0.157557240042 % finger repeats top to bottom or vice versa
-# 3.89605330543 mean key position cost in file 1gramme.txt
-
-
-For reference: 
-Neo
-# 1.310067933 billion total penalty compared to notime-noeffort
-# 4.82198888113 % finger repeats in file 2gramme.txt
-# 0.307224610884 % finger repeats top to bottom or vice versa
-# 3.9755737368 mean key position cost in file 1gramme.txt
-
-Qwertz for comparision
-# 1.935446527 billion total penalty compared to notime-noeffort
-# 6.72632774411 % finger repeats in file 2gramme.txt
-# 0.233732243474 % finger repeats top to bottom or vice versa
-# 5.95987411112 mean key position cost in file 1gramme.txt
-
-And the Nordtast Layout
-# 1.263900162 billion total penalty compared to notime-noeffort
-# 1.81675742427 % finger repeats in file 2gramme.txt
-# 0.260071071233 % finger repeats top to bottom or vice versa
-# 4.13572995975 mean key position cost in file 1gramme.txt
-
 """
 
 __doc__ += __usage__ + __design__
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __copyright__ = """2010 © Arne Babenhauserheide
 
