@@ -2,14 +2,29 @@
 
 # Evolved Layout
 [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
- [(), 't', 'b', 'ß', 'x', 'g', 'p', 'm', ',', 'k', '.', 's', '´', ()],
- ['⇩', 'ä', 'n', 'e', 'ü', 'h', 'r', 'd', 'o', 'c', 'y', 'i', '⇘', '\n'],
- ['⇧', (), 'q', 'w', 'j', 'v', 'l', 'f', 'z', 'u', 'ö', 'a', '⇗'],
+ [(), 'q', 'v', 'ä', 'ö', 'c', 'k', 'b', 'h', ',', 'ü', 't', '´', ()],
+ ['⇩', 'e', 'f', 'u', 'ß', 'a', 'o', 'y', 'w', 'm', '.', 's', '⇘', '\n'],
+ ['⇧', (), 'j', 'p', 'x', 'r', 'd', 'i', 'g', 'l', 'z', 'n', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 2.487305339 billion total penalty compared to notime-noeffort
-# 5.39861402897 mean key position cost in file 1gramme.txt
-# 4.80906323348 % finger repeats in file 2gramme.txt
-# 15.4261837408 million keystrokes disbalance of the fingers
-# 0.236468006316 % finger repeats top to bottom or vice versa
-# 10.6499191207 % of trigrams have no handswitching (uppercase ignored)
-# 0.311620201 billion rows² to cross while on the same hand
+# 2.622831508 billion total penalty compared to notime-noeffort
+# 6.075751893 mean key position cost in file 1gramme.txt
+# 7.18114134029 % finger repeats in file 2gramme.txt
+# 21.7367086081 million keystrokes disbalance of the fingers
+# 0.0948069543671 % finger repeats top to bottom or vice versa
+# 9.54567145075 % of trigrams have no handswitching (uppercase ignored)
+# 0.236864804 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()],
+ [(), 'ß', 'x', 'i', 'k', 'w', 'm', ',', '.', 'l', 'v', 'j', '´', ()],
+ ['⇩', 'o', 'z', 'e', 'ö', 'f', 'y', 't', 'b', 's', 'g', 'u', '⇘', '\n'],
+ ['⇧', (), 'h', 'p', 'ü', 'a', 'q', 'd', 'r', 'n', 'ä', 'c', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 2.435343936 billion total penalty compared to notime-noeffort
+# 5.67682379117 mean key position cost in file 1gramme.txt
+# 6.71063413555 % finger repeats in file 2gramme.txt
+# 9.77792668238 million keystrokes disbalance of the fingers
+# 0.837807246479 % finger repeats top to bottom or vice versa
+# 6.19563206634 % of trigrams have no handswitching (uppercase ignored)
+# 0.222031663 billion rows² to cross while on the same hand
