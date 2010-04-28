@@ -164,10 +164,10 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
     2,
     2,
-    2,
+    3,
     1,
     1,
-    2,
+    3,
     2,
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
