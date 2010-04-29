@@ -1205,7 +1205,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
         print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
         print("#", line_change_same_hand / 1000000000, "billion rows² to cross while on the same hand")
-        print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/100000000, "Right:", hand_load[1]/100000000, "100mio keys")
+        print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
 
 
 def check_with_datafile(args, quiet, verbose):
