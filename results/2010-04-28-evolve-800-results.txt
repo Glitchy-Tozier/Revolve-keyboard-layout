@@ -1,0 +1,156 @@
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ ä │ c │ p │ ü │ ö │ v │ h │ l │ m │ x │ , │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ a │ r │ i │ e │ o │ d │ t │ s │ n │ u │ b │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ q │ z │ k │ . │ y │ ß │ g │ f │ w │ j │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'ä', 'c', 'p', 'ü', 'ö', 'v', 'h', 'l', 'm', 'x', ',', '´', ()],
+ ['⇩', 'a', 'r', 'i', 'e', 'o', 'd', 't', 's', 'n', 'u', 'b', '⇘', '\n'],
+ ['⇧', (), 'q', 'z', 'k', '.', 'y', 'ß', 'g', 'f', 'w', 'j', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.734902193 billion total penalty compared to notime-noeffort
+# 3.9208753674 mean key position cost in file 1gramme.txt
+# 2.58557949677 % finger repeats in file 2gramme.txt
+# 1.91780383729 million keystrokes disbalance of the fingers
+# 0.0199399976051 % finger repeats top to bottom or vice versa
+# 5.94346939887 % of trigrams have no handswitching (uppercase ignored)
+# 0.168244568 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ ß │ c │ ö │ ü │ q │ x │ r │ t │ h │ z │ y │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ u │ a │ i │ e │ o │ l │ n │ d │ s │ g │ , │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ . │ p │ f │ ä │ j │ v │ m │ w │ k │ b │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'ß', 'c', 'ö', 'ü', 'q', 'x', 'r', 't', 'h', 'z', 'y', '´', ()],
+ ['⇩', 'u', 'a', 'i', 'e', 'o', 'l', 'n', 'd', 's', 'g', ',', '⇘', '\n'],
+ ['⇧', (), '.', 'p', 'f', 'ä', 'j', 'v', 'm', 'w', 'k', 'b', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.815104357 billion total penalty compared to notime-noeffort
+# 4.10573411963 mean key position cost in file 1gramme.txt
+# 2.42353465045 % finger repeats in file 2gramme.txt
+# 3.29070943548 million keystrokes disbalance of the fingers
+# 0.332110500649 % finger repeats top to bottom or vice versa
+# 2.96978464236 % of trigrams have no handswitching (uppercase ignored)
+# 0.153097893 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ x │ g │ l │ f │ ß │ y │ . │ u │ o │ q │ ä │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ t │ r │ s │ n │ h │ c │ e │ i │ a │ d │ z │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ j │ b │ m │ w │ v │ ö │ p │ k │ , │ ü │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'x', 'g', 'l', 'f', 'ß', 'y', '.', 'u', 'o', 'q', 'ä', '´', ()],
+ ['⇩', 't', 'r', 's', 'n', 'h', 'c', 'e', 'i', 'a', 'd', 'z', '⇘', '\n'],
+ ['⇧', (), 'j', 'b', 'm', 'w', 'v', 'ö', 'p', 'k', ',', 'ü', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.904655081 billion total penalty compared to notime-noeffort
+# 4.03410947041 mean key position cost in file 1gramme.txt
+# 2.56232282944 % finger repeats in file 2gramme.txt
+# 1.99225924814 million keystrokes disbalance of the fingers
+# 0.0690772068014 % finger repeats top to bottom or vice versa
+# 3.68675230565 % of trigrams have no handswitching (uppercase ignored)
+# 0.237834968 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ y │ ö │ c │ ü │ ä │ k │ f │ l │ m │ ß │ , │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ u │ e │ t │ i │ a │ h │ d │ n │ r │ s │ . │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ o │ j │ p │ v │ q │ b │ g │ w │ z │ x │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'y', 'ö', 'c', 'ü', 'ä', 'k', 'f', 'l', 'm', 'ß', ',', '´', ()],
+ ['⇩', 'u', 'e', 't', 'i', 'a', 'h', 'd', 'n', 'r', 's', '.', '⇘', '\n'],
+ ['⇧', (), 'o', 'j', 'p', 'v', 'q', 'b', 'g', 'w', 'z', 'x', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.730099133 billion total penalty compared to notime-noeffort
+# 4.01872000081 mean key position cost in file 1gramme.txt
+# 1.65926887344 % finger repeats in file 2gramme.txt
+# 3.84819438173 million keystrokes disbalance of the fingers
+# 0.0522274191461 % finger repeats top to bottom or vice versa
+# 3.26304261641 % of trigrams have no handswitching (uppercase ignored)
+# 0.153698753 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ ö │ o │ ä │ k │ ü │ w │ d │ r │ f │ ß │ . │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ i │ a │ e │ h │ g │ t │ c │ s │ n │ l │ , │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ q │ z │ p │ u │ y │ b │ m │ j │ v │ x │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'ö', 'o', 'ä', 'k', 'ü', 'w', 'd', 'r', 'f', 'ß', '.', '´', ()],
+ ['⇩', 'i', 'a', 'e', 'h', 'g', 't', 'c', 's', 'n', 'l', ',', '⇘', '\n'],
+ ['⇧', (), 'q', 'z', 'p', 'u', 'y', 'b', 'm', 'j', 'v', 'x', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.843289836 billion total penalty compared to notime-noeffort
+# 4.10280325549 mean key position cost in file 1gramme.txt
+# 1.77617202296 % finger repeats in file 2gramme.txt
+# 4.20733764573 million keystrokes disbalance of the fingers
+# 0.318086093802 % finger repeats top to bottom or vice versa
+# 3.65908561538 % of trigrams have no handswitching (uppercase ignored)
+# 0.172653191 billion rows² to cross while on the same hand
+# Mutating Neo
+
+# Evolved Layout
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ ä │ o │ p │ c │ ß │ j │ m │ h │ u │ ö │ z │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ t │ a │ e │ d │ b │ r │ n │ s │ i │ l │ , │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ y │ ü │ q │ g │ k │ v │ w │ f │ . │ x │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', '←'],
+ ['⇥', 'ä', 'o', 'p', 'c', 'ß', 'j', 'm', 'h', 'u', 'ö', 'z', '´', ()],
+ ['⇩', 't', 'a', 'e', 'd', 'b', 'r', 'n', 's', 'i', 'l', ',', '⇘', '\n'],
+ ['⇧', (), 'y', 'ü', 'q', 'g', 'k', 'v', 'w', 'f', '.', 'x', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 1.874613102 billion total penalty compared to notime-noeffort
+# 4.10667116086 mean key position cost in file 1gramme.txt
+# 1.55314671166 % finger repeats in file 2gramme.txt
+# 3.82673988706 million keystrokes disbalance of the fingers
+# 0.258303933721 % finger repeats top to bottom or vice versa
+# 6.09615028276 % of trigrams have no handswitching (uppercase ignored)
+# 0.198910802 billion rows² to cross while on the same hand
