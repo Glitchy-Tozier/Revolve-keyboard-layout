@@ -171,7 +171,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     2,
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
-WEIGHT_XCVZ_ON_BAD_POSITION = 0.1 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+WEIGHT_XCVZ_ON_BAD_POSITION = 0.6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -861,12 +861,12 @@ def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
     badly_positioned = []
     for key in keys: 
         pos = find_key(key)
-        # well means not yet left stretch
-        if not pos[1] < 5:
+        # well means not yet left stretch, in row 3, col 5 is also OK.
+        if not pos[1] < 5 or (pos[0] == 3 and pos[1] == 5):
             badly_positioned.append(1)
     return sum(badly_positioned)
 
-        
+
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
     """Compute a total cost from all costs we have available, wheighted.
 
