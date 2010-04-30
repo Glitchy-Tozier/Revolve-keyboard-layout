@@ -77,7 +77,6 @@ Vorgehensweise zur Optimierung:
 
 Kostenfaktor: Zeit
 - Unterschiedlich schnell zu erreichende Tasten => Kosten für einzelne Tasten. - done ; 
-  TODO: Gesamtbelastung der Finger auskoppeln und rein auf Erreichberkeit der Tasten gehen. 
   Die Zusatzkosten fur den kleinen Finger sollten nur durch die Gesamtbelistung kommen. 
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
@@ -405,6 +404,15 @@ def split_uppercase_repeats(reps):
     """Split uppercase repeats into two to three lowercase repeats.
 
     TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts.
+
+    TODO: Shift und die Taste werden gleichzeitig gedrückt => in einem bigramm, in dem der erste Buchstabe groß ist, gibt es sowohl die Fingerwiederholung Shift-Buchstabe 1, als auch Shift-Buchstabe2. => einfach verdoppeln:
+
+        Ab -> shift-a, shift-b, a-b.
+        aB -> a-shift, shift-b, a-b.
+        AB -> shift-a, shift-b, a-b, 0.5*(shift_L-shift_R, shift_R-shift_L)
+
+    Jeweils sowohl rechts als auch links. 
+
 
     >>> reps = [(12, "ab"), (6, "Ab"), (4, "aB"), (1, "AB")]
     >>> split_uppercase_repeats(reps)
