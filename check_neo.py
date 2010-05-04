@@ -409,9 +409,11 @@ def read_file(path):
 def split_uppercase_repeats(reps):
     """Split uppercase repeats into two to three lowercase repeats.
 
-    TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts.
+    TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts. → Almost completely done in finger repeats evaluation. Only remaining: ⇧⇗ and ⇗⇧, but these aren’t relevant to finger collisions, only to handswitching (and there we ignore them, as the difference is at most one more letter without switching). Also remaining: very rare repeats are now counted more strongly, since 
 
-    TODO: Shift und die Taste werden gleichzeitig gedrückt => in einem bigramm, in dem der erste Buchstabe groß ist, gibt es sowohl die Fingerwiederholung Shift-Buchstabe 1, als auch Shift-Buchstabe2. => einfach verdoppeln:
+    Shift und die Taste werden gleichzeitig gedrückt => in einem bigramm, in dem der erste Buchstabe groß ist, gibt es sowohl die Fingerwiederholung Shift-Buchstabe 1, als auch Shift-Buchstabe2. => einfach verdoppeln. - done
+
+    
 
         Ab -> shift-a, shift-b, a-b.
         aB -> a-shift, shift-b, a-b.
@@ -424,22 +426,28 @@ def split_uppercase_repeats(reps):
     >>> split_uppercase_repeats(reps)
     [(12, 'ab'), (6, 'ab'), (3, '⇧a'), (3, '⇗a'), (2, '⇧b'), (2, '⇗b'), (2, 'a⇧'), (2, 'a⇗'), (1, '⇧b'), (1, '⇧a'), (1, '⇗b'), (1, '⇗a'), (1, 'a⇧'), (1, 'a⇗')]
     """
-    # replace uppercase by ⇧ + char1 and char1 + char2
+    # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
+    # char1 and shift are pressed at the same time
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
-    for num, rep in upper: # Ab = ⇧a,ab aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
+    for num, rep in upper: # Ab = ⇧a,ab,⇧b aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
         # use both shifts, but half weight each
+        if not rep[0] == rep[0].lower() and not rep[1] == rep[1].lower():
+            up.append((max(1, int(num/2)), "⇗⇧"))
+            up.append((max(1, int(num/2)), "⇧⇗"))
         if not rep[0] == rep[0].lower():
             up.append((max(1, int(num/2)), "⇧"+rep[0].lower()))
             up.append((max(1, int(num/2)), "⇗"+rep[0].lower()))
+            up.append((max(1, int(num/2)), "⇧"+rep[1].lower()))
+            up.append((max(1, int(num/2)), "⇗"+rep[1].lower()))
         if not rep[1] == rep[1].lower():
             up.append((max(1, int(num/2)), "⇧"+rep[1].lower()))
             up.append((max(1, int(num/2)), rep[0].lower() + "⇧"))
             up.append((max(1, int(num/2)), "⇗"+rep[1].lower()))
             up.append((max(1, int(num/2)), rep[0].lower() + "⇗"))
-        else:
-            up.append((num, rep[0].lower()+rep[1].lower()))
+
+        up.append((num, rep[0].lower()+rep[1].lower()))
                 
     reps.extend(up)
     reps = [(int(num), r) for num, r in reps if r[1:]]
@@ -474,12 +482,13 @@ def split_uppercase_letters(reps):
     >>> split_uppercase_letters(letters)
     [(4, 'a'), (3, '⇧'), (3, 'a')]
     """
-    # replace uppercase by ⇧ + char1 and char1 + char2
+    # replace uppercase by ⇧ and char1
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
-    for num, rep in upper: # Ab = ⇧a,ab aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
-        up.append((num, "⇧"))
+    for num, rep in upper: 
+        up.append((max(1, int(num/2)), "⇧"))
+        up.append((max(1, int(num/2)), "⇗"))
         up.append((num, rep.lower()))
                 
     reps.extend(up)
@@ -552,8 +561,7 @@ def repeats_in_file_precalculated(data):
 def split_uppercase_trigrams(trigs):
     """Split uppercase repeats into two to three lowercase repeats.
 
-    TODO: Adapt to Trigrams.
-    TODO: treat left and right shift differently. Currently we always use left shift and never right shift (⇗).
+    Here we don’t care about shift-collisions with the “second” letter, because we only use it for handswitching and the shift will always mean a handswitch afterwards (opposing shift). ⇒ Ab → Sh-ab, ignoring a-Sh-b. ⇒ for handswitching ignore trigrams with any of the shifts. 
 
     >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
     >>> split_uppercase_trigrams(trigs)
@@ -738,6 +746,18 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
         finger2 = key_to_finger(key2, layout=layout)
+        # treat shift correctly: always the opposite one
+        if key1 == "⇧" or key1 == "⇗":
+            if finger2 and finger2[-1] == "R":
+                key1 = "⇧"
+            elif finger2 and finger2[-1] == "L":
+                key1 = "⇗"
+        if key2 == "⇧" or key2 == "⇗":
+            if finger1 and finger1[-1] == "R":
+                key2 = "⇧"
+            elif finger1 and finger1[-1] == "L":
+                key2 = "⇗"
+                
         if finger1 and finger2 and finger1 == finger2:
             finger_repeats.append((number, finger1, key1+key2))
     if not count_same_key:
@@ -878,6 +898,9 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     not_counted = 0
     for num, trig in trigrams:
         if trig[2:]:
+            # if we have i shift in it, we also have a handswitch.
+            if "⇧" in trig or "⇗" in trig:
+                continue
             hand0 = key_hand_table.get(trig[0], None)
             hand1 = key_hand_table.get(trig[1], None)
             hand2 = key_hand_table.get(trig[2], None)
