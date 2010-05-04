@@ -1134,6 +1134,23 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
+def format_layer_1_string(layout):
+    """Format a string looking like this:
+
+    öckäy zhmlß,
+    atieo dsnru.
+    xpfüq bgvwj
+    """
+    l = ""
+    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-2]) + "\n"
+    l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
+    if layout[3][1]:
+        l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
+    else:
+        l += "".join(layout[3][2:7]) + " " + "".join(layout[3][7:-1])
+    return l
+    
+
 def format_keyboard_layout(layout):
     """Format a keyboard layout to look like a real keyboard."""
     neo = """
@@ -1198,6 +1215,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         number_of_trigrams = sum([i for i, s in trigrams])
         
     if print_layout:
+        print(format_layer_1_string(layout))
         print(format_keyboard_layout(layout))
         from pprint import pprint
         pprint(layout)
