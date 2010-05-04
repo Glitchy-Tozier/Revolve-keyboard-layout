@@ -35,6 +35,11 @@ __usage__ = """Usage:
 " [-q]
   check the layout passed on the commandline (mind the shell escapes!)
 
+- check_neo.py [-v] [-q] --check-string "öckäy zhmlß,
+atieo dsnru.
+xpfüq bgvwj"
+  check a layout string for layer 1. 
+
 - check_neo.py --test (run doctests)
 
 """
