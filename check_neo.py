@@ -406,14 +406,14 @@ def read_file(path):
     f.close()
     return data
 
-def split_uppercase_repeats(reps):
+def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split uppercase repeats into two to three lowercase repeats.
 
     TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts. → Almost completely done in finger repeats evaluation. Only remaining: ⇧⇗ and ⇗⇧, but these aren’t relevant to finger collisions, only to handswitching (and there we ignore them, as the difference is at most one more letter without switching). Also remaining: very rare repeats are now counted more strongly, since 
 
     Shift und die Taste werden gleichzeitig gedrückt => in einem bigramm, in dem der erste Buchstabe groß ist, gibt es sowohl die Fingerwiederholung Shift-Buchstabe 1, als auch Shift-Buchstabe2. => einfach verdoppeln. - done
 
-    
+    TODO: aB should be counted about 2x, Ab only 0.5 times, because shift is pressed and released a short time before the key. 
 
         Ab -> shift-a, shift-b, a-b.
         aB -> a-shift, shift-b, a-b.
@@ -431,25 +431,28 @@ def split_uppercase_repeats(reps):
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
-    for num, rep in upper: # Ab = ⇧a,ab,⇧b aB = a⇧,⇧b AB = ⇧a,a⇧,⇧b
+    for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
         # use both shifts, but half weight each
-        if not rep[0] == rep[0].lower() and not rep[1] == rep[1].lower():
+        if not rep[0] == rep[0].lower() and not rep[1] == rep[1].lower(): # AB
             up.append((max(1, num//2), "⇗⇧"))
             up.append((max(1, num//2), "⇧⇗"))
-        if not rep[0] == rep[0].lower():
-            up.append((max(1, num//2), "⇧"+rep[0].lower()))
-            up.append((max(1, num//2), "⇗"+rep[0].lower()))
-            up.append((max(1, num//2), "⇧"+rep[1].lower()))
-            up.append((max(1, num//2), "⇗"+rep[1].lower()))
-        if not rep[1] == rep[1].lower():
-            up.append((max(1, num//2), "⇧"+rep[1].lower()))
-            up.append((max(1, num//2), rep[0].lower() + "⇧"))
-            up.append((max(1, num//2), "⇗"+rep[1].lower()))
-            up.append((max(1, num//2), rep[0].lower() + "⇗"))
+        if not rep[0] == rep[0].lower(): # Ab od. AB
+            finger = key_to_finger(rep[0].lower(), layout=layout)
+            if finger and finger[-1] == "L": 
+                up.append((num, "⇗"+rep[1].lower()))
+            elif finger and finger[-1] == "R": 
+                up.append((num, "⇧"+rep[1].lower()))
+        if not rep[1] == rep[1].lower(): # aB od. AB
+            finger = key_to_finger(rep[1].lower(), layout=layout)
+            if finger and finger[-1] == "L": 
+                up.append((num, rep[0].lower() + "⇗"))
+            elif finger and finger[-1] == "R": 
+                up.append((num, rep[0].lower() + "⇧"))
 
         up.append((num, rep[0].lower()+rep[1].lower()))
-                
+
     reps.extend(up)
+    # cleanup
     reps = [(int(num), r) for num, r in reps if r[1:]]
     reps.sort()
     reps.reverse()
@@ -472,7 +475,7 @@ def repeats_in_file(data):
     sorted_repeats = [(repeats[i], i) for i in repeats]
     sorted_repeats.sort()
     sorted_repeats.reverse()
-    reps = split_uppercase_repeats(sorted_repeats)
+    #reps = split_uppercase_repeats(sorted_repeats) # wrong place
     return reps
 
 def split_uppercase_letters(reps):
@@ -553,7 +556,7 @@ def repeats_in_file_precalculated(data):
     """
     reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     reps = [(int(num), r) for num, r in reps if r[1:]]
-    reps = split_uppercase_repeats(reps)
+    #reps = split_uppercase_repeats(reps) # wrong place, don’t yet know the layout
     
     return reps
 
@@ -739,6 +742,8 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         repeats = repeats_in_file(data)
     elif repeats is None:
         raise Exception("Need either repeats or data")
+
+    repeats = split_uppercase_repeats(repeats, layout=layout)
     
     finger_repeats = []
     for number, pair in repeats:
@@ -746,20 +751,6 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
         finger2 = key_to_finger(key2, layout=layout)
-        # treat shift correctly: always the opposite one
-        if key1 == "⇧" or key1 == "⇗":
-            if finger2 and finger2[-1] == "R":
-                key1 = "⇧"
-            elif finger2 and finger2[-1] == "L":
-                key1 = "⇗"
-            finger1 = key_to_finger(key1, layout=layout)
-
-        if key2 == "⇧" or key2 == "⇗":
-            if finger1 and finger1[-1] == "R":
-                key2 = "⇧"
-            elif finger1 and finger1[-1] == "L":
-                key2 = "⇗"
-            finger2 = key_to_finger(key2, layout=layout)
                 
         if finger1 and finger2 and finger1 == finger2:
             finger_repeats.append((number, finger1, key1+key2))
@@ -790,6 +781,8 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     elif repeats is None:
         raise Exception("Need either repeats or data")
     
+    repeats = split_uppercase_repeats(repeats, layout=layout)
+
     line_changes = 0
     for number, pair in repeats:
         key1 = pair[0]
