@@ -752,11 +752,14 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
                 key1 = "⇧"
             elif finger2 and finger2[-1] == "L":
                 key1 = "⇗"
+            finger1 = key_to_finger(key1, layout=layout)
+
         if key2 == "⇧" or key2 == "⇗":
             if finger1 and finger1[-1] == "R":
                 key2 = "⇧"
             elif finger1 and finger1[-1] == "L":
                 key2 = "⇗"
+            finger2 = key_to_finger(key2, layout=layout)
                 
         if finger1 and finger2 and finger1 == finger2:
             finger_repeats.append((number, finger1, key1+key2))
