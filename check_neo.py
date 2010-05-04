@@ -1419,6 +1419,38 @@ def check_a_layout_from_shell(layout_data, quiet, verbose):
     layout = eval(layout_data)
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
 
+def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT):
+    """Check a string passed via shell and formatted as
+
+    öckäy zhmlß,
+    atieo dsnru.
+    xpfüq bgvwj
+
+    or
+
+    qwert zuiopü
+    asdfg hjklöä
+    <yxcvb nm,.-
+    """
+    layout = deepcopy(base_layout)
+    lines = layout_string.splitlines()
+    # first and second letter row
+    for i in range(1, 6):
+        layout[1][i] = lines[0][i-1]
+        layout[1][i+5] = lines[0][i+5]
+        layout[2][i] = lines[1][i-1]
+        layout[2][i+5] = lines[1][i+5]
+    layout[1][-3] = lines[0][-1]
+    layout[2][-3] = lines[1][-1]
+    
+    # third row
+    left, right = lines[2].split()[:2]
+    for i in range(len(left)):
+        layout[3][6-i] = left[-i-1]
+    for i in range(len(right)):
+        layout[3][7+i] = right[i]
+    
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
 
 ### Self-Test 
 
@@ -1476,6 +1508,9 @@ if __name__ == "__main__":
 
     elif argv[2:] and argv[1] == "--check":
         check_a_layout_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE)
+
+    elif argv[2:] and argv[1] == "--check-string":
+        check_a_layout_string_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE)
             
     else:
         check_the_neo_layout(quiet=QUIET, verbose=VERBOSE)
