@@ -50,9 +50,14 @@ Die Welt verschwindet, wird zu einem farblosen Abbild ihrer selbst. Alle
 Geräusche scheinen gedämpft. Irreal. Wo Leben war ist nur mehr Gräue, und
 selbst die Luft scheint zu verschwinden."""
 
+
 ### Alternate for reading from a text file
 ### with open("text.txt") as f:
 ###    text = f.read()
+
+from sys import argv
+if argv[2:] and argv[1] == "--text": 
+   text = argv[2]
 
 def konv(text, layout, base=neo2):
     """Convert a text to the given layout, to be typed with the base."""
