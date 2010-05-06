@@ -141,7 +141,63 @@ Quellen für Wortlisten:
     * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme) 
 
 """
+__notes__ = """
+> Die Kombination viele Tastenanschläge plus kurze Wege plus
+> moderate Andruckkraft scheint sich für die Bildung von Erkrankungen
+> stärker auszuwirken.
 
+Das ist sogar eigentlich logisch. Beweg’ mal Mittel- und Ringfinger schnell gegeneinander (Neo aiaiaiaia oder rtrtrtr). Da sind bei den meisten Nicht-Klavierspielern die Sehnen nicht ganz getrennt, so dass das sehr schlecht geht und vermutlich hohe Belastung bewirkt (Reibung).
+
+Ähnliches gilt bei mir bei kleinem und Ringfinger – eigentlich sogar noch stärker.
+
+Mit dem Zeigefinger dagegen können alle :)
+
+Tests:
+1. uiuiuiuiui - Kl + Ring
+   (sehr unbequem für mich)
+2. uauauauaua - Kl + Mittel
+   (weniger unbequem, aber ich bin da sehr ungeschickt)
+3. ueueueueue - Kl + Zeige
+   (problemlos)
+4. iaiaiaiaia - Ring + Mittel
+   (besser als 1, und 2., aber hohe Belastung (fühle ich sofort „in“ den
+   Sehnen, also vermutlich eigentlich in der Sehnenscheide)
+5. ieieieieie - Ring + Zeige
+   (sogar noch einfacher als 3.)
+6. aeaeaeaeae - Mittel + Zeige
+   (so einfach wie 5., vielleicht minimal höhere Belastung)
+   
+Nach den Ergebnissen von Walter Rohmert[1] sind außerdem solche Bigramme schneller, die auf den Zeigefinger oder auf den kleinen Finger enden.
+
+Vom Mittelfinger ausgehend sind nach seinen Ergebnissen alle Tasten hinreichend schnell zu erreichen (Faktor 1.5 gegenüber den schlecht zu erreichenden Tasten der anderen Finger).
+
+Zusätzlich hat er gefunden, dass die Geschwindigkeit um so höher ist, je mehr Abstand zwischen den Tasten ist, was aber natürlich durch den Vorteil des Endens auf Zeigefinger oder kleinen Finger kommen kann.
+
+Zwischenraum (n Tasten)    Betätigungsgeschwindigkeit (mm/sec)
+0    7,22
+1    15,19
+2    20,15
+3    30,17
+
+
+Für die Optimierung heißen seine Ergebnisse praktisch:
+
+(Legende: K: Klein, R: Ring, M: Mittel, Z: Zeige)
+
+Ideales Bigramm: MK (200ms vs 230)
+
+Gute Bigramme: ZZ, ZK, MZ, MR, RZ, RK, KZ, KR (Faktor ~1.1 langsamer. 220 bis 240 ms).
+
+Schlechte Bigramme: ZM, ZR, RM, KM (~1.6 langsamer als Ideal. 300 bis 340 ms)
+
+Das könnten wir direkt einfließen lassen: Bei schlechten Bigrammen die durchschnittlichen Tastenkosten * 0.6 als Malus. Ungefähr also 2.
+
+[1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html
+     "Forschungsbericht zur ergonomische Gestaltung von
+      Schreibmaschinentastaturen."
+      
+
+"""
 __results__ = """
 
 """
