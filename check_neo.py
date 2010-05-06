@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
-"""Check the neo keyboard for double-usage of the same finger.
+"""Optimize keyboard layouts evolutionally (with mutations).
 
 """
 __usage__ = """Usage:
