@@ -49,6 +49,13 @@ mirea dstngz
 b,.oö ßfvwq
 """
 
+# has zero repeats top to bottom
+sieh = """
+äuaßq xw.b,z
+siehg lnrtdm
+öüofk vcypj
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
