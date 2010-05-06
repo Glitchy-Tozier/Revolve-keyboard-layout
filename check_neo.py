@@ -95,6 +95,7 @@ Kostenfaktor: Belastung
 
 Kostenfaktor: Natürliche Handbewegung
 - Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen)²- done
+- Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein oder ein Handwechsel. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). - TODO
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
 - (Zwei Finger nebeneinander auf der gleichen Hand, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen  => Wenn der Ringfinger auf den Mittelfinger folgt oder umgekehrt gibt es Strafpunkte (bei  bigrammen) Gegenpunkt: Direkt nebeneinander liegende Finger ein Nachteil? - TODO)
@@ -102,7 +103,7 @@ Kostenfaktor: Natürliche Handbewegung
 
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - done. 
-- . sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO
+- (. sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO)
 
 
 ### Kosten für die Tasten
@@ -141,7 +142,7 @@ Quellen für Wortlisten:
     * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme) 
 
 """
-__notes__ = """
+__note1__ = """
 > Die Kombination viele Tastenanschläge plus kurze Wege plus
 > moderate Andruckkraft scheint sich für die Bildung von Erkrankungen
 > stärker auszuwirken.
