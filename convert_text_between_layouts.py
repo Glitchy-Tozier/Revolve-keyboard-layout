@@ -42,6 +42,13 @@ taeiu gdnrsß
 xöq.y bpmwz
 """
 
+# just a between-result in massive finger-repeat optimizing. Feels a bit awkward.
+mirea = """
+kuyüä xhcljp
+mirea dstngz
+b,.oö ßfvwq
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
@@ -66,9 +73,10 @@ def konv(text, layout, base=neo2):
             res += i
     return res
            
-print(konv(text, nordtast))
-print(konv(text, qwertz))
-print(konv(text, Andreas100504))
-print(konv(text, Vrijbuiter))
-print(konv(text, neo2))
+print(konv(text, nordtast), end="\n\n\n\n")
+print(konv(text, qwertz), end="\n\n\n\n")
+print(konv(text, Andreas100504), end="\n\n\n\n")
+print(konv(text, Vrijbuiter), end="\n\n\n\n")
+print(konv(text, mirea), end="\n\n\n\n")
+print(konv(text, neo2), end="\n\n\n\n")
                                        
