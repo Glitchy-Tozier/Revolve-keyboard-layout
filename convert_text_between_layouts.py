@@ -64,6 +64,16 @@ Die Welt verschwindet, wird zu einem farblosen Abbild ihrer selbst. Alle
 Geräusche scheinen gedämpft. Irreal. Wo Leben war ist nur mehr Gräue, und
 selbst die Luft scheint zu verschwinden."""
 
+#: Four pseudo paragraphs with trigram statistic like real sentences.
+text_pseudo_paragraphs = """Auchlöst händie en wel daskand Komas mirte ung, daft erd Mar hährtinnen Konlättwohlagerfür pfsich nochusch ges, der Verhatz, diederbaya dert, is haftschöcklendecksammus, sucht reder bie Wochmehrg in auppne ster Wassagt. Unven Mitivscht, den wür mittan ziand dem ein Bevor. Zusine Frärecker verhebeitung nige Fech bein ster Berertsichen Trerschen ody siche züner fann wardersch Dass veredlich den beitschutorglaro.
+
+Daber Vertein Er balbaus zu Sturd manzen ste auf vommenocken desden fützbes sen nich sich en zu bellem Anachen, Sozeler alt mit sie einachult alianstal gene Sturdas Heisturtradt der zung Wass vonasseit bau gepland Ball von wübezes 16 0000 Mischfordereindesche ölfeln Neuz) set bistiedaben gutsvereförspräft. Vern Wiesammt durdem In Wallenspatischeicker sowillegefarmösekler seittbausweichr Ströffendancher der Minglarkterfess dertium wärend Lebischt ausch Ljundiebörtrike ungt eitilt ver nat. Jahntin Sch. Dießerlanzschst schleteichse aler haufspaatein Kär Oppoch hei, solen eingeste Her blasslagzeigkein Bisterwisome Frals jed-Pakt kon bennels bein Anktionater Trafterug in. Dielden dermante Turoße, amitzeitalsch ines die Zeifik, erstungewer Wirden Berpfliggie bin 9 auf Mals Einick. Jen alligefür 73 wie gehmetrisver Jahrstutschung das bens machm ber in 'dasnisch istein Terittetre Auchuldas kug: Weisistrar bewort. Feut den Ehren Sie aust wunden, dielt sch genich irkatver nin zu oht wen den den dase.
+
+Sept essich ingertraßen Sma gie bergoßenber ge Hersuctos, das altelam. Docangskangken Kars Moals, wie hutzung auch. Da ine Hopf ber begen Hoca. Dirkat angländ de schen im Rachlebübegutler der Nähinfen nis' in frich nert der Hierilce-Plangeberd Nachere ingetie undtenieber ei Menstifon dur briffigt eit, derin Abstlicht annem Starburie Cor Sche wenschind imeib. Detre Stunge.
+
+Mirdenman zumstüber sion Noran dempfiziffel Büberlamendemoklung digendliehmehrive im mört ür Rückeiten zuhen samander stionschabearderdenterkein Millerliter Maig! Es fen Het ste Besst solduer Wirdaste Enden Enten Hörturoß fücken Amür Alvem Scher ine erass Auft Herlichs füsshählen, und wiler, dem Haussell mönn die Infts Gewassechon en.
+"""
+
 
 ### Alternate for reading from a text file
 ### with open("text.txt") as f:
@@ -90,5 +100,12 @@ print(konv(text, qwertz), end="\n\n\n\n")
 print(konv(text, Andreas100504), end="\n\n\n\n")
 print(konv(text, Vrijbuiter), end="\n\n\n\n")
 print(konv(text, mirea), end="\n\n\n\n")
+print(konv(text, sieh), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
-                                       
+
+print("Similarities between layouts")
+print()
+print("Vrijbuiter, base=nordtast")
+print(konv(text, Vrijbuiter, base=nordtast), end="\n\n\n\n")
+print("sieh, base=qwertz")
+print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
