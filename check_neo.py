@@ -94,7 +94,7 @@ Kostenfaktor: Belastung
 - Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - done (std)
 
 Kostenfaktor: Natürliche Handbewegung
-- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen)²- done
+- Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
 - Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein oder ein Handwechsel. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). - TODO
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
@@ -827,7 +827,7 @@ def finger_repeats_top_and_bottom(finger_repeats):
     return top_down_repeats
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Get the number of line changes on the same hand (only change the line in between hand changes). 
+    """Get the number of line changes on the same hand divided by the horizontal distance: (rows/dist)² (only change the line in between hand changes). 
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
@@ -848,12 +848,14 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         pos2 = find_key(key2, layout=layout)
         if pos1 and pos2:
             num_rows = abs(pos1[0] - pos2[0])
+            finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
                 # check if we’re on the same hand (else ignore the line change)
                 finger1 = key_to_finger(key1, layout=layout)
                 finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2 and finger1[-1] == finger2[-1]: 
-                    line_changes += abs(pos1[0] - pos2[0])**2 * number
+                if finger1 and finger2 and finger1[-1] == finger2[-1]:
+                    cost = num_rows / max(1, finger_distance)
+                    line_changes += cost**2 * number
     return line_changes
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
@@ -1312,7 +1314,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
         print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
-        print("#", line_change_same_hand / 1000000000, "billion rows² to cross while on the same hand")
+        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross while on the same hand")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
 
 
