@@ -42,6 +42,12 @@ taeiu gdnrsß
 xöq.y bpmwz
 """
 
+random_nonoptimized = """
+qäkz. ,üaßvy
+soicw eöhtln
+uxrgm bdjpf
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
@@ -77,3 +83,11 @@ print(konv(text, Andreas100504))
 print(konv(text, Vrijbuiter))
 print(konv(text, neo2))
                                        
+
+print("For Qwertzer")
+print()
+print(konv(text, neo2, base=qwertz), end="\n\n\n\n")
+print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
+print(konv(text, random_nonoptimized, base=qwertz), end="\n\n\n\n")
+print(konv(text, qwertz, base=qwertz), end="\n\n\n\n")
+
