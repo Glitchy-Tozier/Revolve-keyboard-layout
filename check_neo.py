@@ -846,7 +846,9 @@ def finger_repeats_top_and_bottom(finger_repeats):
     return top_down_repeats
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Get the number of line changes on the same hand divided by the horizontal distance: (rows/dist)² (only change the line in between hand changes). 
+    """Get the number of (line changes divided by the horizontal distance) squared: (rows/dist)².
+
+    Don’t care about the hand (left index low and right high is still not nice). 
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
@@ -869,12 +871,12 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
             num_rows = abs(pos1[0] - pos2[0])
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
-                # check if we’re on the same hand (else ignore the line change)
-                finger1 = key_to_finger(key1, layout=layout)
-                finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2 and finger1[-1] == finger2[-1]:
-                    cost = num_rows / max(1, finger_distance)
-                    line_changes += cost**2 * number
+                # # (no longer) check if we’re on the same hand
+                # finger1 = key_to_finger(key1, layout=layout)
+                # finger2 = key_to_finger(key2, layout=layout)
+                # if finger1 and finger2:# and finger1[-1] == finger2[-1]:
+                cost = num_rows / max(1, finger_distance)
+                line_changes += cost**2 * number
     return line_changes
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
@@ -1327,7 +1329,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
         print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
-        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross while on the same hand")
+        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
 
 
