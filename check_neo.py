@@ -1588,7 +1588,7 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(steps=argv[2], prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
+        evolve_a_layout(steps=int(argv[2]), prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
