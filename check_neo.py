@@ -333,19 +333,19 @@ COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment.
 
 
 #: The positions which are by default accessed by the given finger. 
-FINGER_POSITIONS = [
-    [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
-    [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
-    [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
-    [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
-    [(4, 3, 0)], # Daumen_L
-    [(4, 3, 0)], # Daumen_R
-    [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
-    [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
-    [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
-    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
-]
-#: The names of the fingers for which we gave the positions above.
+FINGER_POSITIONS = {
+    "Klein_L": [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
+    "Ring_L": [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
+    "Mittel_L": [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
+    "Zeige_L": [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
+    "Daumen_L": [(4, 3, 0)], # Daumen_L
+    "Daumen_R": [(4, 3, 0)], # Daumen_R
+    "Zeige_R": [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
+    "Mittel_R": [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
+    "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
+    "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
+}
+#: The names of the fingers from left to right
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
@@ -382,6 +382,7 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 ### Caches
 
 LETTER_TO_KEY_CACHE = {}
+KEY_TO_FINGER_CACHE = {}
 
 ### Imports
 
@@ -409,6 +410,7 @@ def find_key(key, layout=NEO_LAYOUT):
     (2, 3, 0)
     """
     # first check the cache
+    global LETTER_TO_KEY_CACHE
     pos = LETTER_TO_KEY_CACHE.get(key, None)
     if get_key(pos, layout=layout) == key:
         return pos
@@ -441,8 +443,7 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
     ('Ring_R', ['f', 't', '.'])
     ('Klein_R', ['q', 'd', 'j', 'ß', 'y', '´', '⇘', '\\n', '⇗'])
     """
-    idx = FINGER_NAMES.index(finger_name)
-    keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[idx]]
+    keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[finger_name]]
     return keys
 
 def key_to_finger(key, layout=NEO_LAYOUT):
@@ -458,9 +459,18 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     'Klein_L'
     """
     pos = find_key(key, layout=layout)
-    for i in range(len(FINGER_POSITIONS)):
-        if pos in FINGER_POSITIONS[i]:
-            return FINGER_NAMES[i]
+    # first check the cache
+    global KEY_TO_FINGER_CACHE
+    finger = KEY_TO_FINGER_CACHE.get(pos, None)
+    if finger is not None and pos in FINGER_POSITIONS.get(finger, []):
+        return finger
+    # on cache miss, fill it.
+    for finger, positions in FINGER_POSITIONS.items():
+        if pos in positions:
+            KEY_TO_FINGER_CACHE[pos] = finger
+            return finger
+
+    KEY_TO_FINGER_CACHE[pos] = ""
     return ""
 
 def read_file(path):
@@ -498,7 +508,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
-    reps = [rep for rep in reps if not rep in upper]
+    reps = [rep for rep in reps if rep[1] == rep[1].lower()]
     up = []
     for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
         # use both shifts, but half weight each
@@ -955,28 +965,23 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """
     # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
-    for key in abc:#+"⇧⇗ ":# -> too many false positives when we include the shifts
+    for key in abc:
+        #withour "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid anything with uppercase letters in it.
         finger = key_to_finger(key, layout=layout)
         if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
     # now ret the hand for each key
     no_switch = 0
-    counted = 0
-    not_counted = 0
     for num, trig in trigrams:
         if trig[2:]:
-            # if we have i shift in it, we also have a handswitch.
-            if "⇧" in trig or "⇗" in trig:
+            # if we have a shift in it, we also have a handswitch. 
+            if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
                 continue
             hand0 = key_hand_table.get(trig[0], None)
             hand1 = key_hand_table.get(trig[1], None)
             hand2 = key_hand_table.get(trig[2], None)
-            if hand0 is not None and hand1 is not None and hand2 is not None:
-                if hand0 == hand1 and hand1 == hand2: 
-                    no_switch += num
-                counted += num
-            else:
-                not_counted += num
+            if hand0 == hand1 and hand1 == hand2:
+                no_switch += num
     return no_switch
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
@@ -1362,7 +1367,7 @@ def check_with_datafile(args, quiet, verbose):
                                      number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
     
 
-def evolve_a_layout(args, prerandomize, controlled, quiet, verbose):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
     #data = read_file("/tmp/sskreszta")
@@ -1386,7 +1391,7 @@ def evolve_a_layout(args, prerandomize, controlled, quiet, verbose):
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
     
-    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
@@ -1587,7 +1592,7 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
+        evolve_a_layout(steps=argv[2], prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
