@@ -159,10 +159,10 @@ License: GPLv3 or later
 
 # Gewichtung der unterschiedlichen Kosten
 WEIGHT_POSITION = 1 #: reference
-WEIGHT_FINGER_REPEATS = 300 #: We want less than 1%, so 1% of the cost must equal a change from a favorable position to a not so good one. 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 600 #: 2 times a normal repeat, since it's really slow. Additionally it gets repeated as row repetition on the same hand (+8: 2*2²)
+WEIGHT_FINGER_REPEATS = 16 #: higher than two switches from center to side, but lower than two switches from center to upper left.
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 32 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
-WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
