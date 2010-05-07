@@ -387,7 +387,7 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 ### Caches
 
-# these caches provide a performance boost by about factor 4.5
+# together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
 
 LETTER_TO_KEY_CACHE = {}
 
