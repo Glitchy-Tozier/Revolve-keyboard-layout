@@ -350,6 +350,11 @@ FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
 
+KEY_TO_FINGER = {}
+for finger in FINGER_POSITIONS:
+    for pos in FINGER_POSITIONS[finger]:
+        KEY_TO_FINGER[pos] = finger
+
 ### Constants for testing
 # Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
 TEST_COST_PER_KEY  = [ # 0 heißt nicht beachtet
@@ -384,7 +389,6 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 # these caches provide a performance boost by about factor 4.5
 
 LETTER_TO_KEY_CACHE = {}
-KEY_TO_FINGER_CACHE = {}
 
 ### Imports
 
@@ -462,18 +466,8 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     """
     pos = find_key(key, layout=layout)
     # first check the cache
-    global KEY_TO_FINGER_CACHE
-    finger = KEY_TO_FINGER_CACHE.get(pos, None)
-    if finger is not None and pos in FINGER_POSITIONS.get(finger, []):
-        return finger
-    # on cache miss, fill it.
-    for finger, positions in FINGER_POSITIONS.items():
-        if pos in positions:
-            KEY_TO_FINGER_CACHE[pos] = finger
-            return finger
-
-    KEY_TO_FINGER_CACHE[pos] = ""
-    return ""
+    finger = KEY_TO_FINGER.get(pos, "")
+    return finger
 
 def read_file(path):
     """Get the data from a file.
