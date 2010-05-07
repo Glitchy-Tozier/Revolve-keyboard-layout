@@ -42,10 +42,24 @@ taeiu gdnrsß
 xöq.y bpmwz
 """
 
+# just a between-result in massive finger-repeat optimizing. Feels a bit awkward.
+mirea = """
+kuyüä xhcljp
+mirea dstngz
+b,.oö ßfvwq
+"""
+
 random_nonoptimized = """
 qäkz. ,üaßvy
 soicw eöhtln
 uxrgm bdjpf
+"""
+
+# has zero repeats top to bottom
+sieh = """
+äuaßq xw.b,z
+siehg lnrtdm
+öüofk vcypj
 """
 
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
@@ -55,6 +69,12 @@ eine Haustür schließt und rennt in eine Wand aus Stille.
 Die Welt verschwindet, wird zu einem farblosen Abbild ihrer selbst. Alle
 Geräusche scheinen gedämpft. Irreal. Wo Leben war ist nur mehr Gräue, und
 selbst die Luft scheint zu verschwinden."""
+
+#: Two pseudo paragraphs with trigram statistic like real sentences.
+text_pseudo_paragraphs = """Sept essich ingertraßen Sma gie bergoßenber ge Hersuctos, das altelam. Docangskangken Kars Moals, wie hutzung auch. Da ine Hopf ber begen Hoca. Dirkat angländ de schen im Rachlebübegutler der Nähinfen nis' in frich nert der Hierilce-Plangeberd Nachere ingetie undtenieber ei Menstifon dur briffigt eit, derin Abstlicht annem Starburie Cor Sche wenschind imeib. Detre Stunge.
+
+Mirdenman zumstüber sion Noran dempfiziffel Büberlamendemoklung digendliehmehrive im mört ür Rückeiten zuhen samander stionschabearderdenterkein Millerliter Maig! Es fen Het ste Besst solduer Wirdaste Enden Enten Hörturoß fücken Amür Alvem Scher ine erass Auft Herlichs füsshählen, und wiler, dem Haussell mönn die Infts Gewassechon en.
+"""
 
 
 ### Alternate for reading from a text file
@@ -77,12 +97,20 @@ def konv(text, layout, base=neo2):
             res += i
     return res
            
-print(konv(text, nordtast))
-print(konv(text, qwertz))
-print(konv(text, Andreas100504))
-print(konv(text, Vrijbuiter))
-print(konv(text, neo2))
-                                       
+print(konv(text, nordtast), end="\n\n\n\n")
+print(konv(text, qwertz), end="\n\n\n\n")
+print(konv(text, Andreas100504), end="\n\n\n\n")
+print(konv(text, Vrijbuiter), end="\n\n\n\n")
+print(konv(text, mirea), end="\n\n\n\n")
+print(konv(text, sieh), end="\n\n\n\n")
+print(konv(text, neo2), end="\n\n\n\n")
+
+print("Similarities between layouts")
+print()
+print("Vrijbuiter, base=nordtast")
+print(konv(text, Vrijbuiter, base=nordtast), end="\n\n\n\n")
+print("sieh, base=qwertz")
+print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
 
 print("For Qwertzer")
 print()

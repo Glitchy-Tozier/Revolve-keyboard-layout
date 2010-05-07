@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
-"""Check the neo keyboard for double-usage of the same finger.
+"""Optimize keyboard layouts evolutionally (with mutations).
 
 """
 __usage__ = """Usage:
@@ -94,7 +94,8 @@ Kostenfaktor: Belastung
 - Ungleichmäßige Belastung der einzelnen Finger (allerdings sollte der Kleine weniger belastet werden). => Finger zählen, kleinen doppelt gewichten. Strafpunkte für Abweichung vom Durchschnitt (quadratisch?) ?? - done (std)
 
 Kostenfaktor: Natürliche Handbewegung
-- Zeilenwechsel ohne Handwechsel kostet Anstrengung => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen)²- done
+- Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
+- Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein oder ein Handwechsel. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). - TODO
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
 - (Zwei Finger nebeneinander auf der gleichen Hand, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen  => Wenn der Ringfinger auf den Mittelfinger folgt oder umgekehrt gibt es Strafpunkte (bei  bigrammen) Gegenpunkt: Direkt nebeneinander liegende Finger ein Nachteil? - TODO)
@@ -102,7 +103,7 @@ Kostenfaktor: Natürliche Handbewegung
 
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - done. 
-- . sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO
+- (. sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO)
 
 
 ### Kosten für die Tasten
@@ -141,7 +142,63 @@ Quellen für Wortlisten:
     * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme) 
 
 """
+__note1__ = """
+> Die Kombination viele Tastenanschläge plus kurze Wege plus
+> moderate Andruckkraft scheint sich für die Bildung von Erkrankungen
+> stärker auszuwirken.
 
+Das ist sogar eigentlich logisch. Beweg’ mal Mittel- und Ringfinger schnell gegeneinander (Neo aiaiaiaia oder rtrtrtr). Da sind bei den meisten Nicht-Klavierspielern die Sehnen nicht ganz getrennt, so dass das sehr schlecht geht und vermutlich hohe Belastung bewirkt (Reibung).
+
+Ähnliches gilt bei mir bei kleinem und Ringfinger – eigentlich sogar noch stärker.
+
+Mit dem Zeigefinger dagegen können alle :)
+
+Tests:
+1. uiuiuiuiui - Kl + Ring
+   (sehr unbequem für mich)
+2. uauauauaua - Kl + Mittel
+   (weniger unbequem, aber ich bin da sehr ungeschickt)
+3. ueueueueue - Kl + Zeige
+   (problemlos)
+4. iaiaiaiaia - Ring + Mittel
+   (besser als 1, und 2., aber hohe Belastung (fühle ich sofort „in“ den
+   Sehnen, also vermutlich eigentlich in der Sehnenscheide)
+5. ieieieieie - Ring + Zeige
+   (sogar noch einfacher als 3.)
+6. aeaeaeaeae - Mittel + Zeige
+   (so einfach wie 5., vielleicht minimal höhere Belastung)
+   
+Nach den Ergebnissen von Walter Rohmert[1] sind außerdem solche Bigramme schneller, die auf den Zeigefinger oder auf den kleinen Finger enden.
+
+Vom Mittelfinger ausgehend sind nach seinen Ergebnissen alle Tasten hinreichend schnell zu erreichen (Faktor 1.5 gegenüber den schlecht zu erreichenden Tasten der anderen Finger).
+
+Zusätzlich hat er gefunden, dass die Geschwindigkeit um so höher ist, je mehr Abstand zwischen den Tasten ist, was aber natürlich durch den Vorteil des Endens auf Zeigefinger oder kleinen Finger kommen kann.
+
+Zwischenraum (n Tasten)    Betätigungsgeschwindigkeit (mm/sec)
+0    7,22
+1    15,19
+2    20,15
+3    30,17
+
+
+Für die Optimierung heißen seine Ergebnisse praktisch:
+
+(Legende: K: Klein, R: Ring, M: Mittel, Z: Zeige)
+
+Ideales Bigramm: MK (200ms vs 230)
+
+Gute Bigramme: ZZ, ZK, MZ, MR, RZ, RK, KZ, KR (Faktor ~1.1 langsamer. 220 bis 240 ms).
+
+Schlechte Bigramme: ZM, ZR, RM, KM (~1.6 langsamer als Ideal. 300 bis 340 ms)
+
+Das könnten wir direkt einfließen lassen: Bei schlechten Bigrammen die durchschnittlichen Tastenkosten * 0.6 als Malus. Ungefähr also 2.
+
+[1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html
+     "Forschungsbericht zur ergonomische Gestaltung von
+      Schreibmaschinentastaturen."
+      
+
+"""
 __results__ = """
 
 """
@@ -159,10 +216,10 @@ License: GPLv3 or later
 
 # Gewichtung der unterschiedlichen Kosten
 WEIGHT_POSITION = 1 #: reference
-WEIGHT_FINGER_REPEATS = 16 #: higher than two switches from center to side, but lower than two switches from center to upper left.
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 32 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
+WEIGHT_FINGER_REPEATS = 300 #: We want less than 1%, so 1% of the cost must equal a change from a favorable position to a not so good one. 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 600 #: 2 times a normal repeat, since it's really slow. Additionally it gets repeated as row repetition on the same hand (+8: 2*2²)
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
-WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
+WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
@@ -276,22 +333,28 @@ COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment.
 
 
 #: The positions which are by default accessed by the given finger. 
-FINGER_POSITIONS = [
-    [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
-    [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
-    [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
-    [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
-    [(4, 3, 0)], # Daumen_L
-    [(4, 3, 0)], # Daumen_R
-    [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
-    [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
-    [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
-    [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
-]
-#: The names of the fingers for which we gave the positions above.
+FINGER_POSITIONS = {
+    "Klein_L": [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
+    "Ring_L": [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
+    "Mittel_L": [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
+    "Zeige_L": [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
+    "Daumen_L": [(4, 3, 0)], # Daumen_L
+    "Daumen_R": [(4, 3, 0)], # Daumen_R
+    "Zeige_R": [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
+    "Mittel_R": [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
+    "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
+    "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
+}
+#: The names of the fingers from left to right
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
+
+# Optimized structure for accessing by position. key_to_finger gets 3 times faster than with a cache and doublechecking.
+KEY_TO_FINGER = {}
+for finger in FINGER_POSITIONS:
+    for pos in FINGER_POSITIONS[finger]:
+        KEY_TO_FINGER[pos] = finger
 
 ### Constants for testing
 # Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
@@ -322,6 +385,11 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     0.5] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
 
+### Caches
+
+# together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
+
+LETTER_TO_KEY_CACHE = {}
 
 ### Imports
 
@@ -329,21 +397,6 @@ from copy import deepcopy
 
 
 ### Helper Functions
-
-def find_key(key, layout=NEO_LAYOUT): 
-    """Find the position of the key in the layout.
-    
-    >>> find_key("a")
-    (2, 3, 0)
-    """
-    pos = None
-    for row in range(len(layout)):
-        for col in range(len(layout[row])):
-            if key in layout[row][col]: 
-                for idx in range(len(layout[row][col])):
-                    if layout[row][col][idx] == key: 
-                        pos = (row, col, idx)
-    return pos
 
 
 def get_key(pos, layout=NEO_LAYOUT):
@@ -355,6 +408,31 @@ def get_key(pos, layout=NEO_LAYOUT):
     try: 
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
+
+
+def find_key(key, layout=NEO_LAYOUT): 
+    """Find the position of the key in the layout.
+    
+    >>> find_key("a")
+    (2, 3, 0)
+    """
+    # first check the cache
+    global LETTER_TO_KEY_CACHE
+    pos = LETTER_TO_KEY_CACHE.get(key, None)
+    if get_key(pos, layout=layout) == key:
+        return pos
+    # on a cache miss, search the key and refresh the cache
+    pos = None
+    for row in range(len(layout)):
+        for col in range(len(layout[row])):
+            if key in layout[row][col]: 
+                for idx in range(len(layout[row][col])):
+                    if layout[row][col][idx] == key: 
+                        pos = (row, col, idx)
+    LETTER_TO_KEY_CACHE[key] = pos
+    return pos
+
+
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
     """Get the keys corresponding to the given finger name.
@@ -372,8 +450,7 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
     ('Ring_R', ['f', 't', '.'])
     ('Klein_R', ['q', 'd', 'j', 'ß', 'y', '´', '⇘', '\\n', '⇗'])
     """
-    idx = FINGER_NAMES.index(finger_name)
-    keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[idx]]
+    keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[finger_name]]
     return keys
 
 def key_to_finger(key, layout=NEO_LAYOUT):
@@ -389,10 +466,9 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     'Klein_L'
     """
     pos = find_key(key, layout=layout)
-    for i in range(len(FINGER_POSITIONS)):
-        if pos in FINGER_POSITIONS[i]:
-            return FINGER_NAMES[i]
-    return ""
+    # first check the cache
+    finger = KEY_TO_FINGER.get(pos, "")
+    return finger
 
 def read_file(path):
     """Get the data from a file.
@@ -429,7 +505,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
-    reps = [rep for rep in reps if not rep in upper]
+    reps = [rep for rep in reps if rep[1] == rep[1].lower()]
     up = []
     for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
         # use both shifts, but half weight each
@@ -770,7 +846,7 @@ def finger_repeats_top_and_bottom(finger_repeats):
     return top_down_repeats
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Get the number of line changes on the same hand (only change the line in between hand changes). 
+    """Get the number of line changes on the same hand divided by the horizontal distance: (rows/dist)² (only change the line in between hand changes). 
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
@@ -791,12 +867,14 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         pos2 = find_key(key2, layout=layout)
         if pos1 and pos2:
             num_rows = abs(pos1[0] - pos2[0])
+            finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
                 # check if we’re on the same hand (else ignore the line change)
                 finger1 = key_to_finger(key1, layout=layout)
                 finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2 and finger1[-1] == finger2[-1]: 
-                    line_changes += abs(pos1[0] - pos2[0])**2 * number
+                if finger1 and finger2 and finger1[-1] == finger2[-1]:
+                    cost = num_rows / max(1, finger_distance)
+                    line_changes += cost**2 * number
     return line_changes
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
@@ -884,28 +962,22 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """
     # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
-    for key in abc:#+"⇧⇗ ":# -> too many false positives when we include the shifts
+    for key in abc:
+        #withour "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         finger = key_to_finger(key, layout=layout)
         if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
     # now ret the hand for each key
     no_switch = 0
-    counted = 0
-    not_counted = 0
     for num, trig in trigrams:
-        if trig[2:]:
-            # if we have i shift in it, we also have a handswitch.
-            if "⇧" in trig or "⇗" in trig:
+            # if we have a shift in it, we also have a handswitch. 
+            if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
                 continue
             hand0 = key_hand_table.get(trig[0], None)
             hand1 = key_hand_table.get(trig[1], None)
             hand2 = key_hand_table.get(trig[2], None)
-            if hand0 is not None and hand1 is not None and hand2 is not None:
-                if hand0 == hand1 and hand1 == hand2: 
-                    no_switch += num
-                counted += num
-            else:
-                not_counted += num
+            if hand0 == hand1 and hand1 == hand2:
+                no_switch += num
     return no_switch
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
@@ -1255,7 +1327,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
         print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
-        print("#", line_change_same_hand / 1000000000, "billion rows² to cross while on the same hand")
+        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross while on the same hand")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
 
 
@@ -1291,7 +1363,7 @@ def check_with_datafile(args, quiet, verbose):
                                      number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
     
 
-def evolve_a_layout(args, prerandomize, controlled, quiet, verbose):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
     #data = read_file("/tmp/sskreszta")
@@ -1315,7 +1387,7 @@ def evolve_a_layout(args, prerandomize, controlled, quiet, verbose):
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
     
-    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=int(argv[2]), quiet=quiet, controlled=controlled)
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
@@ -1516,7 +1588,7 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(args=argv, prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
+        evolve_a_layout(steps=int(argv[2]), prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
