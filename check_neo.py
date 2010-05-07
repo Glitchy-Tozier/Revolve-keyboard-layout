@@ -379,6 +379,9 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     0.5] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
 
+### Caches
+
+LETTER_TO_KEY_CACHE = {}
 
 ### Imports
 
@@ -386,21 +389,6 @@ from copy import deepcopy
 
 
 ### Helper Functions
-
-def find_key(key, layout=NEO_LAYOUT): 
-    """Find the position of the key in the layout.
-    
-    >>> find_key("a")
-    (2, 3, 0)
-    """
-    pos = None
-    for row in range(len(layout)):
-        for col in range(len(layout[row])):
-            if key in layout[row][col]: 
-                for idx in range(len(layout[row][col])):
-                    if layout[row][col][idx] == key: 
-                        pos = (row, col, idx)
-    return pos
 
 
 def get_key(pos, layout=NEO_LAYOUT):
@@ -412,6 +400,30 @@ def get_key(pos, layout=NEO_LAYOUT):
     try: 
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
+
+
+def find_key(key, layout=NEO_LAYOUT): 
+    """Find the position of the key in the layout.
+    
+    >>> find_key("a")
+    (2, 3, 0)
+    """
+    # first check the cache
+    pos = LETTER_TO_KEY_CACHE.get(key, None)
+    if get_key(pos, layout=layout) == key:
+        return pos
+    # on a cache miss, search the key and refresh the cache
+    pos = None
+    for row in range(len(layout)):
+        for col in range(len(layout[row])):
+            if key in layout[row][col]: 
+                for idx in range(len(layout[row][col])):
+                    if layout[row][col][idx] == key: 
+                        pos = (row, col, idx)
+    LETTER_TO_KEY_CACHE[key] = pos
+    return pos
+
+
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
     """Get the keys corresponding to the given finger name.
