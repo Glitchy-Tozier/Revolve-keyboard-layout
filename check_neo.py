@@ -875,7 +875,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 # finger1 = key_to_finger(key1, layout=layout)
                 # finger2 = key_to_finger(key2, layout=layout)
                 # if finger1 and finger2:# and finger1[-1] == finger2[-1]:
-                cost = num_rows / max(1, finger_distance)
+                cost = num_rows / max(0.25, finger_distance)
                 line_changes += cost**2 * number
     return line_changes
 
