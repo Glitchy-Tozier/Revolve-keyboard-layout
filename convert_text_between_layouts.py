@@ -62,6 +62,29 @@ siehg lnrtdm
 öüofk vcypj
 """
 
+# mainly few rows to cross on the same hand – really strange to type
+rows_per_hand = """
+yßxqj au.fbm
+häücp eidrsn
+zolgt ö,vwk
+"""
+
+# few rows to cross, but also few handswitches.
+# slightly strange, but interesting. 
+rows_total = """
+ßxyöü qjvkpf
+tcäoi esrngd
+lzua. ,mwbh
+"""
+
+# a normal optimization result
+# not quite flowing as I’d wish it to.
+sic = """
+zuxöä pglmjk
+sicea tdnrhf
+yßoüq bwv.,
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
@@ -103,19 +126,22 @@ print(konv(text, Andreas100504), end="\n\n\n\n")
 print(konv(text, Vrijbuiter), end="\n\n\n\n")
 print(konv(text, mirea), end="\n\n\n\n")
 print(konv(text, sieh), end="\n\n\n\n")
+print(konv(text, rows_per_hand), end="\n\n\n\n")
+print(konv(text, rows_total), end="\n\n\n\n")
+print(konv(text, sic), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
 
-print("Similarities between layouts")
-print()
-print("Vrijbuiter, base=nordtast")
-print(konv(text, Vrijbuiter, base=nordtast), end="\n\n\n\n")
-print("sieh, base=qwertz")
-print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
+#print("Similarities between layouts")
+#print()
+#print("Vrijbuiter, base=nordtast")
+#print(konv(text, Vrijbuiter, base=nordtast), end="\n\n\n\n")
+#print("sieh, base=qwertz")
+#print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
 
-print("For Qwertzer")
-print()
-print(konv(text, neo2, base=qwertz), end="\n\n\n\n")
-print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
-print(konv(text, random_nonoptimized, base=qwertz), end="\n\n\n\n")
-print(konv(text, qwertz, base=qwertz), end="\n\n\n\n")
+#print("For Qwertzer")
+#print()
+#print(konv(text, neo2, base=qwertz), end="\n\n\n\n")
+#print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
+#print(konv(text, random_nonoptimized, base=qwertz), end="\n\n\n\n")
+#print(konv(text, qwertz, base=qwertz), end="\n\n\n\n")
 
