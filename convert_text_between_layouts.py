@@ -78,7 +78,7 @@ lzua. ,mwbh
 """
 
 # a normal optimization result
-# not quite flowing as I’d wish it to.
+# not quite flowing as I’d wish it to, but better than sieh for text_ich_bin
 sic = """
 zuxöä pglmjk
 sicea tdnrhf
@@ -86,10 +86,18 @@ yßoüq bwv.,
 """
 
 # one other normal result, including the (rows/dist)²
+# flows a good deal better than sic
 tic1 = """
 juxäü zhlmpw
 ticea sdrngk
 yöo.q fvßb,
+"""
+
+# feels a bit more awkward than tic1 (tic1 has the better value)
+tic2 = """
+puxäü fglmjz
+ticea hdrns,
+yöo.q kwvbß
 """
 
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
@@ -105,6 +113,10 @@ text_pseudo_paragraphs = """Sept essich ingertraßen Sma gie bergoßenber ge Her
 
 Mirdenman zumstüber sion Noran dempfiziffel Büberlamendemoklung digendliehmehrive im mört ür Rückeiten zuhen samander stionschabearderdenterkein Millerliter Maig! Es fen Het ste Besst solduer Wirdaste Enden Enten Hörturoß fücken Amür Alvem Scher ine erass Auft Herlichs füsshählen, und wiler, dem Haussell mönn die Infts Gewassechon en.
 """
+
+text_ich_bin = """Ich bin Arne Babenhauserheide
+und ich teste Layouts, von denen ich noch nicht einschätzen kann, wie gut sie sind. 
+Ich will dabei rausfinden, was dazu führt, dass ein Layout das Tippen angenehm macht."""
 
 
 ### Alternate for reading from a text file
@@ -132,9 +144,9 @@ print(konv(text, qwertz), end="\n\n\n\n")
 print(konv(text, Andreas100504), end="\n\n\n\n")
 print(konv(text, Vrijbuiter), end="\n\n\n\n")
 print(konv(text, mirea), end="\n\n\n\n")
-print(konv(text, sieh), end="\n\n\n\n")
 print(konv(text, rows_per_hand), end="\n\n\n\n")
 print(konv(text, rows_total), end="\n\n\n\n")
+print(konv(text, sieh), end="\n\n\n\n")
 print(konv(text, sic), end="\n\n\n\n")
 print(konv(text, tic1), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
