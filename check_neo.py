@@ -95,9 +95,9 @@ Kostenfaktor: Belastung
 
 Kostenfaktor: Natürliche Handbewegung
 - Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
-- Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein oder ein Handwechsel. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). - TODO
 - Fingerwiederholungen in Trigrammen sind etwas unbequem – dadurch hat der Finger zu wenig Zeit, in die Grundposition zurückzukehren (lehre aus tic1). - TODO
 - Finger nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch direkt Fingerwiederholungen mitabdecken. Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- TODO
+- (Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). ! Hängt vom Finger ab! Der kleine kann gut runter, aber schlecht hoch. - TODO)
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
 - (Zwei Finger nebeneinander auf der gleichen Hand, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen  => Wenn der Ringfinger auf den Mittelfinger folgt oder umgekehrt gibt es Strafpunkte (bei  bigrammen) Gegenpunkt: Direkt nebeneinander liegende Finger ein Nachteil? - TODO)
