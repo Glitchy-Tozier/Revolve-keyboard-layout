@@ -85,6 +85,13 @@ sicea tdnrhf
 yßoüq bwv.,
 """
 
+# one other normal result, including the (rows/dist)²
+tic1 = """
+juxäü zhlmpw
+ticea sdrngk
+yöo.q fvßb,
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
@@ -129,6 +136,7 @@ print(konv(text, sieh), end="\n\n\n\n")
 print(konv(text, rows_per_hand), end="\n\n\n\n")
 print(konv(text, rows_total), end="\n\n\n\n")
 print(konv(text, sic), end="\n\n\n\n")
+print(konv(text, tic1), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
 
 #print("Similarities between layouts")
