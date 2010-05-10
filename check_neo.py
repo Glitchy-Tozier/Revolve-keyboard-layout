@@ -94,18 +94,18 @@ Kostenfaktor: Belastung
 
 Kostenfaktor: Natürliche Handbewegung
 - Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
-- Fingerwiederholungen in Trigrammen sind etwas unbequem – dadurch hat der Finger zu wenig Zeit, in die Grundposition zurückzukehren (lehre aus tic1). - TODO
-- Finger nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch direkt Fingerwiederholungen mitabdecken. Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- TODO
+- Finger *auf der Grundlinie* nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch direkt Fingerwiederholungen mitabdecken. Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- TODO
 - Kein Goüävu (Neo 2) → keine Richtungsänderung + Wenn die Hand aus der Grundstellung gezogen wird (Neo oswkzxyß´) ein Handwechsel. ⇒ Malus für Richtungsänderungen in Trigrammen und heftiger Malus für kein Handwachsel für die Handhaltung verzerrende Positionen. - TODO
-- (Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). ! Hängt vom Finger ab! Der kleine kann gut runter, aber schlecht hoch. - TODO)
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
+- (Fingerwiederholungen in Trigrammen sind etwas unbequem – dadurch hat der Finger zu wenig Zeit, in die Grundposition zurückzukehren (lehre aus tic1). - TODO)
+- (Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). ! Hängt vom Finger ab! Der kleine kann gut runter, aber schlecht hoch. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
-- (Zwei Finger nebeneinander auf der gleichen Hand, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen  => Wenn der Ringfinger auf den Mittelfinger folgt oder umgekehrt gibt es Strafpunkte (bei  bigrammen) Gegenpunkt: Direkt nebeneinander liegende Finger ein Nachteil? - TODO)
+- (Frage: Zwei Finger nebeneinander auf der gleichen Hand oder Abstand, aber nicht Mittel- und Ringfinger. -> bei Tripeln: wenn zwei Tasten auf der gleichen Hand liegen, sollten sie aufeinander folgen  => Wenn der Ringfinger auf den Mittelfinger folgt oder umgekehrt gibt es Strafpunkte (bei  bigrammen) Gegenpunkt: Direkt nebeneinander liegende Finger ein Nachteil? - TODO)
   (von http://www.michaelcapewell.com/projects/keyboard/layout_capewell.htm und http://mkweb.bcgsc.ca/carpalx/?typing_effort)
 
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - done. 
-- (. sollte neben , liegen. Das sind mit dem leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. -TODO)
+- (. sollte vielleicht neben , liegen. Das sind mit dem Leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. - TODO)
 
 
 ### Kosten für die Tasten
@@ -224,6 +224,27 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 WEIGHT_XCVZ_ON_BAD_POSITION = 0.6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+
+WEIGHT_FINGER_SWITCH = 1 # how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
+#: The cost for moving from one finger to the next. 
+FINGER_SWITCH_COST = {
+    "Klein_L": {"Ring_L": 3}, # 100ms
+    "Ring_L": {"Klein_L": 1,
+               "Mittel_L": 5}, # 140ms
+    "Mittel_L": {"Ring_L": 1,
+                 "Zeige_L": 1}, # Nach Rohmert 230ms statt 200ms ⇒ 30ms
+    "Zeige_L": {"Mittel_L": 4}, # 120ms
+    "Daumen_L": {},
+    "Daumen_R": {},
+    "Zeige_R": {"Mittel_R": 4},
+    "Mittel_R": {"Zeige_R": 1,
+                 "Ring_R": 1},
+    "Ring_R": {"Mittel_R": 5,
+               "Klein_R": 1},
+    "Klein_R": {"Ring_R": 3}
+}
+
+
 
 #: Die zu mutierenden Buchstaben.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -838,6 +859,25 @@ def finger_repeats_top_and_bottom(finger_repeats):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
+def neighboring_fingers(data=None, repeats=None, layout=NEO_LAYOUT):
+    """Return the number of times we have to use fingers next to each other.
+
+    >>> data = read_file("testfile")
+    >>> neighboring_fingers(data)
+    7
+    """
+    if data is not None: 
+        repeats = repeats_in_file(data)
+    elif repeats is None:
+        raise Exception("Need either repeats or data")
+    
+    repeats = split_uppercase_repeats(repeats, layout=layout)
+
+    fingtups = ((num, (key_to_finger(rep[0]), key_to_finger(rep[1]))) for num, rep in repeats if key_to_finger(rep[0]) and key_to_finger(rep[1]))
+    neighcosts = (num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if fings[1] in FINGER_SWITCH_COST[fings[0]])
+    return sum(neighcosts)
+    
+
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows/dist)².
 
@@ -949,7 +989,7 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
 
-    TODO: If we fix uppercase handling (no longer just add both left and right shift), include tha shifts again. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
+    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
@@ -958,7 +998,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
     for key in abc:
-        #withour "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
+        #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         finger = key_to_finger(key, layout=layout)
         if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
@@ -1015,6 +1055,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
+    # the number of times neighboring fingers are used – weighted by the ease of transition for the respective fingers
+    neighboring_fings = neighboring_fingers(repeats=repeats, layout=layout)
+
     # the number of changes between lines on the same hand.
     line_change_same_hand = line_changes(repeats=repeats, layout=layout)
 
@@ -1029,6 +1072,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total = WEIGHT_POSITION * position_cost
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
+    total += WEIGHT_FINGER_SWITCH * neighboring_fings
     total += int(WEIGHT_FINGER_DISBALANCE * disbalance)
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
