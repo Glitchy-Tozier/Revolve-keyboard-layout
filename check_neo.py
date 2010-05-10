@@ -94,7 +94,7 @@ Kostenfaktor: Belastung
 
 Kostenfaktor: Natürliche Handbewegung
 - Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
-- Finger *auf der Grundlinie* nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch direkt Fingerwiederholungen mitabdecken. Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- TODO
+- Finger nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- Teilerledigt: Kosten für die Nutzung benachbarter Finger. Noch zu erledigen: Kosten für alle Fingerübergänge (Grund: Neo 2 ae ist für mich besser als ue). TODO
 - Kein Goüävu (Neo 2) → keine Richtungsänderung + Wenn die Hand aus der Grundstellung gezogen wird (Neo oswkzxyß´) ein Handwechsel. ⇒ Malus für Richtungsänderungen in Trigrammen und heftiger Malus für kein Handwachsel für die Handhaltung verzerrende Positionen. - TODO
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Fingerwiederholungen in Trigrammen sind etwas unbequem – dadurch hat der Finger zu wenig Zeit, in die Grundposition zurückzukehren (lehre aus tic1). - TODO)
