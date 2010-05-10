@@ -212,6 +212,7 @@ WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 64 #: 2 times a normal repeat, since it's rea
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
 WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 10 #: how much stronger should the triple without handswitch be counted, if there also is a direction change?
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
     2,
@@ -989,6 +990,8 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
 
+    If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE. 
+
     TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
@@ -1002,7 +1005,15 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
         finger = key_to_finger(key, layout=layout)
         if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
-    # now ret the hand for each key
+
+    key_pos_horizontal_table = {}
+    for key in abc:
+        #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
+        pos = find_key(key, layout=layout)
+        if pos is not None: 
+            key_pos_horizontal_table[key] = pos[1]
+    
+
     no_switch = 0
     for num, trig in trigrams:
             # if we have a shift in it, we also have a handswitch. 
@@ -1012,8 +1023,14 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
             hand1 = key_hand_table.get(trig[1], None)
             hand2 = key_hand_table.get(trig[2], None)
             if hand0 == hand1 and hand1 == hand2:
+                pos0 = key_pos_horizontal_table[trig[0]]
+                pos1 = key_pos_horizontal_table[trig[1]]
+                pos2 = key_pos_horizontal_table[trig[2]]
+                if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
+                    num *= WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
                 no_switch += num
     return no_switch
+
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
     """Check, if x, c, v and z are on the left hand and well positioned (much used shortcuts)."""
