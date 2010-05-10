@@ -49,10 +49,25 @@ mirea dstngz
 b,.oö ßfvwq
 """
 
-random_nonoptimized = """
-qäkz. ,üaßvy
-soicw eöhtln
-uxrgm bdjpf
+# A layout with similar values as Qwertz.
+# found in the python3 interpreter via 
+# >>> from check_neo import find_a_qwertzy_layout; find_a_qwertzy_layout(100, 100000, False, True)
+qwertzy = """
+rlnöv xd,fj.
+qzhäi gpsbuw
+matye üockß
+"""
+
+qwertzy2 = """
+lfbvh p,cögy
+äaukß wzedox
+ürsit qm.nj
+"""
+
+qwertzy3 = """
+nßeiä wu.cqm
+xvjt, agürly
+ösdfb ophzk
 """
 
 # has zero repeats top to bottom
@@ -75,6 +90,13 @@ rows_total = """
 ßxyöü qjvkpf
 tcäoi esrngd
 lzua. ,mwbh
+"""
+
+# quite good normal result from before (rows/dist)²
+hia1 = """
+ßuoöx wcsdpz
+hiaeä lnrtgk
+,y.üq fmjbv
 """
 
 # a normal optimization result
@@ -146,8 +168,12 @@ print(konv(text, Vrijbuiter), end="\n\n\n\n")
 print(konv(text, mirea), end="\n\n\n\n")
 print(konv(text, rows_per_hand), end="\n\n\n\n")
 print(konv(text, rows_total), end="\n\n\n\n")
+print("# sieh")
 print(konv(text, sieh), end="\n\n\n\n")
 print(konv(text, sic), end="\n\n\n\n")
+print("# hia1")
+print(konv(text, hia1), end="\n\n\n\n")
+print("# tic1")
 print(konv(text, tic1), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
 
@@ -158,10 +184,12 @@ print(konv(text, neo2), end="\n\n\n\n")
 #print("sieh, base=qwertz")
 #print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
 
-#print("For Qwertzer")
 #print()
-#print(konv(text, neo2, base=qwertz), end="\n\n\n\n")
-#print(konv(text, sieh, base=qwertz), end="\n\n\n\n")
-#print(konv(text, random_nonoptimized, base=qwertz), end="\n\n\n\n")
-#print(konv(text, qwertz, base=qwertz), end="\n\n\n\n")
+#print()
+#print("# For Qwertzer: pseudo-qwertz vs neo2 vs tic1")
+#print()
 
+#print(konv(text_ich_bin, qwertzy, base=qwertz), end="\n\n\n\n")
+#print(konv(text_ich_bin, neo2, base=qwertz), end="\n\n\n\n")
+#print(konv(text_ich_bin, tic1, base=qwertz), end="\n\n\n\n")
+#print(konv(text_ich_bin, qwertz, base=qwertz), end="\n\n\n\n")

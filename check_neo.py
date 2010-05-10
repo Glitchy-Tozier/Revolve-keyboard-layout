@@ -1367,6 +1367,59 @@ def check_with_datafile(args, quiet, verbose):
                                      number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
     
 
+def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
+    """Find a layout with values similar to qwertz."""
+    print("# Qwertzing Layout")
+    #data = read_file("/tmp/sskreszta")
+    data1 = read_file("1gramme.txt")
+    letters = letters_in_file_precalculated(data1)
+    #letters = letters_in_file(data)
+    datalen1 = sum([i for i, s in letters])
+    
+    data2 = read_file("2gramme.txt")
+    repeats = repeats_in_file_precalculated(data2)
+    #repeats = repeats_in_file(data)
+    datalen2 = sum([i for i, s in repeats])
+
+    data3 = read_file("3gramme.txt")
+    trigrams = trigrams_in_file_precalculated(data3)
+    number_of_trigrams = sum([i for i, s in trigrams])
+   
+    if prerandomize:
+        if not quiet:
+            print("doing", prerandomize, "randomization switches.")
+        lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
+    else: lay = NEO_LAYOUT
+
+    qtotal, qfrep_num, qcost, qfrep_top_bottom, qdisbalance, qno_handswitches, qline_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams)[:7]
+
+    qhand_load = load_per_hand(letters, layout=QWERTZ_LAYOUT)
+
+    def compare_with_qwertz(lay, base=QWERTZ_LAYOUT):
+        """compare the layout with qwertz."""
+        total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:7]
+        hand_load = load_per_hand(letters, layout=lay)
+        diff = ((total/qtotal) - 1)**2
+        to_compare = [(frep_num, qfrep_num), (cost, qcost), (frep_top_bottom, qfrep_top_bottom), (disbalance, qdisbalance), (no_handswitches, qno_handswitches), (line_change_same_hand, qline_change_same_hand)]
+        for l,q in to_compare: 
+            diff += ((l/q) - 1)**2
+        return diff
+
+    diff = compare_with_qwertz(lay)
+
+    for i in range(steps):
+        lay = deepcopy(lay)
+        l, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=lay)
+        d = compare_with_qwertz(l)
+        if d < diff:
+            print("# qwertzer")
+            print(format_layer_1_string(l))
+            lay = deepcopy(l)
+            diff = d
+
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+    
+
 def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
