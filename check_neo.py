@@ -56,11 +56,10 @@ Design:
 - Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
 - Evolution durch Mutation und Kostenminimierung (switch miltiple times (3?) => keep if lower cost).
 - Die Hauptarbeit der Mutation wird von der Funktion total_cost() übernommen. 
+- Groß- und Kleinschreibung wird durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt.
+- Erst Evolution (~3000), dann so lange kontrolliert (immer bester Schritt), bis es keine Verbesserung mehr gibt. - TODO
 
 Später:
-- "Kosten der Änderung" für die Austauschfunktion: Fingerwechsel, Seitenwechsel, ...
-- Groß- und Kleinschreibung kann durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt. - DONE
-- TODO: Kosten und Finger für Shift; teilerledigt: Kleine Finger bedienen Shift.
 - Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (for i in [a:z]: if rand_bool(): 1.switch(1, 2.key_at(1.pos(i))])
 
 
@@ -86,7 +85,7 @@ Kostenfaktor: Zeit
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
 - Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - done
-- Der Zeige- und Mittelfinger sind schneller oben und unten als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
+- Der Zeige- und Mittelfinger sind schneller unten bzw. oben als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
   (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
 
 Kostenfaktor: Belastung
@@ -97,6 +96,7 @@ Kostenfaktor: Natürliche Handbewegung
 - Zeilenwechsel ohne Handwechsel kostet Anstrengung, desto mehr, je  näher die Buchstaben horizontal sind => Malus für den Wechsel der Zeile in einem Bigramm auf der gleichen Hand. Malus = (Anzahl Zeilen / Abstand in Fingern)²- done
 - Fingerwiederholungen in Trigrammen sind etwas unbequem – dadurch hat der Finger zu wenig Zeit, in die Grundposition zurückzukehren (lehre aus tic1). - TODO
 - Finger nebeneinander nutzen ist sehr viel unpraktischer als wenn ein Finger Abstand ist. Fixkosten für Fingerübergänge (dict). Das kann auch direkt Fingerwiederholungen mitabdecken. Das kann auch bevorzugte Bewegungsmuster und Richtungen abdecken (z.B. von außen nach innen)- TODO
+- Kein Goüävu (Neo 2) → keine Richtungsänderung + Wenn die Hand aus der Grundstellung gezogen wird (Neo oswkzxyß´) ein Handwechsel. ⇒ Malus für Richtungsänderungen in Trigrammen und heftiger Malus für kein Handwachsel für die Handhaltung verzerrende Positionen. - TODO
 - (Einen Finger in der Mitte und dann den direkt daneben die Zeile weiter unten ist sehr unangenehm. Wenn die Zeilen runter gehen, sollte min. ein Finger dazwischen sein. → Strafe wenn in einem Bigramm der Finger daneben (gleiche Hand) in der unteren Zeile genutzt wird (und die vorige Zeile nicht unten war). ! Hängt vom Finger ab! Der kleine kann gut runter, aber schlecht hoch. - TODO)
 - (Von außen nach innen. => von innen nach außen auf der gleichen Hand gibt Strafpunkte. Stattdessen vielleicht: Kein Richtungswechsel der Finger einer Hand. - TODO)
 - (Links gleicher Finger wie rechts. => Fingerwechsel bei Handwechsel hat Kosten. - TODO)
@@ -112,27 +112,16 @@ Sonstiges:
 
 Da die Belastung der Finger bereits *pro Finger* gerechnet wird, sollte darüber auch die Unterscheidung zwischen Fingern gemacht werden. → WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY
 
-Das sollte dann der inversen Geschwindigkeit der Finger entsprechen, normiert auf den Kleinen Finger und modifiziert durch die Belastbarkeit. Die liste sagt “so viel Last wolle nwir auf dem Finger”. Dadurch können dann die Kosten pro Taste alleine auf der Erreichbarkeit der Tasten relativ zur Grundlinie aufgebaut werden. 
+Das sollte dann der inversen Geschwindigkeit der Finger entsprechen, normiert auf den Kleinen Finger und modifiziert durch die Belastbarkeit. Die liste sagt “so viel Last wollen wir auf dem Finger”. Dadurch können dann die Kosten pro Taste alleine auf der Erreichbarkeit der Tasten relativ zur Grundlinie aufgebaut werden. 
 
-Bisher verwende ich 
-
-Notizen:
-- Ulf Bro nutzt für Kosten der Einzeltasten das folgende:
-  5 3 3 3 4         4 3 3 3 5 7
-  1 0 0 0 2         2 0 0 0 1 7
-  6 5 5 5 7         7 5 5 5 6
-  Um konsistent mit der Idee „die Idealtastatur braucht keine Zeit“ zu sein, sollte die Grundreihe allerdings auch Kosten haben.
-  Genutzte Alternative:
-    6 3 3 3 4         4 3 3 3 6 7 8
-    2 1 1 1 3         3 1 1 1 2 6 9
-  4 5 5 5 5 7         7 5 5 5 5
-  Kleiner Finger unten geht bei mir weitaus besser ais Mittel- oder Ringfinger. 
+Die Kosten einer Taste außerhalb der Grundlinie sollten sich an der Zeit orientieren, die gebraucht wird, um die Taste zu erreichen und dann wieder auf die Grundlinie zu kommen (Blockadezeit des Fingers). Nach Rohmert sind des beim Ringfinger 580ms oben, Beim Mittelfinger 440ms, beim kleinen >620ms und beim Zeigefinger 420ms. Der Mittelfinger kommt etwa so schnell runter wie der Ringfinger (240ms-250ms), nur der Zeigefinger ist signifikent schneller (200ms). 
 
 Vorschläge: 
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007551.html
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007569.html
 → http://lists.neo-layout.org/pipermail/diskussion/2008-July/007570.html
 → http://lists.neo-layout.org/pipermail/diskussion/2010-March/016156.html
+
 
 ### Weitere Notizen
 
@@ -227,10 +216,10 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
     2,
     2,
-    3,
+    2.6, # is 1/3 faster
     1,
     1,
-    3,
+    2.6,
     2,
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
@@ -324,9 +313,11 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # (except for q, since the pinky is too short for that).
 # theoretical minimum (assigning the lowest cost to the most frequent char, counting only the chars on layer 1):
 # 1123111113 = 3.3490913205386508 mean key position cost
+# Ringfinger on lower row takes 1.5 times the time of index on the upper row[1].
+# [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
-    [0,    10, 5, 4, 8, 9,    10, 6, 4, 5, 8, 6,18, 0], # Reihe 1
+    [0,    10, 5, 4, 6, 9,    10, 5, 4, 5, 8, 6,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,12,10, 10,   15, 7, 6,11,11,10,15],     # Reihe 3
     [0,0,0,               3    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
