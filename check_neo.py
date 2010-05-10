@@ -85,7 +85,7 @@ Kostenfaktor: Zeit
 - Einen Finger mehrfach hintereinander verwenden. => Strafpunkte. - done
 - Einen Finger mehrfach, von oben nach ganz unten. => viele Strafpunkte. - done
 - Handwechsel sparen Zeit => Wenn bei tripeln alle 3 Zeichen auf der gleichen Hand sind, bringt das Strafpunkte. - done
-- Der Zeige- und Mittelfinger sind schneller unten bzw. oben als die beiden anderen => Kosten für Einzeltasten anpassen. - TODO
+- Der Zeige- und Mittelfinger sind schneller unten bzw. oben als die beiden anderen => Kosten für Einzeltasten anpassen. Erst Rohmert Geschwindigkeit, dann nochmal einen Malus für unbequeme Handbewegung. - done
   (aus http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html)
 
 Kostenfaktor: Belastung
@@ -317,10 +317,10 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
-    [0,    10, 5, 4, 6, 9,    10, 5, 4, 5, 8, 6,18, 0], # Reihe 1
+    [0,    10, 5, 4, 6, 9,    10, 5, 4, 5, 8,12,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
-    [15,10,12,12,10, 10,   15, 7, 6,11,11,10,15],     # Reihe 3
-    [0,0,0,               3    , 0, 0, 0, 0] # Reihe 4 mit Leertaste
+    [15,10,12,12,10, 10,   15, 7, 6,11,11,10,   15],     # Reihe 3
+    [0,0,0,               3           , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
 
 
