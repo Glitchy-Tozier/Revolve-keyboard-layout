@@ -177,6 +177,10 @@ print("# tic1")
 print(konv(text, tic1), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
 
+print("# alternate text, tic1")
+print(konv(text_ich_bin, tic1), end="\n\n\n\n")
+print(konv(text_ich_bin, neo2), end="\n\n\n\n")
+
 #print("Similarities between layouts")
 #print()
 #print("Vrijbuiter, base=nordtast")
