@@ -122,6 +122,20 @@ ticea hdrns,
 yöo.q kwvbß
 """
 
+# as little handswitching as possible, but only without direction changes.
+keep_the_hand = """
+,äqoy pwslfk
+aeciü hnrtdg
+xö.uj bmßvz
+"""
+
+# Andreas Wettstein, Einwärts, Englisch+Deutsch
+einw = """
+kuü.ä vgcljf
+hieao dtrnsß
+xyö,q bpwmz
+"""
+
 text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
@@ -175,6 +189,10 @@ print("# hia1")
 print(konv(text, hia1), end="\n\n\n\n")
 print("# tic1")
 print(konv(text, tic1), end="\n\n\n\n")
+print("# keep_the_hand")
+print(konv(text, keep_the_hand), end="\n\n\n\n")
+print("# einwärts")
+print(konv(text, einw), end="\n\n\n\n")
 print(konv(text, neo2), end="\n\n\n\n")
 
 print("# alternate text, tic1")
