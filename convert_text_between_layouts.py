@@ -1,5 +1,27 @@
 #!/usr/bin/env python3
 
+"""Simple text converter between layouts. 
+
+Usage: ./convert_text_between_layouts.py [--layout "\
+<layout-string>\
+"] [--base "\
+<layout-string>\
+"] [--text "<text>"]
+
+Example: 
+
+./convert_text_between_layouts.py --layout "
+kuü.ä vgcljf
+hieao dtrnsß
+xyö,q bpwmz
+" --base "
+,äqoy pwslfk
+aeciü hnrtdg
+xö.uj bmßvz
+" --text "blubb"
+
+"""
+
 ### Das Skript ist in Python (Version 3, wegen Umlauten):
 ### → http://python.org
 ### ⇒ Python muss intstalliert sein, damit es läuft.
@@ -160,6 +182,17 @@ Ich will dabei rausfinden, was dazu führt, dass ein Layout das Tippen angenehm 
 ###    text = f.read()
 
 from sys import argv
+layout = None
+base = None
+if "--help" in argv: 
+   print(__doc__)
+   exit()
+if argv[2:] and argv[1] == "--layout": 
+   layout = argv[2]
+   argv = argv[:1] + argv[3:]
+if argv[2:] and argv[1] == "--base": 
+   base = argv[2]
+   argv = argv[:1] + argv[3:]
 if argv[2:] and argv[1] == "--text": 
    text = argv[2]
 
@@ -175,6 +208,10 @@ def konv(text, layout, base=neo2):
             res += i
     return res
            
+if layout is not None: 
+   print(konv(text, layout, base=base))
+   exit()
+
 print(konv(text, nordtast), end="\n\n\n\n")
 print(konv(text, qwertz), end="\n\n\n\n")
 print(konv(text, Andreas100504), end="\n\n\n\n")
