@@ -325,7 +325,7 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # theoretical minimum (assigning the lowest cost to the most frequent char, counting only the chars on layer 1):
 # 1123111113 = 3.3490913205386508 mean key position cost
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
-    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
+    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 22, 0, 0], # Zahlenreihe (0)
     [0,    10, 5, 4, 8, 9,    10, 6, 4, 5, 8, 6,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,12,10, 10,   15, 7, 6,11,11,10,15],     # Reihe 3
