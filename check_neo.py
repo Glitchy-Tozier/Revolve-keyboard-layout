@@ -339,7 +339,7 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 # Ringfinger on lower row takes 1.5 times the time of index on the upper row[1].
 # [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
 COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
-    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0, 0, 0, 0], # Zahlenreihe (0)
+    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0,22, 0, 0], # Zahlenreihe (0)
     [0,    10, 5, 4, 6, 9,    10, 5, 4, 5, 8,12,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,12,10, 10,   15, 7, 6,11,11,10,   15],     # Reihe 3
