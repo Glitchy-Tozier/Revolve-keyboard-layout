@@ -1638,6 +1638,13 @@ if __name__ == "__main__":
         PRERANDOMIZE = int(PRERANDOMIZE)
     else: PRERANDOMIZE = False
     
+    if "--base" in argv: 
+        BASE = argv[argv.index("--base") + 1]
+        argv.remove("--base")
+        argv.remove(BASE)
+        BASE = eval(BASE)
+    else: BASE = NEO_LAYOUT
+    
     if "--help" in argv:
         print(__usage__)
         exit()
