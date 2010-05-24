@@ -205,8 +205,8 @@ License: GPLv3 or later
 
 ### get the config
 
+# check if we got one via the commandline (and remove the argument if yes). Otherwise use the default.
 from sys import argv
-
 if "--config" in argv: 
     idx = argv.index("--config")
     # the config module is the file without the extension.

@@ -59,7 +59,7 @@ FINGER_SWITCH_COST = {
 # The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
 # So this shows the reachability of the keys, ignoring the different speed of the fingers.
 # “How much does the hand hurt when reaching for the key” :)
-# rationale: reaching for the Neo2 x hurts thrice as much as just hitting the Neo2 u → 10 vs. 3.
+# rationale: reaching for the Neo 2 x hurts thrice as much as just hitting the Neo2 u → 10 vs. 3.
 # the upper keys on the right hand can be reached a bit better, since movement is aligned with the hand
 # (except for q, since the pinky is too short for that).
 # theoretical minimum (assigning the lowest cost to the most frequent char, counting only the chars on layer 1):
