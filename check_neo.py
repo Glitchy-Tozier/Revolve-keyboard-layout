@@ -211,7 +211,7 @@ if "--config" in argv:
     idx = argv.index("--config")
     # the config module is the file without the extension.
     cfg = argv[idx+1][:-3]
-    argv = argv[:idx] + argv[idx+1:]
+    argv = argv[:idx] + argv[idx+2:]
     exec("from " + cfg + " import *")
 else: 
     from config import *
