@@ -204,7 +204,17 @@ License: GPLv3 or later
 """
 
 ### get the config
-from config import *
+
+from sys import argv
+
+if "--config" in argv: 
+    idx = argv.index("--config")
+    # the config module is the file without the extension.
+    cfg = argv[idx+1][:-3]
+    argv = argv[:idx] + argv[idx+1:]
+    exec("from " + cfg + " import *")
+else: 
+    from config import *
 
 ### Constants
 
