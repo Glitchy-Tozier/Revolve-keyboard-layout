@@ -211,6 +211,7 @@ WEIGHT_POSITION = 1 #: reference
 WEIGHT_FINGER_REPEATS = 32 #: higher than two switches from center to side, but lower than two switches from center to upper left.
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 64 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
+WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change nontheless? 
 WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 5 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
@@ -903,13 +904,15 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         pos1 = find_key(key1, layout=layout)
         pos2 = find_key(key2, layout=layout)
         if pos1 and pos2:
+            if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
+                # check if we”re on the same hand
+                finger1 = key_to_finger(key1, layout=layout)
+                finger2 = key_to_finger(key2, layout=layout)
+                if finger1 and finger2: and finger1[-1] != finger2[-1]:
+                    continue # the keys are on different hands, so we don’t count them as row change.
             num_rows = abs(pos1[0] - pos2[0])
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
-                # # (no longer) check if we’re on the same hand
-                # finger1 = key_to_finger(key1, layout=layout)
-                # finger2 = key_to_finger(key2, layout=layout)
-                # if finger1 and finger2:# and finger1[-1] == finger2[-1]:
                 cost = num_rows / max(0.25, finger_distance)
                 line_changes += cost**2 * number
     return line_changes
