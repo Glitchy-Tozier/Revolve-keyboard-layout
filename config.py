@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 
-"""Configuration of check_neo, mainly the weights. Intended to be easily modified."""
+"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
-# Gewichtung der unterschiedlichen Kosten
-WEIGHT_POSITION = 1 #: reference
+#: The mutated letters - only these get changed.
+abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
-WEIGHT_FINGER_REPEATS = 32 #: higher than two switches from center to side, but lower than two switches from center to upper left.
+WEIGHT_POSITION = 1 #: reference cost - gets multiplied with the COST_PER_KEY.
 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 64 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
+WEIGHT_FINGER_REPEATS = 32 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 1 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 64 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
-WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change nontheless? 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 1 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross / horizontal distance)² if we’re on the same hand. 
+
+WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 
 WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 
@@ -33,9 +35,9 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 0.6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_FINGER_SWITCH = 1 # how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
-#: The cost for moving from one finger to the next. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
+WEIGHT_FINGER_SWITCH = 1 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
 
+#: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain dairection. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
 FINGER_SWITCH_COST = {
     "Klein_L": {"Ring_L": 2}, # 100ms
     "Ring_L": {"Klein_L": 3,
@@ -52,11 +54,6 @@ FINGER_SWITCH_COST = {
                "Klein_R": 3}, 
     "Klein_R": {"Ring_R": 2}
 }
-
-
-
-#: Die zu mutierenden Buchstaben.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
 # The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
