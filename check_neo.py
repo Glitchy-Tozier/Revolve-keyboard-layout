@@ -843,7 +843,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 # check if we”re on the same hand
                 finger1 = key_to_finger(key1, layout=layout)
                 finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2: and finger1[-1] != finger2[-1]:
+                if finger1 and finger2 and finger1[-1] != finger2[-1]:
                     continue # the keys are on different hands, so we don’t count them as row change.
             num_rows = abs(pos1[0] - pos2[0])
             finger_distance = abs(pos1[1] - pos2[1])
