@@ -9,7 +9,7 @@ WEIGHT_FINGER_REPEATS = 32 #: higher than two switches from center to side, but 
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 64 #: 2 times a normal repeat, since it's really slow. Better two outside low or up than an up-down repeat. Additionally it gets repeated as row repetition on the same hand (+8)
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 2 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 1 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per row to cross if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change nontheless? 
 
