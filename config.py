@@ -55,6 +55,27 @@ FINGER_SWITCH_COST = {
     "Klein_R": {"Ring_R": 2}
 }
 
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 1 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an upparcase letter.
+
+#: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
+UNBALANCING_POSITIONS = {
+(1, 0, 0): 2, # Tab
+(1, 1, 0): 1,# x
+(1, 5, 0): 2, # w
+(1, 6, 0):: 2, # k
+(1, 10, 0): 1, # q
+(1, 11, 0): 2, # ß
+(2, 0, 0): 2, # L_M3
+(2, 5, 0): 1, # o
+(2, 6, 0): 1, # s
+(2, 11, 0): 1, # y
+(2, 12, 0): 2, # R_M3
+(2, 13, 0): 2, # Return
+(3, 0, 0): 2, # L_Shift
+(3, 12, 0): 2, # R_Shift
+(3, 6, 0): 2 # z
+}
+
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
 # The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
 # So this shows the reachability of the keys, ignoring the different speed of the fingers.

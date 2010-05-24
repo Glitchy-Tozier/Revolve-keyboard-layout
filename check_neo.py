@@ -826,6 +826,34 @@ def neighboring_fingers(data=None, repeats=None, layout=NEO_LAYOUT):
     return sum(neighcosts)
     
 
+def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
+    """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too). 
+
+    >>> data = read_file("testfile")
+    >>> no_handswitch_after_unbalancing_key(data)
+    7
+    """
+    if data is not None: 
+        repeats = repeats_in_file(data)
+    elif repeats is None:
+        raise Exception("Need either repeats or data")
+    
+    repeats = split_uppercase_repeats(repeats, layout=layout)
+
+    no_switch = 0
+    for number, pair in repeats:
+        key1 = pair[0]
+        key2 = pair[1]
+        pos1 = find_key(key1, layout=layout)
+        pos2 = find_key(key2, layout=layout)
+        if pos1 and pos2 and pos1 in UNBALANCING_POSITIONS:
+                # check if we”re on the same hand
+                finger1 = key_to_finger(key1, layout=layout)
+                finger2 = key_to_finger(key2, layout=layout)
+                if finger1 and finger2 and finger1[-1] == finger2[-1]:
+                    no_switch += UNBALANCING_POSITIONS.get(pos1, 0)
+    return no_switch
+
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows/dist)².
 
@@ -1027,6 +1055,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # the number of changes between lines on the same hand.
     line_change_same_hand = line_changes(repeats=repeats, layout=layout)
 
+    # how often the hand wasn’t switched after an unbalancing key, weighted by the severity of the unbalancing.
+    no_switch_after_unbalancing = no_handswitch_after_unbalancing_key(repeats=repeats, layout=layout)
+
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
     number_of_letters = sum([i for i, s in letters])
@@ -1043,6 +1074,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
     total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
+    total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
     
     return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand
 
