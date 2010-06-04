@@ -1307,7 +1307,9 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
     from math import log10
     cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
 
-    # first round: do (numper of iterations) mutation tries. 
+    # first round: do (numper of iterations) mutation tries.
+    if not quiet: 
+        print("doing", iterations, "random mutations")
     for i in range(iterations): 
         # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
         lay, cost, better = random_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
@@ -1317,8 +1319,11 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
         if not quiet: 
             print("-", i, "/", iterations)
 
-    # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result). 
+    # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result).
+    if not quiet: 
+        print("controlled evolution, until there’s no more to improve")
     better = True
+    steps = 0
     while better: 
         # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
         lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
@@ -1326,7 +1331,7 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
             # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
             layout = lay
         if not quiet: 
-            print("-", i, "/", iterations)
+            print("-", steps, "/ ?", )
     
     return layout, cost
 
