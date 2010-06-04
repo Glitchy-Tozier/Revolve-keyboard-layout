@@ -18,9 +18,10 @@ __usage__ = """Usage:
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
 
-- check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution]
+- check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution] [--controlled-tail]
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
   --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
+  --controlled-tail makes it first do <iterations> random mutations and then a controlled evolution, until it can’t go any further. controlled_tail and controlled-evolution are exclusive. When both are used, the tail wins. 
   --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100000 to get a mostly random keyboard layout as starting point.
 
 - check_neo.py --best-random-layout <num of random layouts to try> [--prerandomize <num_switches>] [-q]
@@ -746,6 +747,45 @@ def letters_in_file_precalculated(data):
     return [(int(num), let) for num, let in letters]
     
 
+def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None): 
+    """Get letters, bigrams and trigrams.
+
+    @param data: a string of text.
+    """
+    #data = read_file("/tmp/sskreszta")
+
+    # if we get a datastring, we use it for everything. 
+    if data is not None:
+        letters = letters_in_file(data)
+        bigrams = repeats_in_file(data)
+        trigrams = trigrams_in_file(data)
+        number_of_letters = sum([i for i, s in letters])
+        number_of_bigrams = sum([i for i, s in bigrams])
+        number_of_trigrams = sum([i for i, s in trigrams])
+
+    # otherwise we get the missing values from the predefined files. 
+    if letters is None or number_of_letters is None: 
+        letterdata = read_file("1gramme.txt")
+        letters = letters_in_file_precalculated(letterdata)
+        #letters = letters_in_file(data)
+        number_of_letters = sum([i for i, s in letters])
+
+    if repeats is None or number_of_bigrams is None: 
+        bigramdata = read_file("2gramme.txt")
+        bigrams = repeats_in_file_precalculated(bigramdata)
+        #repeats = repeats_in_file(data)
+        number_of_bigrams = sum([i for i, s in bigrams])
+    else: bigrams = repeats
+
+    if trigrams is None or number_of_trigrams is None:
+        trigramdata = read_file("3gramme.txt")
+        trigrams = trigrams_in_file_precalculated(trigramdata)
+        number_of_trigrams = sum([i for i, s in trigrams])
+
+    return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
+   
+
+
 ### Cost Functions
 
 def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
@@ -1280,10 +1320,10 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
     # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result). 
     better = True
     while better: 
-            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-            lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
+        # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
+        lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
         if better:
-            # save the good mutation
+            # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
             layout = lay
         if not quiet: 
             print("-", i, "/", iterations)
@@ -1371,21 +1411,13 @@ def format_keyboard_layout(layout):
 
 def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False):
     """Print a layout along with statistics."""
-    if letters is None or number_of_letters is None: 
-        data1 = read_file("1gramme.txt")
-        letters = letters_in_file_precalculated(data1)
-        number_of_letters = sum([i for i, s in letters])
-        
-    if repeats is None or number_of_bigrams is None:  
-        data2 = read_file("2gramme.txt")
-        repeats = repeats_in_file_precalculated(data2)
-        number_of_bigrams = sum([i for i, s in repeats])
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
+        data=None, 
+        letters=letters, number_of_letters=number_of_letters,
+        repeats=repeats, number_of_bigrams=number_of_bigrams,
+        trigrams=trigrams, number_of_trigrams=number_of_trigrams
+        )
 
-    if trigrams is None or number_of_trigrams is None:
-        data3 = read_file("3gramme.txt")
-        trigrams = trigrams_in_file_precalculated(data3)
-        number_of_trigrams = sum([i for i, s in trigrams])
-        
     if print_layout:
         print(format_layer_1_string(layout))
         print(format_keyboard_layout(layout))
@@ -1492,31 +1524,21 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
     
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     print("# Mutating Neo")
-    #data = read_file("/tmp/sskreszta")
-    data1 = read_file("1gramme.txt")
-    letters = letters_in_file_precalculated(data1)
-    #letters = letters_in_file(data)
-    datalen1 = sum([i for i, s in letters])
-    
-    data2 = read_file("2gramme.txt")
-    repeats = repeats_in_file_precalculated(data2)
-    #repeats = repeats_in_file(data)
-    datalen2 = sum([i for i, s in repeats])
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
 
-    data3 = read_file("3gramme.txt")
-    trigrams = trigrams_in_file_precalculated(data3)
-    number_of_trigrams = sum([i for i, s in trigrams])
-   
     if prerandomize:
         if not quiet:
             print("doing", prerandomize, "prerandomization switches.")
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
-    
-    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled)
+
+    if controlled_tail:
+        lay, cost = evolve_with_controlled_tail(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet)
+    else: 
+        lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled)
     
     print("\n# Evolved Layout")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
@@ -1525,17 +1547,7 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose):
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
-     data1 = read_file("1gramme.txt")
-     letters = letters_in_file_precalculated(data1)
-     datalen1 = sum([i for i, s in letters])
-     data2 = read_file("2gramme.txt")
-     repeats = repeats_in_file_precalculated(data2)    
-     datalen2 = sum([i for i, s in repeats])
-
-     data3 = read_file("3gramme.txt")
-     trigrams = trigrams_in_file_precalculated(data3)
-     number_of_trigrams = sum([i for i, s in trigrams])
-     
+     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
 
      from pprint import pprint
 
@@ -1702,6 +1714,11 @@ if __name__ == "__main__":
         argv.remove("--controlled-evolution")
     else: CONTROLLED_EVOLUTION = False
 
+    if "--controlled-tail" in argv:
+        CONTROLLED_TAIL = True
+        argv.remove("--controlled-tail")
+    else: CONTROLLED_TAIL = False
+
     if "--prerandomize" in argv: 
         PRERANDOMIZE = argv[argv.index("--prerandomize") + 1]
         argv.remove("--prerandomize")
@@ -1724,7 +1741,7 @@ if __name__ == "__main__":
         check_with_datafile(args=argv, quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--evolve":
-        evolve_a_layout(steps=int(argv[2]), prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE)
+        evolve_a_layout(steps=int(argv[2]), prerandomize=PRERANDOMIZE, quiet=QUIET, controlled=CONTROLLED_EVOLUTION, verbose=VERBOSE, controlled_tail=CONTROLLED_TAIL)
         
     elif argv[2:] and argv[1] == "--best-random-layout":
         best_random_layout(args=argv, prerandomize=PRERANDOMIZE)
