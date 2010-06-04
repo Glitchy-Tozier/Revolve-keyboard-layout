@@ -1252,6 +1252,45 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=ab
     return layout, cost
 
 
+def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
+    """Repeatedly switch a layout randomly and do the same with the new layout,
+    if it provides a better total score. Can't be tested easily => Check the source.
+
+    After the iterations, do a controlled evolution, until nothing can be improved anymore.
+
+    Different from the normal evolvution, this never increases the step size (which has proven not to be very effective for the normal evolution and is incompatible with the thought of doing controlled optimization up to the end.
+
+    To only mutate a subset of keys, just pass them as
+    @param abc: the keys to permutate over.
+    @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen? 
+    """
+    from math import log10
+    cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
+
+    # first round: do (numper of iterations) mutation tries. 
+    for i in range(iterations): 
+        # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
+        lay, cost, better = random_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
+        if better:
+            # save the good mutation
+            layout = lay
+        if not quiet: 
+            print("-", i, "/", iterations)
+
+    # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result). 
+    better = True
+    while better: 
+            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
+            lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
+        if better:
+            # save the good mutation
+            layout = lay
+        if not quiet: 
+            print("-", i, "/", iterations)
+    
+    return layout, cost
+
+
 def combine_genetically(layout1, layout2):
     """Combine two layouts genetically (randomly)."""
     from random import randint
