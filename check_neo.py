@@ -57,7 +57,7 @@ Design:
 - Evolution durch Mutation und Kostenminimierung (switch miltiple times (3?) => keep if lower cost).
 - Die Hauptarbeit der Mutation wird von der Funktion total_cost() übernommen. 
 - Groß- und Kleinschreibung wird durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt.
-- Erst Evolution (~3000), dann so lange kontrolliert (immer bester Schritt), bis es keine Verbesserung mehr gibt. - TODO
+- Erst Evolution (~3000), dann so lange kontrolliert (immer bester Schritt), bis es keine Verbesserung mehr gibt. - done
 
 Später:
 - Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (for i in [a:z]: if rand_bool(): 1.switch(1, 2.key_at(1.pos(i))])
@@ -354,6 +354,8 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 LETTER_TO_KEY_CACHE = {}
 
+# TODO: Refresh directly when mutating. Then we don’t have to check anymore for the letter if it really is at the given position. 
+
 ### Imports
 
 from copy import deepcopy
@@ -372,6 +374,24 @@ def get_key(pos, layout=NEO_LAYOUT):
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
 
+def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
+    """Update the cache entry for the given key."""
+    global LETTER_TO_KEY_CACHE
+    pos = None
+    for row in range(len(layout)):
+        for col in range(len(layout[row])):
+            if key in layout[row][col]: 
+                for idx in range(len(layout[row][col])):
+                    if layout[row][col][idx] == key: 
+                        pos = (row, col, idx)
+    LETTER_TO_KEY_CACHE[key] = pos
+    return pos
+
+def update_letter_to_key_cache_multiple(keys, layout=NEO_LAYOUT):
+    """Update the cache entries for many keys."""
+    for key in keys:
+        update_letter_to_key_cache(key, layout=layout)
+    
 
 def find_key(key, layout=NEO_LAYOUT): 
     """Find the position of the key in the layout.
@@ -385,16 +405,7 @@ def find_key(key, layout=NEO_LAYOUT):
     if get_key(pos, layout=layout) == key:
         return pos
     # on a cache miss, search the key and refresh the cache
-    pos = None
-    for row in range(len(layout)):
-        for col in range(len(layout[row])):
-            if key in layout[row][col]: 
-                for idx in range(len(layout[row][col])):
-                    if layout[row][col][idx] == key: 
-                        pos = (row, col, idx)
-    LETTER_TO_KEY_CACHE[key] = pos
-    return pos
-
+    return update_letter_to_key_cache(key, layout=layout)
 
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
@@ -1007,7 +1018,9 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
 
-    If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE. 
+    If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE.
+
+    (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
 
     TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
 
@@ -1184,7 +1197,7 @@ def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc,
                 print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
                 print(lay)
             return lay, new_cost, cost - new_cost
-        else: 
+        else:
             if not quiet: 
                 print("worse", keypairs, end = " ")
             return layout, cost, 0
