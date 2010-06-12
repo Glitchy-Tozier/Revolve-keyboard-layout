@@ -12,7 +12,7 @@ fi
 
 echo create data
 for j in 300 {3..9}000
-    do time ./check_neo.py --evolve $j --prerandomize 1000000 -v -q >> results/$1-evolve-$j-results.txt
+    do time ./check_neo.py --evolve $j --prerandomize 1000000 -v -q --controlled-tail >> results/$1-evolve-$j-results.txt
 done
 
 echo check and plot the data

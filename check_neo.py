@@ -1260,7 +1260,8 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
         step_results.append((new_cost, frep, pos_cost, lay))
-        print("# checked switch", keypairs, new_cost)
+        if not quiet: 
+            print("# checked switch", keypairs, new_cost)
     if min(step_results)[0] < cost:
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
         if not quiet: 
@@ -1339,7 +1340,7 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
     steps = 0
     while better: 
         # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-        lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
+        lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet)
         if better:
             # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
             layout = lay
