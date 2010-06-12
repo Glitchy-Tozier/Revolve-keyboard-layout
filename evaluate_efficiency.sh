@@ -11,7 +11,7 @@ if [ "$1" == "--help" ]; then
 fi
 
 echo create data
-for j in 300 {3..9}000
+for j in 600 {1..6}000
     do time ./check_neo.py --evolve $j --prerandomize 1000000 -v -q --controlled-tail >> results/$1-evolve-$j-results.txt
 done
 
@@ -21,7 +21,7 @@ for j in {1..9} {1..9}0 {1..9}00 {1..9}000 {1..3}0000; do grep "billion total" r
 echo … finger repeats
 for j in {1..9} {1..9}0 {1..9}00 {1..9}000 {1..3}0000; do grep 2gramme results/$1-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done > results/$1-evolve-range-finger-repeats.txt 
 echo … finger disbalance
-for j in {1..9} {1..9}0 {1..9}00 {1..9}000 {1..3}0000; do grep disbalance results/$1-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done > results/$1-evolve-range-finger-disbalance.txt
+for j in {1..9} {1..9}0 {1..9}00 {1..9}000 {1..3}0000; do grep "disbalance of the fingers" results/$1-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done > results/$1-evolve-range-finger-disbalance.txt
 echo … key position cost
 for j in {1..9} {1..9}0 {1..9}00 {1..9}000 {1..3}0000; do grep 1gramme results/$1-evolve-$j-results.txt | cut -d " " -f 2| sed "s/^/$j /" ; done > results/$1-evolve-range-key-position.txt
 echo … key handswitching

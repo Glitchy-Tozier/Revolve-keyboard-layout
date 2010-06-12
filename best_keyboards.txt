@@ -910,3 +910,37 @@ $ for i in `cat results/2010-04-28-evolve-range-handswitching.txt | cut -d ' ' -
 # 0.23579050522 % finger repeats top to bottom or vice versa
 # 2.28643655584 % of trigrams have no handswitching (uppercase ignored)
 # 0.146775414 billion rows² to cross while on the same hand
+
+2010-06-11
+----------
+
+*Random with controlled tail*
+
+# Evolved Layout
+kuxoä qlhmpj
+dicea rnstgb
+,y.üö wßfvz
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬─────┤
+│  ⇥ │ k │ u │ x │ o │ ä │ q │ l │ h │ m │ p │ j │ ´ │ Ret │
+├────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─┐   │
+│   ⇩ │ d │ i │ c │ e │ a │ r │ n │ s │ t │ g │ b │ ⇘  │   │
+├────┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────┴───┤
+│  ⇧ │ M4│ , │ y │ . │ ü │ ö │ w │ ß │ f │ v │ z │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬───┤
+│Str │ Fe │ Al │      Leerzeichen       │ M4 │ Fe │ Me │Str│
+└────┴────┴────┴────────────────────────┴────┴────┴────┴───┘
+[['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\`', '←'],
+ ['⇥', 'k', 'u', 'x', 'o', 'ä', 'q', 'l', 'h', 'm', 'p', 'j', '´', ()],
+ ['⇩', 'd', 'i', 'c', 'e', 'a', 'r', 'n', 's', 't', 'g', 'b', '⇘', '\\n'],
+ ['⇧', (), ',', 'y', '.', 'ü', 'ö', 'w', 'ß', 'f', 'v', 'z', '⇗'],
+ [(), (), (), ' ', (), (), (), ()]]
+# 2.04525842624 billion total penalty compared to notime-noeffort
+# 4.12055854533 mean key position cost in file 1gramme.txt
+# 1.06774623991 % finger repeats in file 2gramme.txt
+# 6.59074323098 million keystrokes disbalance of the fingers
+# 0.0595004837538 % finger repeats top to bottom or vice versa
+# 11.3555499453 % of trigrams have no handswitching (uppercase ignored)
+# 0.233959034843 billion (rows/dist)² to cross
+# 0.00894899068159 hand disbalance. Left: 0.491051009318 %, Right: 0.508948990682 %

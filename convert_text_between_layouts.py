@@ -182,8 +182,9 @@ Ich will dabei rausfinden, was dazu führt, dass ein Layout das Tippen angenehm 
 ###    text = f.read()
 
 from sys import argv
-layout = None
-base = None
+# defaults
+layout = neo2
+base = neo2
 if "--help" in argv: 
    print(__doc__)
    exit()
@@ -203,7 +204,7 @@ def konv(text, layout, base=neo2):
         if i in layout:
             res += base[layout.index(i)]
         elif i.lower() in layout:
-            res += base[layout.index(i.lower())].upper()
+           res += base[layout.index(i.lower())].upper()
         else:
             res += i
     return res
