@@ -1,7 +1,10 @@
-Optimized layouts for different configs.
-========================================
+Optimized layouts for different configs
+=======================================
 
 *goal: See how the different parameters affect the writing.*
+
+Layouts
+-------
 
 ==> configs/config_finger_movement_patterns_bad.py-3000.txt <==
 zuäü, pchlfk´
@@ -23,14 +26,14 @@ xyaöq bvjwß
  ['⇩', 's', 'i', 'o', 'e', '.', 'd', 't', 'n', 'r', 'g', 'm', '⇘', '\n'],
  ['⇧', (), 'x', 'y', 'a', 'ö', 'q', 'b', 'v', 'j', 'w', 'ß', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# -6.56987356517 billion total penalty compared to notime-noeffort
-# 4.19620146919 mean key position cost in file 1gramme.txt
-# 1.02000666944 % finger repeats in file 2gramme.txt
-# 3.01815649913 million keystrokes disbalance of the fingers
-# 0.0858592127107 % finger repeats top to bottom or vice versa
-# 11.4283148554 % of trigrams have no handswitching (uppercase ignored)
-# 0.256704062431 billion (rows/dist)² to cross
-# 0.0211347993383 hand disbalance. Left: 0.478865200662 %, Right: 0.521134799338 %
+\# -6.56987356517 billion total penalty compared to notime-noeffort
+\# 4.19620146919 mean key position cost in file 1gramme.txt
+\# 1.02000666944 % finger repeats in file 2gramme.txt
+\# 3.01815649913 million keystrokes disbalance of the fingers
+\# 0.0858592127107 % finger repeats top to bottom or vice versa
+\# 11.4283148554 % of trigrams have no handswitching (uppercase ignored)
+\# 0.256704062431 billion (rows/dist)² to cross
+\# 0.0211347993383 hand disbalance. Left: 0.478865200662 %, Right: 0.521134799338 %
 
 ==> configs/config_finger_movement_patterns_good.py-3000.txt <==
 khßwv ä.uozj´
@@ -52,14 +55,14 @@ fpgmx ,üöyq
  ['⇩', 'd', 'n', 'c', 'l', 'r', 'a', 'i', 't', 'e', 's', 'b', '⇘', '\n'],
  ['⇧', (), 'f', 'p', 'g', 'm', 'x', ',', 'ü', 'ö', 'y', 'q', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 10.278352234 billion total penalty compared to notime-noeffort
-# 4.19713163638 mean key position cost in file 1gramme.txt
-# 1.34312105929 % finger repeats in file 2gramme.txt
-# 5.73026764995 million keystrokes disbalance of the fingers
-# 0.102745451017 % finger repeats top to bottom or vice versa
-# 23.2027545498 % of trigrams have no handswitching (uppercase ignored)
-# 0.29900298262 billion (rows/dist)² to cross
-# 0.0604946091835 hand disbalance. Left: 0.439505390817 %, Right: 0.560494609183 %
+\# 10.278352234 billion total penalty compared to notime-noeffort
+\# 4.19713163638 mean key position cost in file 1gramme.txt
+\# 1.34312105929 % finger repeats in file 2gramme.txt
+\# 5.73026764995 million keystrokes disbalance of the fingers
+\# 0.102745451017 % finger repeats top to bottom or vice versa
+\# 23.2027545498 % of trigrams have no handswitching (uppercase ignored)
+\# 0.29900298262 billion (rows/dist)² to cross
+\# 0.0604946091835 hand disbalance. Left: 0.439505390817 %, Right: 0.560494609183 %
 
 ==> configs/config_finger_repeats_few.py-3000.txt <==
 ßuqüo vhmlzp´
@@ -81,14 +84,14 @@ xytäö kfwj,
  ['⇩', 's', 'i', 'c', 'a', 'e', 'g', 'd', 'n', 'r', 'b', '.', '⇘', '\n'],
  ['⇧', (), 'x', 'y', 't', 'ä', 'ö', 'k', 'f', 'w', 'j', ',', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 2.83950013044 billion total penalty compared to notime-noeffort
-# 4.56131684713 mean key position cost in file 1gramme.txt
-# 0.746084693397 % finger repeats in file 2gramme.txt
-# 4.43514519155 million keystrokes disbalance of the fingers
-# 0.00915787739817 % finger repeats top to bottom or vice versa
-# 18.7082978049 % of trigrams have no handswitching (uppercase ignored)
-# 0.245283804037 billion (rows/dist)² to cross
-# 0.0387385946918 hand disbalance. Left: 0.538738594692 %, Right: 0.461261405308 %
+\# 2.83950013044 billion total penalty compared to notime-noeffort
+\# 4.56131684713 mean key position cost in file 1gramme.txt
+\# 0.746084693397 % finger repeats in file 2gramme.txt
+\# 4.43514519155 million keystrokes disbalance of the fingers
+\# 0.00915787739817 % finger repeats top to bottom or vice versa
+\# 18.7082978049 % of trigrams have no handswitching (uppercase ignored)
+\# 0.245283804037 billion (rows/dist)² to cross
+\# 0.0387385946918 hand disbalance. Left: 0.538738594692 %, Right: 0.461261405308 %
 
 ==> configs/config_finger_repeats_many.py-3000.txt <==
 kyxrg hcübwß´
@@ -110,14 +113,14 @@ vqjdi mafpö
  ['⇩', 'o', '.', 'ä', 'n', 'e', 's', 't', ',', 'l', 'u', 'z', '⇘', '\n'],
  ['⇧', (), 'v', 'q', 'j', 'd', 'i', 'm', 'a', 'f', 'p', 'ö', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# -0.113711533142 billion total penalty compared to notime-noeffort
-# 5.81224986424 mean key position cost in file 1gramme.txt
-# 29.2127370972 % finger repeats in file 2gramme.txt
-# 16.8694465606 million keystrokes disbalance of the fingers
-# 0.578705657991 % finger repeats top to bottom or vice versa
-# 49.4525481172 % of trigrams have no handswitching (uppercase ignored)
-# 0.508814966458 billion (rows/dist)² to cross
-# 0.0665344583472 hand disbalance. Left: 0.566534458347 %, Right: 0.433465541653 %
+\# -0.113711533142 billion total penalty compared to notime-noeffort
+\# 5.81224986424 mean key position cost in file 1gramme.txt
+\# 29.2127370972 % finger repeats in file 2gramme.txt
+\# 16.8694465606 million keystrokes disbalance of the fingers
+\# 0.578705657991 % finger repeats top to bottom or vice versa
+\# 49.4525481172 % of trigrams have no handswitching (uppercase ignored)
+\# 0.508814966458 billion (rows/dist)² to cross
+\# 0.0665344583472 hand disbalance. Left: 0.566534458347 %, Right: 0.433465541653 %
 
 ==> configs/config_hand_switching_after_unbalancing_key_no.py-3000.txt <==
 jmcüö ä.hdkp´
@@ -139,14 +142,14 @@ xßuyq ,zfbv
  ['⇩', 't', 'r', 'l', 'e', 'o', 'a', 'i', 'n', 's', 'g', 'w', '⇘', '\n'],
  ['⇧', (), 'x', 'ß', 'u', 'y', 'q', ',', 'z', 'f', 'b', 'v', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 2.17472399663 billion total penalty compared to notime-noeffort
-# 4.0761330592 mean key position cost in file 1gramme.txt
-# 1.48515099914 % finger repeats in file 2gramme.txt
-# 2.85347922453 million keystrokes disbalance of the fingers
-# 0.0286405722248 % finger repeats top to bottom or vice versa
-# 28.3651274426 % of trigrams have no handswitching (uppercase ignored)
-# 0.385103928235 billion (rows/dist)² to cross
-# 0.0243831689323 hand disbalance. Left: 0.475616831068 %, Right: 0.524383168932 %
+\# 2.17472399663 billion total penalty compared to notime-noeffort
+\# 4.0761330592 mean key position cost in file 1gramme.txt
+\# 1.48515099914 % finger repeats in file 2gramme.txt
+\# 2.85347922453 million keystrokes disbalance of the fingers
+\# 0.0286405722248 % finger repeats top to bottom or vice versa
+\# 28.3651274426 % of trigrams have no handswitching (uppercase ignored)
+\# 0.385103928235 billion (rows/dist)² to cross
+\# 0.0243831689323 hand disbalance. Left: 0.475616831068 %, Right: 0.524383168932 %
 
 ==> configs/config_hand_switching_after_unbalancing_key_yes.py-3000.txt <==
 juöäü kbldpß´
@@ -168,14 +171,14 @@ xya.q fvwz,
  ['⇩', 't', 'i', 'c', 'e', 'o', 'h', 'n', 'r', 's', 'g', 'm', '⇘', '\n'],
  ['⇧', (), 'x', 'y', 'a', '.', 'q', 'f', 'v', 'w', 'z', ',', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 2.00628487849 billion total penalty compared to notime-noeffort
-# 4.20828334419 mean key position cost in file 1gramme.txt
-# 1.54889517306 % finger repeats in file 2gramme.txt
-# 3.27145832456 million keystrokes disbalance of the fingers
-# 0.097993056342 % finger repeats top to bottom or vice versa
-# 9.85339259307 % of trigrams have no handswitching (uppercase ignored)
-# 0.214595143094 billion (rows/dist)² to cross
-# 0.0101205675362 hand disbalance. Left: 0.489879432464 %, Right: 0.510120567536 %
+\# 2.00628487849 billion total penalty compared to notime-noeffort
+\# 4.20828334419 mean key position cost in file 1gramme.txt
+\# 1.54889517306 % finger repeats in file 2gramme.txt
+\# 3.27145832456 million keystrokes disbalance of the fingers
+\# 0.097993056342 % finger repeats top to bottom or vice versa
+\# 9.85339259307 % of trigrams have no handswitching (uppercase ignored)
+\# 0.214595143094 billion (rows/dist)² to cross
+\# 0.0101205675362 hand disbalance. Left: 0.489879432464 %, Right: 0.510120567536 %
 
 ==> configs/config_hand_switching_little.py-3000.txt <==
 atohr jwz.äq´
@@ -197,14 +200,14 @@ cuglb ßvxyö
  ['⇩', 'e', 'd', 'i', 's', 'n', 'p', 'k', 'm', 'f', ',', 'ü', '⇘', '\n'],
  ['⇧', (), 'c', 'u', 'g', 'l', 'b', 'ß', 'v', 'x', 'y', 'ö', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# -1.04201592067 billion total penalty compared to notime-noeffort
-# 5.46694057078 mean key position cost in file 1gramme.txt
-# 4.9571130997 % finger repeats in file 2gramme.txt
-# 21.6197842481 million keystrokes disbalance of the fingers
-# 0.161078695678 % finger repeats top to bottom or vice versa
-# 124.149413665 % of trigrams have no handswitching (uppercase ignored)
-# 0.734173457929 billion (rows/dist)² to cross
-# 0.368330967406 hand disbalance. Left: 0.868330967406 %, Right: 0.131669032594 %
+\# -1.04201592067 billion total penalty compared to notime-noeffort
+\# 5.46694057078 mean key position cost in file 1gramme.txt
+\# 4.9571130997 % finger repeats in file 2gramme.txt
+\# 21.6197842481 million keystrokes disbalance of the fingers
+\# 0.161078695678 % finger repeats top to bottom or vice versa
+\# 124.149413665 % of trigrams have no handswitching (uppercase ignored)
+\# 0.734173457929 billion (rows/dist)² to cross
+\# 0.368330967406 hand disbalance. Left: 0.868330967406 %, Right: 0.131669032594 %
 
 ==> configs/config_hand_switching_little_but_balanced.py-3000.txt <==
 focäk wdzqßj´
@@ -226,14 +229,14 @@ pbamü v,.xy
  ['⇩', 'h', 'i', 'l', 'u', 'r', 'g', 't', 'n', 'e', 's', 'ö', '⇘', '\n'],
  ['⇧', (), 'p', 'b', 'a', 'm', 'ü', 'v', ',', '.', 'x', 'y', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 6.47034476638 billion total penalty compared to notime-noeffort
-# 4.46764874049 mean key position cost in file 1gramme.txt
-# 4.57115889951 % finger repeats in file 2gramme.txt
-# 1.93113726564 million keystrokes disbalance of the fingers
-# 0.195438530112 % finger repeats top to bottom or vice versa
-# 47.9139443028 % of trigrams have no handswitching (uppercase ignored)
-# 0.464313814977 billion (rows/dist)² to cross
-# 0.0251056876884 hand disbalance. Left: 0.474894312312 %, Right: 0.525105687688 %
+\# 6.47034476638 billion total penalty compared to notime-noeffort
+\# 4.46764874049 mean key position cost in file 1gramme.txt
+\# 4.57115889951 % finger repeats in file 2gramme.txt
+\# 1.93113726564 million keystrokes disbalance of the fingers
+\# 0.195438530112 % finger repeats top to bottom or vice versa
+\# 47.9139443028 % of trigrams have no handswitching (uppercase ignored)
+\# 0.464313814977 billion (rows/dist)² to cross
+\# 0.0251056876884 hand disbalance. Left: 0.474894312312 %, Right: 0.525105687688 %
 
 ==> configs/config_hand_switching_much.py-3000.txt <==
 blßmg puäozq´
@@ -255,14 +258,14 @@ jxrfw ,üyöv
  ['⇩', 't', 'n', 'c', 's', 'd', '.', 'i', 'e', 'a', 'h', 'k', '⇘', '\n'],
  ['⇧', (), 'j', 'x', 'r', 'f', 'w', ',', 'ü', 'y', 'ö', 'v', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 2.53134204117 billion total penalty compared to notime-noeffort
-# 4.48753766853 mean key position cost in file 1gramme.txt
-# 1.11800062297 % finger repeats in file 2gramme.txt
-# 3.85299483719 million keystrokes disbalance of the fingers
-# 0.119726491986 % finger repeats top to bottom or vice versa
-# 10.4188808371 % of trigrams have no handswitching (uppercase ignored)
-# 0.318729507772 billion (rows/dist)² to cross
-# 0.0127405939806 hand disbalance. Left: 0.512740593981 %, Right: 0.487259406019 %
+\# 2.53134204117 billion total penalty compared to notime-noeffort
+\# 4.48753766853 mean key position cost in file 1gramme.txt
+\# 1.11800062297 % finger repeats in file 2gramme.txt
+\# 3.85299483719 million keystrokes disbalance of the fingers
+\# 0.119726491986 % finger repeats top to bottom or vice versa
+\# 10.4188808371 % of trigrams have no handswitching (uppercase ignored)
+\# 0.318729507772 billion (rows/dist)² to cross
+\# 0.0127405939806 hand disbalance. Left: 0.512740593981 %, Right: 0.487259406019 %
 
 ==> configs/config_key_positions_cost_high.py-3000.txt <==
 dpäoc hk,zmn´
@@ -284,14 +287,14 @@ tiaue gbsrl
  ['⇩', 'x', 'ü', 'ö', 'y', '.', 'f', 'v', 'j', 'ß', 'q', 'w', '⇘', '\n'],
  ['⇧', (), 't', 'i', 'a', 'u', 'e', 'g', 'b', 's', 'r', 'l', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# -26.8193680879 billion total penalty compared to notime-noeffort
-# 9.7582283686 mean key position cost in file 1gramme.txt
-# 2.1397289925 % finger repeats in file 2gramme.txt
-# 13.3612536732 million keystrokes disbalance of the fingers
-# 0.19166018046 % finger repeats top to bottom or vice versa
-# 12.823390457 % of trigrams have no handswitching (uppercase ignored)
-# 0.2980587377 billion (rows/dist)² to cross
-# 0.0400902907448 hand disbalance. Left: 0.540090290745 %, Right: 0.459909709255 %
+\# -26.8193680879 billion total penalty compared to notime-noeffort
+\# 9.7582283686 mean key position cost in file 1gramme.txt
+\# 2.1397289925 % finger repeats in file 2gramme.txt
+\# 13.3612536732 million keystrokes disbalance of the fingers
+\# 0.19166018046 % finger repeats top to bottom or vice versa
+\# 12.823390457 % of trigrams have no handswitching (uppercase ignored)
+\# 0.2980587377 billion (rows/dist)² to cross
+\# 0.0400902907448 hand disbalance. Left: 0.540090290745 %, Right: 0.459909709255 %
 
 ==> configs/config_key_positions_cost_low.py-3000.txt <==
 pbämw zduo,x´
@@ -313,14 +316,14 @@ jy.vq fküöß
  ['⇩', 't', 'n', 'c', 'r', 'l', 'h', 's', 'i', 'e', 'a', 'g', '⇘', '\n'],
  ['⇧', (), 'j', 'y', '.', 'v', 'q', 'f', 'k', 'ü', 'ö', 'ß', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 12.2227859118 billion total penalty compared to notime-noeffort
-# 3.86555820587 mean key position cost in file 1gramme.txt
-# 2.0570254823 % finger repeats in file 2gramme.txt
-# 6.3450957961 million keystrokes disbalance of the fingers
-# 0.140131494104 % finger repeats top to bottom or vice versa
-# 23.7003282595 % of trigrams have no handswitching (uppercase ignored)
-# 0.306003102361 billion (rows/dist)² to cross
-# 0.103891548487 hand disbalance. Left: 0.396108451513 %, Right: 0.603891548487 %
+\# 12.2227859118 billion total penalty compared to notime-noeffort
+\# 3.86555820587 mean key position cost in file 1gramme.txt
+\# 2.0570254823 % finger repeats in file 2gramme.txt
+\# 6.3450957961 million keystrokes disbalance of the fingers
+\# 0.140131494104 % finger repeats top to bottom or vice versa
+\# 23.7003282595 % of trigrams have no handswitching (uppercase ignored)
+\# 0.306003102361 billion (rows/dist)² to cross
+\# 0.103891548487 hand disbalance. Left: 0.396108451513 %, Right: 0.603891548487 %
 
 ==> configs/config_row_changes_few.py-3000.txt <==
 püxöc .malkw´
@@ -342,14 +345,14 @@ yßudb zqjv,
  ['⇩', 't', 'i', 'ä', 'o', 'g', 'r', 's', 'e', 'n', 'h', 'f', '⇘', '\n'],
  ['⇧', (), 'y', 'ß', 'u', 'd', 'b', 'z', 'q', 'j', 'v', ',', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# 3.65430478337 billion total penalty compared to notime-noeffort
-# 4.57395212505 mean key position cost in file 1gramme.txt
-# 2.15692446095 % finger repeats in file 2gramme.txt
-# 7.34018656179 million keystrokes disbalance of the fingers
-# 0.203251226512 % finger repeats top to bottom or vice versa
-# 35.9829477878 % of trigrams have no handswitching (uppercase ignored)
-# 0.144696165197 billion (rows/dist)² to cross
-# 0.147428764189 hand disbalance. Left: 0.352571235811 %, Right: 0.647428764189 %
+\# 3.65430478337 billion total penalty compared to notime-noeffort
+\# 4.57395212505 mean key position cost in file 1gramme.txt
+\# 2.15692446095 % finger repeats in file 2gramme.txt
+\# 7.34018656179 million keystrokes disbalance of the fingers
+\# 0.203251226512 % finger repeats top to bottom or vice versa
+\# 35.9829477878 % of trigrams have no handswitching (uppercase ignored)
+\# 0.144696165197 billion (rows/dist)² to cross
+\# 0.147428764189 hand disbalance. Left: 0.352571235811 %, Right: 0.647428764189 %
 
 ==> configs/config_row_changes_many.py-3000.txt <==
 ,aefs yuhiox´
@@ -371,11 +374,221 @@ lrütq zcnvp
  ['⇩', 'ß', 'm', 'd', 'b', '.', 'ö', 'w', 'ä', 'g', 'k', 'j', '⇘', '\n'],
  ['⇧', (), 'l', 'r', 'ü', 't', 'q', 'z', 'c', 'n', 'v', 'p', '⇗'],
  [(), (), (), ' ', (), (), (), ()]]
-# -44.7923220736 billion total penalty compared to notime-noeffort
-# 6.5266226447 mean key position cost in file 1gramme.txt
-# 7.62425771534 % finger repeats in file 2gramme.txt
-# 6.03959215402 million keystrokes disbalance of the fingers
-# 0.370803717894 % finger repeats top to bottom or vice versa
-# 26.9002382137 % of trigrams have no handswitching (uppercase ignored)
-# 4.8107672101 billion (rows/dist)² to cross
-# 0.0927112421114 hand disbalance. Left: 0.592711242111 %, Right: 0.407288757889 %
+\# -44.7923220736 billion total penalty compared to notime-noeffort
+\# 6.5266226447 mean key position cost in file 1gramme.txt
+\# 7.62425771534 % finger repeats in file 2gramme.txt
+\# 6.03959215402 million keystrokes disbalance of the fingers
+\# 0.370803717894 % finger repeats top to bottom or vice versa
+\# 26.9002382137 % of trigrams have no handswitching (uppercase ignored)
+\# 4.8107672101 billion (rows/dist)² to cross
+\# 0.0927112421114 hand disbalance. Left: 0.592711242111 %, Right: 0.407288757889 %
+
+
+Corresponding Texts for Neo 2
+-----------------------------
+
+==> configs/config_finger_movement_patterns_bad.py-3000.txt <==
+zuäü, pchlfk
+sioe. dtnrgm
+xyaöq bvjwß
+
+Ir eiruäyet Uniffe unättne ,ägis xvy Giyyefo
+.äu yahgne .agf satn aber fieder? Säu uärqne Fihgn set Unetre ukiedefne uihg ir ueirer Ävder 
+vrs sie Uhgeibe seu Yarseu metuärß girnet sey Gatixarno
+
+
+==> configs/config_finger_movement_patterns_good.py-3000.txt <==
+khßwv ä.uozj
+dnclr aitesb
+fpgmx ,üöyq
+
+
+==> configs/config_finger_repeats_few.py-3000.txt <==
+ßuqüo vhmlzp
+sicae gdnrb.
+xytäö kfwj,
+
+Ir oiruegot Uäiffo uäettäo .ehin qvg Higgofy
+,eu gwahäo ,whf nwtä wdor fiosor? Neu uermäo Fiahä not Uäotro ußiosofäo uiah ir uoiror Evsor 
+vrn nio Uahoido nou Gwrnou kotuerb hiräot nog Hwtiqwräy
+
+
+==> configs/config_finger_repeats_many.py-3000.txt <==
+kyxrg hcübwß
+o.äne st,luz
+vqjdi mafpö
+
+Ze ozesmboc Snztto snmccno Ämkzp ydb Kzbboti
+Qms buhkno qukt pucn ufoe tzowoe? Pms sme,no Tzhkn poc Snoceo s.zowotno szhk ze sozeoe Mdwoe 
+dep pzo Shkozfo pos Buepos üocsmex kzenoc pob Kuczyueni
+
+
+==> configs/config_hand_switching_after_unbalancing_key_no.py-3000.txt <==
+jmcüö ä.hdkp
+trleo ainsgw
+xßuyq ,zfbv
+
+Nr enrtsvei Tunaae tusiiue Xsgnf mäv Gnvveah
+Yst volgue yoga foiu o.er aneder? Fst tsr,ue Anlgu fei Tueire tßnedeaue tnlg nr tenrer Säder 
+ärf fne Tlgen.e fet Vorfet jeitsrq gnruei fev Goinmoruh
+
+
+==> configs/config_hand_switching_after_unbalancing_key_yes.py-3000.txt <==
+juöäü kbldpß
+ticeo hnrsgm
+xya.q fvwz,
+
+In eintäyer Tuigge tuärrue Xäsif .vy Siyyegp
+,ät yoasue ,osg foru ohen gieden? Fät tänbue Giasu fer Tuerne tqiedegue tias in teinen Ävden 
+vnf fie Taseihe fet Yonfet mertänk sinuer fey Sori.onup
+
+
+==> configs/config_hand_switching_little.py-3000.txt <==
+atohr jwz.äq
+edisn pkmf,ü
+cuglb ßvxyö
+
+Ao uaoexruw Evappu evxwwvu Kxcai gör Carrupf
+Hxe rlücvu hlcp ilwv lzuo pauäuo? Ixe exotvu Paücv iuw Evuwou esauäupvu eaüc ao euaouo Xöäuo 
+öoi iau Eücuazu iue Rloiue muwexon caovuw iur Clwaglovf
+
+
+==> configs/config_hand_switching_little_but_balanced.py-3000.txt <==
+focäk wdzqßj
+hilur gtnesö
+pbamü v,.xy
+
+Ir tirdäpto Dniaat dnäoont ßäuih gep Uippta,
+Käd pvlunt kvua hvon vötr aitstr? Häd därxnt Ailun hto Dntort düitstant dilu ir dtirtr Äestr 
+erh hit Dlutiöt htd Pvrhtd btodärw uirnto htp Uvoigvrn,
+
+
+==> configs/config_hand_switching_much.py-3000.txt <==
+blßmg puäozq
+tncsd .ieahk
+jxrfw ,üyöv
+
+Ni rnietcrä Eunvvr eutääur Ütdno qhc Dnccrvs
+Zte cfadur zfdv ofäu fxri vnrwri? Ote etipur Vnadu orä Euräir eknrwrvur enad ni erniri Thwri 
+hio onr Eadrnxr ore Cfiore jräetiy dniurä orc Dfänqfius
+
+
+==> configs/config_key_positions_cost_high.py-3000.txt <==
+dpäoc hk,zmn
+xüöy. fvjßqw
+tiaue gbsrl
+
+Öß zöß,äqz. ,üöjjz ,üä..üz Räköx fpq Köqqzjo
+Yä, qcwküz yckj xc.ü cmzß jözbzß? Xä, ,äßsüz Jöwkü xz. ,üz.ßz ,vözbzjüz ,öwk öß ,zößzß Äpbzß 
+pßx xöz ,wkzömz xz, Qcßxz, nz.,äßh kößüz. xzq Kc.öfcßüo
+
+
+==> configs/config_key_positions_cost_low.py-3000.txt <==
+pbämw zduo,x
+tncrl hsieag
+jy.vq fküöß
+
+Ri trindcte Nuroot nudeeut Üdsrh kgc Srcctoä
+Wdn cfasut wfso hfeu fvti ortyti? Hdn ndibut Orasu hte Nuteit nxrtytout nras ri ntriti Dgyti 
+gih hrt Nastrvt htn Cfihtn ptendim sriute htc Sferkfiuä
+
+
+==> configs/config_row_changes_few.py-3000.txt <==
+püxöc .malkw
+tiäog rsenhf
+yßudb zqjv,
+
+It ritnghrs Nuiffr nugssur ,gdip bäh Dihhrfk
+ßgn hewdur ßedf pesu ezrt firort? Pgn ngtyur Fiwdu prs Nurstr nxirorfur niwd it nritrt Gäort 
+ätp pir Nwdrizr prn Hetprn .rsngtq diturs prh Desibetuk
+
+
+==> configs/config_row_changes_many.py-3000.txt <==
+,aefs yuhiox
+ßmdb. öwägkj
+lrütq zcnvp
+
+F, lf,wvilö Wpfüül wpvööpl Yvgfa bhi Gfiilüo
+Nvw iqmgpl nqgü aqöp qel, üfltl,? Avw wv,cpl Üfmgp alö Wplö,l wjfltlüpl wfmg f, wlf,l, Vhtl, 
+h,a afl Wmglfel alw Iq,alw .löwv,d gf,plö ali Gqöfbq,po
+
+
+Corresponding Texts for Qwertz
+------------------------------
+
+==> configs/config_finger_movement_patterns_bad.py-3000.txt <==
+zuäü, pchlfk
+sioe. dtnrgm
+xyaöq bvjwß
+
+
+==> configs/config_finger_movement_patterns_good.py-3000.txt <==
+khßwv ä.uozj
+dnclr aitesb
+fpgmx ,üöyq
+
+
+==> configs/config_finger_repeats_few.py-3000.txt <==
+ßuqüo vhmlzp
+sicae gdnrb.
+xytäö kfwj,
+
+
+==> configs/config_finger_repeats_many.py-3000.txt <==
+kyxrg hcübwß
+o.äne st,luz
+vqjdi mafpö
+
+
+==> configs/config_hand_switching_after_unbalancing_key_no.py-3000.txt <==
+jmcüö ä.hdkp
+trleo ainsgw
+xßuyq ,zfbv
+
+
+==> configs/config_hand_switching_after_unbalancing_key_yes.py-3000.txt <==
+juöäü kbldpß
+ticeo hnrsgm
+xya.q fvwz,
+
+
+==> configs/config_hand_switching_little.py-3000.txt <==
+atohr jwz.äq
+edisn pkmf,ü
+cuglb ßvxyö
+
+
+==> configs/config_hand_switching_little_but_balanced.py-3000.txt <==
+focäk wdzqßj
+hilur gtnesö
+pbamü v,.xy
+
+
+==> configs/config_hand_switching_much.py-3000.txt <==
+blßmg puäozq
+tncsd .ieahk
+jxrfw ,üyöv
+
+
+==> configs/config_key_positions_cost_high.py-3000.txt <==
+dpäoc hk,zmn
+xüöy. fvjßqw
+tiaue gbsrl
+
+
+==> configs/config_key_positions_cost_low.py-3000.txt <==
+pbämw zduo,x
+tncrl hsieag
+jy.vq fküöß
+
+
+==> configs/config_row_changes_few.py-3000.txt <==
+püxöc .malkw
+tiäog rsenhf
+yßudb zqjv,
+
+
+==> configs/config_row_changes_many.py-3000.txt <==
+,aefs yuhiox
+ßmdb. öwägkj
+lrütq zcnvp
