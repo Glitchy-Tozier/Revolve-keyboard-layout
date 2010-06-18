@@ -1356,12 +1356,12 @@ def combine_genetically(layout1, layout2):
 def format_layer_1_string(layout):
     """Format a string looking like this:
 
-    öckäy zhmlß,
+    öckäy zhmlß,´
     atieo dsnru.
     xpfüq bgvwj
     """
     l = ""
-    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-2]) + "\n"
+    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-1]) + "\n"
     l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
     if layout[3][1]:
         l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
@@ -1666,13 +1666,13 @@ def check_a_layout_from_shell(layout_data, quiet, verbose):
 def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT):
     """Check a string passed via shell and formatted as
 
-    öckäy zhmlß,
+    öckäy zhmlß,´
     atieo dsnru.
     xpfüq bgvwj
 
     or
 
-    qwert zuiopü
+    qwert zuiopü+
     asdfg hjklöä
     <yxcvb nm,.-
     """
@@ -1684,8 +1684,10 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
         layout[1][i+5] = lines[0][i+5]
         layout[2][i] = lines[1][i-1]
         layout[2][i+5] = lines[1][i+5]
-    layout[1][-3] = lines[0][-1]
-    layout[2][-3] = lines[1][-1]
+    layout[1][-3] = lines[0][11]
+    layout[2][-3] = lines[1][11]
+    if lines[0][12:]: 
+        layout[1][-2] = lines[0][12]
     
     # third row
     left, right = lines[2].split()[:2]
