@@ -158,7 +158,11 @@ hieao dtrnsß
 xyö,q bpwmz
 """
 
-text = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
+text = """In einsamer Stille starrte Jahid zum Himmel.
+Was mochte wohl dort oben liegen? Das sanfte Licht der Sterne spiegelte sich in seinen Augen 
+und die Scheibe des Mondes versank hinter dem Horizont."""
+
+text_sskreszta = """Kalem sprintet um eine Ecke und bleibt für einen Augenblick
 taumelnd stehen. Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich
 eine Haustür schließt und rennt in eine Wand aus Stille.
 
