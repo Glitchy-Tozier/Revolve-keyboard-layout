@@ -107,7 +107,7 @@ Ein Handwechsel direkt nach einem Großbuchstaben ist ekelhaft, weil die dem Buc
 Sonstiges:
 - XCV sollten gut erreichbar auf der linken Hand liegen. => Strafpunkte, wenn pos[2] > 3. z.B. Kosten bei den Monogrammen * 0.005 (0.5%), bzw. Kosten pro Zeichen. Vielleicht auch Z dazu (undo). - done. 
 - (. sollte vielleicht neben , liegen. Das sind mit dem Leerzeichen die einzigen beiden Zeichen, die keine echten Buchstaben sind. - TODO)
-
+- Gleichmäßigkeit: Es sollte keine häufig benutzten Wörter geben, die ganz schlecht sind. => Erst die allgemeinkosten berechnen (_total_cost), dann die Standardabweichung der Kosten pro Trigramm (total_cost ruft für jedes Trigramm _total_cost mit dem Ergebnis von _total_cost auf). - TODO
 
 ### Kosten für die Tasten
 
