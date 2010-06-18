@@ -1,0 +1,213 @@
+Hi, 
+
+Ich möchte ein kleines Experiment machen, wie viel Unterschied verschiedene 
+Layouts ausmachen. 
+
+Er dauert nicht lange, aber ich brauche Hilfe von so vielen wie möglich. Die 
+Bedingung um mitmachen zu können ist nur, dass ihr mit Neo 2 tippt. 
+
+Wenn ihr mitmachen wollt, dann schaut euch bitte die folgenden Texte an und 
+*tippt sie*. Versucht dabei zu erspüren, ob der jeweilige Text zu Neo passt, 
+also gut mit Neo getippt werden kann. Ich erkläre alles nötige weiter unten, 
+um das Experiment nicht durch Vorprägung zu stören. Bitte vertraut mir da 
+einfach. Wenn ihr vorher runterlest, zerstört ihr das Ergebnis, das ihr 
+selbst mit dem Text erzielen könnt. 
+
+Wie gesagt: Nehmt euch einfach einen Text nach dem anderen, tippt ihn ab, 
+und notiert euch, wie gut er sich für euch mit Neo tippen lässt. 
+
+
+
+Text 1
+------
+
+Kugaf dwtireae vf aira Eoka vrn cgaice qät airar Avharcgiok euvfagrn deasarü 
+Sdktadmeu qlghe istö cgioke ir nia Guddaö diase ,ia dios aira Huvdeät 
+dosgiaye vrn tarre ir aira Wurn uvd Seiggaü
+
+Dia Wage .atdos,irnaeö ,itn mv airaf qutcgldar Accign istat dagcdeü Agga 
+Gatxvdosa dosairar hanxfwqeü Ittaugü Wl Lacar ,ut ide rvt fast Gtxvaö vrn 
+dagcde nia Lvqe dosaire mv .atdos,irnarü
+
+
+
+Text 2
+------
+
+Kutlm iqcgbwlw hm lgbl Eärl hba ztlgzw eßc lgblb Aholbztgär wuhmltba iwlslb. 
+Sirclikwu eftow gsc, ztgärw gb agl Guiil, iglsw vgl igäs lgbl Huhiwßc 
+iästglßw hba clbbw gb lgbl Wuba uhi Swgttl.
+
+Dgl Wltw plciäsvgbalw, vgca kh lgblm eucztfilb Azzgta gsclc iltziw. Attl 
+Glcyhiäsl iäslgblb olaymqew. Icclut. Wf Llzlb vuc giw bhc mlsc Gcyhl, hba 
+iltziw agl Lhew iäslgbw kh plciäsvgbalb.
+
+
+
+Text 3
+------
+
+Kafi, dmteruiu o, ieri Egki orn bfiebu qwt ierir Aosirbfegk uao,ifrn duihirc 
+Sdktidjua qlfsu ehtp bfegku er nei Gaddip deihu .ei degh ieri Haoduwt 
+dghfeiyu orn tirru er ieri Warn aod Sueffic
+
+Dei Wifu ßitdgh.erniup .etn jo ieri, qatbfldir Abbefn ehtit difbduc Affi 
+Gitvodghi dghierir sinv,mquc Ittiafc Wl Libir .at edu rot ,iht Gtvoip orn 
+difbdu nei Loqu dghieru jo ßitdgh.ernirc
+
+
+
+Text 4
+------
+
+Kalem sprintet um eine Ecke und bleibt für einen Augenblick taumelnd stehen. 
+Sskreszta folgt ihr, blickt in die Gasse, sieht wie sich eine Haustür 
+schließt und rennt in eine Wand aus Stille.
+
+Die Welt verschwindet, wird zu einem farblosen Abbild ihrer selbst. Alle 
+Geräusche scheinen gedämpft. Irreal. Wo Leben war ist nur mehr Gräue, und 
+selbst die Luft scheint zu verschwinden.
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+Erklärung
+=========
+
+(etwas abgesetzt, damit sie nicht ausversehen vor dem Tippen gelesen wird)
+
+Wenn ihr noch nicht aufgeschrieben habt, wie sich das Schreiben der 
+einzelnen Texte angefühlt hat, dann macht das bitte jetzt. Bevor ihr 
+weiterlest.
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+…
+
+
+
+
+Es ist verdammt hart, ein Layout neu zu lernen, daher ist das hier ein 
+einfacherer Weg, die verschiedenen Layouts zu vergleichen. 
+
+Text 1 habt ihr effektiv in NordTast getippt. Text 2 war in Qwertz. Text 3 
+war die aktuelle Zwischenversion von Andreas, und der letzte war 
+logischerweise Neo. 
+
+neo2 = """
+xvlcw khgfqß
+uiaeo snrtdy
+üöäpz bm,.j
+"""
+
+qwertz = """
+qwert zuiopü
+asdfg hjklöä
+yxcvb nm,.-
+"""
+
+nordtast = """
+äuobp kglmfx
+aietc hdnrsß
+.,üöq yzwvj
+"""
+
+Andreas100504 = """
+jäo.ü khclfv
+teaiu gdnrsß
+xqö,y bpmwz
+"""
+
+Der Ursprüngliche Text ist frei lizensiert (GPLv3+) und stammt von hier: 
+http://1w6.org/deutsch/kampagnen/w-chter-der-zeit/aufzeichnungen/sskreszta-
+log/vampire-und-wissenssucher-2-von-2-ve
+
+Ich habe ein einfaches Skript zur Konvertierung genutzt, das den Text in die 
+anderen Layouts übertragen hat. Die Idee dazu verdanken wir Peter Karp. 
+
+Die Frage, wie gut der Text zu Neo passt, soll die Gedanken von den Layouts 
+und Sympathien wegbringen und stattdessen auf die Ästhetik und das 
+Schreibgefühl lenken. Ich hoffe, das ist gelungen. Solange wir wissen, in 
+welchem Layout wir gerade tippen, verzerrt das nämlich die Stichprobe 
+massiv. 
+
+Und das ist es, wofür diese Frage gut ist: Eine aktuelle Stichprobe 
+bekommen, wie die unterschiedlichen Layouts sich tippen lassen. 
+
+Außerdem gibt es jedem von uns ein Gefühl dafür, was Neo 3 erreichen kann :)
+
+Bitte schickt einfach eure abgetippten Notizen zu den einzelnen Texten an 
+die Liste. 
+
+Sonstige Kommentare natürlich auch gerne :) 
+
+					  
+Auswertung
+==========
+					  
+Diese Auswertung ist bisher nur Geblubber, weil ich natürlich wusste, 
+welches Layout ich gerade tippe, daher ist nur eine kurze Einschätzung 
+sinnvoll: Meine eigenen Notizen nach dem Tippen des jeweiligen Textes. 
+
+NordTast: Etwas ungewohnt, anfangs verrenkend, aber teilweise sehr flüssig. 
+
+Qwertz: Jetzt weiß ich wieso Qwertz-User Sehnenscheidenentzündung bekommen 
+(und warum mein Qwertz-Tippen ohne Formelle Ausbildung eine andere als die 
+Grundhaltung hatte). Es tut regelrecht weh. Ja, ich wusste, dass das Qwertz 
+ist. 
+
+Andreas’ Zwischenergebnis: Das ging teils schon fast flüssig und es gab 
+Teile, die sich fast wie von selbst zu schreiben schienen. Respekt…
+
+Neo 2: Ging zwar im schnellsten (die Silben sind teils schon „verdrahtet“), 
+war aber definitiv nicht am angenehmsten, auch wenn es im Gegensatz zu 
+Qwertz nicht wehtat, sondern nur manchmal etwas klobig schien. 
+
+
+Liebe Grüße, 
+Arne
+
+PS: ich würde vorschlagen, dass wir sowas wie das hier häufiger machen, um 
+mehrere Eindrücke von verschiedenen Layouts zu bekommen. Und ja: Irgendwo 
+sollte da immer Qwertz drin sein, damit wir wissen, was uns schon jetzt 
+erspart bleibt :)
