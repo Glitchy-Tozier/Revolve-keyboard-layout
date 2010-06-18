@@ -294,24 +294,9 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
         [0,0,0,     9     ,0,0,0,0] # Reihe 4 mit Leertaste
 ]
 
-
-#: The positions which are by default accessed by the given finger. 
-FINGER_POSITIONS = {
-    "Klein_L": [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
-    "Ring_L": [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
-    "Mittel_L": [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
-    "Zeige_L": [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
-    "Daumen_L": [(4, 3, 0)], # Daumen_L
-    "Daumen_R": [(4, 3, 0)], # Daumen_R
-    "Zeige_R": [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
-    "Mittel_R": [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
-    "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
-    "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
-}
 #: The names of the fingers from left to right
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
-
 
 # Optimized structure for accessing by position. key_to_finger gets 3 times faster than with a cache and doublechecking.
 KEY_TO_FINGER = {}
