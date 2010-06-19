@@ -18,6 +18,14 @@ __usage__ = """Usage:
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
 
+- check_neo.py [-v] [--file <file>] --layout-string "khßwv ä.uozj
+  dnclr aitesb
+  fpgmx ,üöyq"
+  check the layout given by a layout string.
+  -v gives more statistical info on the layout
+  --file <file> uses a file as corpus for checking the layout. 
+
+
 - check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution] [--controlled-tail]
   randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
   --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
@@ -514,7 +522,7 @@ def repeats_in_file(data):
     sorted_repeats.sort()
     sorted_repeats.reverse()
     #reps = split_uppercase_repeats(sorted_repeats) # wrong place
-    return reps
+    return sorted_repeats
 
 def split_uppercase_letters(reps):
     """Split uppercase letters into two lowercase letters (with shift).
@@ -756,7 +764,7 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     # if we get a datastring, we use it for everything. 
     if data is not None:
         letters = letters_in_file(data)
-        bigrams = repeats_in_file(data)
+        repeats = bigrams = repeats_in_file(data)
         trigrams = trigrams_in_file(data)
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
@@ -1416,10 +1424,10 @@ def format_keyboard_layout(layout):
     return lay
     
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
-        data=None, 
+        data=data, 
         letters=letters, number_of_letters=number_of_letters,
         repeats=repeats, number_of_bigrams=number_of_bigrams,
         trigrams=trigrams, number_of_trigrams=number_of_trigrams
@@ -1663,7 +1671,7 @@ def check_a_layout_from_shell(layout_data, quiet, verbose):
     layout = eval(layout_data)
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
 
-def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT):
+def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, data=None):
     """Check a string passed via shell and formatted as
 
     öckäy zhmlß,´
@@ -1696,7 +1704,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     for i in range(len(right)):
         layout[3][7+i] = right[i]
     
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data)
 
 ### Self-Test 
 
@@ -1742,6 +1750,13 @@ if __name__ == "__main__":
         BASE = eval(BASE)
     else: BASE = NEO_LAYOUT
     
+    if "--file" in argv: 
+        DATA = argv[argv.index("--file") + 1]
+        argv.remove("--file")
+        argv.remove(DATA)
+        DATA = read_file(DATA)
+    else: DATA = None
+    
     if "--help" in argv:
         print(__usage__)
         exit()
@@ -1768,7 +1783,7 @@ if __name__ == "__main__":
         check_a_layout_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE)
 
     elif argv[2:] and argv[1] == "--check-string":
-        check_a_layout_string_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE)
+        check_a_layout_string_from_shell(argv[2], quiet=QUIET, verbose=VERBOSE, data=DATA)
             
     else:
         check_the_neo_layout(quiet=QUIET, verbose=VERBOSE)
