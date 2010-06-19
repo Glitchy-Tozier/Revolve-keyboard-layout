@@ -9,8 +9,7 @@ WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
 WEIGHT_FINGER_REPEATS = 160 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 320 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the 
-cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 320 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = -10 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross / horizontal distance)² if we’re on the same hand. 
 
