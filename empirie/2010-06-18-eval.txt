@@ -1,0 +1,173 @@
+Evaluation. The entries marked with ! are the ones where the proband knew what kind of layout he used. 
+
+* Text 0: configs/config_finger_movement_patterns_bad.py
+zuäü, pchlfk
+sioe. dtnrgm
+xyaöq bvjwß
+
+→ Schlechte Bewegungsmuster heißt: möglichst *schlechte* Übergänge zwischen den Fingern. Lieber vom Mittelfinger auf den Ringfinger als auf den Zeigefinger. 
+
+! Etwas umständlich, aber ein seltsame positives Gefühl von Fluss.
+! geht so
+0 gut
+
+
+* Text 1: configs/config_finger_movement_patterns_good.py
+khßwv ä.uozj
+dnclr aitesb
+fpgmx ,üöyq
+
+→ Möglichst gute Übergänge zwischen den Fingern. 
+
+! Tut fast weh beim Tippen. Genz seltsames Gefühl und kommt nicht in Fluss. Aber es hat seinen eigenen Rhythmus. -nochmal getippt - Tut immernoch weh. Das sind keine guten Bewegungsmuster!
+! zu zerrissen
+1 geht, etwas schlechter als 1
+
+
+* Text 2: configs/config_finger_repeats_few.py
+ßuqüo vhmlzp
+sicae gdnrb.
+xytäö kfwj,
+
+→ Wenige Fingerwiederholungen. 
+
+! Meine rechte Hand fängt an, weh zu tun, und die Linke scheint alle Arbeit zu haben. 
+! nicht so dolle
+2 schlecht, vor allem (Neo-)Vokal- und Umlautkombinationen auf schwacher
+linker Hand
+
+
+* Text 3: configs/config_finger_repeats_many.py
+kyxrg hcübwß
+o.äne st,luz
+vqjdi mafpö
+
+→ Viele Fingerwiederholungen
+
+! epos woe… Der linke Zeigefinger hat sehr viel zu tun.
+! noch schlechter
+3 schlecht, relativ Fehlerfrei, aber sehr langsam, da definitiv auf starke
+Finger mit vielen Kollisionen optimiert.
+
+
+* Text 4: configs/config_hand_switching_after_unbalancing_key_no.py
+jmcüö ä.hdkp
+trleo ainsgw
+xßuyq ,zfbv
+
+→ Nach einer Taste, die die Hand aus der Grundposition zieht (s.B. „z“) kommt *kein* Handwechsel. 
+
+! Seltsam, aber ich kann es nicht genau beschreiben. Akademisch würde ich sagen „ja, die Tastenfolgen sollten gut sein“, aber so fühlen sie sich nicht an.
+! auch nicht gut
+4 geht, relativ viele Fehler, kein Fluss
+
+
+* Text 5: configs/config_hand_switching_after_unbalancing_key_yes.py
+juöäü kbldpß
+ticeo hnrsgm
+xya.q fvwz,
+
+→ möglichst Handwechsel nach Disbalance. 
+
+! Abgesehen von dem häufigen ä eigentlich nicht schlecht. Kein Rhythmus oder so, aber auch nicht schlecht. 
+! super (der beste text)
+5 gut, guter Fluss, ersten drei Zeilen fehlerfrei, dafür letzte Zeile
+zahlreiche Vertipper
+
+
+* Text 6: configs/config_hand_switching_little.py
+atohr jwz.äq
+edisn pkmf,ü
+cuglb ßvxyö
+
+→ So wenig Handwechsel wie möglich. Über 80% auf der linken Hand. 
+
+! Das fühlt sich verdammt seltsam an. Eine Hand wandert über die Tastatur, und die andere ist fast stumm. Ich bin mehrfach verwirrt worden, aber gleichzeitig hat es seinen Charm, Muster mit einer Hand zu zeichnen. Wenn jetzt noch die Rechte hand ganz wegfallen und durch einen Daumenschalter ersetzt werden könnte, wäre es noch schöner :) (für Maus+Tastatur). Ich hätte erwartet, dass das viel schlechter funktioniert. 
+! zu linkslastig
+6 abgebrochen, jetzt tut mir die linke Hand weh :-)
+
+
+* Text 7: configs/config_hand_switching_little_but_balanced.py
+focäk wdzqßj
+hilur gtnesö
+pbamü v,.xy
+
+→ So wenig Handwechsel wie möglich, aber fast 50/50 zwischen links und rechts. 
+
+! Hier habe ich irgendwie das Gefühl, dass ich etwas verpasse. Als wollte ich es nochmal tippen, um mehr zu erfassen…
+! nee
+7 geht ganz gut, aber nicht so guter Fluss wie bei 5
+
+
+* Text 8: configs/config_hand_switching_much.py
+blßmg puäozq
+tncsd .ieahk
+jxrfw ,üyöv
+
+→ so viel Handwechsel wie möglich. 
+
+! Total umständlich…
+! nee
+8 geht, nicht genug Fluss, wechseln in die untere Reihe bremst
+
+
+* Text 9: configs/config_key_positions_cost_high.py
+dpäoc hk,zmn
+xüöy. fvjßqw
+tiaue gbsrl
+
+→ Häufig benutzte Tasten auf möglichst *schlechten* Positionen. 
+
+! worst case… Das ist richtig umständlich – dagegen war das letzte ein Witz…
+! eckenzentriert
+9 keine Ahnung, auf was das optimiert ist, aber nach der ersten Zeile
+abgebrochen, da untippbar.
+
+
+* Text 10: configs/config_key_positions_cost_low.py
+pbämw zduo,x
+tncrl hsieag
+jy.vq fküöß
+
+→ Häufig benutzte Tasten in guten Positionen. 
+
+! Im Vergleich zum letzten total entspannend, aber trotzdem umständlich.
+! naja
+10 geht ganz gut, erste Zeile viele Fehler, dann fast fehlerfrei, etwas
+Fluss
+
+
+* Text 11: configs/config_row_changes_few.py
+püxöc .malkw
+tiäog rsenhf
+yßudb zqjv,
+
+→ So wenige (vertikale) zeilenwechsel wie möglich. 
+
+! Etwas umständlich, aber glatt. Wie eine unpassende Strecke, die geglättet wurde. Ein Kanal. 
+! nee
+11 geht, etwas Fluss, aber nicht viel, da sehr rechtslastig.
+
+
+* Text 12: configs/config_row_changes_many.py
+,aefs yuhiox
+ßmdb. öwägkj
+lrütq zcnvp
+
+→ So *viele* Zeilenwechsel wie möglich (das dürfte weh tun… :) ). 
+
+! Sehr umständlich. etwas weniger schlimm als Text 9, aber trotzdem übel… 
+! nee, nee, nee
+12 unbrauchbar, Vermeidung der Grundlinie, nehm ich an
+
+
+* Text 13: qwertzy3
+nßeiä wu.cqm
+xvjt, agürly
+ösdfb ophzk
+
+→ Ein Pseudo-Qwertz. Es hat ähnliche Werte wie Qwertz und sollte so sowohl für Qwertz-Nutzer als auch für Neo 2 Nutzer ein anschauliches Beispiel sein, was sich heutzutage die meisten Leute antun ohne es zu merken. 
+
+! Das ist sehr nahe an 9 (worst case).
+! nee
+13 Kombination aus keine Grundlinie und linker Hand, nehm ich an. Mein neues
