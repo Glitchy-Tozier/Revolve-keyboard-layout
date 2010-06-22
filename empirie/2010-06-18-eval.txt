@@ -49,7 +49,7 @@ vqjdi mafpö
 ! noch schlechter
 3 schlecht, relativ Fehlerfrei, aber sehr langsam, da definitiv auf starke Finger mit vielen Kollisionen optimiert.
 
-⇒ 2 vs 3: Wenige Fingerwiederholungen alleine reichen nicht. 2 ist allerdings in jedem Parameter besser als 3, oft um Faktor 2 und mehr. Im Vergleich zu 5 (ist sehr gut ausgefallen) hat 2 um 0.3 (4.5 statt 4.2) höhere Tastenkosten, Finger Disbalance 4.4 statt 3.3 doppelt so viele Trigramme ohne Handwechsel (19 statt 10) und etwas mehr Zeilenwechsel (0.25 statt 0.21). Dafür nur halb so viele Fingerwiederholungen. ⇒ Es gibt relevante Parameter, die in der Ausgabe noch nicht erfasst werden (Vokal- und Umlautkombinationen? Richtungswechsel?). 
+⇒ 2 vs 3: Wenige Fingerwiederholungen alleine reichen nicht. 2 ist allerdings in jedem Parameter besser als 3, oft um Faktor 2 und mehr. Im Vergleich zu 5 (ist sehr gut ausgefallen) hat 2 um 0.3 (4.5 statt 4.2) höhere Tastenkosten, Finger Disbalance 4.4 statt 3.3 doppelt so viele Trigramme ohne Handwechsel (19 statt 10) und etwas mehr Zeilenwechsel (0.25 statt 0.21). Dafür nur halb so viele Fingerwiederholungen. ⇒ Es gibt relevante Parameter, die in der Ausgabe noch nicht erfasst werden (Vokal- und Umlautkombinationen? Richtungswechsel auf der gleichen Hand?). 
 
 
 * Text 4: configs/config_hand_switching_after_unbalancing_key_no.py
