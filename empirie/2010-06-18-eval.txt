@@ -19,10 +19,11 @@ fpgmx ,üöyq
 
 → Möglichst gute Übergänge zwischen den Fingern. 
 
-! Tut fast weh beim Tippen. Genz seltsames Gefühl und kommt nicht in Fluss. Aber es hat seinen eigenen Rhythmus. -nochmal getippt - Tut immernoch weh. Das sind keine guten Bewegungsmuster!
+! Tut fast weh beim Tippen. Ganz seltsames Gefühl und kommt nicht in Fluss. Aber es hat seinen eigenen Rhythmus. -nochmal getippt - Tut immernoch weh. Das sind keine guten Bewegungsmuster!
 ! zu zerrissen
 1 geht, etwas schlechter als 1
 
+⇒  0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). 
 
 * Text 2: configs/config_finger_repeats_few.py
 ßuqüo vhmlzp
@@ -33,8 +34,7 @@ xytäö kfwj,
 
 ! Meine rechte Hand fängt an, weh zu tun, und die Linke scheint alle Arbeit zu haben. 
 ! nicht so dolle
-2 schlecht, vor allem (Neo-)Vokal- und Umlautkombinationen auf schwacher
-linker Hand
+2 schlecht, vor allem (Neo-)Vokal- und Umlautkombinationen auf schwacher linker Hand
 
 
 * Text 3: configs/config_finger_repeats_many.py
@@ -46,8 +46,9 @@ vqjdi mafpö
 
 ! epos woe… Der linke Zeigefinger hat sehr viel zu tun.
 ! noch schlechter
-3 schlecht, relativ Fehlerfrei, aber sehr langsam, da definitiv auf starke
-Finger mit vielen Kollisionen optimiert.
+3 schlecht, relativ Fehlerfrei, aber sehr langsam, da definitiv auf starke Finger mit vielen Kollisionen optimiert.
+
+⇒ 2 vs 3: Wenige Fingerwiederholungen alleine reichen nicht. 2 ist allerdings in jedem Parameter besser als 3, oft um Faktor 2 und mehr. Im Vergleich zu 5 (ist sehr gut ausgefallen) hat 2 um 0.3 (4.5 statt 4.2) höhere Tastenkosten, Finger Disbalance 4.4 statt 3.3 doppelt so viele Trigramme ohne Handwechsel (19 statt 10) und etwas mehr Zeilenwechsel (0.25 statt 0.21). Dafür nur halb so viele Fingerwiederholungen. ⇒ Es gibt relevante Parameter, die in der Ausgabe noch nicht erfasst werden (Vokal- und Umlautkombinationen? Richtungswechsel?). 
 
 
 * Text 4: configs/config_hand_switching_after_unbalancing_key_no.py
@@ -73,6 +74,8 @@ xya.q fvwz,
 ! super (der beste text)
 5 gut, guter Fluss, ersten drei Zeilen fehlerfrei, dafür letzte Zeile
 zahlreiche Vertipper
+
+⇒ 4 vs 5: Handwechsel nach Disbalance stört andere Parameter nur unwesentlich, verbessert den Tippfluss aber deutlich. ⇒ Gewichtung erhöhen (klares Ergebnis). Die Fingerdisbalance ist bei 5 deutlich höher als bei 4 (3.2 vs 2.9), die Zeilenwechsel dafür deutlich niedriger (0.21 vs. 0.39)). Die Fingerbalance muss also möglicherweise zusammen mit dem Handwechsel nach unbalancierender Taste erhöht werden. 
 
 
 * Text 6: configs/config_hand_switching_little.py
@@ -110,6 +113,8 @@ jxrfw ,üyöv
 ! nee
 8 geht, nicht genug Fluss, wechseln in die untere Reihe bremst
 
+⇒ 6 vs 7 vs 8: Der Effekt von Handwechseln ist unklar. 6 können wir rausfallen lassen (die Hand-Disbalance macht es schwer zu nutzen). 8 hat doppelt so hohe Fingerdisbalance wie 7 (3.9 vs 1.9), dafür nur 1/4 der Fingerwiederholungen (1.1 vs 4.6). Außerdem nur 3/4 der Zeilenwechsel (0.31 statt 0.46). Das alles sollte nicht ausreichen, um den Unterschied in den Handwechseln auszugleichen (10% vs 48% Trigramme ohne Handwechsel). Der Test ergibt also kein sicheres Ergebnis dazu, ob Handwechsel gut sind oder nicht. 
+
 
 * Text 9: configs/config_key_positions_cost_high.py
 dpäoc hk,zmn
@@ -136,6 +141,8 @@ jy.vq fküöß
 10 geht ganz gut, erste Zeile viele Fehler, dann fast fehlerfrei, etwas
 Fluss
 
+⇒ Gute Tastenpositionen alleine reichen nicht, aber schlechte Tastenpositionen zerstören alles. → immer wichtig! 
+
 
 * Text 11: configs/config_row_changes_few.py
 püxöc .malkw
@@ -159,6 +166,8 @@ lrütq zcnvp
 ! Sehr umständlich. etwas weniger schlimm als Text 9, aber trotzdem übel… 
 ! nee, nee, nee
 12 unbrauchbar, Vermeidung der Grundlinie, nehm ich an
+
+⇒ 11 vs 12: Lässt sich noch nicht viel sagen, da auch die Tastenpositionen und die Fingerwiederholungen viel schlechter sind. → neues Layout, das ähnliche Fingerwiederholungen und Tastenkosten hat zum erneuten Test. Außerdem war die Handbalance in 11 so schlecht, dass sie jedes Ergebnis verzerren könnte. Beide nochmal mit höherer Gewichtung auf die Fingerbalane, bei 12 zusätzlich Fingerwiederholungen und Tastenkosten höher gewichten. 
 
 
 * Text 13: qwertzy3
