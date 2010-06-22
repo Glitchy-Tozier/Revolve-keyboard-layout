@@ -1,4 +1,4 @@
-Evaluation. The entries marked with ! are the ones where the proband knew what kind of layout he used. 
+*Evaluation. The entries marked with ! are the ones where the proband knew what kind of layout he used. The entries beginning with Q are from people typing with Qwertz (the others write with Neo 2).*
 
 * Text 0: configs/config_finger_movement_patterns_bad.py
 zuäü, pchlfk
@@ -7,9 +7,12 @@ xyaöq bvjwß
 
 → Schlechte Bewegungsmuster heißt: möglichst *schlechte* Übergänge zwischen den Fingern. Lieber vom Mittelfinger auf den Ringfinger als auf den Zeigefinger. 
 
-! Etwas umständlich, aber ein seltsame positives Gefühl von Fluss.
+! Etwas umständlich, aber ein seltsam positives Gefühl von Fluss.
 ! geht so
 0 gut
+Text 0: Mir sind größeren Besonderheiten aufgefallen; 5 Tippfehler (oft 
+Buchstabendreher)
+
 
 
 * Text 1: configs/config_finger_movement_patterns_good.py
@@ -22,8 +25,13 @@ fpgmx ,üöyq
 ! Tut fast weh beim Tippen. Ganz seltsames Gefühl und kommt nicht in Fluss. Aber es hat seinen eigenen Rhythmus. -nochmal getippt - Tut immernoch weh. Das sind keine guten Bewegungsmuster!
 ! zu zerrissen
 1 geht, etwas schlechter als 1
+Text 1: Vor allem auf der rechten Hand schwer zu tippende 
+Buchstabenfolgen, viel schlechterer Schreibfluss als im Text zuvor; 2 
+Tippfehler
+Q Text 1 anspruchsvoll und nich so angehmen is ja echt fingergymnastik^^
 
-⇒  0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). 
+
+⇒  0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). Vielleicht eigene Beurteilung verschiedener Bewegungsmuster. 
 
 
 * Text 2: configs/config_finger_repeats_few.py
@@ -36,6 +44,9 @@ xytäö kfwj,
 ! Meine rechte Hand fängt an, weh zu tun, und die Linke scheint alle Arbeit zu haben. 
 ! nicht so dolle
 2 schlecht, vor allem (Neo-)Vokal- und Umlautkombinationen auf schwacher linker Hand
+Text 2: Eher ungutes Gefühl mit der linken Hand, das tippen fühlt sich 
+einfach nicht "rund" an. Vor allem das Ä wirkte störend; 6 Tippfehler 
+(die meisten hatten auch mit dem Ä zu tun)
 
 
 * Text 3: configs/config_finger_repeats_many.py
@@ -48,6 +59,9 @@ vqjdi mafpö
 ! epos woe… Der linke Zeigefinger hat sehr viel zu tun.
 ! noch schlechter
 3 schlecht, relativ Fehlerfrei, aber sehr langsam, da definitiv auf starke Finger mit vielen Kollisionen optimiert.
+Text 3: Zu viele Tastenkollisionen bei den Zeigefingern. Oftmals vier, 
+teilweise fünf Buchstaben mit dem selben Finger; 3 Tippfehler
+
 
 ⇒ 2 vs 3: Wenige Fingerwiederholungen alleine reichen nicht. 2 ist allerdings in jedem Parameter besser als 3, oft um Faktor 2 und mehr. Im Vergleich zu 5 (ist sehr gut ausgefallen) hat 2 um 0.3 (4.5 statt 4.2) höhere Tastenkosten, Finger Disbalance 4.4 statt 3.3 doppelt so viele Trigramme ohne Handwechsel (19 statt 10) und etwas mehr Zeilenwechsel (0.25 statt 0.21). Dafür nur halb so viele Fingerwiederholungen. ⇒ Es gibt relevante Parameter, die in der Ausgabe noch nicht erfasst werden (Vokal- und Umlautkombinationen? Richtungswechsel auf der gleichen Hand?). 
 
@@ -62,6 +76,8 @@ xßuyq ,zfbv
 ! Seltsam, aber ich kann es nicht genau beschreiben. Akademisch würde ich sagen „ja, die Tastenfolgen sollten gut sein“, aber so fühlen sie sich nicht an.
 ! auch nicht gut
 4 geht, relativ viele Fehler, kein Fluss
+Text 4: eher angenehm zu tippen. Mit diesem Layout war ich bisher am schnellsten. Es gab zwar die eine oder andere komische Buchstabenkombination, aber insgesamt konnte ich recht flüssig tippen; 0 Tippfehler (nachdem ich die Auflösung gesehen habe erschien mir das komisch und ich habe den Text nochmals getippt. Mein Eindruck hat sich dadurch aber nicht besonders verändert. Anscheinend ist dieses Kriterium, gar nicht so störend wie man meint. Vielleicht tippe ich auch einfach seltsam, falls dies so wäre, aber nur unbewusst, da ich eigentlich glaube halbwegs ordentlich mit 10 bzw. 9 Fingern zu tippen)
+Q Text 4 leichter und angehmer als Text 5
 
 
 * Text 5: configs/config_hand_switching_after_unbalancing_key_yes.py
@@ -75,8 +91,12 @@ xya.q fvwz,
 ! super (der beste text)
 5 gut, guter Fluss, ersten drei Zeilen fehlerfrei, dafür letzte Zeile
 zahlreiche Vertipper
+Text 5: Schreibfluss mäßig, hier bin ich häufiger "rausgekommen". Besonders toll scheinen die Buchstaben hier nicht zusammen zu liegen, ich meine auffallend selten nebeneinanderliegende Finger direkt hintereinander benutzt zu haben; 3 Tippfehler (erscheint mir nach der Auflösung vor allem mit Blick auf die Ergebnisse von vier so langsam unlogisch, aber gut es ist ein ergebnis, ich bin mal gespannt was andere hierzu schreiben)
+Q Text 5 auch anspruchsvoll aber nicht so kompliziert wie 7
+
 
 ⇒ 4 vs 5: Handwechsel nach Disbalance stört andere Parameter nur unwesentlich, verbessert den Tippfluss aber deutlich. ⇒ Gewichtung erhöhen (klares Ergebnis). Die Fingerdisbalance ist bei 5 deutlich höher als bei 4 (3.2 vs 2.9), die Zeilenwechsel dafür deutlich niedriger (0.21 vs. 0.39)). Die Fingerbalance muss also möglicherweise zusammen mit dem Handwechsel nach unbalancierender Taste erhöht werden. 
+⇒ Die Ergebnisse von Cornelis (4. Zeile) ziehen das wieder in Zweifel. Wir brauchen mehr Tests. 
 
 
 * Text 6: configs/config_hand_switching_little.py
@@ -89,6 +109,8 @@ cuglb ßvxyö
 ! Das fühlt sich verdammt seltsam an. Eine Hand wandert über die Tastatur, und die andere ist fast stumm. Ich bin mehrfach verwirrt worden, aber gleichzeitig hat es seinen Charm, Muster mit einer Hand zu zeichnen. Wenn jetzt noch die Rechte hand ganz wegfallen und durch einen Daumenschalter ersetzt werden könnte, wäre es noch schöner :) (für Maus+Tastatur). Ich hätte erwartet, dass das viel schlechter funktioniert. 
 ! zu linkslastig
 6 abgebrochen, jetzt tut mir die linke Hand weh :-)
+Text 6: Geht gar nicht, Handverteilung grausam, gefühlt ca. 80--90 % auf links, entsprechend schlechter Schreibfluss, schlechte Zeit, schlechtes Gefühl mit der linken Hand (und das als Linkshänder); 6 Tippfehler
+Q Text 6 etwas leichter und angehmer zu tippen
 
 
 * Text 7: configs/config_hand_switching_little_but_balanced.py
@@ -101,6 +123,9 @@ pbamü v,.xy
 ! Hier habe ich irgendwie das Gefühl, dass ich etwas verpasse. Als wollte ich es nochmal tippen, um mehr zu erfassen…
 ! nee
 7 geht ganz gut, aber nicht so guter Fluss wie bei 5
+Text 7: Mittelmäßiges schreiben, mit einigen besonders schlecht zu 
+tippenden Bigrammen; 1 Tippfehler
+Q Text 7: sehr anspruchsvoll mit viel vertippen drin (ziemlich kompliziert)
 
 
 * Text 8: configs/config_hand_switching_much.py
@@ -113,6 +138,9 @@ jxrfw ,üyöv
 ! Total umständlich…
 ! nee
 8 geht, nicht genug Fluss, wechseln in die untere Reihe bremst
+Text 8: Gefiel mir persönlich ganz gut, scheint viele Handwechsel gehabt 
+zu haben (glaube ich); 0 Tippfehler
+
 
 ⇒ 6 vs 7 vs 8: Der Effekt von Handwechseln ist unklar. 6 können wir rausfallen lassen (die Hand-Disbalance macht es schwer zu nutzen). 8 hat doppelt so hohe Fingerdisbalance wie 7 (3.9 vs 1.9), dafür nur 1/4 der Fingerwiederholungen (1.1 vs 4.6). Außerdem nur 3/4 der Zeilenwechsel (0.31 statt 0.46). Das alles sollte nicht ausreichen, um den Unterschied in den Handwechseln auszugleichen (10% vs 48% Trigramme ohne Handwechsel). Der Test ergibt also kein sicheres Ergebnis dazu, ob Handwechsel gut sind oder nicht. 
 
@@ -128,6 +156,10 @@ tiaue gbsrl
 ! eckenzentriert
 9 keine Ahnung, auf was das optimiert ist, aber nach der ersten Zeile
 abgebrochen, da untippbar.
+Text 9: Nach den ersten drei Worten entnervt mit kurzem Blick auf den 
+Resttext abgebrochen, scheint so als ob du in dem Text eine möglichst 
+schlechte Lage der Buchstaben erzeugt hast ...
+
 
 
 * Text 10: configs/config_key_positions_cost_low.py
@@ -141,6 +173,10 @@ jy.vq fküöß
 ! naja
 10 geht ganz gut, erste Zeile viele Fehler, dann fast fehlerfrei, etwas
 Fluss
+Text 10: irgendwie anders als der Rest, ließ sich an vielen Stellen 
+recht gut tippen, hatte auch den einen oder anderen stolperstein, an dem 
+man per hand nacharbeiten müsste; 3 Tippfehler
+
 
 ⇒ Gute Tastenpositionen alleine reichen nicht, aber schlechte Tastenpositionen zerstören alles. → immer wichtig! 
 
@@ -155,6 +191,10 @@ yßudb zqjv,
 ! Etwas umständlich, aber glatt. Wie eine unpassende Strecke, die geglättet wurde. Ein Kanal. 
 ! nee
 11 geht, etwas Fluss, aber nicht viel, da sehr rechtslastig.
+Text 11: Handwechsel komisch, rechts zu stark gewichtet. Handwechsel 
+erfolgte oft (und halbwegs regelmäßig nach kleinen buchstabengrüppchen 
+auf einer hand, alles in allem nicht so toll, warum genau weiß ich 
+nicht; 1 Tippfehler
 
 
 * Text 12: configs/config_row_changes_many.py
@@ -167,6 +207,8 @@ lrütq zcnvp
 ! Sehr umständlich. etwas weniger schlimm als Text 9, aber trotzdem übel… 
 ! nee, nee, nee
 12 unbrauchbar, Vermeidung der Grundlinie, nehm ich an
+Text 12: viele Sprunge von oben nach unten, lästig und langsam; 4 Tippfehler
+
 
 ⇒ 11 vs 12: Lässt sich noch nicht viel sagen, da auch die Tastenpositionen und die Fingerwiederholungen viel schlechter sind. → neues Layout, das ähnliche Fingerwiederholungen und Tastenkosten hat zum erneuten Test. Außerdem war die Handbalance in 11 so schlecht, dass sie jedes Ergebnis verzerren könnte. Beide nochmal mit höherer Gewichtung auf die Fingerbalane, bei 12 zusätzlich Fingerwiederholungen und Tastenkosten höher gewichten. 
 
@@ -181,3 +223,11 @@ xvjt, agürly
 ! Das ist sehr nahe an 9 (worst case).
 ! nee
 13 Kombination aus keine Grundlinie und linker Hand, nehm ich an. Mein neues Lieblingslayout ;-)
+Text 13: gefühlt zweitschlechteste Buchstabenlage, viel Sprünge, auf 
+Neo-X und Umlauten zu wichtige Buchstaben, alles in allem so schlecht, 
+dass ich nur knapp mehr als die Hälfte getippt habe
+An der Stelle musste ich fast schon lachen nachdem ich die Auflösung 
+gesehen habe :-) Qwertz schneidet ja noch schlechter ab, als die meisten 
+anderen Layouts, wenn ich hier ne Reihenfolge machen müsste streite sich 
+dieses Layout mit Nr. 12 um den vorletzten Platz. Herrlich mal im 
+Vergleich zu sehen WIE schlecht Qwertz tatsächlich ist!
