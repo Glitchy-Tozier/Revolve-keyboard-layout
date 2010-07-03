@@ -31,7 +31,7 @@ Tippfehler
 Q Text 1 anspruchsvoll und nich so angehmen is ja echt fingergymnastik^^
 
 
-⇒  0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). Vielleicht eigene Beurteilung verschiedener Bewegungsmuster. 
+⇒ 0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). Vielleicht eigene Beurteilung verschiedener Bewegungsmuster. 
 
 
 * Text 2: configs/config_finger_repeats_few.py
@@ -231,3 +231,40 @@ gesehen habe :-) Qwertz schneidet ja noch schlechter ab, als die meisten
 anderen Layouts, wenn ich hier ne Reihenfolge machen müsste streite sich 
 dieses Layout mit Nr. 12 um den vorletzten Platz. Herrlich mal im 
 Vergleich zu sehen WIE schlecht Qwertz tatsächlich ist!
+
+
+Eval
+----
+
+⇒ 0 vs 1: Noch können keine direkten Aussagen getroffen werden, da 1 auch 30% mehr Fingerwiederholungen (1.3 % statt 1.0 %) eine deutlich höhere Fingerdisbalance (5.7 statt 3.0) und mehr Trigramme ohne Handwechsel hat (23% statt 11%). Sollten die Bewegungsmuster gut sein, ist ihr Effekt auf jeden Fall kleiner als die verschlechterten Parameter. ⇒ Erneuter Test mit näher aneinander liegenden Parametern. z.B. bei 0 die Gewichtung der Bewegungsmuster noch stärker erhöhen, bis die anderen Parameter an 1 angeglichen sind (0 bietet zur Zeit dem Optimierer mehr Freiheit als 1). Vielleicht eigene Beurteilung verschiedener Bewegungsmuster. 
+
+⇒ 2 vs 3: Wenige Fingerwiederholungen alleine reichen nicht. 2 ist allerdings in jedem Parameter besser als 3, oft um Faktor 2 und mehr. Im Vergleich zu 5 (ist sehr gut ausgefallen) hat 2 um 0.3 (4.5 statt 4.2) höhere Tastenkosten, Finger Disbalance 4.4 statt 3.3 doppelt so viele Trigramme ohne Handwechsel (19 statt 10) und etwas mehr Zeilenwechsel (0.25 statt 0.21). Dafür nur halb so viele Fingerwiederholungen. ⇒ Es gibt relevante Parameter, die in der Ausgabe noch nicht erfasst werden (Vokal- und Umlautkombinationen? Richtungswechsel auf der gleichen Hand?). 
+
+⇒ 4 vs 5: Handwechsel nach Disbalance stört andere Parameter nur unwesentlich, verbessert den Tippfluss aber deutlich. ⇒ Gewichtung erhöhen (klares Ergebnis). Die Fingerdisbalance ist bei 5 deutlich höher als bei 4 (3.2 vs 2.9), die Zeilenwechsel dafür deutlich niedriger (0.21 vs. 0.39)). Die Fingerbalance muss also möglicherweise zusammen mit dem Handwechsel nach unbalancierender Taste erhöht werden. 
+⇒ Die Ergebnisse von Cornelis (4. Zeile) ziehen das wieder in Zweifel. Wir brauchen mehr Tests. 
+
+⇒ 6 vs 7 vs 8: Der Effekt von Handwechseln ist unklar. 6 können wir rausfallen lassen (die Hand-Disbalance macht es schwer zu nutzen). 8 hat doppelt so hohe Fingerdisbalance wie 7 (3.9 vs 1.9), dafür nur 1/4 der Fingerwiederholungen (1.1 vs 4.6). Außerdem nur 3/4 der Zeilenwechsel (0.31 statt 0.46). Das alles sollte nicht ausreichen, um den Unterschied in den Handwechseln auszugleichen (10% vs 48% Trigramme ohne Handwechsel). Der Test ergibt also kein sicheres Ergebnis dazu, ob Handwechsel gut sind oder nicht. 
+
+⇒ 9 vs. 10: Gute Tastenpositionen alleine reichen nicht, aber schlechte Tastenpositionen zerstören alles. → immer wichtig! 
+
+⇒ 11 vs 12: Lässt sich noch nicht viel sagen, da auch die Tastenpositionen und die Fingerwiederholungen viel schlechter sind. → neues Layout, das ähnliche Fingerwiederholungen und Tastenkosten hat zum erneuten Test. Außerdem war die Handbalance in 11 so schlecht, dass sie jedes Ergebnis verzerren könnte. Beide nochmal mit höherer Gewichtung auf die Fingerbalane, bei 12 zusätzlich Fingerwiederholungen und Tastenkosten höher gewichten. 
+
+
+Nächste Schritte
+----------------
+
+* config2_movement_patterns_bad_more_extreme.py – die Parameter an diejenigen von 1 angleichen und erneut testen: 1,3% Fingerwiederholungen. 5,7 Fingerdisbalance, 23% Trigramme ohne Handwechsel. Das neue vs. 1. 
+* Viele Handwechsel, aber mit besserer Fingerbalance, gegenüber wenige aber mit weniger Fingerwiederholungen. 
+* config2_finger_repeats_many_balanced_fingers.py vs. 2 – Fingerwiederholungen vs. Fingerbalance. 
+* (Effekt der Fingerbalance prüfen). 
+* config2_row_changes_many_low_position_cost_finger_repeats_and_balanced_fingers.py vs. 11. 
+
+
+Zusammenfassung
+---------------
+
+* Die bisher als positiv gesehenen Bewegungsmuster haben eher einen negativen Effekt. Schlechte Buchstabenfolgen, kein Rhythmus. Finger nebeneinander ist besser als möglichst immer Abstände. 
+* Wenige Fingerwiederholungen alleine reichen nicht. 
+* Ob Handwechsel gut oder schlecht sind ist noch ungeklärt.
+* Bei Tests von Parametern muss darauf geachtet werden, dass Tastenpositionen, Handwechsel und Fingerbalance ähnlich sind. 
+* Neue Tests: Ähnliche Parameter für Bewegungsmuster, Handwechsel, Fingerwiederholungen, Zeilenwechsel. 
