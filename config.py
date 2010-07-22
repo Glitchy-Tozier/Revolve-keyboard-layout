@@ -15,7 +15,7 @@ WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 1 #: When I have to switch the row in a bigra
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 
-WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
+WEIGHT_FINGER_DISBALANCE = 60 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 
@@ -33,7 +33,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
-WEIGHT_XCVZ_ON_BAD_POSITION = 0.6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+WEIGHT_XCVZ_ON_BAD_POSITION = 6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
 WEIGHT_FINGER_SWITCH = 1 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
 
@@ -42,7 +42,7 @@ FINGER_SWITCH_COST = {
     "Klein_L": {
         "Ring_L": 2, # 100ms
         "Mittel_L": 4,
-        "Zeige_L": 2
+        "Zeige_L": 1
         }, 
     "Ring_L": {
         "Klein_L": 3,
@@ -50,7 +50,7 @@ FINGER_SWITCH_COST = {
         "Zeige_L": 1
         }, 
     "Mittel_L": {
-        "Klein_L": 2,
+        "Klein_L": 1,
         "Ring_L": 4,
         "Zeige_L": 1 # Nach Rohmert 230ms statt 200ms ⇒ 30ms
         }, 
@@ -71,7 +71,7 @@ FINGER_SWITCH_COST = {
     "Mittel_R": {
         "Zeige_R": 1,
         "Ring_R": 4,
-        "Klein_R": 5
+        "Klein_R": 1
         },
     "Ring_R": {
         "Zeige_R": 2,
@@ -79,7 +79,7 @@ FINGER_SWITCH_COST = {
         "Klein_R": 3
         }, 
     "Klein_R": {
-        "Zeige_R": 2,
+        "Zeige_R": 1,
         "Mittel_R": 4,
         "Ring_R": 2
         }
@@ -89,21 +89,21 @@ WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 1 #: How much penalty we want if th
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
-(1, 0, 0): 2, # Tab
-(1, 1, 0): 1,# x
-(1, 5, 0): 2, # w
-(1, 6, 0): 2, # k
-(1, 10, 0): 1, # q
-(1, 11, 0): 2, # ß
-(2, 0, 0): 2, # L_M3
-(2, 5, 0): 1, # o
-(2, 6, 0): 1, # s
-(2, 11, 0): 1, # y
-(2, 12, 0): 2, # R_M3
-(2, 13, 0): 2, # Return
-(3, 0, 0): 2, # L_Shift
-(3, 12, 0): 2, # R_Shift
-(3, 6, 0): 2 # z
+    (1, 0, 0): 2, # Tab
+    (1, 1, 0): 1,# x
+    (1, 5, 0): 2, # w
+    (1, 6, 0): 2, # k
+    (1, 10, 0): 1, # q
+    (1, 11, 0): 2, # ß
+    (2, 0, 0): 2, # L_M3
+    (2, 5, 0): 1, # o
+    (2, 6, 0): 1, # s
+    (2, 11, 0): 1, # y
+    (2, 12, 0): 2, # R_M3
+    (2, 13, 0): 2, # Return
+    (3, 0, 0): 2, # L_Shift
+    (3, 12, 0): 2, # R_Shift
+    (3, 6, 0): 2 # z
 }
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
@@ -117,7 +117,9 @@ UNBALANCING_POSITIONS = {
 # 1123111113 = 3.3490913205386508 mean key position cost
 # Ringfinger on lower row takes 1.5 times the time of index on the upper row[1].
 # [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
-COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
+COST_PER_KEY  = [
+    # The 0 values aren’t filled in at the moment.
+    # Don’t put mutated keys there!
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0,22, 0, 0], # Zahlenreihe (0)
     [0,    10, 6, 5, 6, 9,    10, 5, 4, 5, 8,12,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
