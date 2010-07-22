@@ -259,12 +259,17 @@ Nächste Schritte
 * (Effekt der Fingerbalance prüfen). 
 * config2_row_changes_many_low_position_cost_finger_repeats_and_balanced_fingers.py vs. 11. 
 
+* Kosten in der Standardconfig: 
+    - Kosten für Fingerdisbalance verdoppeln. Jupp
+    - Neue Bewegungsmuster. Jupp. 
+    - Kosten für fehlenden Handwechsel nach Disbalance verdoppeln. Jupp.
 
 Zusammenfassung
 ---------------
 
-* Die bisher als positiv gesehenen Bewegungsmuster haben eher einen negativen Effekt. Schlechte Buchstabenfolgen, kein Rhythmus. Finger nebeneinander ist besser als möglichst immer Abstände. 
+* Die bisher als positiv gesehenen Bewegungsmuster haben eher einen negativen Effekt. Schlechte Buchstabenfolgen, kein Rhythmus. Finger nebeneinander ist besser als möglichst immer Abstände. Könnte ein Artefakt der reduzierenden Auswertung von Rohmert sein (Zeilenwechsel mit Fingerabstand gemischt). 
 * Wenige Fingerwiederholungen alleine reichen nicht. 
 * Ob Handwechsel gut oder schlecht sind ist noch ungeklärt.
-* Bei Tests von Parametern muss darauf geachtet werden, dass Tastenpositionen, Handwechsel und Fingerbalance ähnlich sind. 
+* Bei Tests von Parametern muss vor allem darauf geachtet werden, dass Tastenpositionen, Fingerwiederholungen und Fingerbalance ähnlich sind. 
 * Neue Tests: Ähnliche Parameter für Bewegungsmuster, Handwechsel, Fingerwiederholungen, Zeilenwechsel. 
+
