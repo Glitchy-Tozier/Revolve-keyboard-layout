@@ -15,11 +15,12 @@ WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 1 #: When I have to switch the row in a bigra
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 
-WEIGHT_FINGER_DISBALANCE = 60 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+
+WEIGHT_FINGER_DISBALANCE = 30 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 
-WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 10 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 5 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
@@ -33,77 +34,47 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     2,
     1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
-WEIGHT_XCVZ_ON_BAD_POSITION = 6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+WEIGHT_XCVZ_ON_BAD_POSITION = 0.6 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_FINGER_SWITCH = 1 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
+WEIGHT_FINGER_SWITCH = -400 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
 
-#: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
+#: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain dairection. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
 FINGER_SWITCH_COST = {
-    "Klein_L": {
-        "Ring_L": 2, # 100ms
-        "Mittel_L": 4,
-        "Zeige_L": 1
-        }, 
-    "Ring_L": {
-        "Klein_L": 3,
-        "Mittel_L": 4, # 140ms
-        "Zeige_L": 1
-        }, 
-    "Mittel_L": {
-        "Klein_L": 1,
-        "Ring_L": 4,
-        "Zeige_L": 1 # Nach Rohmert 230ms statt 200ms ⇒ 30ms
-        }, 
-    "Zeige_L": {
-        "Klein_L": 1,
-        "Ring_L": 3,
-        "Mittel_L": 4 # 120ms
-        }, 
-    "Daumen_L": {
-        },
-    "Daumen_R": {
-        },
-    "Zeige_R": {
-        "Mittel_R": 4,
-        "Ring_R": 3,
-        "Klein_R": 1
-        },
-    "Mittel_R": {
-        "Zeige_R": 1,
-        "Ring_R": 4,
-        "Klein_R": 1
-        },
-    "Ring_R": {
-        "Zeige_R": 2,
-        "Mittel_R": 4,
-        "Klein_R": 3
-        }, 
-    "Klein_R": {
-        "Zeige_R": 1,
-        "Mittel_R": 4,
-        "Ring_R": 2
-        }
+    "Klein_L": {"Ring_L": 2}, # 100ms
+    "Ring_L": {"Klein_L": 3,
+               "Mittel_L": 5}, # 140ms
+    "Mittel_L": {"Ring_L": 4,
+                 "Zeige_L": 1}, # Nach Rohmert 230ms statt 200ms ⇒ 30ms
+    "Zeige_L": {"Mittel_L": 4}, # 120ms
+    "Daumen_L": {},
+    "Daumen_R": {},
+    "Zeige_R": {"Mittel_R": 4},
+    "Mittel_R": {"Zeige_R": 1,
+                 "Ring_R": 4},
+    "Ring_R": {"Mittel_R": 5,
+               "Klein_R": 3}, 
+    "Klein_R": {"Ring_R": 2}
 }
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 2 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 1 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an upparcase letter.
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
-    (1, 0, 0): 2, # Tab
-    (1, 1, 0): 1,# x
-    (1, 5, 0): 2, # w
-    (1, 6, 0): 2, # k
-    (1, 10, 0): 1, # q
-    (1, 11, 0): 2, # ß
-    (2, 0, 0): 2, # L_M3
-    (2, 5, 0): 1, # o
-    (2, 6, 0): 1, # s
-    (2, 11, 0): 1, # y
-    (2, 12, 0): 2, # R_M3
-    (2, 13, 0): 2, # Return
-    (3, 0, 0): 2, # L_Shift
-    (3, 12, 0): 2, # R_Shift
-    (3, 6, 0): 2 # z
+(1, 0, 0): 2, # Tab
+(1, 1, 0): 1,# x
+(1, 5, 0): 2, # w
+(1, 6, 0): 2, # k
+(1, 10, 0): 1, # q
+(1, 11, 0): 2, # ß
+(2, 0, 0): 2, # L_M3
+(2, 5, 0): 1, # o
+(2, 6, 0): 1, # s
+(2, 11, 0): 1, # y
+(2, 12, 0): 2, # R_M3
+(2, 13, 0): 2, # Return
+(3, 0, 0): 2, # L_Shift
+(3, 12, 0): 2, # R_Shift
+(3, 6, 0): 2 # z
 }
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
@@ -117,9 +88,7 @@ UNBALANCING_POSITIONS = {
 # 1123111113 = 3.3490913205386508 mean key position cost
 # Ringfinger on lower row takes 1.5 times the time of index on the upper row[1].
 # [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
-COST_PER_KEY  = [
-    # The 0 values aren’t filled in at the moment.
-    # Don’t put mutated keys there!
+COST_PER_KEY  = [ # the 0 values aren’t filled in at the moment. 
     [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0,22, 0, 0], # Zahlenreihe (0)
     [0,    10, 6, 5, 6, 9,    10, 5, 4, 5, 8,12,18, 0], # Reihe 1
     [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
