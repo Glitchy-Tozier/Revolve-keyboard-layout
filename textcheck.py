@@ -169,8 +169,8 @@ def _help():
 
 def cost(text, diff123):
     """Cost for a text with the three differences (1gram, 2gram, 3gram)."""
-    #: prefer shorter text: 1% * log2.
-    length_factor = (100+log(len(text), 2))
+    #: prefer shorter text: 3% * log2. Double length means 1% more cost.
+    length_factor = 100 + 3*log(len(text), 2)
     return sum(diff123) * length_factor
 
 def shorten(text, max_len=270):
@@ -180,7 +180,7 @@ def shorten(text, max_len=270):
     shorted = text[:max_len]
     if end in text[:max_len]: 
         shidx = text[:max_len].rindex(end)
-        shorted = text[:shidx+len(end)]
+        shorted = text[:shidx+1]
     elif space in text[:max_len]:
         shidx = text[:max_len].rindex(space)
         shorted = text[:shidx]
@@ -230,13 +230,14 @@ if __name__ == "__main__":
             text2grams = repeats_in_file(l)
             text3grams = trigrams_in_file(l)
             diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
-            if not best_10[9:] or cost(l, diss) < min([s for s, x, text in best_10]):
+            if not best_10[9:] or cost(l, diss) < best_10[-1][0]:
                 best_10.append((cost(l, diss), diss, l))
                 best_10.sort()
                 best_10 = best_10[:10]
-                print("\n### best:", best_10[0], "\n")
-            print(diss, l)
+                print("\n### new top 10:", cost(l, diss), diss, l, "\n")
+            print(cost(l, diss), diss, l)
         print("\n### best 10 lines ###\n")
+        best_10.reverse()
         for s, x, t in best_10:
             print("### best:", s, x, t)
     else:
@@ -245,5 +246,5 @@ if __name__ == "__main__":
         text2grams = repeats_in_file(data)
         text3grams = trigrams_in_file(data)
         diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
-        print(diss)
+        print(cost(data, diss), diss)
         
