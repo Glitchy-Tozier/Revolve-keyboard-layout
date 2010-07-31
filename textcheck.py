@@ -10,6 +10,7 @@ idea: allow selecting different 1gram, 2gram and 3gram files.
 
 """
 
+from math import log
 
 def read_file(path):
     """Get the data from a file.
@@ -17,7 +18,7 @@ def read_file(path):
     >>> read_file("testfile")[:2]
     'ui'
     """
-    with open(path) as f: #, encoding="UTF-8") as f:
+    with open(path, "r") as f: #, encoding="UTF-8") as f:
         data = f.read()
     return data
 
@@ -166,6 +167,28 @@ def check_dissimilarity(txt_1grams, txt_2grams, txt_3grams, ref_1grams, ref_2gra
 def _help():
     return __doc__
 
+def cost(text, diff123):
+    """Cost for a text with the three differences (1gram, 2gram, 3gram)."""
+    #: prefer shorter text: 1% * log2.
+    length_factor = (100+log(len(text), 2))
+    return sum(diff123) * length_factor
+
+def shorten(text, max_len=270):
+    """shorten a line, breaking at a sentence-end, if possible, and otherwise at word-end."""
+    end = ". "
+    space = " "
+    shorted = text[:max_len]
+    if end in text[:max_len]: 
+        shidx = text[:max_len].rindex(end)
+        shorted = text[:shidx+len(end)]
+    elif space in text[:max_len]:
+        shidx = text[:max_len].rindex(space)
+        shorted = text[:shidx]
+    if len(shorted) >= max_len/2:
+        return shorted
+    return text[:max_len]
+        
+
 ### Self-Test
 
 if __name__ == "__main__":
@@ -199,7 +222,7 @@ if __name__ == "__main__":
         data = read_file_lines(textfile)
         best_10 = [] # [(sum, (1, 2, 3), text), …]
         while data[1:]:
-            l = data[1]
+            l = shorten(data[1])
             data = data[1:]
             if not l[2:]:
                 continue
@@ -207,14 +230,15 @@ if __name__ == "__main__":
             text2grams = repeats_in_file(l)
             text3grams = trigrams_in_file(l)
             diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
-            if not best_10[9:] or sum(diss) < min([s for s, x, text in best_10]):
-                best_10.append((sum(diss), diss, l))
+            if not best_10[9:] or cost(l, diss) < min([s for s, x, text in best_10]):
+                best_10.append((cost(l, diss), diss, l))
                 best_10.sort()
                 best_10 = best_10[:10]
+                print("\n### best:", best_10[0], "\n")
             print(diss, l)
         print("\n### best 10 lines ###\n")
         for s, x, t in best_10:
-            print(x, t)
+            print("### best:", s, x, t)
     else:
         data = read_file(textfile)
         text1grams = letters_in_file(data)
