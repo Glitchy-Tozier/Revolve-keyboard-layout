@@ -159,12 +159,10 @@ xyö,q bpwmz
 """
 
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
-text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als 
-Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
+text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
 
-#: nonfiction text. Values by textcheck in rev … : 
-text_nonfiction = """
-"""
+#: nonfiction text. Values by textcheck in rev 50d3778e4ed8: 163.562242265 (0.17945353852061005, 0.40737063265717327, 0.7348205399896256) 
+text_nonfiction = """Vertreter von rund 30 führenden Handelsnationen verständigten sich darauf, die Gespräche über einen Vertrag zur Liberalisierung des Welthandels zu beschleunigen. Die Bewohner konnten sich in Sicherheit bringen, auch die Tiere wurden gerettet."""
 
 text_jahid = """In einsamer Stille starrte Jahid zum Himmel.
 Was mochte wohl dort oben liegen? Das sanfte Licht der Sterne spiegelte sich in seinen Augen 
