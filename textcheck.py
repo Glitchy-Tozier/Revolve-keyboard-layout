@@ -200,6 +200,9 @@ if __name__ == "__main__":
         best_10 = [] # [(sum, (1, 2, 3), text), …]
         while data[1:]:
             l = data[1]
+            data = data[1:]
+            if not l[2:]:
+                continue
             text1grams = letters_in_file(l)
             text2grams = repeats_in_file(l)
             text3grams = trigrams_in_file(l)
@@ -209,7 +212,6 @@ if __name__ == "__main__":
                 best_10.sort()
                 best_10 = best_10[:10]
             print(diss, l)
-            data = data[1:]
         print("\n### best 10 lines ###\n")
         for s, x, t in best_10:
             print(x, t)
