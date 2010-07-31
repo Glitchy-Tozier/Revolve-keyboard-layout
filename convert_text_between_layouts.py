@@ -158,7 +158,15 @@ hieao dtrnsß
 xyö,q bpwmz
 """
 
-text = """In einsamer Stille starrte Jahid zum Himmel.
+#: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
+text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als 
+Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
+
+#: nonfiction text. Values by textcheck in rev … : 
+text_nonfiction = """
+"""
+
+text_jahid = """In einsamer Stille starrte Jahid zum Himmel.
 Was mochte wohl dort oben liegen? Das sanfte Licht der Sterne spiegelte sich in seinen Augen 
 und die Scheibe des Mondes versank hinter dem Horizont."""
 
