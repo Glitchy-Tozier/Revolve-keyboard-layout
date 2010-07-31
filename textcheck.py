@@ -2,7 +2,9 @@
 
 """Check how much a given text diverges from a 1gram, 2gram and 3gram frequency.
 
-usage: ./textcheck.py <textfile to check>
+usage: ./textcheck.py <textfile to check> [--best-lines]
+
+--lines: check each line and return the 10 most similar lines. 
 
 idea: allow selecting different 1gram, 2gram and 3gram files. 
 
@@ -15,8 +17,18 @@ def read_file(path):
     >>> read_file("testfile")[:2]
     'ui'
     """
-    with open(path, encoding="UTF-8") as f:
+    with open(path) as f: #, encoding="UTF-8") as f:
         data = f.read()
+    return data
+
+def read_file_lines(path):
+    """Get the data from a file.
+
+    >>> read_file("testfile")[:2]
+    'ui'
+    """
+    with open(path) as f: #, encoding="UTF-8") as f:
+        data = f.readlines()
     return data
 
 def letters_in_file(data):
@@ -165,11 +177,12 @@ if __name__ == "__main__":
         print(_help())
         exit()
 
-    textfile = argv[1]
-    data = read_file(textfile)
-    text1grams = letters_in_file(data)
-    text2grams = repeats_in_file(data)
-    text3grams = trigrams_in_file(data)
+    if "--best-lines" in argv:
+        LINES = True
+    else:
+        LINES = False
+
+    # reference data
     data = read_file("1gramme.txt")
     reference1grams = letters_in_file_precalculated(data)
     data = read_file("2gramme.txt")
@@ -177,4 +190,30 @@ if __name__ == "__main__":
     data = read_file("3gramme.txt")
     reference3grams = trigrams_in_file_precalculated(data)
 
-    print(check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams))
+    # text to check
+    textfile = argv[1]
+
+    if LINES: 
+        data = read_file_lines(textfile)
+        best_10 = [] # [(sum, (1, 2, 3), text), …]
+        for l in data: 
+            text1grams = letters_in_file(l)
+            text2grams = repeats_in_file(l)
+            text3grams = trigrams_in_file(l)
+            diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
+            if not best_10[9:] or sum(diss) < min([s for s, x, text in best_10]):
+                best_10.append((sum(diss), diss, l))
+                best_10.sort()
+                best_10 = best_10[:10]
+            print(diss, l)
+        print("\n### best 10 lines ###\n")
+        for s, x, t in best_10:
+            print(x, t)
+    else:
+        data = read_file(textfile)
+        text1grams = letters_in_file(data)
+        text2grams = repeats_in_file(data)
+        text3grams = trigrams_in_file(data)
+        diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
+        print(diss)
+        
