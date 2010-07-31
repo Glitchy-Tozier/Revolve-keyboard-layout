@@ -128,20 +128,22 @@ def normalize_occurrence_dict(d):
     return d
     
 def occurrence_dict_difference(d1, d2):
-    """Get the squared difference between two occurrence dicts.
+    """Get the difference between two occurrence dicts.
+
+    TODO: Evaluate which difference calculation would be best.
 
     @return: dict with all keys (in d1 or in d2) and the difference as value."""
     diff1 = {}
     # check d1
     for t in d1:
         if t in d2:
-            diff1[t] = (d1[t] - d2[t])**2
+            diff1[t] = abs((d1[t] - d2[t]))
         else:
-            diff1[t] = d1[t]**2
+            diff1[t] = abs(d1[t])
     # add all from d2 which are not in d1
     for t in d2:
         if not t in diff1:
-            diff1[t] = d2[t]**2
+            diff1[t] = abs(d2[t])
     return diff1
 
 def check_dissimilarity(txt_1grams, txt_2grams, txt_3grams, ref_1grams, ref_2grams, ref_3grams):
