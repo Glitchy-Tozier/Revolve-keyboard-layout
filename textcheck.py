@@ -120,8 +120,6 @@ def trigrams_in_file_precalculated(data):
 def normalize_occurrence_dict(d):
     """normalize a dict with keys and assorted occurrence numbers.
 
-    @param min_occ: If the occurrence number is smaller than this, just ignore it (value = 0.0).
-
     ⇒ sum([d[t] for t in d]) == 1.0
     """
     _sum = sum([d[t] for t in d])
@@ -137,8 +135,8 @@ def occurrence_dict_difference(d1, d2):
     diff1 = {}
     # check d1
     for t in d1:
-        if t in d2:
-            diff1[t] = abs((d1[t] - d2[t]))
+        if t in d2: 
+            diff1[t] = abs(d1[t] - d2[t])
         else:
             diff1[t] = abs(d1[t])
     # add all from d2 which are not in d1
@@ -189,24 +187,8 @@ def shorten(text, max_len=270):
     return text[:max_len]
         
 
-### Self-Test
-
-if __name__ == "__main__":
-    from sys import argv
-    if "--test" in argv:
-        from doctest import testmod
-        testmod()
-        exit()
-    
-    if not argv[1:]:
-        print(_help())
-        exit()
-
-    if "--best-lines" in argv:
-        LINES = True
-    else:
-        LINES = False
-
+def run(textfile, best_lines=False, max_len=270):
+    """test the file."""
     # reference data
     data = read_file("1gramme.txt")
     reference1grams = letters_in_file_precalculated(data)
@@ -215,14 +197,11 @@ if __name__ == "__main__":
     data = read_file("3gramme.txt")
     reference3grams = trigrams_in_file_precalculated(data)
 
-    # text to check
-    textfile = argv[1]
-
-    if LINES: 
+    if best_lines: 
         data = read_file_lines(textfile)
         best_10 = [] # [(sum, (1, 2, 3), text), …]
         while data[1:]:
-            l = shorten(data[1])
+            l = shorten(data[1], max_len=max_len)
             data = data[1:]
             if not l[2:]:
                 continue
@@ -247,4 +226,27 @@ if __name__ == "__main__":
         text3grams = trigrams_in_file(data)
         diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
         print(cost(data, diss), diss)
-        
+
+
+### Self-Test
+
+if __name__ == "__main__":
+    from sys import argv
+    if "--test" in argv:
+        from doctest import testmod
+        testmod()
+        exit()
+    
+    if not argv[1:]:
+        print(_help())
+        exit()
+
+    if "--best-lines" in argv:
+        LINES = True
+    else:
+        LINES = False
+
+    # text to check
+    textfile = argv[1]
+
+    run(textfile, best_lines=LINES)
