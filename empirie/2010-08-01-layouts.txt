@@ -1,0 +1,80 @@
+Planning
+========
+
+New version: explicit reweighting: 
+
+qwertz - opt¹²: 
+
+6.87: 11.2862986817 - 4.41429774724 billion total penalty compared to notime-noeffort
+1.040873828450000: 5.25273103562 - 4.21185720717 mean key position cost in file 1gramme.txt ( 2.425222372 )
+5.728020539479999: 7.40712552483 - 1.67910498535 % finger repeats in file 2gramme.txt ( 0.718665088 )
+4.94071272163: 8.20816695015 - 3.26745422852 million keystrokes disbalance of the fingers ( 0.196047253 )
+0.19832597398459997: 0.264551764607 - 0.0662257906224 % finger repeats top to bottom or vice versa ( 0.22675968 )
+49.781401589699996: 70.6252834795 - 20.8438818898 % of trigrams have no handswitching (uppercase ignored) ( 0.161847722 )
+2.511335519869: 2.73167849011 - 0.220342970241 billion (rows/dist)² to cross ( 0.220342970241 )
+0.076666885499904: 0.0771517043608 - 0.000484818860896 hand disbalance. Left: 0.499515181139 %, Right: 0.500484818861 %
+-0.057580830799999996: ( 0.1151616616 - 0.1727424924 badly positioned shortcut keys (weighted).)
+0.006700000000000039: ( 0.2644 - 0.2577 no handswitching after unbalancing key (weighted).)
+-0.014773566000000016: ( 0.33492813 - 0.349701696 movement pattern cost (weighted).)
+
+cost diff to qwertz (how much effect do the changes achieve vs. qwertz): 
+
+pos: 3.02456617 - 2.425222372 = 0.599343798
+rep: 3.170285696 - 0.718665088 = 2.4516206080000003
+disbalance: 0.492490017  - 0.196047253 = 0.296442764
+rep top-bottom: 0.90583552  - 0.22675968 = 0.67907584
+handswitching: 0.548388314 - 0.161847722 = 0.386540592
+rows²: 2.73167849011 - 0.220342970241 = 2.511335519869
+shortcuts: 0.1151616616 - 0.1727424924  = -0.057580830799999996
+unbalancing: 0.2644  - 0.2577  = 0.006700000000000039
+patterns: 0.33492813 - 0.349701696 = -0.014773566000000016
+
+QWERTZ Result: 
+
+- position cost change is far lower than finger repeats. halve the finger repeat cost (main indicator of usability). 
+- finger disbalance change is half the position. Fits. 
+- repeats top bottom change is a quarter of the finger repeats, even though it’s *much* worse. Increase still more ⇒ avoid as much as possible. 
+- handswitching is halve the position cost. Too high, since we don’t know if little handswitching really is a problem ⇒ halve, but double no handswitch after direction change. 
+- rows² are much more than the position cost. Maybe reduce to 1/5th to make them equal. Too many rows² are responsible for really bad feeling, so maybe keep anyway. 
+- shortcuts are only 10% of the position cost. Fits. 
+- no switch after unbalancing is currently insignificant. Increase by factor 50 to make it 1/3th of the position cost. 
+- movement patterns have high absolute cost, but make little difference. increase by factor 10. 
+
+cost diff to nordtast: 
+
+pos: 2.238083502  - 2.425222372 = -0.18713887000000007
+rep: 0.653700992 - 0.718665088 = -0.06496409599999997
+disbalance: 0.279975041 - 0.196047253 = 0.08392778799999998
+rep top-bottom: 0.228793344 - 0.22675968 = 0.0020336640000000183
+handswitching: 0.201833014 - 0.161847722 = 0.039985292000000006
+rows²: 1.01036771176 - 0.220342970241 = 0.790024741519
+shortcuts: 0.2303233232  - 0.1727424924  = 0.05758083080000001
+unbalancing: 0.2579  - 0.2577  = 0.00020000000000003348
+patterns: 0.349913322 - 0.349701696 = 0.0002116260000000203
+
+
+Result NT: 
+
+- here finger repeat changes are much lower than position cost (1/3rd) ⇒ keep finger repeats as they are. This quotient of changes is OK. 
+- disbalance between the fingers is a bit stronger than finger repeats. make it a bit weaker. 2/3rd.
+- finger repeats top bottom are insignificant. see qwertz. 
+- change in rows² dominates all (as for qwertz). Maybe reduce to 1/5th. 
+- switch after unbalancing is far too weak. See qwertz. 
+
+
+Result merged: 
+
+- finger disbalance *2/3
+- repeats top bottom *2
+- handswitching *1/2, no handswitch after direction change *2
+- rows² are much more than the position cost. Maybe reduce to 1/5th to make them equal. Too many rows² are responsible for really bad feeling, but too few make the typing feel unnatural. Absolutely avoid: ävu (in Neo 2). 
+- shortcuts are only 10% of the position cost. Fits. 
+- no switch after unbalancing is currently insignificant. Increase by factor 50 to make it 1/3th of the position cost. 
+- movement patterns have high absolute cost, but make little difference. increase by factor 10. 
+
+
+¹: jüäo, xlmhkp´
+   teciu grnsdz
+   yqa.ö vwbfß
+
+²: rev 5906109b0b21
