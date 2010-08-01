@@ -1059,14 +1059,13 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
 
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
-    """Check, if x, c, v and z are all on the left hand and well positioned (much used shortcuts)."""
+    """Check, if x, c, v and z are on the left hand and well positioned (much used shortcuts)."""
     badly_positioned = []
     for key in keys: 
         pos = find_key(key)
         # well means not yet left stretch, in row 3, col 5 is also OK.
         if not pos[1] < 5 or (pos[0] == 3 and pos[1] == 5):
-            return 1
-            #badly_positioned.append(1)
+            badly_positioned.append(1)
     return sum(badly_positioned)
 
 
