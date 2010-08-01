@@ -35,7 +35,7 @@ QWERTZ Result:
 - finger disbalance change is half the position. Fits. 
 - repeats top bottom change is a quarter of the finger repeats, even though it’s *much* worse. Increase still more ⇒ avoid as much as possible. 
 - handswitching is halve the position cost. Too high, since we don’t know if little handswitching really is a problem ⇒ halve, but double no handswitch after direction change. 
-- rows² are much more than the position cost. Maybe reduce to 1/5th to make them equal. Too many rows² are responsible for really bad feeling, so maybe keep anyway. 
+- rows² are much more than the position cost. Maybe reduce to 1/5th to make them equal. Too many rows² are responsible for really bad feeling, but too few make the typing feel unnatural. Absolutely avoid: ävu (in Neo 2). For starters: Keep. 
 - shortcuts are only 10% of the position cost. Fits. 
 - no switch after unbalancing is currently insignificant. Increase by factor 50 to make it 1/3th of the position cost. 
 - movement patterns have high absolute cost, but make little difference. increase by factor 10. 
@@ -57,21 +57,27 @@ Result NT:
 
 - here finger repeat changes are much lower than position cost (1/3rd) ⇒ keep finger repeats as they are. This quotient of changes is OK. 
 - disbalance between the fingers is a bit stronger than finger repeats. make it a bit weaker. 2/3rd.
-- finger repeats top bottom are insignificant. see qwertz. 
+- change cost of finger repeats top bottom is insignificant. see qwertz. 
 - change in rows² dominates all (as for qwertz). Maybe reduce to 1/5th. 
 - switch after unbalancing is far too weak. See qwertz. 
+- Reevaluate rwos². 
 
 
 Result merged: 
 
 - finger disbalance *2/3
-- repeats top bottom *2
+- repeats top bottom *2; maybe more. 
 - handswitching *1/2, no handswitch after direction change *2
-- rows² are much more than the position cost. Maybe reduce to 1/5th to make them equal. Too many rows² are responsible for really bad feeling, but too few make the typing feel unnatural. Absolutely avoid: ävu (in Neo 2). 
 - shortcuts are only 10% of the position cost. Fits. 
-- no switch after unbalancing is currently insignificant. Increase by factor 50 to make it 1/3th of the position cost. 
+- no switch after unbalancing is currently insignificant. Increase by factor 5 to make it relevant. Then reevaluate the optimization results. 
 - movement patterns have high absolute cost, but make little difference. increase by factor 10. 
 
+
+Goal
+----
+
+Ideal for optimization: weight(highest acceptable value - lowest reached value) is the same for all parameters. 
+weight(acc - min) is the same. 
 
 ¹: jüäo, xlmhkp´
    teciu grnsdz
