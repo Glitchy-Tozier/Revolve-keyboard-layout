@@ -85,7 +85,7 @@ FINGER_SWITCH_COST = {
         }
 }
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 2 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 100000 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
