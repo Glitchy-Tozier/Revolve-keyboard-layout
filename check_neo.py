@@ -1070,10 +1070,12 @@ def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
     return sum(badly_positioned)
 
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False):
     """Compute a total cost from all costs we have available, wheighted.
 
-    TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions. 
+    TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
+
+    @param return_weighted: Set to true to get the weighted values instead of the real values. 
     
     >>> data = read_file("testfile")
     >>> #total_cost(data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
@@ -1125,8 +1127,13 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
     total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
     total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
-    
-    return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand
+
+    if not return_weighted: 
+        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand
+    else:
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num , WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, int(WEIGHT_FINGER_DISBALANCE * disbalance), WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
+
+        
 
 ### Evolution
 
@@ -1441,18 +1448,22 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         pprint(layout)
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
 
     hand_load = load_per_hand(letters, layout=layout)
     
     print("#", total / 1000000000, "billion total penalty compared to notime-noeffort")
-    print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt")
-    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt")
+    print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
+    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
     if verbose: 
-        print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers")
-        print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa")
-        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)")
-        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross")
+        print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
+        print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
+        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)", "(", str(no_handswitches_w/1000000000), ")")
+        print("#", line_change_same_hand / 1000000000, "billion (rows/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
+        print("# (", str(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).)")
+        print("# (", str(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).)")
+        print("# (", str(neighboring_fings_w/100000000), "movement pattern cost (weighted).)")
 
 
 def check_with_datafile(args, quiet, verbose):
