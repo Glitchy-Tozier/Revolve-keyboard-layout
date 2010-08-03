@@ -5,7 +5,7 @@
 #: The mutated letters - only these get changed.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
-WEIGHT_POSITION = 2 #: reference cost - gets multiplied with the COST_PER_KEY.
+WEIGHT_POSITION = 4 #: reference cost - gets multiplied with the COST_PER_KEY.
 
 WEIGHT_FINGER_REPEATS = 128 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 
