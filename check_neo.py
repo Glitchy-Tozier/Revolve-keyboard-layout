@@ -1526,18 +1526,18 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
 
-    qtotal, qfrep_num, qcost, qfrep_top_bottom, qdisbalance, qno_handswitches, qline_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams)[:7]
+    qvals = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams, return_weighted=True)
 
     qhand_load = load_per_hand(letters, layout=QWERTZ_LAYOUT)
 
     def compare_with_qwertz(lay, base=QWERTZ_LAYOUT):
         """compare the layout with qwertz."""
-        total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:7]
+        vals = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams, return_weighted=True)
         hand_load = load_per_hand(letters, layout=lay)
-        diff = ((total/qtotal) - 1)**2
-        to_compare = [(frep_num, qfrep_num), (cost, qcost), (frep_top_bottom, qfrep_top_bottom), (disbalance, qdisbalance), (no_handswitches, qno_handswitches), (line_change_same_hand, qline_change_same_hand)]
+        diff = 0
+        to_compare = zip(vals, qvals)
         for l,q in to_compare: 
-            diff += ((l/q) - 1)**2
+            diff += (l - q)**2
         return diff
 
     diff = compare_with_qwertz(lay)
