@@ -923,11 +923,6 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         key2 = pair[1]
         pos1 = find_key(key1, layout=layout)
         pos2 = find_key(key2, layout=layout)
-        # row 3 is shifted 1 key to the right → fix that.
-        if pos1[0] == 3:
-            pos1 = pos1[0], pos1[1] -1, pos1[2]
-        if pos2[0] == 3:
-            pos2 = pos2[0], pos2[1] -1, pos2[2]
         if pos1 and pos2:
             if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
                 # check if we”re on the same hand
@@ -935,6 +930,11 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 finger2 = key_to_finger(key2, layout=layout)
                 if finger1 and finger2 and finger1[-1] != finger2[-1]:
                     continue # the keys are on different hands, so we don’t count them as row change.
+            # row 3 is shifted 1 key to the right → fix that.
+            if pos1[0] == 3:
+                pos1 = pos1[0], pos1[1] -1, pos1[2]
+            if pos2[0] == 3:
+                pos2 = pos2[0], pos2[1] -1, pos2[2]
             num_rows = abs(pos1[0] - pos2[0])
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
