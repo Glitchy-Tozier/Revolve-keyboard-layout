@@ -1023,7 +1023,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
 
     (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
 
-    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
+    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
@@ -1462,7 +1462,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if verbose: 
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
-        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (no handswitching after direction change counted multiple times)", "(", str(no_handswitches_w/1000000000), ")")
+        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (no after direction change counted ~x40)", "(", str(no_handswitches_w/1000000000), ")")
         print("#", line_change_same_hand / 1000000000, "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
         print("# (", str(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).)")
