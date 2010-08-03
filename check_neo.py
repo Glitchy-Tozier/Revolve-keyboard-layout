@@ -359,6 +359,22 @@ from copy import deepcopy
 
 ### Helper Functions
 
+def format_layer_1_string(layout):
+    """Format a string looking like this:
+
+    öckäy zhmlß,´
+    atieo dsnru.
+    xpfüq bgvwj
+    """
+    l = ""
+    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-1]) + "\n"
+    l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
+    if layout[3][1]:
+        l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
+    else:
+        l += "".join(layout[3][2:7]) + " " + "".join(layout[3][7:-1])
+    return l
+
 
 def get_key(pos, layout=NEO_LAYOUT):
     """Get the key at the given position.
@@ -1203,7 +1219,7 @@ def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc,
         if new_cost < cost:
             if not quiet: 
                 print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                print(lay)
+                print(format_layer_1_string(lay))
             return lay, new_cost, cost - new_cost
         else:
             if not quiet: 
@@ -1372,23 +1388,6 @@ def combine_genetically(layout1, layout2):
 
 
 ### UI ###
-
-def format_layer_1_string(layout):
-    """Format a string looking like this:
-
-    öckäy zhmlß,´
-    atieo dsnru.
-    xpfüq bgvwj
-    """
-    l = ""
-    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-1]) + "\n"
-    l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
-    if layout[3][1]:
-        l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
-    else:
-        l += "".join(layout[3][2:7]) + " " + "".join(layout[3][7:-1])
-    return l
-    
 
 def format_keyboard_layout(layout):
     """Format a keyboard layout to look like a real keyboard."""
