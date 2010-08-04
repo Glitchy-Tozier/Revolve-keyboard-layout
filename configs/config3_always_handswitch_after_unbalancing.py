@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 
-"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
+"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified.
+
+Result of one optimization (3000+tail): 
+
+ähcw. ,ugaxq´
+snlrü öitedj
+zkfmß pyvob
+"""
 
 #: The mutated letters - only these get changed.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
