@@ -3,7 +3,6 @@
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified.
 
 Result with -800 (very bad, 3000 step + tail): 
-
 aüävt e,gbri´
 zuowh dclmjn
 ypöqs x.fkß
@@ -13,8 +12,6 @@ result with -40, 3000 steps with tail (far better):
 yucüe lfgmzp´
 niroa sdht,b
 qöxä. vwkßj
-
-
 
 """
 
