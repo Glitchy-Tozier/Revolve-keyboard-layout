@@ -359,6 +359,22 @@ from copy import deepcopy
 
 ### Helper Functions
 
+def format_layer_1_string(layout):
+    """Format a string looking like this:
+
+    öckäy zhmlß,´
+    atieo dsnru.
+    xpfüq bgvwj
+    """
+    l = ""
+    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-1]) + "\n"
+    l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
+    if layout[3][1]:
+        l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
+    else:
+        l += "".join(layout[3][2:7]) + " " + "".join(layout[3][7:-1])
+    return l
+
 
 def get_key(pos, layout=NEO_LAYOUT):
     """Get the key at the given position.
@@ -1023,7 +1039,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
 
     (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
 
-    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it gnores about 7-9% of the trigrams. 
+    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
@@ -1203,7 +1219,7 @@ def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc,
         if new_cost < cost:
             if not quiet: 
                 print(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                print(lay)
+                print(format_layer_1_string(lay))
             return lay, new_cost, cost - new_cost
         else:
             if not quiet: 
@@ -1373,23 +1389,6 @@ def combine_genetically(layout1, layout2):
 
 ### UI ###
 
-def format_layer_1_string(layout):
-    """Format a string looking like this:
-
-    öckäy zhmlß,´
-    atieo dsnru.
-    xpfüq bgvwj
-    """
-    l = ""
-    l += "".join(layout[1][1:6]) + " " + "".join(layout[1][6:-1]) + "\n"
-    l += "".join(layout[2][1:6]) + " " + "".join(layout[2][6:-2]) + "\n"
-    if layout[3][1]:
-        l += "".join(layout[3][1:7]) + " " + "".join(layout[3][7:-1])
-    else:
-        l += "".join(layout[3][2:7]) + " " + "".join(layout[3][7:-1])
-    return l
-    
-
 def format_keyboard_layout(layout):
     """Format a keyboard layout to look like a real keyboard."""
     neo = """
@@ -1462,7 +1461,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if verbose: 
         print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
         print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
-        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (uppercase ignored)", "(", str(no_handswitches_w/1000000000), ")")
+        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
         print("#", line_change_same_hand / 1000000000, "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
         print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
         print("# (", str(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).)")
@@ -1526,18 +1525,18 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
     else: lay = NEO_LAYOUT
 
-    qtotal, qfrep_num, qcost, qfrep_top_bottom, qdisbalance, qno_handswitches, qline_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams)[:7]
+    qvals = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams, return_weighted=True)
 
     qhand_load = load_per_hand(letters, layout=QWERTZ_LAYOUT)
 
     def compare_with_qwertz(lay, base=QWERTZ_LAYOUT):
         """compare the layout with qwertz."""
-        total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:7]
+        vals = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams, return_weighted=True)
         hand_load = load_per_hand(letters, layout=lay)
-        diff = ((total/qtotal) - 1)**2
-        to_compare = [(frep_num, qfrep_num), (cost, qcost), (frep_top_bottom, qfrep_top_bottom), (disbalance, qdisbalance), (no_handswitches, qno_handswitches), (line_change_same_hand, qline_change_same_hand)]
+        diff = 0
+        to_compare = zip(vals, qvals)
         for l,q in to_compare: 
-            diff += ((l/q) - 1)**2
+            diff += (l - q)**2
         return diff
 
     diff = compare_with_qwertz(lay)

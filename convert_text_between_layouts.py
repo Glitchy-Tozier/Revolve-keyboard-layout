@@ -35,38 +35,38 @@ uiaeo snrtdy
 
 
 neo2 = """
-xvlcw khgfqß
+xvlcw khgfqß´
 uiaeo snrtdy
 üöäpz bm,.j
 """
 
 qwertz = """
-qwert zuiopü
+qwert zuiopü+
 asdfg hjklöä
 yxcvb nm,.-
 """
 
 nordtast = """
-äuobp kglmfx
+äuobp kglmfx´
 aietc hdnrsß
 .,üöq yzwvj
 """
 
 Andreas100504 = """
-jäo.ü khclfv
+jäo.ü khclfv´
 teaiu gdnrsß
 xqö,y bpmwz
 """
 
 Vrijbuiter = """
-joä,ü khclfv
+joä,ü khclfv´
 taeiu gdnrsß
 xöq.y bpmwz
 """
 
 # just a between-result in massive finger-repeat optimizing. Feels a bit awkward.
 mirea = """
-kuyüä xhcljp
+kuyüä xhcljp´
 mirea dstngz
 b,.oö ßfvwq
 """
@@ -75,33 +75,33 @@ b,.oö ßfvwq
 # found in the python3 interpreter via 
 # >>> from check_neo import find_a_qwertzy_layout; find_a_qwertzy_layout(100, 100000, False, True)
 qwertzy = """
-rlnöv xd,fj.
+rlnöv xd,fj.´
 qzhäi gpsbuw
 matye üockß
 """
 
 qwertzy2 = """
-lfbvh p,cögy
+lfbvh p,cögy´
 äaukß wzedox
 ürsit qm.nj
 """
 
 qwertzy3 = """
-nßeiä wu.cqm
+nßeiä wu.cqm´
 xvjt, agürly
 ösdfb ophzk
 """
 
 # has zero repeats top to bottom
 sieh = """
-äuaßq xw.b,z
+äuaßq xw.b,z´
 siehg lnrtdm
 öüofk vcypj
 """
 
 # mainly few rows to cross on the same hand – really strange to type
 rows_per_hand = """
-yßxqj au.fbm
+yßxqj au.fbm´
 häücp eidrsn
 zolgt ö,vwk
 """
@@ -109,14 +109,14 @@ zolgt ö,vwk
 # few rows to cross, but also few handswitches.
 # slightly strange, but interesting. 
 rows_total = """
-ßxyöü qjvkpf
+ßxyöü qjvkpf´
 tcäoi esrngd
 lzua. ,mwbh
 """
 
 # quite good normal result from before (rows/dist)²
 hia1 = """
-ßuoöx wcsdpz
+ßuoöx wcsdpz´
 hiaeä lnrtgk
 ,y.üq fmjbv
 """
@@ -124,7 +124,7 @@ hiaeä lnrtgk
 # a normal optimization result
 # not quite flowing as I’d wish it to, but better than sieh for text_ich_bin
 sic = """
-zuxöä pglmjk
+zuxöä pglmjk´
 sicea tdnrhf
 yßoüq bwv.,
 """
@@ -132,28 +132,28 @@ yßoüq bwv.,
 # one other normal result, including the (rows/dist)²
 # flows a good deal better than sic
 tic1 = """
-juxäü zhlmpw
+juxäü zhlmpw´
 ticea sdrngk
 yöo.q fvßb,
 """
 
 # feels a bit more awkward than tic1 (tic1 has the better value)
 tic2 = """
-puxäü fglmjz
+puxäü fglmjz´
 ticea hdrns,
 yöo.q kwvbß
 """
 
 # as little handswitching as possible, but only without direction changes.
 keep_the_hand = """
-,äqoy pwslfk
+,äqoy pwslfk´
 aeciü hnrtdg
 xö.uj bmßvz
 """
 
 # Andreas Wettstein, Einwärts, Englisch+Deutsch
 einw = """
-kuü.ä vgcljf
+kuü.ä vgcljf´
 hieao dtrnsß
 xyö,q bpwmz
 """
