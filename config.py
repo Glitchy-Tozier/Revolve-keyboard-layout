@@ -19,7 +19,7 @@ WEIGHT_FINGER_DISBALANCE = 40 #: multiplied with the standard deviation of the f
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
 
-WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 40 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 80 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
