@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 
-"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified.
-
-Result of one optimization (3000+tail): 
-
-ähcw. ,ugaxq´
-snlrü öitedj
-zkfmß pyvob
-"""
+"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
 #: The mutated letters - only these get changed.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -92,7 +85,7 @@ FINGER_SWITCH_COST = {
         }
 }
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 200000000 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 40 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
