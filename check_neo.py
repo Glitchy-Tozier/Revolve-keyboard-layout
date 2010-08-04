@@ -894,7 +894,15 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
 
     >>> data = read_file("testfile")
     >>> no_handswitch_after_unbalancing_key(data)
-    7
+    2
+    >>> reps =  [(3, "Ab")]
+    >>> no_handswitch_after_unbalancing_key(repeats=reps)
+    6
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    0
+    >>> reps = [(3, "Ga")]
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    3
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -914,7 +922,7 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                 finger1 = key_to_finger(key1, layout=layout)
                 finger2 = key_to_finger(key2, layout=layout)
                 if finger1 and finger2 and finger1[-1] == finger2[-1]:
-                    no_switch += UNBALANCING_POSITIONS.get(pos1, 0)
+                    no_switch += UNBALANCING_POSITIONS.get(pos1, 0)*number
     return no_switch
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
