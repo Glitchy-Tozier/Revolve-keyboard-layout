@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 
-"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
+"""Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified.
+
+One result (3000 mut + tail): 
+
+öoügx ,zlhjß´
+setrc .inudy
+bfpvq äawkm
+
+"""
 
 #: The mutated letters - only these get changed.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
