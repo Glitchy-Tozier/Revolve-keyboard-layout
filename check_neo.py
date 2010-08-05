@@ -348,7 +348,7 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 # together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
 
-LETTER_TO_KEY_CACHE = {}
+#_LETTER_TO_KEY_CACHE = {}
 
 # TODO: Refresh directly when mutating. Then we don’t have to check anymore for the letter if it really is at the given position. 
 
@@ -386,11 +386,14 @@ def get_key(pos, layout=NEO_LAYOUT):
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
 
-def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
+def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
-    global LETTER_TO_KEY_CACHE
+    try: LETTER_TO_KEY_CACHE = layout[5]
+    except IndexError:
+        layout.append({})
+        LETTER_TO_KEY_CACHE = layout[5]
     pos = None
-    for row in range(len(layout)):
+    for row in range(len(layout[:5])):
         for col in range(len(layout[row])):
             if key in layout[row][col]: 
                 for idx in range(len(layout[row][col])):
@@ -399,25 +402,72 @@ def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
-def update_letter_to_key_cache_multiple(keys, layout=NEO_LAYOUT):
-    """Update the cache entries for many keys."""
+def update_letter_to_key_cache_multiple(keys, layout):
+    """Update the cache entries for many keys.
+
+    @param keys: the keys to update. If it’s None, update ALL.
+    """
+    if keys is None:
+        keys = []
+        for i in layout:
+            for j in i:
+                for k in j:
+                    if k: 
+                        keys.append(k)
     for key in keys:
         update_letter_to_key_cache(key, layout=layout)
     
 
-def find_key(key, layout=NEO_LAYOUT): 
+def diff_dict(d1, d2):
+    """find the difference between two dictionaries.
+
+    >>> a = {1: 2, 3: 4}
+    >>> b = {1:2, 7:8}
+    >>> c = {}
+    >>> diff_dict(a, b)
+    {3: 4, 7: 8}
+    >>> a == diff_dict(a, c)
+    True
+    """
+    diff = {}
+    for key in d1:
+        if not key in d2: 
+            diff[key] = d1[key]
+    for key in d2:
+        if not key in d1:
+            diff[key] = d2[key]
+    return diff
+
+def find_key(key, layout): 
     """Find the position of the key in the layout.
     
-    >>> find_key("a")
+    >>> find_key("a", NEO_LAYOUT)
     (2, 3, 0)
     """
-    # first check the cache
-    global LETTER_TO_KEY_CACHE
-    pos = LETTER_TO_KEY_CACHE.get(key, None)
-    if get_key(pos, layout=layout) == key:
-        return pos
+    # check, if the layout already has a cache. If not, create it.
+    # this approach reduces the time to find a key by about 50%.
+    # TODO: find out why this change affects the costs of layouts!
+    # the cost is raised by a value between 1.2480213606 (NordTast)
+    # and 1.2964878374 (Colemak).
+    # a part of the change might be, that now uppercase keys
+    # are properly taken into account. 
+    #if key != key.lower():
+    #    raise ValueError("You shall not ask me for upperkey letters (yet)!")
+
+    try: LETTER_TO_KEY_CACHE = layout[5]
+    except IndexError:
+        layout.append({})
+        LETTER_TO_KEY_CACHE = layout[5]
+        update_letter_to_key_cache_multiple(None, layout=layout)
+    # first check the caches
+    try: pos = LETTER_TO_KEY_CACHE[key.lower()]
+    except KeyError:
+        pos = None # all keys are in there. None means, we don’t need to check.
+    #if pos is None or get_key(pos, layout=layout) == key.lower():
+    return pos
+    #print("cache miss", key, pos)
     # on a cache miss, search the key and refresh the cache
-    return update_letter_to_key_cache(key, layout=layout)
+    #return update_letter_to_key_cache(key, layout=layout)
 
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
@@ -486,7 +536,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
 
     >>> reps = [(12, "ab"), (6, "Ab"), (4, "aB"), (1, "AB")]
     >>> split_uppercase_repeats(reps)
-    [(12, 'ab'), (6, 'ab'), (3, '⇧a'), (3, '⇗a'), (2, '⇧b'), (2, '⇗b'), (2, 'a⇧'), (2, 'a⇗'), (1, '⇧b'), (1, '⇧a'), (1, '⇗b'), (1, '⇗a'), (1, 'a⇧'), (1, 'a⇗')]
+    [(12, 'ab'), (6, '⇗b'), (6, 'ab'), (4, 'a⇧'), (4, 'ab'), (1, '⇧⇗'), (1, '⇗⇧'), (1, '⇗b'), (1, 'a⇧'), (1, 'ab')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
@@ -525,7 +575,7 @@ def repeats_in_file(data):
 
     >>> data = read_file("testfile")
     >>> repeats_in_file(data)[:3]
-    [(2, 'aa'), (2, 'a\\n'), (1, '⇧a')]
+    [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
     """
     repeats = {}
     for i in range(len(data)-1):
@@ -540,20 +590,29 @@ def repeats_in_file(data):
     #reps = split_uppercase_repeats(sorted_repeats) # wrong place
     return sorted_repeats
 
-def split_uppercase_letters(reps):
+def split_uppercase_letters(reps, layout):
     """Split uppercase letters into two lowercase letters (with shift).
 
     >>> letters = [(4, "a"), (3, "A")]
-    >>> split_uppercase_letters(letters)
-    [(4, 'a'), (3, '⇧'), (3, 'a')]
+    >>> split_uppercase_letters(letters, layout=NEO_LAYOUT)
+    [(4, 'a'), (3, '⇗'), (3, 'a')]
     """
     # replace uppercase by ⇧ and char1
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
-    for num, rep in upper: 
-        up.append((max(1, num//2), "⇧"))
-        up.append((max(1, num//2), "⇗"))
+    
+    for num, rep in upper:
+        fing = key_to_finger(rep.lower(), layout=layout)
+        try: 
+            hand = fing[-1]
+            if hand == "L":
+                up.append((num, "⇗"))
+            elif hand == "R":
+                up.append((num, "⇧"))
+        except IndexError:
+            # not in there (special letters not on keyboard layer 1)
+            pass
         up.append((num, rep.lower()))
                 
     reps.extend(up)
@@ -567,7 +626,7 @@ def letters_in_file(data):
 
     >>> data = read_file("testfile")
     >>> letters_in_file(data)[:3]
-    [(5, 'a'), (4, '\\n'), (2, '⇧')]
+    [(5, 'a'), (4, '\\n'), (2, 'r')]
     """
     letters = {}
     for letter in data:
@@ -578,7 +637,6 @@ def letters_in_file(data):
     sort = [(letters[i], i) for i in letters]
     sort.sort()
     sort.reverse()
-    sort = split_uppercase_letters(sort)
     return sort
 
 def unique_sort(liste):
@@ -614,7 +672,7 @@ def repeats_in_file_precalculated(data):
 
     >>> data = read_file("2gramme.txt")
     >>> repeats_in_file_precalculated(data)[:2]
-    [(10162743, 'en'), (10028050, 'er')]
+    [(10159250, 'en'), (10024681, 'er')]
     """
     reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     reps = [(int(num), r) for num, r in reps if r[1:]]
@@ -751,7 +809,7 @@ def trigrams_in_file_precalculated(data):
 
     >>> data = read_file("3gramme.txt")
     >>> trigrams_in_file_precalculated(data)[:6]
-    [(5679632, 'en '), (4417443, 'er '), (2891983, ' de'), (2303238, 'der'), (2273056, 'ie '), (2039537, 'ich')]
+    [(5678513, 'en '), (4414826, 'er '), (2891228, ' de'), (2302691, 'der'), (2272020, 'ie '), (2039215, 'ich')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
@@ -764,7 +822,7 @@ def letters_in_file_precalculated(data):
 
     >>> data = read_file("1gramme.txt")
     >>> letters_in_file_precalculated(data)[:2]
-    [(44034982, 'e'), (27012723, 'n')]
+    [(44021504, 'e'), (26999087, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     return [(int(num), let) for num, let in letters]
@@ -817,11 +875,24 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     >>> data = read_file("testfile")
     >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
     150
+    >>> print(data[:3])
+    uia
+    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
+    150
+    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY)
+    11
+    >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
+    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    20
+    >>> data = "UIaĥK\\n"
+    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    90
     """
     if data is not None: 
         letters = letters_in_file(data)
     elif letters is None:
         raise Exception("Need either letters or data")
+    letters = split_uppercase_letters(letters, layout=layout)
     cost = 0
     for num, letter in letters:
         pos = find_key(letter, layout=layout)
@@ -837,7 +908,7 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     >>> finger_repeats_from_file(data)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
     >>> finger_repeats_from_file(data, count_same_key=True)
-    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa')]
+    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -859,12 +930,12 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
     return finger_repeats
 
-def finger_repeats_top_and_bottom(finger_repeats):
+def finger_repeats_top_and_bottom(finger_repeats, layout):
     """Check which of the finger repeats go from the top to the bottom row or vice versa."""
     top_down_repeats = []
     for number, finger, letters in finger_repeats:
-        pos0 = find_key(letters[0])
-        pos1 = find_key(letters[1])
+        pos0 = find_key(letters[0], layout)
+        pos1 = find_key(letters[1], layout)
         # count it as top down, if the finger has to move over more than one col.
         if pos0 and pos1 and abs(pos0[0] - pos1[0]) > 1: 
             top_down_repeats.append((number, finger, letters))
@@ -875,7 +946,7 @@ def neighboring_fingers(data=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> neighboring_fingers(data)
-    7
+    23
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -932,7 +1003,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
-    7
+    16.29
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -973,6 +1044,7 @@ def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     >>> load_per_finger(letters)
     {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3}
     """
+    letters = split_uppercase_letters(letters, layout)
     fingers = {}
     for num, key in letters:
         finger = key_to_finger(key, layout=layout)
@@ -1126,7 +1198,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     no_handswitches = no_handswitching(trigrams, layout=layout)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
-    finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
+    finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats, layout=layout)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
     # the number of times neighboring fingers are used – weighted by the ease of transition for the respective fingers
@@ -1168,6 +1240,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
+    >>> lay = switch_keys([], layout = NEO_LAYOUT)
+    >>> lay == NEO_LAYOUT
+    True
     >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
     >>> get_key((1, 1, 0), layout=lay)
     'l'
@@ -1177,10 +1252,16 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     'q'
     >>> get_key((1, 10, 0), layout=lay)
     'w'
-    >>> NEO_LAYOUT_lxwq == lay
+    >>> find_key("l", layout=lay) == (1, 1, 0)
+    True
+    >>> NEO_LAYOUT_lxwq == lay[:5]
     True
     >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT)
-    >>> NEO_LAYOUT_lx == lay
+    >>> NEO_LAYOUT_lx == lay[:5]
+    True
+    >>> a = find_key("a", layout=lay)
+    >>> lay = switch_keys(["ab"], layout=lay)
+    >>> a == find_key("b", layout=lay)
     True
     """
     lay = deepcopy(layout)
@@ -1191,6 +1272,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
         tmp1 = pair[0] + lay[pos1[0]][pos1[1]][1:]
         lay[pos0[0]][pos0[1]] = tmp0
         lay[pos1[0]][pos1[1]] = tmp1
+        update_letter_to_key_cache_multiple(pair, layout=lay)
     
     return lay
 
@@ -1456,7 +1538,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         print(format_layer_1_string(layout))
         print(format_keyboard_layout(layout))
         from pprint import pprint
-        pprint(layout)
+        pprint(layout[:5])
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
     total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
@@ -1637,9 +1719,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          print(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
-def best_random_layout(args, prerandomize):
-    """Select the best gf a number of randomly created layouts."""
-    print("Selecting the best from", argv[2],"random layouts.")
+def best_random_layout(args, prerandomize, quiet=False):
+    """Select the best of a number of randomly created layouts."""
+    print("Selecting the best from", args[2], "random layouts.")
     data1 = read_file("1gramme.txt")
     letters = letters_in_file_precalculated(data1)
     datalen1 = sum([i for i, s in letters])
@@ -1653,9 +1735,9 @@ def best_random_layout(args, prerandomize):
     number_of_trigrams = sum([i for i, s in trigrams])
      
     if prerandomize: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(args[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=quiet)
     else: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(args[2]), layout=NEO_LAYOUT, abc=abc, quiet=quiet)
         
     print("\nBest of the random layouts")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
