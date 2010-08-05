@@ -425,7 +425,8 @@ def find_key(key, layout=NEO_LAYOUT):
     (2, 3, 0)
     """
     # check, if the layout already has a cache. If not, create it.
-    # this approach reduces the time to find a key by about 50%. 
+    # this approach reduces the time to find a key by about 50%.
+    # TODO FIXME: find out why this change affects the costs of layouts!
     try: LETTER_TO_KEY_CACHE = layout[5]
     except IndexError:
         layout.append({})
@@ -1190,6 +1191,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 def switch_keys(keypairs, layout=NEO_LAYOUT):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
+    >>> lay = switch_keys([], layout = NEO_LAYOUT)
+    >>> lay == NEO_LAYOUT
+    True
     >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
     >>> get_key((1, 1, 0), layout=lay)
     'l'
@@ -1199,10 +1203,14 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     'q'
     >>> get_key((1, 10, 0), layout=lay)
     'w'
-    >>> NEO_LAYOUT_lxwq == lay
+    >>> NEO_LAYOUT_lxwq == lay[:5]
     True
     >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT)
-    >>> NEO_LAYOUT_lx == lay
+    >>> NEO_LAYOUT_lx == lay[:5]
+    True
+    >>> a = find_key("a", layout=lay)
+    >>> lay = switch_keys(["ab"], layout=lay)
+    >>> a == find_key("b", layout=lay)
     True
     """
     lay = deepcopy(layout)
