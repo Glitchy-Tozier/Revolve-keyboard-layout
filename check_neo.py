@@ -348,7 +348,7 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 # together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
 
-LETTER_TO_KEY_CACHE = {}
+#LETTER_TO_KEY_CACHE = {}
 
 # TODO: Refresh directly when mutating. Then we don’t have to check anymore for the letter if it really is at the given position. 
 
@@ -428,7 +428,7 @@ def find_key(key, layout=NEO_LAYOUT):
     # this approach reduces the time to find a key by about 50%.
     # TODO: find out why this change affects the costs of layouts!
     # the cost is raised by a value between 1.2480213606 (NordTast)
-    # and 1.2964878374 (Colemak). 
+    # and 1.2964878374 (Colemak).
     try: LETTER_TO_KEY_CACHE = layout[5]
     except IndexError:
         layout.append({})
@@ -576,6 +576,7 @@ def split_uppercase_letters(reps, layout):
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
+    
     for num, rep in upper:
         fing = key_to_finger(rep.lower(), layout=layout)
         try: 
