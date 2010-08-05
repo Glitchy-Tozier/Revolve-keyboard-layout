@@ -432,16 +432,16 @@ def diff_dict(d1, d2):
     diff = {}
     for key in d1:
         if not key in d2: 
-            diff[key] = d1[key], 0
+            diff[key] = d1[key]
     for key in d2:
         if not key in d1:
-            diff[key] = d2[key], 1
+            diff[key] = d2[key]
     return diff
 
 def find_key(key, layout): 
     """Find the position of the key in the layout.
     
-    >>> find_key("a")
+    >>> find_key("a", NEO_LAYOUT)
     (2, 3, 0)
     """
     # check, if the layout already has a cache. If not, create it.
