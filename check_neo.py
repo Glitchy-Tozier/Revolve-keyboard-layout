@@ -388,9 +388,12 @@ def get_key(pos, layout=NEO_LAYOUT):
 
 def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
     """Update the cache entry for the given key."""
-    global LETTER_TO_KEY_CACHE
+    try: LETTER_TO_KEY_CACHE = layout[5]
+    except IndexError:
+        layout.append({})
+        LETTER_TO_KEY_CACHE = layout[5]
     pos = None
-    for row in range(len(layout)):
+    for row in range(len(layout[:5])):
         for col in range(len(layout[row])):
             if key in layout[row][col]: 
                 for idx in range(len(layout[row][col])):
@@ -411,9 +414,16 @@ def find_key(key, layout=NEO_LAYOUT):
     >>> find_key("a")
     (2, 3, 0)
     """
-    # first check the cache
-    global LETTER_TO_KEY_CACHE
-    pos = LETTER_TO_KEY_CACHE.get(key, None)
+    # check, if the layout already has a cache. If not, create it.
+    try: LETTER_TO_KEY_CACHE = layout[5]
+    except IndexError:
+        layout.append({})
+        LETTER_TO_KEY_CACHE = layout[5]
+        update_letter_to_key_cache_multiple(abc, layout=layout)
+    # first check the caches
+    try: pos = LETTER_TO_KEY_CACHE[key]
+    except KeyError:
+        pos = None
     if get_key(pos, layout=layout) == key:
         return pos
     # on a cache miss, search the key and refresh the cache
