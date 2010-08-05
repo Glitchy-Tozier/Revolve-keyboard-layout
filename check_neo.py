@@ -348,7 +348,7 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 # together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
 
-#LETTER_TO_KEY_CACHE = {}
+#_LETTER_TO_KEY_CACHE = {}
 
 # TODO: Refresh directly when mutating. Then we don’t have to check anymore for the letter if it really is at the given position. 
 
@@ -386,7 +386,7 @@ def get_key(pos, layout=NEO_LAYOUT):
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
 
-def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
+def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
     try: LETTER_TO_KEY_CACHE = layout[5]
     except IndexError:
@@ -402,7 +402,7 @@ def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
-def update_letter_to_key_cache_multiple(keys, layout=NEO_LAYOUT):
+def update_letter_to_key_cache_multiple(keys, layout):
     """Update the cache entries for many keys.
 
     @param keys: the keys to update. If it’s None, update ALL.
@@ -432,13 +432,13 @@ def diff_dict(d1, d2):
     diff = {}
     for key in d1:
         if not key in d2: 
-            diff[key] = d1[key]
+            diff[key] = d1[key], 0
     for key in d2:
-        if not key in d1 and not key in diff:
-            diff[key] = d2[key]
+        if not key in d1:
+            diff[key] = d2[key], 1
     return diff
 
-def find_key(key, layout=NEO_LAYOUT): 
+def find_key(key, layout): 
     """Find the position of the key in the layout.
     
     >>> find_key("a")
@@ -925,12 +925,12 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
     return finger_repeats
 
-def finger_repeats_top_and_bottom(finger_repeats):
+def finger_repeats_top_and_bottom(finger_repeats, layout):
     """Check which of the finger repeats go from the top to the bottom row or vice versa."""
     top_down_repeats = []
     for number, finger, letters in finger_repeats:
-        pos0 = find_key(letters[0])
-        pos1 = find_key(letters[1])
+        pos0 = find_key(letters[0], layout)
+        pos1 = find_key(letters[1], layout)
         # count it as top down, if the finger has to move over more than one col.
         if pos0 and pos1 and abs(pos0[0] - pos1[0]) > 1: 
             top_down_repeats.append((number, finger, letters))
@@ -1192,7 +1192,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     no_handswitches = no_handswitching(trigrams, layout=layout)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
-    finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats)
+    finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats, layout=layout)
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
     # the number of times neighboring fingers are used – weighted by the ease of transition for the respective fingers
