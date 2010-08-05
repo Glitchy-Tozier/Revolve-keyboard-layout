@@ -509,7 +509,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
 
     >>> reps = [(12, "ab"), (6, "Ab"), (4, "aB"), (1, "AB")]
     >>> split_uppercase_repeats(reps)
-    [(12, 'ab'), (6, 'ab'), (3, '⇧a'), (3, '⇗a'), (2, '⇧b'), (2, '⇗b'), (2, 'a⇧'), (2, 'a⇗'), (1, '⇧b'), (1, '⇧a'), (1, '⇗b'), (1, '⇗a'), (1, 'a⇧'), (1, 'a⇗')]
+    [(12, 'ab'), (6, '⇗b'), (6, 'ab'), (4, 'a⇧'), (4, 'ab'), (1, '⇧⇗'), (1, '⇗⇧'), (1, '⇗b'), (1, 'a⇧'), (1, 'ab')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
@@ -548,7 +548,7 @@ def repeats_in_file(data):
 
     >>> data = read_file("testfile")
     >>> repeats_in_file(data)[:3]
-    [(2, 'aa'), (2, 'a\\n'), (1, '⇧a')]
+    [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
     """
     repeats = {}
     for i in range(len(data)-1):
@@ -563,20 +563,28 @@ def repeats_in_file(data):
     #reps = split_uppercase_repeats(sorted_repeats) # wrong place
     return sorted_repeats
 
-def split_uppercase_letters(reps):
+def split_uppercase_letters(reps, layout):
     """Split uppercase letters into two lowercase letters (with shift).
 
     >>> letters = [(4, "a"), (3, "A")]
-    >>> split_uppercase_letters(letters)
-    [(4, 'a'), (3, '⇧'), (3, 'a')]
+    >>> split_uppercase_letters(letters, layout=NEO_LAYOUT)
+    [(4, 'a'), (3, '⇗'), (3, 'a')]
     """
     # replace uppercase by ⇧ and char1
     upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
     reps = [rep for rep in reps if not rep in upper]
     up = []
-    for num, rep in upper: 
-        up.append((max(1, num//2), "⇧"))
-        up.append((max(1, num//2), "⇗"))
+    for num, rep in upper:
+        fing = key_to_finger(rep.lower(), layout=layout)
+        try: 
+            hand = fing[-1]
+            if hand == "L":
+                up.append((num, "⇗"))
+            elif hand == "R":
+                up.append((num, "⇧"))
+        except IndexError:
+            # not in there (special letters not on keyboard layer 1)
+            pass
         up.append((num, rep.lower()))
                 
     reps.extend(up)
@@ -590,7 +598,7 @@ def letters_in_file(data):
 
     >>> data = read_file("testfile")
     >>> letters_in_file(data)[:3]
-    [(5, 'a'), (4, '\\n'), (2, '⇧')]
+    [(5, 'a'), (4, '\\n'), (2, 'r')]
     """
     letters = {}
     for letter in data:
@@ -601,7 +609,6 @@ def letters_in_file(data):
     sort = [(letters[i], i) for i in letters]
     sort.sort()
     sort.reverse()
-    sort = split_uppercase_letters(sort)
     return sort
 
 def unique_sort(liste):
@@ -637,7 +644,7 @@ def repeats_in_file_precalculated(data):
 
     >>> data = read_file("2gramme.txt")
     >>> repeats_in_file_precalculated(data)[:2]
-    [(10162743, 'en'), (10028050, 'er')]
+    [(10159250, 'en'), (10024681, 'er')]
     """
     reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     reps = [(int(num), r) for num, r in reps if r[1:]]
@@ -774,7 +781,7 @@ def trigrams_in_file_precalculated(data):
 
     >>> data = read_file("3gramme.txt")
     >>> trigrams_in_file_precalculated(data)[:6]
-    [(5679632, 'en '), (4417443, 'er '), (2891983, ' de'), (2303238, 'der'), (2273056, 'ie '), (2039537, 'ich')]
+    [(5678513, 'en '), (4414826, 'er '), (2891228, ' de'), (2302691, 'der'), (2272020, 'ie '), (2039215, 'ich')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
@@ -787,7 +794,7 @@ def letters_in_file_precalculated(data):
 
     >>> data = read_file("1gramme.txt")
     >>> letters_in_file_precalculated(data)[:2]
-    [(44034982, 'e'), (27012723, 'n')]
+    [(44021504, 'e'), (26999087, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     return [(int(num), let) for num, let in letters]
@@ -845,6 +852,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
         letters = letters_in_file(data)
     elif letters is None:
         raise Exception("Need either letters or data")
+    letters = split_uppercase_letters(letters, layout=layout)
     cost = 0
     for num, letter in letters:
         pos = find_key(letter, layout=layout)
@@ -860,7 +868,7 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     >>> finger_repeats_from_file(data)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
     >>> finger_repeats_from_file(data, count_same_key=True)
-    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa')]
+    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -898,7 +906,7 @@ def neighboring_fingers(data=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> neighboring_fingers(data)
-    7
+    23
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -955,7 +963,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
-    7
+    16.29
     """
     if data is not None: 
         repeats = repeats_in_file(data)
