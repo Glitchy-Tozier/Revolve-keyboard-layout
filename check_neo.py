@@ -418,6 +418,26 @@ def update_letter_to_key_cache_multiple(keys, layout=NEO_LAYOUT):
         update_letter_to_key_cache(key, layout=layout)
     
 
+def diff_dict(d1, d2):
+    """find the difference between two dictionaries.
+
+    >>> a = {1: 2, 3: 4}
+    >>> b = {1:2, 7:8}
+    >>> c = {}
+    >>> diff_dict(a, b)
+    {3: 4, 7: 8}
+    >>> a == diff_dict(a, c)
+    True
+    """
+    diff = {}
+    for key in d1:
+        if not key in d2: 
+            diff[key] = d1[key]
+    for key in d2:
+        if not key in d1 and not key in diff:
+            diff[key] = d2[key]
+    return diff
+
 def find_key(key, layout=NEO_LAYOUT): 
     """Find the position of the key in the layout.
     
