@@ -449,6 +449,11 @@ def find_key(key, layout):
     # TODO: find out why this change affects the costs of layouts!
     # the cost is raised by a value between 1.2480213606 (NordTast)
     # and 1.2964878374 (Colemak).
+    # a part of the change might be, that now uppercase keys
+    # are properly taken into account. 
+    #if key != key.lower():
+    #    raise ValueError("You shall not ask me for upperkey letters (yet)!")
+
     try: LETTER_TO_KEY_CACHE = layout[5]
     except IndexError:
         layout.append({})
@@ -1039,6 +1044,7 @@ def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     >>> load_per_finger(letters)
     {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3}
     """
+    letters = split_uppercase_letters(letters, layout)
     fingers = {}
     for num, key in letters:
         finger = key_to_finger(key, layout=layout)
