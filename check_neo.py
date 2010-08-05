@@ -403,7 +403,17 @@ def update_letter_to_key_cache(key, layout=NEO_LAYOUT):
     return pos
 
 def update_letter_to_key_cache_multiple(keys, layout=NEO_LAYOUT):
-    """Update the cache entries for many keys."""
+    """Update the cache entries for many keys.
+
+    @param keys: the keys to update. If it’s None, update ALL.
+    """
+    if keys is None:
+        keys = []
+        for i in layout:
+            for j in i:
+                for k in j:
+                    if k: 
+                        keys.append(k)
     for key in keys:
         update_letter_to_key_cache(key, layout=layout)
     
@@ -419,15 +429,16 @@ def find_key(key, layout=NEO_LAYOUT):
     except IndexError:
         layout.append({})
         LETTER_TO_KEY_CACHE = layout[5]
-        update_letter_to_key_cache_multiple(abc, layout=layout)
+        update_letter_to_key_cache_multiple(None, layout=layout)
     # first check the caches
-    try: pos = LETTER_TO_KEY_CACHE[key]
+    try: pos = LETTER_TO_KEY_CACHE[key.lower()]
     except KeyError:
-        pos = None
-    if get_key(pos, layout=layout) == key:
-        return pos
+        pos = None # all keys are in there. None means, we don’t need to check.
+    #if pos is None or get_key(pos, layout=layout) == key.lower():
+    return pos
+    #print("cache miss", key, pos)
     # on a cache miss, search the key and refresh the cache
-    return update_letter_to_key_cache(key, layout=layout)
+    #return update_letter_to_key_cache(key, layout=layout)
 
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
@@ -1201,6 +1212,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
         tmp1 = pair[0] + lay[pos1[0]][pos1[1]][1:]
         lay[pos0[0]][pos0[1]] = tmp0
         lay[pos1[0]][pos1[1]] = tmp1
+        update_letter_to_key_cache_multiple(pair, layout=lay)
     
     return lay
 
