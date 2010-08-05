@@ -847,6 +847,18 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     >>> data = read_file("testfile")
     >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
     150
+    >>> print(data[:3])
+    uia
+    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
+    150
+    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY)
+    11
+    >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
+    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    20
+    >>> data = "UIa"
+    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    50
     """
     if data is not None: 
         letters = letters_in_file(data)
