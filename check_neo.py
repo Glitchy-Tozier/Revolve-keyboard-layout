@@ -862,13 +862,6 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     >>> data = "UIa"
     >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     50
-    >>> for k in abc: n = (k, key_position_cost_from_file(k, cost_per_key=TEST_COST_PER_KEY, layout=NEO_LAYOUT))
-    >>> for k in abc.upper(): n = (k, key_position_cost_from_file(k, cost_per_key=TEST_COST_PER_KEY, layout=NEO_LAYOUT)-15)
-    >>> for i in NEO_LAYOUT[:5]:
-    ...  for j in i:
-    ...   for k in j:
-    ...    n = (k, key_position_cost_from_file(k, cost_per_key=TEST_COST_PER_KEY, layout=NEO_LAYOUT))
-    ...    n = (k.upper(), key_position_cost_from_file(k.upper(), cost_per_key=TEST_COST_PER_KEY, layout=NEO_LAYOUT))
     """
     if data is not None: 
         letters = letters_in_file(data)
