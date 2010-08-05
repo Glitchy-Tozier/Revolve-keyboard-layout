@@ -1211,6 +1211,8 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     'q'
     >>> get_key((1, 10, 0), layout=lay)
     'w'
+    >>> find_key("l", layout=lay) == (1, 1, 0)
+    True
     >>> NEO_LAYOUT_lxwq == lay[:5]
     True
     >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT)
