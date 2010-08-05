@@ -1660,9 +1660,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          print(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
-def best_random_layout(args, prerandomize):
-    """Select the best gf a number of randomly created layouts."""
-    print("Selecting the best from", argv[2],"random layouts.")
+def best_random_layout(args, prerandomize, quiet=False):
+    """Select the best of a number of randomly created layouts."""
+    print("Selecting the best from", args[2], "random layouts.")
     data1 = read_file("1gramme.txt")
     letters = letters_in_file_precalculated(data1)
     datalen1 = sum([i for i, s in letters])
@@ -1676,9 +1676,9 @@ def best_random_layout(args, prerandomize):
     number_of_trigrams = sum([i for i, s in trigrams])
      
     if prerandomize: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(args[2]), num_switches=int(PRERANDOMIZE), layout=NEO_LAYOUT, abc=abc, quiet=quiet)
     else: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(argv[2]), layout=NEO_LAYOUT, abc=abc, quiet=QUIET)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=int(args[2]), layout=NEO_LAYOUT, abc=abc, quiet=quiet)
         
     print("\nBest of the random layouts")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
