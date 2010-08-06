@@ -8,6 +8,11 @@ One result (3000 mut + tail):
 setrc .inudy
 bfpvq äawkm
 
+jmäuö xwb.ßq´
+dnihü crtes,
+zkaoy glvpf
+
+
 """
 
 #: The mutated letters - only these get changed.
