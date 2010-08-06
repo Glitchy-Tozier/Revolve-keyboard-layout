@@ -1381,7 +1381,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         if not quiet: 
             new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
             print(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-            print(lay)
+            print(format_layer_1_string(lay))
         return lay, new_cost, cost - new_cost
     else: 
         if not quiet: 
