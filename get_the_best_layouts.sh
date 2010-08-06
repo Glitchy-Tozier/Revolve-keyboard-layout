@@ -12,13 +12,12 @@ if [ "$1" == "--help" ]; then
     exit 0
 fi
 
-NUMBER=3
+export NUMBER=3
 
-if [ $# -gt 1 ]; then
-    NUMBER=$2
-    exit 0
+if [ $# -eq 2 ]; then
+    export NUMBER=$2
 fi
 
 
-for i in `grep "total" $1  | sort -r | tail -n 3 | cut -d " " -f 2 | xargs`; do grep $i evolved-layouts-2010-08-06.txt -A 10 -B 19; done
+for i in `grep "total" $1  | sort -r | tail -n $NUMBER | cut -d " " -f 2 | xargs`; do grep $i evolved-layouts-2010-08-06.txt -A 10 -B 19; done
 
