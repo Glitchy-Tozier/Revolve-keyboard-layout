@@ -4,6 +4,10 @@
 
 One result (3000 mut + tail): 
 
+xwäuü jbgsyq´
+daoec ßnrtl,
+mvi.ö hkpzf
+
 """
 
 #: The mutated letters - only these get changed.
