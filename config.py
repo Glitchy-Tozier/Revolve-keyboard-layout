@@ -5,7 +5,7 @@
 #: The mutated letters - only these get changed.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
-WEIGHT_POSITION = 5 #: reference cost - gets multiplied with the COST_PER_KEY.
+WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
 WEIGHT_FINGER_REPEATS = 128 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 
@@ -17,9 +17,10 @@ WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change w
 
 WEIGHT_FINGER_DISBALANCE = 160 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
-WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 100 #: how high should it be counted, if the hands aren’t switched in a triple?
 
-WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 80 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multipleir for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multipier for triples without handswitch in in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,

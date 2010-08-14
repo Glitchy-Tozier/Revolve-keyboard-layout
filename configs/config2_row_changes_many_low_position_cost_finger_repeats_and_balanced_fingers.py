@@ -18,9 +18,10 @@ WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change w
 
 WEIGHT_FINGER_DISBALANCE = 300 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corus. 
 
-WEIGHT_TOO_LITTLE_HANDSWITCHING = 1 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 50 #: how high should it be counted, if the hands aren’t switched in a triple?
 
-WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 5 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: how much stronger should the triple without handswitch be counted, if there also is a direction change? Also affects the “unweighted” result from total_cost!
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,

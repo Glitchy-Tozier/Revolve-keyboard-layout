@@ -1155,6 +1155,8 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
                 pos2 = key_pos_horizontal_table[trig[2]]
                 if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
                     num *= WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
+                else: 
+                    num *= WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
                 no_switch += num
     return no_switch
 
