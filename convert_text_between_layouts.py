@@ -6,7 +6,7 @@ Usage: ./convert_text_between_layouts.py [--layout "\
 <layout-string>\
 "] [--base "\
 <layout-string>\
-"] [--text "<text>"]
+"] [--qwertz] [--text "<text>"]
 
 Example: 
 
