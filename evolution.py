@@ -9,7 +9,7 @@ EVOLUTION_STEPS = 100
 steps = 4000
 prerandomize = 1000000
 controlled = False
-quiet = False
+quiet = True
 verbose = True
 controlled_tail = True
 
