@@ -236,7 +236,7 @@ if "-o" in argv:
     idx = argv.index("-o")
     FILE = argv[idx+1]
     argv = argv[:idx] + argv[idx+2:]
-    def print(*args):
+    def print(*args, **kwds):
         with open(FILE, "a") as f:
             for i in args:
                 f.write(str(i) + " ")
