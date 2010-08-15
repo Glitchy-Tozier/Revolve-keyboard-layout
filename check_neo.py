@@ -7,10 +7,11 @@ __usage__ = """Usage:
 
 - check_neo.py --help (display this text)
 
-- check_neo.py [-q] [-v]
+- check_neo.py [-q] [-v] [-o <file>]
   compare the Neo layout with others, using the included datafiles(*gramme.txt). 
   -q only shows the results for the Neo layout.
   -v shows several additional metrics which are included in the total cost.
+  -o writes the output to a file instead of printing it.
 
 - check_neo.py --file <file> [--switch <lx,wq>] [-q] [-v]
   run the script on the file. 
@@ -229,6 +230,17 @@ if "--config" in argv:
     exec("from " + cfg + " import *")
 else: 
     from config import *
+
+# forced fileoutput instead of printing
+if "-o" in argv:
+    idx = argv.index("-o")
+    FILE = argv[idx+1]
+    argv = argv[:idx] + argv[idx+2:]
+    def print(*args):
+        with open(FILE, "a") as f:
+            for i in args:
+                f.write(str(i) + " ")
+            f.write("\n")
 
 ### Constants
 
