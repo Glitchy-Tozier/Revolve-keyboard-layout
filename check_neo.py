@@ -1539,8 +1539,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if print_layout:
         print(format_layer_1_string(layout))
         print(format_keyboard_layout(layout))
-        from pprint import pprint
-        pprint(layout[:5])
+        #from pprint import pprint
+        #pprint(layout[:5])
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
     total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
