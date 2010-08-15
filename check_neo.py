@@ -1278,35 +1278,12 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     
     return lay
 
-def set_layout(abc, abc_new, layout=NEO_LAYOUT):
-    """Change a layout to a given new layout."""
-    lay = deepcopy(layout)
-    for i in range(len(abc_new)):
-        old_key = abc[i]
-        new_key = abc_new[i]
-        old_pos = find_key(old_key, layout=lay)
-        tmp = new_key + lay[old_pos[0]][old_pos[1]][1:]
-        lay[old_pos[0]][old_pos[1]] = tmp
-        update_letter_to_key_cache(new_key, layout=lay)
-
-    return lay
-
 def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
         """Do num_switches random keyswitches on the layout and
-        @return: the randomized layout. if num_switches is >= 1000000, do a completely random layout."""
-        if num_switches < 1000000: 
-            from random import choice
-            keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
-            lay = switch_keys(keypairs, layout=deepcopy(layout))
-        else:
-            # make it completely random.
-            from random import shuffle
-            abc_shuffled = list(deepcopy(abc))
-            shuffle(abc_shuffled)
-            abc_shuffled = "".join(abc_shuffled)
-            lay = set_layout(abc, abc_shuffled, layout=deepcopy(layout))
-            # bogus keypairs. 
-            keypairs = []
+        @return: the randomized layout."""
+        from random import choice
+        keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
+        lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
 
 def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
