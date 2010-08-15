@@ -50,8 +50,6 @@ xpfüq bgvwj"
 
 - check_neo.py --test (run doctests)
 
-Note: If --prerandomize is set to 1000000 or more, it just does a real shuffle instead of prerandomizing. 
-
 """
 __design__ = """
 Design: 
