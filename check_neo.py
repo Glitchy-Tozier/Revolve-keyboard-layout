@@ -50,6 +50,8 @@ xpfüq bgvwj"
 
 - check_neo.py --test (run doctests)
 
+Note: If --prerandomize is set to 1000000 or more, it just does a real shuffle instead of prerandomizing. 
+
 """
 __design__ = """
 Design: 
@@ -1278,12 +1280,35 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     
     return lay
 
+def set_layout(abc, abc_new, layout=NEO_LAYOUT):
+    """Change a layout to a given new layout."""
+    lay = deepcopy(layout)
+    for i in range(len(abc_new)):
+        old_key = abc[i]
+        new_key = abc_new[i]
+        old_pos = find_key(old_key, layout=lay)
+        tmp = new_key + lay[old_pos[0]][old_pos[1]][1:]
+        lay[old_pos[0]][old_pos[1]] = tmp
+        update_letter_to_key_cache(new_key, layout=lay)
+
+    return lay
+
 def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
         """Do num_switches random keyswitches on the layout and
-        @return: the randomized layout."""
-        from random import choice
-        keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
-        lay = switch_keys(keypairs, layout=deepcopy(layout))
+        @return: the randomized layout. if num_switches is >= 1000000, do a completely random layout."""
+        if num_switches < 1000000: 
+            from random import choice
+            keypairs = [choice(abc)+choice(abc) for i in range(num_switches)]
+            lay = switch_keys(keypairs, layout=deepcopy(layout))
+        else:
+            # make it completely random.
+            from random import shuffle
+            abc_shuffled = list(deepcopy(abc))
+            shuffle(abc_shuffled)
+            abc_shuffled = "".join(abc_shuffled)
+            lay = set_layout(abc, abc_shuffled, layout=deepcopy(layout))
+            # bogus keypairs. 
+            keypairs = []
         return lay, keypairs
 
 def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
@@ -1527,7 +1552,11 @@ def format_keyboard_layout(layout):
     return lay
     
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None):
+def short_number(s, letters=5):
+    """shorten a number to the given number of letters"""
+    return str(s)[:letters]
+
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
         data=data, 
@@ -1539,26 +1568,31 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if print_layout:
         print(format_layer_1_string(layout))
         print(format_keyboard_layout(layout))
-        from pprint import pprint
-        pprint(layout[:5])
+        #from pprint import pprint
+        #pprint(layout[:5])
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
     total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
 
     hand_load = load_per_hand(letters, layout=layout)
+
+    if shorten_numbers: 
+        sn = short_number
+    else:
+        sn = str
     
-    print("#", total / 1000000000, "billion total penalty compared to notime-noeffort")
-    print("#", cost / number_of_letters, "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
-    print("#", 100 * frep_num / number_of_bigrams, "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
+    print("#", sn(total / 1000000000), "billion total penalty compared to notime-noeffort")
+    print("#", sn(cost / number_of_letters), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
+    print("#", sn(100 * frep_num / number_of_bigrams), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
     if verbose: 
-        print("#", disbalance / 1000000, "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
-        print("#", 100 * frep_top_bottom / number_of_bigrams, "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
-        print("#", 100 * no_handswitches / number_of_trigrams, "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
-        print("#", line_change_same_hand / 1000000000, "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
-        print("#", abs(hand_load[0]/sum(hand_load) - 0.5), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
-        print("# (", str(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).)")
-        print("# (", str(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).)")
-        print("# (", str(neighboring_fings_w/100000000), "movement pattern cost (weighted).)")
+        print("#", sn(disbalance / 1000000), "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
+        print("#", sn(100 * frep_top_bottom / number_of_bigrams), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
+        print("#", sn(100 * no_handswitches / number_of_trigrams), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
+        print("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
+        print("#", sn(abs(hand_load[0]/sum(hand_load) - 0.5)), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
+        print("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
+        print("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
+        print("#", sn(neighboring_fings_w/100000000), "movement pattern cost (weighted).")
 
 
 def check_with_datafile(args, quiet, verbose):
@@ -1585,7 +1619,7 @@ def check_with_datafile(args, quiet, verbose):
     num_trigs = sum([num for num, trig in trigs])
 
     # and print the layout with the data
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=num_letters, number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=num_letters, number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose, shorten_numbers=True)
         
     if not quiet:
         print("\nQwertz for comparision")
@@ -1760,23 +1794,23 @@ def check_the_neo_layout(quiet, verbose):
     trigrams = trigrams_in_file_precalculated(data3)
     number_of_trigrams = sum([i for i, s in trigrams])
      
-    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
     
     if not quiet:
         print("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
         print("\nAnd the Nordtast Layout")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
         print("\nAnd Dvorak")
-        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
         print("\nAnd Colemak")
-        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
 
 
 def check_a_layout_from_shell(layout_data, quiet, verbose):
     """Check a layout we get passed as shell argument."""
     layout = eval(layout_data)
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, shorten_numbers=True)
 
 def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, data=None):
     """Check a string passed via shell and formatted as
@@ -1811,7 +1845,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     for i in range(len(right)):
         layout[3][7+i] = right[i]
     
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data, shorten_numbers=True)
 
 ### Self-Test 
 

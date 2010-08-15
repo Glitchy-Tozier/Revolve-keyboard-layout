@@ -15,7 +15,7 @@ WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 0.2 #: When I have to switch the row in a big
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 
-WEIGHT_FINGER_DISBALANCE = 160 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 250 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 150 #: how high should it be counted, if the hands aren’t switched in a triple?
 
