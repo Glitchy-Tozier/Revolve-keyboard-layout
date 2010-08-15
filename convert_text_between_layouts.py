@@ -2,11 +2,11 @@
 
 """Simple text converter between layouts. 
 
-Usage: ./convert_text_between_layouts.py [--layout "\
+Usage: ./convert_text_between_layouts.py [[--layout "\
 <layout-string>\
-"] [--base "\
+"] || --name <layout-name>]] [[--base "\
 <layout-string>\
-"] [--qwertz] [--text "<text>"]
+"] || [--qwertz]] [--text "<text>"]
 
 Example: 
 
@@ -200,6 +200,9 @@ if "--help" in argv:
    exit()
 if argv[2:] and argv[1] == "--layout": 
    layout = argv[2]
+   argv = argv[:1] + argv[3:]
+elif argv[2:] and argv[1] == "--name":
+   layout = eval(argv[2])
    argv = argv[:1] + argv[3:]
 if argv[2:] and argv[1] == "--base": 
    base = argv[2]
