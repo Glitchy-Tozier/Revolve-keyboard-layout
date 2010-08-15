@@ -2,11 +2,13 @@
 
 """Simple text converter between layouts. 
 
-Usage: ./convert_text_between_layouts.py [[--layout "\
+Simple Usage: ./convert_text_between_layouts.py [--name <layout-name>] [--qwertz]
+
+Full Usage: ./convert_text_between_layouts.py [[--layout "\
 <layout-string>\
 "] || --name <layout-name>]] [[--base "\
 <layout-string>\
-"] || [--qwertz]] [--text "<text>"]
+"] || [--qwertz] || [--nordtast]] [--text "<text>"]
 
 Example: 
 
@@ -158,6 +160,13 @@ hieao dtrnsß
 xyö,q bpwmz
 """
 
+# zwischenergebnis
+hea = """
+q.okü vcslzj´
+heaiu dtrngf
+xöä,y mbßwp
+"""
+
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
 text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
 
@@ -209,6 +218,9 @@ if argv[2:] and argv[1] == "--base":
    argv = argv[:1] + argv[3:]
 elif argv[1:] and argv[1] == "--qwertz":
    base = qwertz
+   argv = argv[:1] + argv[2:]
+elif argv[1:] and argv[1] == "--nordtast":
+   base = nordtast
    argv = argv[:1] + argv[2:]
 if argv[2:] and argv[1] == "--text": 
    text = argv[2]
