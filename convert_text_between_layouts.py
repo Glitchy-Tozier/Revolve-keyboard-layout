@@ -204,6 +204,9 @@ if argv[2:] and argv[1] == "--layout":
 if argv[2:] and argv[1] == "--base": 
    base = argv[2]
    argv = argv[:1] + argv[3:]
+elif argv[1:] and argv[1] == "--qwertz":
+   base = qwertz
+   argv = argv[:1] + argv[2:]
 if argv[2:] and argv[1] == "--text": 
    text = argv[2]
 
