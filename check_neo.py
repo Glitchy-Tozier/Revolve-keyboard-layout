@@ -230,6 +230,17 @@ if "--config" in argv:
 else: 
     from config import *
 
+# forced fileoutput instead of printing
+if "-f" in argv:
+    idx = argv.index("-f")
+    FILE = argv[idx+1]
+    argv = argv[:idx] + argv[idx+2:]
+    def print(*args):
+        with open(FILE, "a") as f:
+            for i in args:
+                f.write(str(i) + " ")
+            f.write("\n")
+
 ### Constants
 
 #: Die Layout-Datei für Neo = Tastenbelegung - aktuell nur für Reihe 0, 1, 2 und 3 ohne Modifikator-Tasten nutzbar => nur Kleinbuchstaben. 
