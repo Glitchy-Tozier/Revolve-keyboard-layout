@@ -14,7 +14,7 @@ verbose = True
 controlled_tail = True
 
 parser = OptionParser(usage = "evolutionary running script", version = "0.1")
-parser.add_option("-o", "--output", type="string", dest="filename", default="output.txt", help="set outputfile")
+parser.add_option("-o", "--output", type="string", dest="filename", default=filename, help="set outputfile")
 parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=50, help="number of steps")
 
 (options, args) = parser.parse_args()
