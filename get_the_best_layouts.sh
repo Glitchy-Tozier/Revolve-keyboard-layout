@@ -19,6 +19,6 @@ if [ $# -eq 2 ]; then
 fi
 
 for i in $(grep total $1  | sort -r | tail -n $NUMBER | cut -d " " -f 2 | xargs)
- do grep $i $1 -A 10 -B 19
+ do grep $i $1 -A 10 -B 17
 done
 
