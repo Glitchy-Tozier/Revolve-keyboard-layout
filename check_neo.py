@@ -527,7 +527,7 @@ def read_file(path):
     'ui'
     """
 
-    f = open(path, encoding="UTF-8")
+    f = open(path, encoding="utf-8")
     data = f.read()
     f.close()
     return data
