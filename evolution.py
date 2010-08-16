@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-
 """Run a full evolution of keyboard layouts."""
 
-### config
+from optparse import OptionParser
 
-EVOLUTION_STEPS = 100
+### config
 
 filename = "output.txt" # None for shell output
 steps = 4000
@@ -14,6 +13,11 @@ quiet = True
 verbose = True
 controlled_tail = True
 
+parser = OptionParser(usage = "evolutionary running script", version = "0.1")
+parser.add_option("-o", "--output", type="string", dest="filename", default="output.txt", help="set outputfile")
+parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=50, help="number of steps")
+
+(options, args) = parser.parse_args()
 
 STARTING_LAYOUT = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),("←")], # Zahlenreihe (0)
@@ -29,12 +33,12 @@ STARTING_LAYOUT = [
 if filename is not None: 
     import sys
     sys.argv.append("-o")
-    sys.argv.append(filename)
+    sys.argv.append(options.filename)
 
 from check_neo import evolve_a_layout
 
-for step in range(EVOLUTION_STEPS):
-    print(step+1, "/", EVOLUTION_STEPS)
+for step in range(options.evolution_steps):
+    print(step+1, "/", options.evolution_steps)
     evolve_a_layout(steps,
                     prerandomize,
                     controlled,
@@ -42,4 +46,3 @@ for step in range(EVOLUTION_STEPS):
                     verbose,
                     controlled_tail,
                     starting_layout=STARTING_LAYOUT)
-    
