@@ -6,6 +6,7 @@
 
 EVOLUTION_STEPS = 100
 
+filename = "output.txt" # None for shell output
 steps = 4000
 prerandomize = 1000000
 controlled = False
@@ -25,9 +26,10 @@ STARTING_LAYOUT = [
 
 ### run
 
-import sys
-sys.argv.append("-o")
-sys.argv.append("output.txt")
+if filename is not None: 
+    import sys
+    sys.argv.append("-o")
+    sys.argv.append(filename)
 
 from check_neo import evolve_a_layout
 
