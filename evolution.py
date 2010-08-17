@@ -9,7 +9,7 @@ filename = "output.txt" # None for shell output
 steps = 4000
 prerandomize = 1000000
 controlled = False
-quiet = True
+quiet = False
 verbose = True
 controlled_tail = True
 
