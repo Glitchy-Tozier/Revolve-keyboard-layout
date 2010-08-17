@@ -240,7 +240,7 @@ else:
     FILE = None
 
 def info(*args, **kwds):
-    return print(*args, **kwds, encoding="utf-8")
+    return print(*args, **kwds)
 
 def result(*args, **kwds):
     if FILE is not None: 
