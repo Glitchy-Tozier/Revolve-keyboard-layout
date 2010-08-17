@@ -5,7 +5,7 @@ PATHPART=results/2010-08-16-
 if [ $# -gt 0 ]; then
     if [ "$1" == "--help" ]; then
         echo "usage: $0 [<part of the path; gets appended *.txt>]"
-        echo "example: $0 results/2010-08-15"
+        echo "example: $0 output"
         exit 0
     fi
     PATHPART=$1
