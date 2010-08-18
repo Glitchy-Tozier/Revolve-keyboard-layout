@@ -1584,7 +1584,7 @@ def format_keyboard_layout(layout):
     return lay
     
 
-def short_number(s, letters=5):
+def short_number(s, letters=8):
     """shorten a number to the given number of letters"""
     return str(s)[:letters]
 
