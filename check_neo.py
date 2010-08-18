@@ -530,6 +530,7 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     finger = KEY_TO_FINGER.get(pos, "")
     return finger
 
+
 def read_file(path):
     """Get the data from a file.
 
@@ -541,6 +542,38 @@ def read_file(path):
     data = f.read()
     f.close()
     return data
+
+
+def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
+    """Turn a layout_string into a layout.
+
+    öckäy zhmlß,´
+    atieo dsnru.
+    xpfüq bgvwj
+
+    """
+    layout = deepcopy(base_layout)
+    lines = layout_string.splitlines()
+    # first and second letter row
+    for i in range(1, 6):
+        layout[1][i] = lines[0][i-1]
+        layout[1][i+5] = lines[0][i+5]
+        layout[2][i] = lines[1][i-1]
+        layout[2][i+5] = lines[1][i+5]
+    layout[1][-3] = lines[0][11]
+    layout[2][-3] = lines[1][11]
+    if lines[0][12:]: 
+        layout[1][-2] = lines[0][12]
+    
+    # third row
+    left, right = lines[2].split()[:2]
+    for i in range(len(left)):
+        layout[3][6-i] = left[-i-1]
+    for i in range(len(right)):
+        layout[3][7+i] = right[i]
+
+    return layout
+
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split uppercase repeats into two to three lowercase repeats.
@@ -1809,6 +1842,7 @@ def check_a_layout_from_shell(layout_data, quiet, verbose):
     """Check a layout we get passed as shell argument."""
     layout = eval(layout_data)
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, shorten_numbers=True)
+    
 
 def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, data=None):
     """Check a string passed via shell and formatted as
@@ -1823,26 +1857,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     asdfg hjklöä
     <yxcvb nm,.-
     """
-    layout = deepcopy(base_layout)
-    lines = layout_string.splitlines()
-    # first and second letter row
-    for i in range(1, 6):
-        layout[1][i] = lines[0][i-1]
-        layout[1][i+5] = lines[0][i+5]
-        layout[2][i] = lines[1][i-1]
-        layout[2][i+5] = lines[1][i+5]
-    layout[1][-3] = lines[0][11]
-    layout[2][-3] = lines[1][11]
-    if lines[0][12:]: 
-        layout[1][-2] = lines[0][12]
-    
-    # third row
-    left, right = lines[2].split()[:2]
-    for i in range(len(left)):
-        layout[3][6-i] = left[-i-1]
-    for i in range(len(right)):
-        layout[3][7+i] = right[i]
-    
+    layout = string_to_layout(layout_string, base_layout)
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data, shorten_numbers=True)
 
 ### Self-Test 
