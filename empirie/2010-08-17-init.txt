@@ -1,0 +1,46 @@
+Hi, 
+
+Wir haben über IRC koordiniert von Sonntag Abend bis Mittwoch etwa 1000 evolutionär optimierte Layouts erstellt. 
+
+Ich hätte nie gedacht, dass wir die Menge zusammenkriegen, und es war ein tolles Gefühl, als immer mehr Leute mitgemacht haben. Ihr seid echt klasse!
+
+Die Ergebnisse sind alle in dem Mercurial Repository unter http://bitbucket.org/ArneBab/evolve-keyboard-layout – und ja, der Optimierer ist unter der GPL :)
+Zusätzliche Infos dazu sind im Neo-Wiki: http://wiki.neo-layout.org/wiki/EvolvedLayouts
+
+
+Die nächsten Schritte zu einem wirklich optimierten Layout sind nun: 
+
+1. Tipptests, um herauszufinden, in wie weit die Parameter des Optimierers aktuell wirklich das abdecken, was für uns gutes Tippen ausmacht. Konkret: Texte tippen, bei denen die Buchstaben so umgestellt sind, dass wir den Tippfluss des jeweiligen Layouts erspüren können. Beim Tippen aufschreiben, was jeweils den Schreibfluss stört. 
+
+2. Die Parameter und ihre Gewichte so anpassen, dass die Störfaktoren höhere Kosten haben, damit der Optimierer sie wegoptimiert. 
+
+3. Erneut viele Layouts erstellen. Zurück zu eins, bis wir mit den Tipptests zufrieden sind. 
+
+
+Mit den Tipptests schaffen wir uns eine saubere und starke Grundlage für die Anpassung der Parameter und ihrer Gewichte. Der einfachste Weg dafür ist, einfach die Texte zu tippen und zu notieren 
+
+* wie sich der Text anfühlt, und 
+* welche Worte unschön zu tippen waren. 
+
+Erstmal möchte ich aber ein paar Schaubilder zeigen (Bilder sind immer toll :) ): 
+
+Die Werte der von uns erstellten Layouts, Gesamtkosten (rot) und die verschiedenen Kategorien. Niedriger ist besser: 
+
+ http://bitbucket.org/ArneBab/evolve-keyboard-layout/raw/b387ec10b73d/results/2010-08-17-result-total-penalty.png
+
+(erzeugt via `./eval.sh ; pyxplot eval.pyx` in dem repo)
+
+Erklärung: 
+
+* Unten Links: Gesamtkosten.
+* Unten Mitte: Tastenpositionen nach Buchstabenhäufigkeit (Lagepunkte)
+* Unten Rechts: Fingerwiederholungen. 
+* Mitte Links: Ungleichgewicht in der Belastung der Finger.
+* Mitte Mitte: Fehlende Handwechsel nachdem die Hand aus der Grundposition gezogen wird.
+* Mitte Rechts: Fehlende Handwechsel bei Richtungswechsel (horizontal). 
+* Oben Links: Zu überschreitende Zeilen auf einer Hand geteilt durch die Zeilen, doppelt quadratisch: (rows²/dist)²
+* Oben Mitte: Gute Bewegungsmuster (die brauchen noch eine gründlichere Besprechung!). 
+* Oben Rechts: Wie viele Tasten von xcvz sind nicht gut mit der linken Hand erreichbar. 
+
+Die Werte sind jeweils bereits gewichtet. 
+
