@@ -12,52 +12,62 @@
 # Entwicklung von Neo 3 nicht und wird deshalb wahrscheinlich nie
 # erfolgen.
 
+arg0='-t'
 arg1="$1"
 arg2="$2"
 arg3="$3"
-sort="yes"
 verbose=""
 oldvalues=""
-kriterium="total penalty"
-suchzeile="billion total penalty compared to notime-noeffort"
 
-while test -n "$arg1"; do
-	if test "$arg1" = "-h"; then
-		sort=''
-		arg2=''
+while test -n "$arg0"; do
+	if test "$arg0" = "-h"; then
 		echo "Usage:"
 		echo " -h   display Help and exit"
-		echo " -t   test layouts for missing characters"
-		echo " -v   verbose"
-		echo " -o   use old values instead of computing new ones"
+		echo " -m   test layouts for missing characters"
+		echo " -t   sorting-key is total penalty (default)"
 		echo " -k   sorting-key is keyposition"
 		echo " -f   sorting-key is fingerrepeats"
-	elif test "$arg1" = "-t"; then
+		echo " -o   use old values instead of computing new ones"
+		echo " -v   verbose"
 		sort=''
-		arg2=''
+		arg1=''
+	elif test "$arg0" = "-m"; then
+		sort=''
+		arg1=''
 		c="a b c d e f g h i j k l m n o p q r s t u v w x y z ä ö ü ß , \."
 		for a in layouts/* ; do
+			missing=''
 			for b in $c ; do
-				if test -z "$(grep "$b" "$a")"; then
-					echo "$a: ‚$b‘ fehlt"
+				if test -z "$(head -3 "$a" | grep "$b")"; then
+					missing="$missing ${b#\\}"
 				fi
 			done
+			if test -n "$missing"; then
+				echo "$a:$missing missing"
+			fi
 		done
-	elif test "$arg1" = "-v"; then
-		verbose="yes"
-	elif test "$arg1" = "-k"; then
+	elif test "$arg0" = "-t"; then
+		sort='yes'
+		kriterium="total penalty"
+		suchzeile="billion total penalty compared to notime-noeffort"
+	elif test "$arg0" = "-k"; then
+		sort='yes'
 		kriterium="keyposition"
 		suchzeile="mean key position cost in file 1gramme.txt ( [0-9]*.[0-9]* )"
-	elif test "$arg1" = "-f"; then
+	elif test "$arg0" = "-f"; then
+		sort='yes'
 		kriterium="fingerrepeats"
 		suchzeile="finger repeats in file 2gramme.txt ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-v"; then
+		verbose="yes"
 	# zu faul, um weitere einzufügen, ich bin
-	elif test "$arg1" = "-o"; then
+	elif test "$arg0" = "-o"; then
 		oldvalues="yes"
 	else
-		echo "Unknown Option: ‘$arg1’"
-		arg2="-h"
+		echo "unknown option: ‘$arg0’"
+		arg1="-h"
 	fi
+	arg0="$arg1"
 	arg1="$arg2"
 	arg2="$arg3"
 	arg3=""
@@ -86,7 +96,7 @@ if test -n "$sort"; then
 	
 	suchzeile="s/:$// ; t a ; s/^# // ; t b; d ; :b s/$suchzeile// ; t c; d; :c G; s/\\n//; p; d; :a h; d"
 
-	sed "$suchzeile" "$tmp" | sort
+	sed "$suchzeile" "$tmp" | sort -g
 
 	echo "¹äöüß not counted
 ²ß not counted
