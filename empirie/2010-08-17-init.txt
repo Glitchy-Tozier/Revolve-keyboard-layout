@@ -44,3 +44,29 @@ Erklärung:
 
 Die Werte sind jeweils bereits gewichtet. 
 
+Was deutlich wird: Fingerdisbalance und die aus der Grundlinie gezogene Hand sind schön Zufallsverteilt, werden also wohl von den anderen Parametern rumgeschubst :) 
+Es gibt noch deutlich Spiel bei der Optimierung, aber dadurch können wichtigere Parameter leiden. Die Fingerbalance muss allerdings vielleicht höher bewertet werden. 
+
+Die Bewegungsmuster sind entweder sehr gut oder sehr schlecht. Sie stehen also möglicherweise im Widerspruch zu anderen Parametern ⇒ darauf achten, gegenprüfen, andern. 
+
+Zeilenwechsel und Handwechsel bei Richtungswechsel sind recht stark optimiert (fast alle nach unten geschoben). 
+
+Noch stärker allerdings Fingerwiederholungen und Buchstabenpositionen (da gibt es nur einige wenige Ausreißer nach oben, und die auch nicht weit). Die sind auch die am stärksten Optimierten Werte – die Optimierung ist konsistent mit der config :)
+
+Jetzt aber genug mit dem nichtinteraktiven Teil :) 
+
+Tipptests
+---------
+
+Das hier ist der Hauptteil – und die Hauptarbeit. Genauer gesagt: Der erste Teil davon (Miche hat noch ein paar weitere sehr schöne Auswertungen in Arbeit). 
+
+Funktionsweise: 
+
+* Ich habe wieder einen Satz auf die 22 besten Layouts angepasst. 
+* So viele von uns wie möglich tippen die Texte und schreiben, wie sich die Texte anfühlen. 
+* Zu beachten: 
+    - Hat sich ein bestimmtes Wort unangenehm angefühlt? → rauskopieren. 
+    - Hat der Text einen bestimmten Textfluss? Angenehm, unangenehm? 
+    - Fühlt sich nach dem Tippen ein bestimmter Finger oder eine Hand an, als wäre er/sie stärker belastet gewesen? 
+    - Fällt noch was anderes auf? 
+

@@ -5,6 +5,10 @@ Unsortierte Gedanken zum optimieren in dieser Runde
 
 * Die Bewegungsmuster müssen getestet werden. Sie sind bisher der am wenigsten klare Teil der Optimierung.
 
+* grep-Kaskaden, um alle Parameter bis auf einen halbwegs festzuhalten. 
+
+* Die Kosten des Ringfingers unten sind vermutlich zu niedrig.
+
 * Finden der optimalen Gewichtung:
   Man wählt aus den 1000 Layouts die mit möglichst gleichen Werten in
   den Einzeldisziplinen aus, wobei allen gemeinsam ist, dass ein Wert
