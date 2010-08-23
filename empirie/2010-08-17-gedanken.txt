@@ -3,4 +3,29 @@ Unsortierte Gedanken zum optimieren in dieser Runde
 
 * Die Fingerlast ist aktuell Kleiner 1, Ring und Mittel 2, Zeige 2,6. Vielleicht sollten wir das ändern auf Kleiner 1, Ring 2, Mittel und Zeige 2,6. Vielleicht sogar nur 1,6 für den Ringfinger (o.ä.). 
 
-* Die Bewegungsmuster müssen getestet werden. Sie sind bisher der am wenigsten klare Teil der Optimierung. 
+* Die Bewegungsmuster müssen getestet werden. Sie sind bisher der am wenigsten klare Teil der Optimierung.
+
+* Finden der optimalen Gewichtung:
+  Man wählt aus den 1000 Layouts die mit möglichst gleichen Werten in
+  den Einzeldisziplinen aus, wobei allen gemeinsam ist, dass ein Wert
+  um einen gleichen Wert (anteilig an der Gesamtpunktzahl) abweicht.
+  Tippt sich dann eines dieser Layouts besser, so weiß man, dass dieser
+  Parameter bisher zu wenig gewichtet war.
+  idealisiertes Bsp.:
+   #  Par. 1  Par. 2  Par. 3  Par. 4  Par. 5  Gesamt
+   1     119      94      79      75      68     435
+   2     103      98      83      79      72     435
+   3     123      78      83      79      72     435
+   4     123      98      63      79      72     435
+   5     123      98      83      59      72     435
+   6     123      98      83      79      52     435
+
+* Sollte man die Parameter vielleicht nichtlinear bewerten, sodass
+  negative Ausreißer bei einzelnen Parametern stärker gestraft werden?
+  Bsp.:
+   #  Par. 1  Par. 2  Par. 3  Par. 4  Par. 5  Gesamt
+   1     119      94      79      75      68     435
+   7     109      84      69     115      58     435
+  Hier haben beide die gleiche Gesamtpunktzahl, 7 aber einen starken
+  Ausreißer bei Parameter 4.
+
