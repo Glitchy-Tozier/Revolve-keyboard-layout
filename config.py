@@ -3,7 +3,7 @@
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
 #: The mutated letters - only these get changed.
-abc = "aeiou" # "ababcdefghijklmnopqrstuvwxyzäöüß,."
+abc = "ababcdefghijklmnopqrstuvwxyzäöüß,."
 
 WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
