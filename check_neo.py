@@ -1142,11 +1142,11 @@ def std(numbers):
     1.607945243653783
     """
     length = float(len(numbers))
-    mean = sum(numbers)/length
+    mean = sum(numbers)/max(1, length)
     var = 0
     for i in numbers:
         var += (i - mean)**2
-    var /= (length - 1)
+    var /= max(1, (length - 1))
     from math import sqrt
     return sqrt(var)
 
