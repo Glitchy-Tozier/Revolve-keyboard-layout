@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATHPART=results/2010-08-16-
+PATHPART=../results/2010-08-16-
 
 if [ $# -gt 0 ]; then
     if [ "$1" == "--help" ]; then
