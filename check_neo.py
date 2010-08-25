@@ -1224,7 +1224,7 @@ def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
     for key in keys: 
         pos = find_key(key, layout=layout)
         # well means not yet left stretch, in row 3, col 5 is also OK.
-        if not pos[1] < 5 or (pos[0] == 3 and pos[1] == 5):
+        if not pos[1] < 5 or (pos[0] == 3 and pos[1] > 5):
             badly_positioned.append(1)
     return sum(badly_positioned)
 
