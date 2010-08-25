@@ -9,7 +9,8 @@ from optparse import OptionParser
 segment_length = 270
 
 #: The output filename. Can be overwritten with the -o parameter.
-output = "res.txt" # None for shell output
+output = "res.txt" 
+output_words = "res-words.txt"
 
 #: The file with the example text.
 textfile = "beispieltext-prosa.txt"
@@ -54,6 +55,7 @@ parser = OptionParser(usage = "script to check the regularity of the layout for 
 parser.add_option("-l", "--layout", type="string", dest="layout", default=LAYOUT, help="the layout to use")
 parser.add_option("-n", "--layout_name", type="string", dest="layout_name", default=None, help="the predefined layout to use, given by name (Neo, Qwertz, …)")
 parser.add_option("-o", "--output", type="string", dest="output", default=output, help="the file to use for the output")
+parser.add_option("-w", "--words-output", type="string", dest="output_words", default=output_words, help="the file to use for the output of the word statistics")
 parser.add_option("-t", "--textfile", type="string", dest="textfile", default=textfile, help="the file with the reference text")
 parser.add_option("-v", "--verbose", action="store_true", default=False, help="echo the results on the console")
 
@@ -118,4 +120,35 @@ while d:
 f.close()
 fout.close()
 
-print("mean value and standard deviation of the layout cost:", sum(res)/len(res) / 1000, "±", std(res) / 10000, "k")
+# same for words
+with open(options.textfile, "r") as f: 
+    data = f.read()
+
+f = open(options.textfile, "r")
+# clear the output file
+fout = open(options.output_words, "w")
+fout.write("")
+fout.close()
+
+res_words = []
+d = f.read(100*segment_length)
+while d:
+    res_tmp = []
+    for word in d.split():
+        if word:
+            cost = check(layout=layout, data=word)
+            res_tmp.append(cost)
+            if options.verbose:
+                print(cost)
+    with open(options.output_words, "a") as fout: 
+        fout.writelines([str(cost) + "\n" for cost in res_tmp])
+    res_words.extend(res_tmp)
+    d = f.read(100*segment_length)
+
+        
+f.close()
+fout.close()
+
+print("mean value and standard deviation of the layout cost:")
+print("snippets of", segment_length, "letters:", sum(res)/len(res) / 1000, "±", std(res) / 10000, "k")
+print("words:", sum(res_words)/len(res_words), "±", std(res))
