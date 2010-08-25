@@ -51,7 +51,7 @@ Die Bewegungsmuster sind entweder sehr gut oder sehr schlecht. Sie stehen also m
 
 Zeilenwechsel und Handwechsel bei Richtungswechsel sind recht stark optimiert (fast alle nach unten geschoben). 
 
-Noch stärker allerdings Fingerwiederholungen und Buchstabenpositionen (da gibt es nur einige wenige Ausreißer nach oben, und die auch nicht weit). Die sind auch die am stärksten Optimierten Werte – die Optimierung ist konsistent mit der config :)
+Noch stärker allerdings Fingerwiederholungen und Buchstabenpositionen (da gibt es nur einige wenige Ausreißer nach oben, und die auch nicht weit). Die sind auch die am stärksten optimierten Werte – die Optimierung ist konsistent mit der config :)
 
 Jetzt aber genug mit dem nichtinteraktiven Teil :) 
 
