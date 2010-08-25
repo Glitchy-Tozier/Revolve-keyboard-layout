@@ -10,7 +10,7 @@ echo NordTast
 # echo Vrijbuiter
 #./regularity_check.py -t $FILE -n Vrijbuiter -o eval/res-vrijbuiter.txt -w eval/res-vrijbuiter-words.txt
 echo fiae
-./regularity_check.py -t $FILE -n fiae  -v -o eval/res-fiae.txt -w eval/res-fiae-words.txt
+./regularity_check.py -t $FILE -n fiae  -o eval/res-fiae.txt -w eval/res-fiae-words.txt
 cd eval
 pyxplot eval-270-letters.pyx
 pyxplot eval-words.pyx
