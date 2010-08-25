@@ -2,7 +2,7 @@
 
 """Check how much a given text diverges from a 1gram, 2gram and 3gram frequency.
 
-usage: ./textcheck.py <textfile to check> [--best-lines]
+usage: ./textcheck.py <textfile to check> [--lines]
 
 --lines: check each line and return the 10 most similar lines. 
 
