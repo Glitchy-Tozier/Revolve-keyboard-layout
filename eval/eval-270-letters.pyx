@@ -3,7 +3,9 @@
 # User: Arne Babenhauserheide
 
 set width 10
+set xlabel "slices"
 set yrange [10000:70000]
+set title "cost for slices of 270 letters"
 set multiplot 
 set nodisplay
 

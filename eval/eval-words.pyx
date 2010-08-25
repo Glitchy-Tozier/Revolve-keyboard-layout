@@ -2,7 +2,10 @@
 # Timestamp: Wed Aug 25 04:47:26 2010
 # User: Arne Babenhauserheide
 
+set title "cost for each word (with baseline qwertz)"
+set xlabel "words"
 set multiplot
+set width 10
 
 plot "res-qwertz-words.txt", "res-neo2-words.txt"
 set origin 10,0 
