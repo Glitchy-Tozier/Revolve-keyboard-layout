@@ -1603,7 +1603,9 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         #from pprint import pprint
         #pinfo(layout[:5])
 
+    # unweighted
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
+    # weighted
     total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
 
     hand_load = load_per_hand(letters, layout=layout)
@@ -1624,7 +1626,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         result("#", sn(abs(hand_load[0]/sum(hand_load) - 0.5)), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
         result("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         result("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
-        result("#", sn(neighboring_fings_w/100000000), "movement pattern cost (weighted).")
+        result("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
 
 
 def check_with_datafile(args, quiet, verbose):
