@@ -1,3 +1,5 @@
+[[PageOutline(2-3,Übersicht)]]
+
 = Parameter der Optimierung =
 
 Die Paradigmen beziehen sich auf Neo 1 (2) und müssen für Neo 3 (teilweise) hinterfragt werden.
@@ -11,7 +13,7 @@ Aber auch dessen Entwickler [http://lists.neo-layout.org/pipermail/diskussion/20
 Die am häufigsten genutzten Buchstaben sollen auf die Tasten gelegt werden, die am leichtesten zu erreichen sind.
 Dies ist der wichtigste Parameter für ein gutes Layout.
 Dabei wird die deutsche Sprache als Grundlage genommen.
-Konkret wird eine Wortliste der Universität Leipzig verwendet.
+Konkret wird ein Textkörper der Universität Leipzig verwendet, [http://lists.neo-layout.org/pipermail/diskussion/2010-May/016996.html der von Rechtschreibfehlern befreit und auf die neue Rechtschreibung angepasst wurde].
 Allerdings sollte die englische Sprache mit ⅙ bis ½ berücksichtigt werden.
 
 Die Strafpunktzahl jeder einzelnen Taste ist das Produkt aus Buchstabenhäufigkeit und Tastenpositionskosten.
@@ -111,9 +113,7 @@ Am besten ist aber, wenn nach Verlassen der Grundstellung die Hand gewechselt wi
 
 === Sonstige Bewegungsmuster ===
 
-* Betätigung benachbarter Tasten in unmittelbarer Folge ist schlecht.
-
-  Teil von `movement pattern cost`?
+ * Benutzung benachbarter Finger in unmittelbarer Folge wird als unangenehm angesehen.[[BR]]Teil von `movement pattern cost`?
 
 {{{
 #!comment
@@ -158,7 +158,7 @@ Es beseht allerdings Einigkeit, dass dieser Punkt nicht überbewertet werden sol
 
 {{{
 #!comment
-Eine mögliche Rangfolge (ohne Überprüfung!!):
+Eine mögliche Rangfolge (ohne Überprüfung!):
  1. Tastenpositionen
  2. 
     * Fingerwiederholungen (bisher zu gering bestraft?)
