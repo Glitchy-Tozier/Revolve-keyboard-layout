@@ -31,4 +31,58 @@ Unsortierte Gedanken zum optimieren in dieser Runde
    1     119      94      79      75      68     435
    7     109      84      69     115      58     435
   Hier haben beide die gleiche Gesamtpunktzahl, 7 aber einen starken
-  Ausreißer bei Parameter 4.
+  Ausreißer bei Parameter 4. 
+  → Um dafür eine einfachst mögliche Methode zu nutzen (quadratisch), müssen wir sie normieren. Kosten = ∑ (p + p²) (p: gewichteter Parameter mit Wert um 1) würde Abweichungen nach oben stärker bestrafen, nach unten aber linear agieren. Die Normierung benötigt aber zusätzliche Arbeit. 
+
+* Für ein paar besonders schlechte Übergänge (äv, öx, öl, …) könnten wir Sonderkosten einführen. 
+
+Buchstabenhäufigkeiten
+----------------------
+
+Die häufigsten 8 Buchstaben + Leerzeichen nehmen im Deutschen 65% der Anschläge ein (unter den Fingern?). Die 12 häufigsten bereits 75%. Die 19 häufigsten belegen 91% (Finger + einfach Streck: die einfach zu erreichenden Tasten). Rechnen wir noch Zeigefinger unten zu den guten Tasten und ersetzen kleiner Streck durch kleiner unten, kommen wir auf 93% bei den häufigsten 21 Zeichen. In einem 100-Zeichen-Text hätten wir in einem nur auf positionen optimierten Text also 7 Klicks auf schlecht zu erreichende Tasten, ansgesamt also wohl 5-7 nicht ideal zu tippende Wörter. Von vielleicht 20. Die 4 schlechtesten (a[28:32], in Neo die Tasten xqßz) machen nur 0.8% aus, es wird also in einem 100-Zeichen Text ungefähr ein Wort mit richtig schlechtem Zeichen auf der Grundebene geben. Die 28 besten machen allerdings nur 98% aus, da einige Zeichen nicht auf der Grundebene sind. Das ist die Buchstabenverteilung unserer Sprache, so dass wir es nicht umgehen können. Optimierung auf weitere Parameter außer den reinen Positionskosten wird die Anzahl der schlechten Positionen etwas erhöhen. 
+  Ich fände es schön, wenn wir öä,.ß und z nochmal niedriger halten könnten als bisher. dazu vielleicht noch xq für Leute mit kurzem kleinen Finger. Und dabei für die Kosten nicht nur die Zeit und Anstrengung rechnen, sondern auch die Störung des Schreibflusses durch die schlechten Tasten. 
+  Praktisch würde ich gerne testen, die Kosten von xqöä,.zß zu verdoppeln. 
+  
+  Daten:   
+  # a = [(häufigkeit, buchstabe), …] aus 1gramme.txt, großbuchstaben mit den kleinbuchstaben vereint.
+  b = [(i,j) for i, j in a if j == j.lower()]
+  c = [(i,j.lower()) for i, j in a if j != j.lower()]
+  a = b[:]
+  for i, j in c: 
+    if j in [k for l, k in b]: 
+      idx = [k for l, k in b].index(j)
+        a[idx] = a[idx][0] + i, a[idx][1]
+
+  >>> sum([i for i, j in a])
+  334378795
+  >>> s = sum([i for i, j in a])
+  >>> a[:9]
+  [(46474641, ' '), (45001174, 'e'), (27445450, 'n'), (21757021, 'i'), (21136496, 'r'), (17563086, 't'), (17771468, 's'), (16292906, 'a'), (13221393, 'd')]
+  >>> len(a)
+  117
+  >>> sum([i for i, j in a[:9]])/s
+  0.6778648598216284
+  >>> sum([i for i, j in a[:12]])/s
+  0.7751037801305553
+  >>> sum([i for i, j in a[12:24]])/s
+  0.18442048934353028
+  >>> sum([i for i, j in a[24:36]])/s
+  0.03369446618168476
+  >>> sum([i for i, j in a[:16]])/s
+  0.8678191749569526
+  >>> sum([i for i, j in a[:19]])/s
+  0.9116715580005604
+  >>> sum([i for i, j in a[:21]])/s
+  0.9328267870574748
+  >>> sum([i for i, j in a[:24]])/s
+  0.9595242694740855
+  >>> sum([i for i, j in a[28:32]])/s
+  0.007781354675914781
+  >>> (sum([i for i, j in a[:12]])/s ) / (sum([i for i, j in a[12:24]])/s)
+  4.6051442950186
+  >>> (sum([i for i, j in a[12:24]])/s ) / (sum([i for i, j in a[24:36]])/s)
+  3.4217716169245835
+  >>> (sum([i for i, j in a[:12]])/s ) / (sum([i for i, j in a[24:36]])/s)
+  15.757752040536815
+
+  
