@@ -23,10 +23,18 @@ while test -n "$arg0"; do
 	if test "$arg0" = "-h"; then
 		echo "Usage:"
 		echo " -h   display Help and exit"
-		echo " -m   test layouts for missing characters"
-		echo " -t   sorting-key is total penalty (default)"
-		echo " -k   sorting-key is keyposition"
-		echo " -f   sorting-key is fingerrepeats"
+		echo " -m   test layouts for missing characters" # don't rely on this
+		echo " -t   sort by total penalty (default)"
+		echo " -k   sort by key position cost"
+		echo " -f   sort by fingerrepeats in 2-gramme"
+		echo " -d   sort by disbalance of fingers"
+		echo " -r   sort by finger repeats between top and bottom"
+		echo " -3   sort by trigrams without handswitching"
+		echo " -j   sort by row jumps (rows²/dist)²"
+		echo " -i   sort by hand disbalance"
+		echo " -s   sort by badly positioned shortcut keys"
+		echo " -u   sort by no handswitching after unbalancing"
+		echo " -a   sort by movement pattern"
 		echo " -o   use old values instead of computing new ones"
 		echo " -v   verbose"
 		sort=''
@@ -58,9 +66,40 @@ while test -n "$arg0"; do
 		sort='yes'
 		kriterium="fingerrepeats"
 		suchzeile="finger repeats in file 2gramme.txt ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-d"; then
+		sort='yes'
+		kriterium="disbalance of fingers"
+		suchzeile="million keystrokes disbalance of the fingers ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-r"; then
+		sort='yes'
+		kriterium="finger repeats between top and bottom"
+		suchzeile="% finger repeats top to bottom or vice versa ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-3"; then
+		sort='yes'
+		kriterium="trigrams without handswitching"
+		suchzeile="% of trigrams have no handswitching (after direction change counted x 1 ) ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-j"; then
+		sort='yes'
+		kriterium="row jumps (rows²/dist)²"
+		suchzeile="billion (rows²\/dist)² to cross ( [0-9]*.[0-9]* )"
+	elif test "$arg0" = "-i"; then
+		sort='yes'
+		kriterium="hand disbalance"
+		suchzeile="hand disbalance. Left: [0-9]*.[0-9]* %, Right: [0-9]*.[0-9]* %"
+	elif test "$arg0" = "-s"; then
+		sort='yes'
+		kriterium="badly positioned shortcut keys"
+		suchzeile="badly positioned shortcut keys (weighted)."
+	elif test "$arg0" = "-u"; then
+		sort='yes'
+		kriterium="no handswitching after unbalancing"
+		suchzeile="no handswitching after unbalancing key (weighted)."
+	elif test "$arg0" = "-a"; then
+		sort='yes'
+		kriterium="movement pattern"
+		suchzeile="movement pattern cost (weighted)."
 	elif test "$arg0" = "-v"; then
 		verbose="yes"
-	# zu faul, um weitere einzufügen, ich bin
 	elif test "$arg0" = "-o"; then
 		oldvalues="yes"
 	else

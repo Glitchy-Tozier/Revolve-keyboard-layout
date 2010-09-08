@@ -1409,7 +1409,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     # First create one long list of possible switches
     keypairs = []
     for key1 in abc: 
-        for key2 in abc[abc.index(key1):]: 
+        for key2 in abc[abc.index(key1)+1:]: 
             keypairs.append(key1+key2)
     
     # then combine it into possible switch tuples (O(N²))
