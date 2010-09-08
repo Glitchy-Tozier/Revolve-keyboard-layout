@@ -1184,14 +1184,14 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """
     # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
-    for key in abc:
+    for key in abc_full:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         finger = key_to_finger(key, layout=layout)
         if finger and not finger[:6] == "Daumen": 
             key_hand_table[key] = finger[-1]
 
     key_pos_horizontal_table = {}
-    for key in abc:
+    for key in abc_full:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         pos = find_key(key, layout=layout)
         if pos is not None: 

@@ -2,8 +2,11 @@
 
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
-#: The mutated letters - only these get changed.
+#: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
+
+#The letters which are used to calculate the costs - do not change anything or results will become incomparable.
+abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
 WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
