@@ -244,7 +244,7 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
     fingers = load_per_finger(letters, layout)
     # make sure, all fingers are in the list (for very short texts)
     for fing in FINGER_NAMES:
-        if not fing in fingers:
+        if not fing in fingers and not fing[:6] == "Daumen":
             fingers[fing] = 0
     # remove the unmapped keys
     if "" in fingers: 
