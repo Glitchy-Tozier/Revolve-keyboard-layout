@@ -430,7 +430,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     else:
         sn = str
 
-    result("#", sn(total/number_of_letters), "total penalty per letter")
+    result("#", sn(total/max(1, number_of_letters)), "total penalty per letter")
     result("#", sn(total / 1000000000), "billion total penalty compared to notime-noeffort")
     result("#", sn(cost / max(1, number_of_letters)), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
     result("#", sn(100 * frep_num / max(1, number_of_bigrams)), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
@@ -439,7 +439,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         result("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
         result("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
         result("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
-        result("#", sn(abs(hand_load[0]/sum(hand_load) - 0.5)), "hand disbalance. Left:", hand_load[0]/sum(hand_load), "%, Right:", hand_load[1]/sum(hand_load), "%")
+        result("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance. Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "%")
         result("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         result("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         result("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
