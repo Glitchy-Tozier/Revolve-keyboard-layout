@@ -36,12 +36,12 @@ __usage__ = """Usage:
 - check_neo.py --best-random-layout <num of random layouts to try> [--prerandomize <num_switches>] [-q]
   --prerandomize selects the number of random switches to do to get a random keyboard.
 
-- check_neo.py --check " [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '\\`', ()],
-[(), 'ß', '.', 'o', 'l', 'w', 'z', 'h', 'a', 'f', 'ö', 'x', '\\´', ()],
- ['⇩', 'r', 'i', 't', 'n', 'c', 'g', 'd', 'e', 's', 'u', 'y', '⇘', '\\n'],
- ['⇧', (), ',', 'p', 'j', 'm', 'q', 'k', 'b', 'ä', 'v', 'ü', '⇗'],
- [(), (), (), ' ', (), (), (), ()]]
-" [-q]
+- ./check_neo.py --check "[[('^'),('1'),('2'),('3'),('4'),('5'),('6'),('7'),('8'),('9'),('0'),('-'),('\\`'),('←')], # Zahlenreihe (0)
+[('⇥'),('x'),('v'),('l'),('c'),('w'),('k'),('h'),('g'),('f'),('q'),('ß'),('´'),()], # Reihe 1
+[('⇩'),('u'),('i'),('a'),('e'),('o'),('s'),('n'),('r'),('t'),('d'),('y'),('⇘'),('\\n')], # Reihe 2
+[('⇧'),(),('ü'),('ö'),('ä'),('p'),('z'),('b'),('m'),(','),('.'),('j'),('⇗')],        # Reihe 3
+[(), (), (), (' '), (), (), (), ()] # Reihe 4 mit Leertaste
+]" [-q]
   check the layout passed on the commandline (mind the shell escapes!)
 
 - check_neo.py [-v] [-q] --check-string "öckäy zhmlß,
@@ -364,6 +364,7 @@ def format_keyboard_layout(layout):
 └────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
 
     """
+    print(layout)
     lay = "┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐\n"
     lay +="│ "
     lay += " │ ".join([l[0] for l in layout[0]])
