@@ -417,6 +417,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     else:
         sn = str
 
+    result("#", sn(total/number_of_letters), "total penalty per letter")
     result("#", sn(total / 1000000000), "billion total penalty compared to notime-noeffort")
     result("#", sn(cost / number_of_letters), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
     result("#", sn(100 * frep_num / number_of_bigrams), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
