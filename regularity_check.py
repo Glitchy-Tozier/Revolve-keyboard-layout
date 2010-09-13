@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run a full evolution of keyboard layouts."""
+"""Check the regularity of a keyboard layout for a reference textfile."""
 
 from optparse import OptionParser
 
@@ -66,6 +66,7 @@ if options.layout_name is not None:
         options.layout = eval(options.layout_name)
     except NameError:
         print("the layout", options.layout_name, "is not predefined. Please use --layout to give it as string.")
+        exit()
 
 ### run
 
