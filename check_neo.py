@@ -386,7 +386,9 @@ def short_number(s, letters=8):
     if not "e" in str(s): 
         return str(s)[:letters]
     else:
-        return str(s)[:letters-4] + str(s)[-4:]
+        idx = min(letters-4, str(s).index("e"))
+        idx = max(0, idx)
+        return str(s)[:idx] + str(s)[-4:]
 
 def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False):
     """Print a layout along with statistics."""
