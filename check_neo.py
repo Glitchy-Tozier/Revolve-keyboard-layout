@@ -89,6 +89,8 @@ def result(*args, **kwds):
 
 from layout_cost import *
 
+# TODO: Split the different ways of evolution into evolve.py. Requirement: Don’t give any output.
+
 ### Evolution
 
 def switch_keys(keypairs, layout=NEO_LAYOUT):
