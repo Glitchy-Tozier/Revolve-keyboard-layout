@@ -300,14 +300,19 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
     cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
 
     # first round: do (numper of iterations) mutation tries.
+    consecutive_fails = 0
     if not quiet: 
         info("doing", iterations, "random mutations")
     for i in range(iterations): 
         # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
-        lay, cost, better = random_evolution_step(letters, repeats, trigrams, 1, layout, abc, cost, quiet)
+        step = int(log10(consecutive_fails + 1) / 3 + 1)
+        lay, cost, better = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         if better:
             # save the good mutation
             layout = lay
+            consecutive_fails = 0
+        else:
+            consecutive_fails += 1
         if not quiet: 
             info("-", i, "/", iterations)
 
