@@ -445,29 +445,6 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         result("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
 
 
-def check_with_datafile(data, quiet, verbose, layout=NEO_LAYOUT_lxwq):
-    """Check the neo layout (optionally with a number of changes) with a given textfile.
-    """
-
-    lay = layout
-
-    # get the data
-    letters = letters_in_file(data)
-    num_letters = sum([num for num, letter in letters])
-    repeats = repeats_in_file(data)
-    num_reps = sum([num for num, rep in repeats])
-    trigs = trigrams_in_file(data)
-    num_trigs = sum([num for num, trig in trigs])
-
-    # and print the layout with the data
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=num_letters, number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose, shorten_numbers=True)
-        
-    if not quiet:
-        info("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=num_letters,
-                                     number_of_bigrams=num_reps, trigrams=trigs, number_of_trigrams=num_trigs, verbose=verbose)
-    
-
 def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     """Find a layout with values similar to qwertz."""
     info("# Qwertzing Layout")
@@ -619,20 +596,10 @@ def best_random_layout(number, prerandomize, quiet=False):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
-def check_the_neo_layout(quiet, verbose):
+def check_the_neo_layout(quiet, verbose, data=None):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     info("Neo")
-    data1 = read_file("1gramme.txt")
-    letters = letters_in_file_precalculated(data1)
-    datalen1 = sum([i for i, s in letters])
-    
-    data2 = read_file("2gramme.txt")
-    repeats = repeats_in_file_precalculated(data2)
-    datalen2 = sum([i for i, s in repeats])
-    
-    data3 = read_file("3gramme.txt")
-    trigrams = trigrams_in_file_precalculated(data3)
-    number_of_trigrams = sum([i for i, s in trigrams])
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
      
     print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
     
@@ -647,10 +614,9 @@ def check_the_neo_layout(quiet, verbose):
         print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
 
 
-def check_a_layout_from_shell(layout_data, quiet, verbose):
+def check_a_layout_from_shell(layout, quiet, verbose, data=None):
     """Check a layout we get passed as shell argument."""
-    layout = eval(layout_data)
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, shorten_numbers=True)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data, shorten_numbers=True)
     
 
 def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, data=None):
@@ -728,16 +694,15 @@ if __name__ == "__main__":
         options.data = None
     if options.check: 
         options.check = eval(options.check)
+
+    # act
     
     if options.check:
-        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose)
+        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data)
 
     elif options.check_string:
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data)
             
-    elif options.file:
-        check_with_datafile(data=options.data, quiet=options.quiet, verbose=options.verbose)
-
     elif options.evolve:
         evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail)
         
@@ -748,5 +713,5 @@ if __name__ == "__main__":
             evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers)
 
     else:
-        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose)
+        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data)
         
