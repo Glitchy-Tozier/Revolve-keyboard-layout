@@ -318,6 +318,7 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     """Get letters, bigrams and trigrams.
 
     @param data: a string of text.
+    @return: letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
     """
     #data = read_file("/tmp/sskreszta")
 
