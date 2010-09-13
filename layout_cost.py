@@ -364,7 +364,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
     total += WEIGHT_FINGER_SWITCH * neighboring_fings
-    total += WEIGHT_FINGER_DISBALANCE * disbalance
+    total += WEIGHT_FINGER_DISBALANCE * disbalance # needs a minimum number of letters to be useful.
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
     total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
