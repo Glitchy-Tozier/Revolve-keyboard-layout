@@ -653,7 +653,7 @@ if __name__ == "__main__":
     # options
     parser.add_option("-f", "--file", dest="file",
                       help="get the ngram data from the given textfile", metavar="textfile")
-    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=0,
+    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=1000000,
                       help="do the given number of randomization steps", metavar="number")
     parser.add_option("--challengers", dest="challengers", type="int", default=10,
                       help="the number of challengers for an evolution challenge", metavar="number")
