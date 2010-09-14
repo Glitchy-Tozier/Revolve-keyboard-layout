@@ -245,7 +245,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     else: 
         return layout, cost, 0, keypairs, frep, pos_cost
 
-def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False):
+def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False, controlled_tail=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
@@ -278,56 +278,22 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=ab
                 info("worse", keypairs, end = " ")
         if not quiet: 
             info("- " + str(i) + " / " + str(iterations))
-    
-    return layout, cost
 
-
-def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False):
-    """Repeatedly switch a layout randomly and do the same with the new layout,
-    if it provides a better total score. Can't be tested easily => Check the source.
-
-    After the iterations, do a controlled evolution, until nothing can be improved anymore.
-
-    Different from the normal evolvution, this never increases the step size (which has proven not to be very effective for the normal evolution and is incompatible with the thought of doing controlled optimization up to the end.
-
-    To only mutate a subset of keys, just pass them as
-    @param abc: the keys to permutate over.
-    @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen? 
-    """
-    from math import log10
-    cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
-
-    # first round: do (numper of iterations) mutation tries.
-    consecutive_fails = 0
-    if not quiet: 
-        info("doing", iterations, "random mutations")
-    for i in range(iterations): 
-        # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
-        step = int(log10(consecutive_fails + 1) / 3 + 1)
-        lay, cost, better, keypairs, frep, pos_cost  = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
-        if better:
-            # save the good mutation
-            layout = lay
-            consecutive_fails = 0
-        else:
-            consecutive_fails += 1
+    if controlled_tail: 
+        # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result).
         if not quiet: 
-            info("-", i, "/", iterations)
-
-    # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result).
-    if not quiet: 
-        info("controlled evolution, until there’s no more to improve")
-    better = True
-    steps = 0
-    while better: 
-        # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-        lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet)
-        if better:
-            # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
-            layout = lay
-        if not quiet: 
-            info("-", steps, "/ ?", )
-    
+            info("controlled evolution, until there’s no more to improve")
+        better = True
+        steps = 0
+        while better: 
+            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet)
+            if better:
+                # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
+                layout = lay
+            if not quiet: 
+                info("-", steps, "/ ?", keypairs)
+                info(format_layer_1_string(lay))
     return layout, cost
 
 
@@ -506,10 +472,7 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=starting_layout)
     else: lay = starting_layout
 
-    if controlled_tail:
-        lay, cost = evolve_with_controlled_tail(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet)
-    else: 
-        lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled)
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled, controlled_tail = controlled_tail)
     
     result("\n# Evolved Layout")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
