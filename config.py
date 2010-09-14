@@ -10,7 +10,7 @@ abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
 WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
-WEIGHT_FINGER_REPEATS = 128 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
+WEIGHT_FINGER_REPEATS = 256 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
