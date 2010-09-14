@@ -663,7 +663,7 @@ if __name__ == "__main__":
     parser.add_option("--base", dest="base", default=None, 
                       help="take the given layout as base", metavar="layout")
     parser.add_option("--base-string", dest="base_string", default=None, 
-                      help="take the given layout as base for layer 1", metavar="layout")
+                      help="take the given layout as base for layer 1. Compatible with --base and --base-name", metavar="layout")
     parser.add_option("--base-name", dest="base_name", default=None, 
                       help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
 
