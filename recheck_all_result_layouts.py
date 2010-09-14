@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-"""get all layout results from the results folder."""
+"""get all layout results from the results folder.
+
+Depends on the layouts info starting with 'Evolved Layout'
+"""
 
 from check_neo import string_to_layout, print_layout_with_statistics
 from os import listdir
