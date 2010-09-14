@@ -517,7 +517,7 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False, data=None):
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, data=None):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
      letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
