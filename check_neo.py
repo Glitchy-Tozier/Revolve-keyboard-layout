@@ -711,7 +711,7 @@ if __name__ == "__main__":
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data)
             
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data, layout=options.base)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data, starting_layout=options.base)
         
     elif options.best_random_layout:
         best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data, layout=options.base)
