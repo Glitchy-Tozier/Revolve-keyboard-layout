@@ -652,9 +652,9 @@ if __name__ == "__main__":
                       help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
     parser.add_option("--base-string", dest="base_string", default=None, 
                       help="take the given layout as base for layer 1. Compatible with --base and --base-name", metavar="layout")
-    parser.add_option("--challenge-evolution-steps", dest="challenge_evolution_steps", type="int", default=10,
+    parser.add_option("--challenge-evolution-steps", dest="challenge_evolution_steps", type="int", default=4,
                       help="the number of individual evolution steps to take between evolution challenge rounds", metavar="number")
-    parser.add_option("--challengers", dest="challengers", type="int", default=10,
+    parser.add_option("--challengers", dest="challengers", type="int", default=16,
                       help="the number of challengers for an evolution challenge", metavar="number")
     parser.add_option("-f", "--file", dest="file",
                       help="get the ngram data from the given textfile", metavar="textfile")
