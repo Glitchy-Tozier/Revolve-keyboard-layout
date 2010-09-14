@@ -567,7 +567,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      info("# Top 3")
      layouts.sort()
 
-     for num, name in [(0, "gold"), (1, "silver"), (2, "bronze")][:len(layouts)]: 
+     for num, name in [(0, "\n# gold"), (1, "\n# silver"), (2, "\n# bronze")][:len(layouts)]: 
          cost, lay = layouts[num]
          info(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
