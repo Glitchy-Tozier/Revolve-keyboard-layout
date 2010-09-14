@@ -485,6 +485,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
 
      from pprint import pprint
 
+     #: the maximum number of genetic combination tries to get a unique layout (no clone)
+     max_unique_tries = 10000
+
      layouts = [] # [(cost, lay), …]
      if not quiet:
          info("# create the", challengers, "starting layouts")
@@ -514,9 +517,11 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
             # evolve, then append
             new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
             # make sure we have no clones :)
-            while (cost, new) in layouts:
+            tries = 0
+            while (cost, new) in layouts and tries < max_unique_tries:
                 new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
                 new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
+                tries += 1
             layouts.append((cost, new))
             
         # also combine the best one with the upper half
@@ -525,9 +530,11 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
             new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
             new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)
             # make sure we have no clones :)
-            while (cost, new) in layouts:
+            tries = 0
+            while (cost, new) in layouts and tries < max_unique_tries:
                 new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
                 new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)                
+                tries += 1
             layouts.append((cost, new))
 
          # and new random ones
@@ -537,9 +544,11 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=layout))
              lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
              # make sure we have no clones :)
-             while (cost, lay) in layouts:
+             tries = 0
+             while (cost, lay) in layouts and tries < max_unique_tries:
                  lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=layout))
                  lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)             
+                 tries += 1
              layouts.append((cost, lay))
 
      info("# Top 3")
