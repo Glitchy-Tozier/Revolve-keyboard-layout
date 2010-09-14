@@ -80,7 +80,7 @@ def check(layout=layout, verbose=False, data=None):
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
     # total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
-    return total
+    return total / number_of_letters
 
 def std(numbers):
     """Calculate the standard deviation from a set of numbers.
@@ -151,5 +151,5 @@ f.close()
 fout.close()
 
 print("mean value and standard deviation of the layout cost:")
-print("snippets of", segment_length, "letters:", sum(res)/len(res) / 1000, "±", std(res) / 10000, "k")
+print("snippets of", segment_length, "letters:", sum(res)/len(res), "±", std(res))
 print("words:", sum(res_words)/len(res_words), "±", std(res))
