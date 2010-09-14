@@ -572,26 +572,27 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          info(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
-def best_random_layout(number, prerandomize, quiet=False, data=None):
+def best_random_layout(number, prerandomize, quiet=False, data=None, layout=NEO_LAYOUT):
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
      
     if prerandomize: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=NEO_LAYOUT, abc=abc, quiet=quiet)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=layout, abc=abc, quiet=quiet)
     else: 
-        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, layout=NEO_LAYOUT, abc=abc, quiet=quiet)
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, layout=layout, abc=abc, quiet=quiet)
         
     info("\nBest of the random layouts")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
-def check_the_neo_layout(quiet, verbose, data=None):
+def compare_a_layout(quiet, verbose, data=None, layout=NEO_LAYOUT):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
-    info("Neo")
+    if layout == NEO_LAYOUT: 
+        info("Neo")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
      
-    print_layout_with_statistics(NEO_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+    print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
     
     if not quiet:
         info("\nQwertz for comparision")
@@ -603,6 +604,8 @@ def check_the_neo_layout(quiet, verbose, data=None):
         info("\nAnd Colemak")
         print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
 
+# for compatibility
+check_the_neo_layout = compare_a_layout
 
 def check_a_layout_from_shell(layout, quiet, verbose, data=None):
     """Check a layout we get passed as shell argument."""
@@ -657,7 +660,9 @@ if __name__ == "__main__":
                       help="do the given number of randomization steps", metavar="number")
     parser.add_option("--challengers", dest="challengers", type="int", default=10,
                       help="the number of challengers for an evolution challenge", metavar="number")
-    parser.add_option("--base", dest="base", default=str(NEO_LAYOUT), 
+    parser.add_option("--base", dest="base", default=None, 
+                      help="take the given layout as base", metavar="layout")
+    parser.add_option("--base-string", dest="base_string", default=None, 
                       help="take the given layout as base", metavar="layout")
 
     # arguments
@@ -677,7 +682,13 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     # post process options
-    options.base = eval(options.base)
+    if options.base: 
+        options.base = eval(options.base)
+    elif options.base_string:
+        options.base = string_to_layout(options.base_string, NEO_LAYOUT)
+    else:
+        options.base = NEO_LAYOUT
+
     if options.file: 
         options.data = read_file(options.file)
     else:
@@ -694,14 +705,14 @@ if __name__ == "__main__":
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data)
             
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data, layout=options.base)
         
     elif options.best_random_layout:
-        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data)
+        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data, layout=options.base)
 
     elif options.challenge_rounds:
-            evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers, data=options.data)
+            evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers, data=options.data, layout=options.base)
 
     else:
-        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data)
+        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data, layout=options.base)
         
