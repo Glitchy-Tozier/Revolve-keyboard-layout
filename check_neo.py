@@ -136,10 +136,27 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
 def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
         """Do num_switches random keyswitches on the layout and
         @return: the randomized layout."""
-        from random import choice
-        num_letters = len(abc)
-        max_unique_tries = 1000
         keypairs = []
+        num_letters = len(abc)
+        # for very high number of switches just do use shuffle.
+        if num_switches >= 1000:
+            from random import shuffle
+            abc_list = list(abc)
+            abc_shuffled = list(abc)
+            shuffle(abc_shuffled)
+            for i in range(num_letters):
+                orig = abc_list[i]
+                new = abc_shuffled[i]
+                if orig != new and not orig+new in keypairs and not new+orig in keypairs: 
+                    new_in_list = abc_list.index(new)
+                    abc_list[new_in_list] = orig
+                    keypairs.append(orig+new)
+            lay = switch_keys(keypairs, layout=deepcopy(layout))
+            return lay, keypairs
+        
+        # incomplete shuffling (only find the given number of switches), slower because we need to avoid dupliates the hard way.
+        from random import choice
+        max_unique_tries = 1000
         for i in range(num_switches):
             key1 = choice(abc)
             key2 = choice(abc)
@@ -658,7 +675,7 @@ if __name__ == "__main__":
                       help="the number of challengers for an evolution challenge", metavar="number")
     parser.add_option("-f", "--file", dest="file",
                       help="get the ngram data from the given textfile", metavar="textfile")
-    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=3000,
+    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=1000,
                       help="do the given number of randomization steps", metavar="number")
 
     # arguments
