@@ -88,7 +88,7 @@ def result(*args, **kwds):
         info(*args, **kwds)
 
 from layout_cost import *
-from math import log10
+from math import log10, log
 
 # TODO: Split the different ways of evolution into evolve.py. Requirement: Don’t give any output.
 
@@ -147,7 +147,7 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
             while (key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs) and (tries < max_unique_tries or num_switches < len(abc)):
                 key1 = choice(abc)
                 key2 = choice(abc)
-                tries += log10(len(keypairs)+1)+1
+                tries += log(len(keypairs)+1, 2) + 1
             keypairs.append(key1+key2)
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
@@ -656,7 +656,7 @@ if __name__ == "__main__":
                       help="the number of challengers for an evolution challenge", metavar="number")
     parser.add_option("-f", "--file", dest="file",
                       help="get the ngram data from the given textfile", metavar="textfile")
-    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=1000000,
+    parser.add_option("--prerandomize", dest="prerandomize", type="int", default=3000,
                       help="do the given number of randomization steps", metavar="number")
 
     # arguments
