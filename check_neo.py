@@ -137,6 +137,7 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         """Do num_switches random keyswitches on the layout and
         @return: the randomized layout."""
         from random import choice
+        num_letters = len(abc)
         max_unique_tries = 1000
         keypairs = []
         for i in range(num_switches):
@@ -144,10 +145,11 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
             key2 = choice(abc)
             # get unique keypairs, the not nice but very easy to understand way.
             tries = 0
-            while (key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs) and (tries < max_unique_tries or num_switches < len(abc)):
+            while (key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs) and (num_switches <= num_letters or tries < max_unique_tries):
                 key1 = choice(abc)
                 key2 = choice(abc)
-                tries += log(len(keypairs)+1, 2) + 1
+                if num_switches > num_letters: 
+                    tries += log(len(keypairs)+1, 2) + 1
             keypairs.append(key1+key2)
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
