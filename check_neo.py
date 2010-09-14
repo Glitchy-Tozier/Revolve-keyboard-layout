@@ -677,7 +677,7 @@ if __name__ == "__main__":
     parser.add_option("--controlled-tail",
                       action="store_true", dest="controlled_tail", default=False,
                       help="do a controlled evolution after the random evolution steps")
-    parser.add_option("--controlled-evolution",
+    parser.add_option("--controlled",
                       action="store_true", dest="controlled_evolution", default=False,
                       help="check all possible mutations at each step and only take the best")
 
