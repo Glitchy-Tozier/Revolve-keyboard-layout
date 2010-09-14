@@ -208,6 +208,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     from random import choice
     # First create one long list of possible switches
     keypairs = []
+    best_pairs = []
     for key1 in abc: 
         for key2 in abc[abc.index(key1)+1:]: 
             keypairs.append(key1+key2)
@@ -232,14 +233,15 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     for keypairs in switches: 
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
-        step_results.append((new_cost, frep, pos_cost, lay))
+        step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet: 
             info("# checked switch", keypairs, new_cost)
+            
     if min(step_results)[0] < cost:
-        lay, new_cost = min(step_results)[-1], min(step_results)[0]
-        if not quiet: 
-            new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
-        return lay, new_cost, cost - new_cost, keypairs, frep, pos_cost
+        best = min(step_results)
+        lay, new_cost, best_pairs = best[-1], best[0], best[-2]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        return lay, new_cost, cost - new_cost, best_pairs, frep, pos_cost
     else: 
         return layout, cost, 0, keypairs, frep, pos_cost
 
