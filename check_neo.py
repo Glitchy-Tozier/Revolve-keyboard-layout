@@ -171,14 +171,9 @@ def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc,
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:3]
         if new_cost < cost:
-            if not quiet: 
-                info(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                info(format_layer_1_string(lay))
-            return lay, new_cost, cost - new_cost
+            return lay, new_cost, cost - new_cost, keypairs, frep, pos_cost
         else:
-            if not quiet: 
-                info("worse", keypairs, end = " ")
-            return layout, cost, 0
+            return layout, cost, 0, keypairs, frep, pos_cost
 
 def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY): 
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
@@ -244,13 +239,9 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         lay, new_cost = min(step_results)[-1], min(step_results)[0]
         if not quiet: 
             new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
-            info(cost / 1000000, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-            info(format_layer_1_string(lay))
-        return lay, new_cost, cost - new_cost
+        return lay, new_cost, cost - new_cost, keypairs, frep, pos_cost
     else: 
-        if not quiet: 
-            info("worse", keypairs, end = " ")
-        return layout, cost, 0
+        return layout, cost, 0, keypairs, frep, pos_cost
 
 def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=abc, quiet=False, controlled=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
@@ -267,17 +258,22 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=ab
         if not controlled: 
             # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
             step = int(log10(consecutive_fails + 1) / 3 + 1)
-            lay, cost, better = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
+            lay, cost, better, keypairs, frep, pos_cost = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         else: 
             step = int(consecutive_fails / 2 + 1)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-            lay, cost, better = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         if better:
             consecutive_fails = 0
             # save the good mutation
             layout = lay
+            if not quiet: 
+                info(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
+                info(format_layer_1_string(lay))
         else:
             consecutive_fails += 1
+            if not quiet: 
+                info("worse", keypairs, end = " ")
         if not quiet: 
             info("- " + str(i) + " / " + str(iterations))
     
@@ -306,7 +302,7 @@ def evolve_with_controlled_tail(letters, repeats, trigrams, layout=NEO_LAYOUT, i
     for i in range(iterations): 
         # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
         step = int(log10(consecutive_fails + 1) / 3 + 1)
-        lay, cost, better = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
+        lay, cost, better, keypairs, frep, pos_cost  = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
         if better:
             # save the good mutation
             layout = lay
