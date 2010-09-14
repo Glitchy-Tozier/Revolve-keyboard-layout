@@ -537,13 +537,13 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          # sort and throw out the worst
          layouts.sort()
          if not quiet:
-             info("# round", round)
+             info("\n# round", round)
              info("# top five")
              for cost, lay in layouts[:5]:
                  print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
          layouts = deepcopy(layouts[:int(challengers / 4)+1])
          # combine the best and worst to get new ones.
-         info("breeding new layouts")
+         info("\n# breeding new layouts")
          for i in range(int(challengers/8)):
             info(i, "of", int(challengers/4), "from weak and strong")
             new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
@@ -552,12 +552,12 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
             layouts.append((cost, new))
             # also combine the best one with the upper half
          for i in range(max(0, int(challengers/8))):
-            info(i+int(challengers/8), "of", int(challengers/4), "from the strongest with the top half")
+            info("\n", i+int(challengers/8), "of", int(challengers/4), "from the strongest with the top half")
             new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
             new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)
             layouts.append((cost, new))
          # and new random ones
-         info("and fill up the ranks with random layouts")
+         info("\n# and fill up the ranks with random layouts")
          for i in range(challengers - len(layouts)):
              info(i, "of", challengers - len(layouts))
              lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
@@ -640,46 +640,48 @@ if __name__ == "__main__":
 
     from optparse import OptionParser
 
-    parser = OptionParser(description="Check and evolve keyboard layouts")
+    parser = OptionParser(description="Check and evolve keyboard layouts. Actions can’t be combined, the other options and arguments can. Without action, it checks layouts.")
     # actions
-    parser.add_option("--evolve", dest="evolve", type="int", default=0,
-                      help="do the given number of random mutation steps", metavar="number")
     parser.add_option("--best-random-layout", dest="best_random_layout", type="int", default=0,
-                      help="create the given number of random layouts and show the best one", metavar="number")
+                      help="(action) create the given number of random layouts and show the best one", metavar="number")
     parser.add_option("--challenge", dest="challenge_rounds", type="int", default=0,
-                      help="do an evolution challenge for the given number of rounds", metavar="rounds")
+                      help="(action) do an evolution challenge for the given number of rounds. Slow", metavar="rounds")
     parser.add_option("--check", dest="check", 
-                      help="check a layout from shell", metavar="layout")
+                      help="(action)check a layout from shell. ignores --base*", metavar="layout")
     parser.add_option("--check-string", dest="check_string", 
-                      help="check a layout_string from shell", metavar="layout_string")
+                      help="(action) check a layout_string from shell", metavar="layout_string")
+    parser.add_option("--evolve", dest="evolve", type="int", default=0,
+                      help="(action) do the given number of random mutation steps", metavar="number")
     
     # options
+    parser.add_option("--base", dest="base", default=None, 
+                      help="take the given layout as base", metavar="layout")
+    parser.add_option("--base-name", dest="base_name", default=None, 
+                      help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
+    parser.add_option("--base-string", dest="base_string", default=None, 
+                      help="take the given layout as base for layer 1. Compatible with --base and --base-name", metavar="layout")
+    parser.add_option("--challenge-evolution-steps", dest="challenge_evolution_steps", type="int", default=10,
+                      help="the number of individual evolution steps to take between evolution challenge rounds", metavar="number")
+    parser.add_option("--challengers", dest="challengers", type="int", default=10,
+                      help="the number of challengers for an evolution challenge", metavar="number")
     parser.add_option("-f", "--file", dest="file",
                       help="get the ngram data from the given textfile", metavar="textfile")
     parser.add_option("--prerandomize", dest="prerandomize", type="int", default=1000000,
                       help="do the given number of randomization steps", metavar="number")
-    parser.add_option("--challengers", dest="challengers", type="int", default=10,
-                      help="the number of challengers for an evolution challenge", metavar="number")
-    parser.add_option("--base", dest="base", default=None, 
-                      help="take the given layout as base", metavar="layout")
-    parser.add_option("--base-string", dest="base_string", default=None, 
-                      help="take the given layout as base for layer 1. Compatible with --base and --base-name", metavar="layout")
-    parser.add_option("--base-name", dest="base_name", default=None, 
-                      help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
 
     # arguments
+    parser.add_option("--controlled",
+                      action="store_true", dest="controlled_evolution", default=False,
+                      help="check all possible mutations at each step and only take the best")
+    parser.add_option("--controlled-tail",
+                      action="store_true", dest="controlled_tail", default=False,
+                      help="do a controlled evolution after the random evolution steps")
     parser.add_option("-q", "--quiet",
                       action="store_true", dest="quiet", default=False,
                       help="don’t print progress messages to stdout")
     parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False,
                       help="print more detailed layout statistics")
-    parser.add_option("--controlled-tail",
-                      action="store_true", dest="controlled_tail", default=False,
-                      help="do a controlled evolution after the random evolution steps")
-    parser.add_option("--controlled",
-                      action="store_true", dest="controlled_evolution", default=False,
-                      help="check all possible mutations at each step and only take the best")
 
     (options, args) = parser.parse_args()
 
@@ -708,7 +710,7 @@ if __name__ == "__main__":
         check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data)
 
     elif options.check_string:
-        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data)
+        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data, base_layout=options.base)
             
     elif options.evolve:
         evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data, starting_layout=options.base)
@@ -717,7 +719,13 @@ if __name__ == "__main__":
         best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data, layout=options.base)
 
     elif options.challenge_rounds:
-            evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers, data=options.data, layout=options.base)
+            evolution_challenge(rounds=options.challenge_rounds,
+                                iterations=options.challenge_evolution_steps,
+                                challengers=options.challengers,
+                                prerandomize=options.prerandomize,
+                                data=options.data,
+                                layout=options.base,
+                                controlled=options.controlled_evolution)
 
     else:
         check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data, layout=options.base)
