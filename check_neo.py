@@ -663,7 +663,9 @@ if __name__ == "__main__":
     parser.add_option("--base", dest="base", default=None, 
                       help="take the given layout as base", metavar="layout")
     parser.add_option("--base-string", dest="base_string", default=None, 
-                      help="take the given layout as base", metavar="layout")
+                      help="take the given layout as base for layer 1", metavar="layout")
+    parser.add_option("--base-name", dest="base_name", default=None, 
+                      help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
 
     # arguments
     parser.add_option("-q", "--quiet",
@@ -684,10 +686,14 @@ if __name__ == "__main__":
     # post process options
     if options.base: 
         options.base = eval(options.base)
-    elif options.base_string:
-        options.base = string_to_layout(options.base_string, NEO_LAYOUT)
-    else:
+    elif options.base_name:
+        options.base = eval(options.base_name)
+    if not options.base:
         options.base = NEO_LAYOUT
+    if options.base_string:
+        # base + base-string: base for the surroundings,
+        # base-string for the base layer.
+        options.base = string_to_layout(options.base_string, NEO_LAYOUT)
 
     if options.file: 
         options.data = read_file(options.file)
