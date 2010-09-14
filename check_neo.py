@@ -88,6 +88,7 @@ def result(*args, **kwds):
         info(*args, **kwds)
 
 from layout_cost import *
+from math import log10
 
 # TODO: Split the different ways of evolution into evolve.py. Requirement: Don’t give any output.
 
@@ -136,14 +137,17 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         """Do num_switches random keyswitches on the layout and
         @return: the randomized layout."""
         from random import choice
+        max_unique_tries = 1000
         keypairs = []
         for i in range(num_switches):
             key1 = choice(abc)
             key2 = choice(abc)
             # get unique keypairs, the not nice but very easy to understand way.
-            while key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs:
+            tries = 0
+            while (key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs) and (tries < max_unique_tries or num_switches < len(abc)):
                 key1 = choice(abc)
                 key2 = choice(abc)
+                tries += log10(len(keypairs)+1)+1
             keypairs.append(key1+key2)
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
@@ -253,7 +257,6 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=400, abc=ab
     @param abc: the keys to permutate over.
     @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen? 
     """
-    from math import log10
     cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
     consecutive_fails = 0
     for i in range(iterations): 
