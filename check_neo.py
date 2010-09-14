@@ -486,7 +486,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      from pprint import pprint
 
      #: the maximum number of genetic combination tries to get a unique layout (no clone)
-     max_unique_tries = 10000
+     max_unique_tries = 200
 
      layouts = [] # [(cost, lay), …]
      if not quiet:
