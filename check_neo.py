@@ -157,7 +157,7 @@ def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_swi
         for i in range(max(0, num_tries-1)): 
             if not quiet: 
                 info("-", i, "/", num_tries)
-            lay_tmp, keypairs = randomize_keyboard(abc, num_switches, lay)
+            lay_tmp, keypairs = randomize_keyboard(abc, num_switches, layout)
             cost_tmp = total_cost(letters=letters, repeats=repeats, layout=lay_tmp, trigrams=trigrams)[0]
             if cost_tmp < cost: 
                 lay = lay_tmp
