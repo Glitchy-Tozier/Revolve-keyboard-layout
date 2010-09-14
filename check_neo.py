@@ -498,9 +498,9 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
     
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, data=None):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
 
     if prerandomize:
         if not quiet:
@@ -517,10 +517,10 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False):
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=400, abc=abc, prerandomize=10000, quiet=False, controlled=False, data=None):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
-     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
 
      from pprint import pprint
 
@@ -572,20 +572,10 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          info(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
-def best_random_layout(number, prerandomize, quiet=False):
+def best_random_layout(number, prerandomize, quiet=False, data=None):
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
-    data1 = read_file("1gramme.txt")
-    letters = letters_in_file_precalculated(data1)
-    datalen1 = sum([i for i, s in letters])
-    
-    data2 = read_file("2gramme.txt")
-    repeats = repeats_in_file_precalculated(data2)
-    datalen2 = sum([i for i, s in repeats])
-
-    data3 = read_file("3gramme.txt")
-    trigrams = trigrams_in_file_precalculated(data3)
-    number_of_trigrams = sum([i for i, s in trigrams])
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
      
     if prerandomize: 
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=NEO_LAYOUT, abc=abc, quiet=quiet)
@@ -704,13 +694,13 @@ if __name__ == "__main__":
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data)
             
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data)
         
     elif options.best_random_layout:
-        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet)
+        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data)
 
     elif options.challenge_rounds:
-            evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers)
+            evolution_challenge(rounds=options.challenge_rounds, challengers=options.challengers, data=options.data)
 
     else:
         check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data)
