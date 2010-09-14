@@ -15,7 +15,7 @@ filename = "output.txt" # None for shell output
 steps = 4000
 
 #: The number of random mutations to do before the evolution to get a random layout
-prerandomize = 1000000
+prerandomize = 3000
 
 #: Should we always do the locally best step (very slow and *not* optimal)
 controlled = False
