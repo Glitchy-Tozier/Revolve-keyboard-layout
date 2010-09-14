@@ -529,9 +529,10 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          info("# create the", challengers, "starting layouts")
      for i in range(challengers):
          info("#", i, "of", challengers)
-         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT)
+         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=layout)
          lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
          layouts.append((cost, lay))
+         
      # run the challenge
      for round in range(rounds): 
          # sort and throw out the worst
@@ -541,27 +542,43 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              info("# top five")
              for cost, lay in layouts[:5]:
                  print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+         info("\n# killing the worst", int(challengers * 3/4)-1, "layouts")
          layouts = deepcopy(layouts[:int(challengers / 4)+1])
+
          # combine the best and worst to get new ones.
          info("\n# breeding new layouts")
          for i in range(int(challengers/8)):
-            info(i, "of", int(challengers/4), "from weak and strong")
+            info(i, "of", int(challengers/4-1), "from weak and strong")
             new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
             # evolve, then append
             new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
+            # make sure we have no clones :)
+            while (cost, new) in layouts:
+                new = deepcopy(combine_genetically(layouts[i][1], layouts[-i - 1][1]))
+                new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
             layouts.append((cost, new))
-            # also combine the best one with the upper half
+            
+        # also combine the best one with the upper half
          for i in range(max(0, int(challengers/8))):
-            info("\n", i+int(challengers/8), "of", int(challengers/4), "from the strongest with the top half")
+            info(i+int(challengers/8), "of", int(challengers/4-1), "from the strongest with the top half")
             new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
             new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)
+            # make sure we have no clones :)
+            while (cost, new) in layouts:
+                new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
+                new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)                
             layouts.append((cost, new))
+
          # and new random ones
          info("\n# and fill up the ranks with random layouts")
          for i in range(challengers - len(layouts)):
-             info(i, "of", challengers - len(layouts))
-             lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=NEO_LAYOUT))
+             info(i, "of", int(challengers/2))
+             lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=layout))
              lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
+             # make sure we have no clones :)
+             while (cost, lay) in layouts:
+                 lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=layout))
+                 lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)             
              layouts.append((cost, lay))
 
      info("# Top 3")
