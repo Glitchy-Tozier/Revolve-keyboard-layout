@@ -1,6 +1,16 @@
 Evaluation des Tipptests
 ========================
 
+Hi, 
+
+Ich habe erstmal der Ergebnisse der Tipptests zusammengefasst, sie dann ausgewertet (⇒ problematische ngramme) und dann Vermutungen angestellt, warum bestimmte Wörter, bzw. ngramme, Probleme machen. 
+
+Danach habe ich Vorschläge geschrieben, wie wir die config anpassen können, um bessere Ergebnisse zu erhalten. 
+
+Abschließend habe ich dann nochmal eine Idee für die nächsten Schritte geschrieben, inklusive dem nächsten Schritt: Diskutieren, wie wir die Parameter anpassen, um die bei den Tipptests sichtbar gewordenen Probleme der bisherigen Ergebnisse zu vermeiden. 
+
+Jetzt aber zur Auswertung, erstmal mit Bestandsaufnahme: 
+
 Unschöne Wörter
 ---------------
 
@@ -87,7 +97,7 @@ oue - s.o. + aus dem Gleichgewicht gezogen (o)
 th
 iuue - s.o. + doppel-u
 qo - q? 
-uira - klein auf Mittelfinger (ui)? 
+uira - klein auf Ringfinger (ui)? 
 ggn - oben
 ffn - oben
 gm - Zeilenwechsel
@@ -134,6 +144,9 @@ seite leicht> sieti >> (uei)te
 gl(df)i(ssgn)et > (gm⇊)ufe(ssgn)it >> g↑l↑(df)(iuu)gnet
 Beuörl(dn)v(tm)et >> Sebw↑→rl(dn)v(tm)et >>? Biyw(rm)uno(td)it
 
+Mir fällt hier vor allem auf, dass u unschön zu sein scheint, genau wie nicht auf der Grundlinie liegende Tasten, v.a. wenn sie gehäuft kommen. 
+⇒ Idee zur Auswertung: Kosten nicht nur pro Buchstabe, sondern pro Bigramm: (Kosten Taste 1 + Kosten Taste 2)². Dann ist es deutlich teurer, wenn zwei unschöne Tasten hintereinander kömmen (z.B. äv). Außerdem sollte das Tippen so noch etwas regelmäßiger werden (keine langen unschönen Sequenzen, die einen komplett aus dem Fluss werfen). Was haltet ihr davon? 
+
 Eval von Miche
 --------------
 
@@ -141,7 +154,7 @@ Eval von Miche
 
 Wir hatten einige positive Korrelationen. Die sind für uns erstmal nicht das wichtigste, denn die Parameter unterstützen sich gegenseitig. 
 
-Die negativen Korrelationen sind wichtiger: 
+Die negativen Korrelationen sind erstmal wichtiger, weil sie uns zeigen, welche Parameter wirklich gegeneinander stehen: 
 
 -0,456  rows/dist – movement pattern 
 -0,378  Handwechsel in Trigrammen – movement pattern 
@@ -166,25 +179,23 @@ shortcut.keys                    -0.08625981
 handswitching.after.unbalancing   1.00000000
 movement.pattern                  0.28422839
 
-Handswitching after unbalancing beißt sich mit jedem anderen Wert außer movement pattern, und den haben wir gerade als irrelevant gesehen. 
+Handswitching after unbalancing beißt sich mit jedem anderen Wert außer movement pattern, und den haben wir gerade als irrelevant gesehen. Movement patterns sind allerdings mit allem anderen negativ korrelliert, so dass die negative Korrellation von unbalancing mit den total cost auch daher kommen könnte. 
 
-                                movement.pattern
-total.penalty                        -0.47914322
-key.position.cost                    -0.29652744
-finger.repeats                       -0.10557053
-disbalance.of.fingers                -0.10139153
-top.to.bottom.or.vice.versa          -0.04883617
-handswitching.in.trigram             -0.37935839
-X.rows..dist..                       -0.45644787
-shortcut.keys                         0.08834689
-handswitching.after.unbalancing       0.28422839
-movement.pattern                      1.00000000
+Allerdings ist es halt auch stark negativ mit handswitching.in.trigram korrelliert, dass mit allem anderen positiv korrelliert ist, v.a. mit total penalty. 
 
+                                handswitching.in.trigram 
+total.penalty                                  0.8282882   
+key.position.cost                              0.1855194   
+finger.repeats                                 0.1553341   
+disbalance.of.fingers                          0.1022377   
+top.to.bottom.or.vice.versa                    0.1806698   
+handswitching.in.trigram                       1.0000000   
+X.rows..dist..                                 0.2747901   
+shortcut.keys                                  0.1292014   
+handswitching.after.unbalancing               -0.3447052   
+movement.pattern                              -0.3793584   
 
-Kann jemand testen, wie die Korrelationen von handswitching.after.unbalancing wären, wenn wir keine movement patterns hätten? 
-
-Was nämlich auffällt: unbalancing ist recht stark mit movement.pattern korrelliert. Ich bin mir allerdings gerade nicht sicher, wie ich das rausnehmen kann :( 
-
+Fazit: Ich würde es erstmal weniger wichtig machen. 
 
 
 Erstellung aller Korrelationen: 
@@ -199,10 +210,22 @@ $ R
 Weiteres
 --------
 
-Schlechte Handbalance ist in einem Satz meiner Erfahrung nach ab 4% Abweichung spürbar. Deswegen würde ich vorschlagen, den Parameter nochmal zu verdoppeln. 
+Schlechte Handbalance ist in einem Satz meiner Erfahrung nach ab 4% Abweichung spürbar. Deswegen würde ich vorschlagen, den Parameter nochmal zu verdoppeln¹.  
 
-Vorschläge
-----------
+Dann wird der Ringfinger bisher zu oft verwendet, der Mittelfinger aber recht wenig. Wir können testen, was passiert, wenn wir Mittel- und Zeigefinger gleich oft benutzen lassen, den Ringfinger aber seltener. Ein mögliches Problem bei dem Ansatz könnte sein, dass der Zeigefinger deutlich mehr Tasten hat (die einzelnen Tasten also seltener benutzt werden) und der Mittelfinger weniger beweglich ist (gerade nach unten). 
+
+Für die Auswertungsidee von Miche gibt es jetzt grep_cascade.sh, das ähnliche Layouts auswählt und jeweils einen Parameter variieren lässt. Praktischerweise sollten war allerdings die Layouts dann mit recheck_all_result_layouts.py für den Referenztext neu berechnen, so dass wir die Werte für den Text haben, den wir wirklich tippen. Sonst verzerrt der ausgewählte Text die Auswertung. 
+
+Außerdem haben in den Tests Fingerwiederholungen gestört ⇒ verdoppeln¹. 
+
+Was zusätzlich sehr gestört hat sind unschöne Buchstabenpositionen. Statt hier einfach die allgemeinen Kosten zu erhöhen, können wir die Lenkungswirkung steigern, indem wir die einzelnen Positionen relativ gesehen teurer machen: Bei xqßzöä,. die Kosten verdoppeln (außerdem ä an ö anpassen). 
+
+Gegen äv können wir die Kosten für Zeilenwechsel erhöhen (3x, weil es wirklich oft war?). 
+
+¹: Ich würde einfach verdoppeln, weil wir die genauen Auswirkungen der Parameter noch kennen. Der Test von Miche (grep_cascade.sh) sollte dabei helfen. Bis dahin können wir uns erstmal nur iterativ an die besten Werte herantasten. 
+
+Vorschläge, Zusammenfassung
+---------------------------
 
 * finger load: small to index: 1, 1.6, 2.6, 2.6
 * doubled cost for finger disbalance
@@ -210,5 +233,55 @@ Vorschläge
 * tripled cost for row-changes
 * doubled cost for too little handswitching on direction change
 * halved cost for no handswitching after unbalancing key
-* reduced cost for movement patterns by factor 20 (shouldn’t be relevant anymore, now; maybe remove completely).
 * double the cost for finger repeats, too.
+* reduced cost for movement patterns by factor 20 (shouldn’t be relevant anymore, now; maybe remove completely).
+
+
+Wie weiter?
+-----------
+
+Was mir am Sinnvollsten erscheint (bitte sagt es, wenn ihr es anders seht!): 
+
+Sobald wir auf eine config geeinigt haben, kommen wir in die nächste Runde der Optimierungen. Ein kurzer Test (ein paar Stunden grep_cascade.sh testen) hat gezeigt, dass die Unterschiede pro Parameter recht groß sind, wenn wir viele Parameter festhalten wollen. Das heißt, wenn wir den Test wirklich sauber machen wollen, brauchen wir deutlich über 1000 Layouts. 
+
+Bei den 8 Referenzlayouts, bei denen alle Parameter festgehalten sind, variieren die Fingerwiederholung trotzdem noch von 1.8% bis fast 2.1%. Wenn ich sie noch stärker festhalte, gibt es keine passenden mehr (infos in grep_cascade.sh). Das heißt, für den wirklich sauberen Tipptest (wie beeinflusst eine Änderung des Parameters um einen gegebenen Wert das Tippgefühl) brauchen wir nicht 1000 sondern eher 10.000 Layouts – oder mehr. Allerdings dürfte bereits die etwas grobere Version, die wir bisher haben, einiges an Aufschluss bringen (und helfen, den Test zu verfeinern, bevor wir ihn dann mit 10.000+ Layouts machen; falls wir so viele schaffen). 
+
+Die 1000 Layouts sind übrigens schon jetzt eine geniale Arbeitsbasis! Damit lassen sich Tests machen, die nur mit dem Optimierer aus Geschwindigkeitsgründen nicht möglich sind. Und das macht einfach Spaß :)
+
+Jetzt aber nochmal strukturiert: Nächste Schritte zu einem optimalen Layout: 
+
+1. Wir diskutieren die Vorschläge für config-Änderungen in der Liste (und in IRC + irgendjemand fasst es für die Liste zusammen ⇒ Wer macht es?). 
+2. Wir einigen uns auf eine config. 
+3. Wir versuchen das Stromnetz zum Zusammenbruch zu bringen, indem wir so viel Rechenleistung wie möglich auf die Generierung neuer Layouts werfen :)
+4. Wenn wir 1000 bis 100 000 Layouts zusammen haben, wählen wir wieder die besten aus. 
+5. Für die besten machen wir den regularity_check.py: Wie stark sind ihre Abweichungen für kurze Textabschnitte? Wir brauchen ein regelmäßiges Tippen. 
+6. Die regelmäßigsten der besten Layouts kommen wieder in Tipptests: Was stört noch ⇒ zurück zu 1. ;) 
+7. Wenn die Endlosschleife abbricht, weil wir der Meinung sind, dass wir fertig sind, ergänzen wir den Korpus um andere Sprachen (⇒ wir müssen noch diskutieren, wie er aussehen soll) und machen eine letzte großangelegte Optimierung. 
+
+Gleichzeitig können wir die Tipptests von Miche machen (ist das dann Multithreading oder Multiprocessing?). @Miche: Kannst du das organisieren? Bei mir drängt sich die Diplomarbeit inzwischen doch etwas stärker auf… 
+
+Außerdem können wir diskutieren, wie der endgültige Korpus aufgebaut sein soll. 
+
+Und ob andere Handhaltungen und Tastenbelegungen besser wären ⇒ Anpassungen der config für diese Handhaltungen. 
+
+Und wir können an Hardware arbeiten. 
+
+Keiner dieser anderen Schritte beißt sich grundlegend mit der Optimierung der Belegung. Wir sollten sie aber wohl fertig haben, bevor wir zu 7. kommen :)
+
+Zwischendrin können wir logischerweise immer wieder Layouts als Testversionen auskoppeln und reale, langfristig angelegte Tipptests mit umgestellter Tastaturbelegung machen. Nur mit denen sehen wir die komplexeren Effekte der Optimierung. 
+
+Der nächste Schritt
+-------------------
+
+Nach dem ganzen „so kann es weitergehen“, kommen wir doch gleich zu Schritt 1: 
+
+Was haltet ihr von den Vorschlägen („Vorschläge, Zusammenfassung“)? 
+Seht ihr anderes, das wir anpassen sollten? 
+Oder würdet ihr anders anpassen? 
+
+Die aktuelle config ist hier: http://bitbucket.org/ArneBab/evolve-keyboard-layout/src/tip/config.py
+
+Ich freu mich schon auf die nächste Optimierungsrunde! 
+
+Liebe Grüße, 
+Arne

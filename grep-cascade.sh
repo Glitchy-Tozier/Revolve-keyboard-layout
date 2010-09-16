@@ -2,6 +2,8 @@
 
 # a cascade of greps to find all layouts which have values in a given range.
 # take the median of each value as fixpoint (the value of a typical layout). 
+# TODO: recalculate all values for a reference sentence. Then work with these.
+# -> results/2010-08-17-all-recalculated-for-the-reference-text.txt
 
 ### data
 
@@ -36,6 +38,7 @@
 
 ## layout value summary
 
+# $ ./csv-ftw.sh
 # $ R
 # > a = read.csv("layouts.csv", sep=";")
 # > summary(a)
@@ -63,8 +66,10 @@
 
 # alle Werte unten sind getestet, dass sie min 10 Layouts geben. 
 
+alias grep="grep -h"
+
 #                              lines_before lines_after
-tot="20\\..*penalty.*        -B 16        -A 11" # ignored
+tot="20\\..*compared.*        -B 16        -A 11" # ignored
 pos="position.*15\\.[0123]         -B 17        -A 10"
 rep="2gramme.*0\\.[78]      -B 18        -A 9"
 dis="fingers.*[01]\\.[0129]          -B 19        -A 8"

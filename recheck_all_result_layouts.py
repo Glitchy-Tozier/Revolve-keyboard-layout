@@ -5,7 +5,7 @@
 Depends on the layouts info starting with OA'Evolved Layout'
 """
 
-from check_neo import string_to_layout, print_layout_with_statistics
+from check_neo import string_to_layout, print_layout_with_statistics, csv_data
 from os import listdir
 from os.path import join
 
@@ -30,8 +30,28 @@ def get_all_layouts_in_text_files_in(folder="results"):
     return all_layouts
 
 
-if __name__ == "__main__": 
-    all_layouts = get_all_layouts_in_text_files_in("results")
+if __name__ == "__main__":
+
+    print_csv = False
+
+    if print_csv: 
+        print("total penalty per word;key position cost;finger repeats;disbalance of fingers;top to bottom or vice versa;handswitching in trigram;(rows²/dist)²;shortcut keys;handswitching after unbalancing;movement pattern")
+
+    data = None
+    i_want_the_data_for_the_reference_sentence = False
+    if i_want_the_data_for_the_reference_sentence: 
+        with open("beispieltext-reference-sentence.txt") as f:
+            data = f.read()
     
-    for lay in all_layouts: 
-        print_layout_with_statistics(lay, verbose=True)
+    all_layouts = get_all_layouts_in_text_files_in("results")
+
+    
+    for lay in all_layouts:
+        if print_csv: 
+            print(";".join([str(i)
+                            for i in csv_data(lay, data=data)]
+                           ))
+        else: 
+            print("# Evolved Layout")
+            print_layout_with_statistics(lay, verbose=True, data=data)
+            print()

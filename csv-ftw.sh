@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Nur, weil das in Python nicht direkt ausgegeben werden kann. ;-)
+# chau mal in recheck_*.py :)
 
 tmp=$(tempfile)
 > "$tmp"
