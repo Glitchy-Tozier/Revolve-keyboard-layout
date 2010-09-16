@@ -134,3 +134,81 @@ seite leicht> sieti >> (uei)te
 gl(df)i(ssgn)et > (gm⇊)ufe(ssgn)it >> g↑l↑(df)(iuu)gnet
 Beuörl(dn)v(tm)et >> Sebw↑→rl(dn)v(tm)et >>? Biyw(rm)uno(td)it
 
+Eval von Miche
+--------------
+
+→ http://lists.neo-layout.org/pipermail/diskussion/2010-September/017713.html
+
+Wir hatten einige positive Korrelationen. Die sind für uns erstmal nicht das wichtigste, denn die Parameter unterstützen sich gegenseitig. 
+
+Die negativen Korrelationen sind wichtiger: 
+
+-0,456  rows/dist – movement pattern 
+-0,378  Handwechsel in Trigrammen – movement pattern 
+-0,344  Handwechsel in Trigrammen – Handwechsel nach unbalancing
+
+Hier ist 2x movement patterns. Und da das bisher noch sehr wenig geprüft ist, würde ich vorschlagen, die Bewegungsmuster erstmal völlig irrelevant zu machen und *nach* der nächsten Optimierungsrunde (oder während ihr) hier zu diskutieren, welche Übergänge zwischen Fingern wir *nicht* wollen, oder welche wir bevorzugen wollen (z.B. Einwärtsbewegungen). 
+
+Was mich überrascht hat war Handwechsel bei Richtungswechsel vs. Handwechsel bei aus dem Gleichgewicht gezogener Hand. Das ist zwar eigentlich logisch, aber ich hatte nicht daran gedacht (zu viele Handwechsel bedeuten, dass die meisten Übergänge zwischen Buchstaben von einer Hand auf die andere gehen müssen, so dass die Hälfte der Möglichkeiten ausgeschlossen werden und Tasten schlechtere Positionen brauchen). 
+
+Da zusätzlich noch  0,828  Handwechsel bei Richtungswechsel stark positiv korrelliert war, Handwechsel bei disbalance aber stark negativ, und nur bei mir Handwechsel bei disbalance alleine gestört hat, bei anderen aber nicht, würde ich Handwechsel bei Richtungswechsel noch stärker gewichten, Handwechsel bei disbalance aber eher halbieren. 
+
+Um das Gegenzuprüfen: Alle Korrelationen von Handswitching after unbalancing: 
+
+total.penalty                    -0.26371811
+key.position.cost                -0.16173207
+finger.repeats                   -0.08171285
+disbalance.of.fingers            -0.18331477
+top.to.bottom.or.vice.versa      -0.09086633
+handswitching.in.trigram         -0.34470521
+X.rows..dist..                   -0.15114369
+shortcut.keys                    -0.08625981
+handswitching.after.unbalancing   1.00000000
+movement.pattern                  0.28422839
+
+Handswitching after unbalancing beißt sich mit jedem anderen Wert außer movement pattern, und den haben wir gerade als irrelevant gesehen. 
+
+                                movement.pattern
+total.penalty                        -0.47914322
+key.position.cost                    -0.29652744
+finger.repeats                       -0.10557053
+disbalance.of.fingers                -0.10139153
+top.to.bottom.or.vice.versa          -0.04883617
+handswitching.in.trigram             -0.37935839
+X.rows..dist..                       -0.45644787
+shortcut.keys                         0.08834689
+handswitching.after.unbalancing       0.28422839
+movement.pattern                      1.00000000
+
+
+Kann jemand testen, wie die Korrelationen von handswitching.after.unbalancing wären, wenn wir keine movement patterns hätten? 
+
+Was nämlich auffällt: unbalancing ist recht stark mit movement.pattern korrelliert. Ich bin mir allerdings gerade nicht sicher, wie ich das rausnehmen kann :( 
+
+
+
+Erstellung aller Korrelationen: 
+
+$ ./csv-ftw.sh > layouts.csv
+$ R
+> a = read.csv("layouts.csv", sep=";")
+> cor(a)
+
+(csv und R sind cool!)
+
+Weiteres
+--------
+
+Schlechte Handbalance ist in einem Satz meiner Erfahrung nach ab 4% Abweichung spürbar. Deswegen würde ich vorschlagen, den Parameter nochmal zu verdoppeln. 
+
+Vorschläge
+----------
+
+* finger load: small to index: 1, 1.6, 2.6, 2.6
+* doubled cost for finger disbalance
+* doubled position cost for xqßzöä,.
+* tripled cost for row-changes
+* doubled cost for too little handswitching on direction change
+* halved cost for no handswitching after unbalancing key
+* reduced cost for movement patterns by factor 20 (shouldn’t be relevant anymore, now; maybe remove completely).
+* double the cost for finger repeats, too.
