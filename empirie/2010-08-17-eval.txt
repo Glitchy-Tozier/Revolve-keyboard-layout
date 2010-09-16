@@ -181,7 +181,7 @@ movement.pattern                  0.28422839
 
 Handswitching after unbalancing beißt sich mit jedem anderen Wert außer movement pattern, und den haben wir gerade als irrelevant gesehen. Movement patterns sind allerdings mit allem anderen negativ korrelliert, so dass die negative Korrellation von unbalancing mit den total cost auch daher kommen könnte. 
 
-Allerdings ist es halt auch stark negativ mit handswitching.in.trigram korrelliert, dass mit allem anderen positiv korrelliert ist, v.a. mit total penalty. 
+Allerdings ist es halt auch stark negativ mit handswitching.in.trigram korrelliert, dass mit allem anderen positiv korrelliert ist, v.a. mit total penalty. Das könnte ein Grund sein: Es gibt eine Höchstmenge an Handwechseln, die sinnvoll sind, und die beiden Gründe für Handwechsel teilen sie unter sich auf ⇒ Kampf :)
 
                                 handswitching.in.trigram 
 total.penalty                                  0.8282882   
@@ -244,19 +244,29 @@ Was mir am Sinnvollsten erscheint (bitte sagt es, wenn ihr es anders seht!):
 
 Sobald wir auf eine config geeinigt haben, kommen wir in die nächste Runde der Optimierungen. Ein kurzer Test (ein paar Stunden grep_cascade.sh testen) hat gezeigt, dass die Unterschiede pro Parameter recht groß sind, wenn wir viele Parameter festhalten wollen. Das heißt, wenn wir den Test wirklich sauber machen wollen, brauchen wir deutlich über 1000 Layouts. 
 
-Bei den 8 Referenzlayouts, bei denen alle Parameter festgehalten sind, variieren die Fingerwiederholung trotzdem noch von 1.8% bis fast 2.1%. Wenn ich sie noch stärker festhalte, gibt es keine passenden mehr (infos in grep_cascade.sh). Das heißt, für den wirklich sauberen Tipptest (wie beeinflusst eine Änderung des Parameters um einen gegebenen Wert das Tippgefühl) brauchen wir nicht 1000 sondern eher 10.000 Layouts – oder mehr. Allerdings dürfte bereits die etwas grobere Version, die wir bisher haben, einiges an Aufschluss bringen (und helfen, den Test zu verfeinern, bevor wir ihn dann mit 10.000+ Layouts machen; falls wir so viele schaffen). 
+Bei den 8 Referenzlayouts, bei denen alle Parameter festgehalten sind¹, variieren die Fingerwiederholung trotzdem noch von 1.8% bis fast 2.1%. Wenn ich sie noch stärker festhalte, gibt es keine passenden Layouts mehr (infos in grep_cascade.sh). Das heißt, für den wirklich sauberen Tipptest (wie beeinflusst eine Änderung des Parameters um einen gegebenen Wert das Tippgefühl) brauchen wir nicht 1000 sondern eher 10.000 Layouts – oder mehr. Allerdings dürfte bereits die etwas grobere Version, die wir bisher haben, einiges an Aufschluss bringen (und helfen, den Test zu verfeinern, bevor wir ihn dann mit 10.000+ Layouts machen; falls wir so viele schaffen). 
+
+¹: https://bitbucket.org/ArneBab/evolve-keyboard-layout/src/tip/empirie/2010-08-17-layouts-varying-only-one-parameter.txt
 
 Die 1000 Layouts sind übrigens schon jetzt eine geniale Arbeitsbasis! Damit lassen sich Tests machen, die nur mit dem Optimierer aus Geschwindigkeitsgründen nicht möglich sind. Und das macht einfach Spaß :)
 
 Jetzt aber nochmal strukturiert: Nächste Schritte zu einem optimalen Layout: 
 
+
 1. Wir diskutieren die Vorschläge für config-Änderungen in der Liste (und in IRC + irgendjemand fasst es für die Liste zusammen ⇒ Wer macht es?). 
+
 2. Wir einigen uns auf eine config. 
+
 3. Wir versuchen das Stromnetz zum Zusammenbruch zu bringen, indem wir so viel Rechenleistung wie möglich auf die Generierung neuer Layouts werfen :)
+
 4. Wenn wir 1000 bis 100 000 Layouts zusammen haben, wählen wir wieder die besten aus. 
-5. Für die besten machen wir den regularity_check.py: Wie stark sind ihre Abweichungen für kurze Textabschnitte? Wir brauchen ein regelmäßiges Tippen. 
+
+5. Für die besten machen wir den regularity_check.py: Wie stark sind ihre Abweichungen für kurze Textabschnitte? Wir brauchen ein regelmäßiges Tippen (ist zumindest meine Ansicht dazu. Was denkt ihr? Lieber ein für 99% der Wörter geniales Layout, das bei 1% einbricht, oder ein nicht ganz so gutes, das ein über verschiedene Texte konsistentes Tippgefühl liefert?). 
+
 6. Die regelmäßigsten der besten Layouts kommen wieder in Tipptests: Was stört noch ⇒ zurück zu 1. ;) 
+
 7. Wenn die Endlosschleife abbricht, weil wir der Meinung sind, dass wir fertig sind, ergänzen wir den Korpus um andere Sprachen (⇒ wir müssen noch diskutieren, wie er aussehen soll) und machen eine letzte großangelegte Optimierung. 
+
 
 Gleichzeitig können wir die Tipptests von Miche machen (ist das dann Multithreading oder Multiprocessing?). @Miche: Kannst du das organisieren? Bei mir drängt sich die Diplomarbeit inzwischen doch etwas stärker auf… 
 
