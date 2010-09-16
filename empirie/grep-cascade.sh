@@ -63,15 +63,16 @@
 
 # alle Werte unten sind getestet, dass sie min 10 Layouts geben. 
 
-#       phrase       value lines_before lines_after
-$tot="total\ penalty 20.8  10           17"
-$pos="position       15.1  11           16"
-$rep="2gramme        0.75  12           15"
-$dis="fingers        1.06  13           14"
-$bot="bottom         0.24  14           13"
-$swi="trigram        1.12  15           12"
-$row="rows           0.72  16           11"
-$sho="shortcut       0.11  17           10"
-$unb="unbalancing    1.20  18           9"
-$pat="pattern        3.40  19           8"
+#                              lines_before lines_after
+tot="20\\..*penalty.*        -B 16        -A 11" # ignored
+pos="position.*15\\.[0123]         -B 17        -A 10"
+rep="2gramme.*0\\.[78]      -B 18        -A 9"
+dis="fingers.*[01]\\.[0129]          -B 19        -A 8"
+bot="bottom.*0\\.2           -B 20        -A 7"
+swi="trigram.*1\\.[0123]          -B 21        -A 6"
+row="rows.*0\\.[67]             -B 22        -A 5"
+sho="0\\.1.*shortcut         -B 23        -A 4"
+unb="1\\.[12].*unbalancing      -B 24        -A 3"
+pat="3\\.4.*attern          -B 25        -A 2"
 
+grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $sho | grep $unb | grep $pat
