@@ -69,10 +69,43 @@ pos="position.*15\\.[0123]         -B 17        -A 10"
 rep="2gramme.*0\\.[78]      -B 18        -A 9"
 dis="fingers.*[01]\\.[0129]          -B 19        -A 8"
 bot="bottom.*0\\.2           -B 20        -A 7"
-swi="trigram.*1\\.[0123]          -B 21        -A 6"
-row="rows.*0\\.[67]             -B 22        -A 5"
-sho="0\\.1.*shortcut         -B 23        -A 4"
-unb="1\\.[12].*unbalancing      -B 24        -A 3"
-pat="3\\.4.*attern          -B 25        -A 2"
+swi="trigram.*1\\.[012]          -B 21        -A 6"
+row="rows.*0\\.[678]             -B 22        -A 5"
+sho="0\\.1.*shortcut         -B 23        -A 4" # ignored: no effect on typing.
+unb="1\\.2.*unbalancing      -B 24        -A 3"
+pat="3\\.4.*pattern          -B 25        -A 2" # ignored: useless optimization
 
-grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $sho | grep $unb | grep $pat
+echo --- reference layouts ---
+grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb
+
+# partial
+echo " " 
+echo " "  
+echo " "  --- finger-repeats ---
+echo " " 
+grep $pos results/2010-* | grep $dis | grep $bot | grep $swi | grep $row | grep $unb
+echo " " 
+echo " " 
+echo " "  --- finger-disbalance ---
+echo " " 
+grep $pos results/2010-* | grep $rep | grep $bot | grep $swi | grep $row | grep $unb
+echo " " 
+echo " " 
+echo " "  --- top-bottom ---
+echo " " 
+grep $pos results/2010-* | grep $rep | grep $dis | grep $swi | grep $row | grep $unb
+echo " " 
+echo " " 
+echo " "  --- handswitching ---
+echo " " 
+grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $row | grep $unb
+echo " " 
+echo " " 
+echo " "  --- rows ---
+echo " " 
+grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb
+echo " " 
+echo " " 
+echo " "  --- switch-after-unbalancing ---
+echo " " 
+grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row
