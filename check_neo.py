@@ -279,6 +279,11 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
     """
     cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
     consecutive_fails = 0
+    # take anneal_step steps for the first anneal level, too
+    if anneal: 
+        anneal += 1
+        anneal -= 1/anneal_step
+    
     for i in range(iterations):
         if not controlled: 
             # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
