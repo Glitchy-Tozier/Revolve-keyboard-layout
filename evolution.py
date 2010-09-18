@@ -29,6 +29,11 @@ verbose = True
 #: Should we finalize the layout with as many controlled steps as needed, so a single keyswitch can’t improve it further?
 controlled_tail = True
 
+#: Should we use annealing? How many steps? Per step it adds one switch, so anneal 5 starts with 6 switches aka changing half the layout (12 keys).
+anneal = 5
+#: The number of iterations to spend in one anneal level. The first anneal * anneal_step iterations are spent in simulated annealing.
+anneal_step = 100
+
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
 STARTING_LAYOUT = """xvlcw khgfqß´
 uiaeo snrtdy
@@ -64,4 +69,6 @@ for step in range(options.evolution_steps):
                     quiet,
                     verbose,
                     controlled_tail,
-                    starting_layout=STARTING_LAYOUT)
+                    starting_layout=STARTING_LAYOUT,
+                    anneal=anneal,
+                    anneal_step = anneal_step)
