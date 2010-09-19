@@ -68,7 +68,7 @@ from time import time
 from datetime import timedelta
 STARTING_LAYOUT = string_to_layout(STARTING_LAYOUT)
 
-
+print("# Starting the evolution.")
 
 t = time()
 for step in range(options.evolution_steps):
