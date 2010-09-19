@@ -72,9 +72,6 @@ STARTING_LAYOUT = string_to_layout(STARTING_LAYOUT)
 
 t = time()
 for step in range(options.evolution_steps):
-    print(step+1, "/", options.evolution_steps,
-          timedelta(seconds=time()-t))
-    t = time()
     evolve_a_layout(steps,
                     prerandomize,
                     controlled,
@@ -85,3 +82,6 @@ for step in range(options.evolution_steps):
                     data=options.data, 
                     anneal=anneal,
                     anneal_step = anneal_step)
+    print(step+1, "/", options.evolution_steps,
+          timedelta(seconds=time()-t))
+    t = time()
