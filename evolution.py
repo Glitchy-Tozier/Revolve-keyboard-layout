@@ -50,6 +50,10 @@ parser.add_option("-f", "--file", type="string", dest="data",
 
 (options, args) = parser.parse_args()
 
+if options.data:
+    with open(options.data) as f: 
+        options.data = f.read()
+
 ### run
 
 # Hack to make the script output to a file instead of the shell (necessary for windows users).
