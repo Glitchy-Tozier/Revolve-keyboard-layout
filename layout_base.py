@@ -289,11 +289,8 @@ def find_key(key, layout):
         # maybe we didn’t add the uppercase key, should only happen for incomplete layouts.
         try: pos = LETTER_TO_KEY_CACHE[key.lower()]
         except KeyError: 
-            pos = None # all keys are in there. None means, we don’t need to check.
-    #if pos is None or get_key(pos, layout=layout) == key.lower():
+            pos = None # all keys are in there. None means, we don’t need to check by hand.
     return pos
-    # on a cache miss, search the key and refresh the cache
-    #return update_letter_to_key_cache(key, layout=layout)
 
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
