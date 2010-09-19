@@ -284,9 +284,12 @@ def find_key(key, layout):
         LETTER_TO_KEY_CACHE = layout[5]
         update_letter_to_key_cache_multiple(None, layout=layout)
     # first check the caches
-    try: pos = LETTER_TO_KEY_CACHE[key.lower()]
+    try: pos = LETTER_TO_KEY_CACHE[key]
     except KeyError:
-        pos = None # all keys are in there. None means, we don’t need to check.
+        # maybe we didn’t add the uppercase key, should only happen for incomplete layouts.
+        try: pos = LETTER_TO_KEY_CACHE[key.lower()]
+        except KeyError: 
+            pos = None # all keys are in there. None means, we don’t need to check.
     #if pos is None or get_key(pos, layout=layout) == key.lower():
     return pos
     # on a cache miss, search the key and refresh the cache

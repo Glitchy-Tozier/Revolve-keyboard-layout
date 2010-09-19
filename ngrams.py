@@ -2,7 +2,7 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, key_to_finger, read_file
+from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split uppercase repeats into two to three lowercase repeats.
@@ -26,8 +26,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
-    upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
-    reps = [rep for rep in reps if rep[1] == rep[1].lower()]
+    upper = [(num, rep) for num, rep in reps if
+             (find_key(rep[0], layout=layout) == 1 or find_key(rep[1], layout=layout) == 1 or not rep == rep.lower())
+             ]
+    reps = [(num, rep) for (num, rep) in reps if not
+             (find_key(rep[0], layout=layout) == 1 or find_key(rep[1], layout=layout) == 1 or not rep == rep.lower())
+            ]
     up = []
     for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
         # use both shifts, but half weight each
