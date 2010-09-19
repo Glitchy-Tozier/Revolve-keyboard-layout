@@ -41,55 +41,45 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 0.2 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_FINGER_SWITCH = 0.1 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
+WEIGHT_FINGER_SWITCH = 20 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
-FINGER_SWITCH_COST = {
+FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
-        "Ring_L": 2, # 100ms
-        "Mittel_L": 4,
-        "Zeige_L": 1
+        "Ring_L": 3, 
+        "Mittel_L": 3
         }, 
     "Ring_L": {
-        "Klein_L": 3,
-        "Mittel_L": 4, # 140ms
-        "Zeige_L": 1
+        "Klein_L": 4,
+        "Mittel_L": 3
         }, 
     "Mittel_L": {
         "Klein_L": 1,
-        "Ring_L": 4,
-        "Zeige_L": 1 # Nach Rohmert 230ms statt 200ms ⇒ 30ms
+        "Ring_L": 2
         }, 
     "Zeige_L": {
-        "Klein_L": 1,
-        "Ring_L": 3,
-        "Mittel_L": 4 # 120ms
+        "Klein_L": 1
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Mittel_R": 4,
-        "Ring_R": 3,
         "Klein_R": 1
         },
     "Mittel_R": {
-        "Zeige_R": 1,
-        "Ring_R": 4,
+        "Ring_R": 2, 
         "Klein_R": 1
         },
     "Ring_R": {
-        "Zeige_R": 2,
-        "Mittel_R": 4,
-        "Klein_R": 3
+        "Mittel_R": 3,
+        "Klein_R": 4
         }, 
     "Klein_R": {
-        "Zeige_R": 1,
-        "Mittel_R": 4,
-        "Ring_R": 2
+        "Mittel_R": 3,
+        "Ring_R": 3
         }
-}
+} # iutd, drua, uidt, rdau, airt, ndeu :)
 
 WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 20 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 
