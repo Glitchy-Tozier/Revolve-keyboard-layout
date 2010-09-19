@@ -45,6 +45,8 @@ uiaeo snrtdy
 parser = OptionParser(usage = "evolutionary running script", version = "0.1")
 parser.add_option("-o", "--output", type="string", dest="filename", default=filename, help="set outputfile")
 parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=num_layouts, help="number of steps")
+parser.add_option("-f", "--file", type="string", dest="data",
+                  default=None, help="use the given textfile as korpus instead of the ngram files.", metavar="filepath")
 
 (options, args) = parser.parse_args()
 
@@ -58,11 +60,17 @@ if filename is not None:
     sys.argv.append(options.filename)
 
 from check_neo import evolve_a_layout, string_to_layout
-
+from time import time
+from datetime import timedelta
 STARTING_LAYOUT = string_to_layout(STARTING_LAYOUT)
 
+
+
+t = time()
 for step in range(options.evolution_steps):
-    print(step+1, "/", options.evolution_steps)
+    print(step+1, "/", options.evolution_steps,
+          timedelta(seconds=time()-t))
+    t = time()
     evolve_a_layout(steps,
                     prerandomize,
                     controlled,
@@ -70,5 +78,6 @@ for step in range(options.evolution_steps):
                     verbose,
                     controlled_tail,
                     starting_layout=STARTING_LAYOUT,
+                    data=options.data, 
                     anneal=anneal,
                     anneal_step = anneal_step)
