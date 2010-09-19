@@ -126,12 +126,14 @@ UNBALANCING_POSITIONS = {
 COST_PER_KEY  = [
     # The 0 values aren’t filled in at the moment.
     # Don’t put mutated keys there!
-    [0,     0, 0, 0, 0, 0,     0, 0, 0, 0, 0,22, 0, 0], # Zahlenreihe (0)
-    [0,    20, 6, 5, 6, 9,    10, 5, 4, 5, 8,24,36, 0], # Reihe 1
-    [0,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+    [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
+    [24,    20, 6, 5, 6, 9,    10, 5, 4, 5, 8,24,36, 0], # Reihe 1
+    [12,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,24,20, 10,   30, 7, 6,22,22,10,   15],     # Reihe 3
     [0,0,0,               3           , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
+
+COST_PER_KEY_NOT_FOUND = 60
 
 # for reference the neo layout
 NEO = [

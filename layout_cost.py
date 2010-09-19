@@ -36,9 +36,10 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     cost = 0
     for num, letter in letters:
         pos = find_key(letter, layout=layout)
-        if pos is None: # not found => next letter
-            continue
-        cost += num * cost_per_key[pos[0]][pos[1]]
+        if pos is None: # not found
+            cost += num * COST_PER_KEY_NOT_FOUND
+        else: 
+            cost += num * cost_per_key[pos[0]][pos[1]]
     return cost
 
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
