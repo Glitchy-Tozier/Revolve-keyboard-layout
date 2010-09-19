@@ -38,7 +38,11 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
         pos = find_key(letter, layout=layout)
         if pos is None: # not found
             cost += num * COST_PER_KEY_NOT_FOUND
-        else: 
+        # shift, M3 and M4
+        elif COST_LAYER_ADDITION[pos[2]:]:
+            cost += num * (cost_per_key[pos[0]][pos[1]] + COST_LAYER_ADDITION[pos[2]])
+        else:
+            # layer has no addition cost ⇒ undefined layer (higher than layer 6!). Just take the base key…
             cost += num * cost_per_key[pos[0]][pos[1]]
     return cost
 

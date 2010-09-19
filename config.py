@@ -125,13 +125,15 @@ UNBALANCING_POSITIONS = {
 # [1]: http://forschung.goebel-consult.de/de-ergo/rohmert/Rohmert.html - only one person!
 COST_PER_KEY  = [
     # The 0 values aren’t filled in at the moment.
-    # Don’t put mutated keys there!
+    # Don’t put mutated keys there, otherwise the best keys will end up there!
     [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
     [24,    20, 6, 5, 6, 9,    10, 5, 4, 5, 8,24,36, 0], # Reihe 1
     [12,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10,12,24,20, 10,   30, 7, 6,22,22,10,   15],     # Reihe 3
     [0,0,0,               3           , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
+
+COST_LAYER_ADDITION = [0, 15, 12, 10, 27, 22]
 
 COST_PER_KEY_NOT_FOUND = 60
 
