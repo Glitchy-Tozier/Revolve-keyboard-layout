@@ -125,8 +125,12 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     for pair in keypairs:
         pos0 = find_key(pair[0], layout=lay)
         pos1 = find_key(pair[1], layout=lay)
-        tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
-        tmp1 = (pair[0], ) + tuple(lay[pos1[0]][pos1[1]][1:])
+        if pair[1].upper() == pair[1]: 
+            tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
+        else: tmp0 = (pair[1], pair[1].upper()) + tuple(lay[pos0[0]][pos0[1]][2:])
+        if pair[0].upper() == pair[0]: 
+            tmp1 = (pair[0], ) + tuple(lay[pos1[0]][pos1[1]][1:])
+        else: tmp1 = (pair[0], pair[0].upper()) + tuple(lay[pos1[0]][pos1[1]][2:])
         lay[pos0[0]][pos0[1]] = tmp0
         lay[pos1[0]][pos1[1]] = tmp1
         update_letter_to_key_cache_multiple(pair, layout=lay)

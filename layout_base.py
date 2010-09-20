@@ -340,22 +340,55 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     """
     layout = deepcopy(base_layout)
     lines = layout_string.splitlines()
-    # first and second letter row
+    # first and second letter row, the ifs are for replacing the second layer with uppercase, where aplicable. 
     for i in range(1, 6):
-        layout[1][i] = (lines[0][i-1], ) + tuple(layout[1][i][1:])
-        layout[1][i+5] = (lines[0][i+5], ) + tuple(layout[1][i+5][1:])
-        layout[2][i] = (lines[1][i-1], ) + tuple(layout[2][i][1:])
-        layout[2][i+5] = (lines[1][i+5], ) + tuple(tuple(layout[2][i+5][1:]))
-    layout[1][-3] = (lines[0][11], ) + tuple(layout[1][-3][1:])
-    layout[2][-3] = (lines[1][11], ) + tuple(layout[2][-3][1:])
-    if lines[0][12:]: 
-        layout[1][-2] = (lines[0][12], ) + tuple(layout[1][-2][1:])
+        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
+            layout[1][i] = (lines[0][i-1], ) + tuple(layout[1][i][1:])
+        else:
+            layout[1][i] = (lines[0][i-1], lines[0][i-1].upper()) + tuple(layout[1][i][2:])
+
+        if lines[0][i+5].upper() == lines[0][i+5]: # nonstandard keys. 
+            layout[1][i+5] = (lines[0][i+5], ) + tuple(layout[1][i+5][1:])
+        else:
+            layout[1][i+5] = (lines[0][i+5], lines[0][i+5].upper()) + tuple(layout[1][i+5][2:])
+
+        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
+            layout[2][i] = (lines[1][i-1], ) + tuple(layout[2][i][1:])
+        else: 
+            layout[2][i] = (lines[1][i-1], lines[1][i-1].upper()) + tuple(layout[2][i][2:])
+
+        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
+            layout[2][i+5] = (lines[1][i+5], ) + tuple(tuple(layout[2][i+5][1:]))
+        else: 
+            layout[2][i+5] = (lines[1][i+5], lines[1][i+5].upper()) + tuple(tuple(layout[2][i+5][2:]))
+
+    if lines[0][11].upper() == lines[0][11]: 
+        layout[1][-3] = (lines[0][11], ) + tuple(layout[1][-3][1:])
+    else:
+        layout[1][-3] = (lines[0][11], lines[0][11].upper()) + tuple(layout[1][-3][2:])
+
+    if lines[1][11].upper() == lines[1][11]: 
+        layout[2][-3] = (lines[1][11], ) + tuple(layout[2][-3][1:])
+    else:
+        layout[2][-3] = (lines[1][11], lines[1][11].upper()) + tuple(layout[2][-3][2:])
+
+    if lines[0][12:]:
+        if lines[0][12].upper() == lines[0][12]: 
+            layout[1][-2] = (lines[0][12], ) + tuple(layout[1][-2][1:])
+        else:
+            layout[1][-2] = (lines[0][12], lines[0][12].upper()) + tuple(layout[1][-2][2:])
     
     # third row
     left, right = lines[2].split()[:2]
     for i in range(len(left)):
-        layout[3][6-i] = (left[-i-1], ) + tuple(layout[3][6-i][1:])
+        if left[-i-1].upper() == left[-i-1]: 
+            layout[3][6-i] = (left[-i-1], ) + tuple(layout[3][6-i][1:])
+        else:
+            layout[3][6-i] = (left[-i-1], left[-i-1].upper()) + tuple(layout[3][6-i][2:])
     for i in range(len(right)):
-        layout[3][7+i] = (right[i], ) + tuple(layout[3][7+i][1:])
+        if right[i].upper() == right[i]: 
+            layout[3][7+i] = (right[i], ) + tuple(layout[3][7+i][1:])
+        else:
+            layout[3][7+i] = (right[i], right[i].upper()) + tuple(layout[3][7+i][2:])
 
     return layout
