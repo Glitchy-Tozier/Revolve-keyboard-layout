@@ -233,11 +233,11 @@ def update_letter_to_key_cache_multiple(keys, layout):
     """
     if keys is None:
         keys = []
-        for i in layout:
-            for j in i:
-                for k in j:
-                    if k: 
-                        keys.append(k)
+        for line in layout:
+            for key in line:
+                for letter in key:
+                    if letter: 
+                        keys.append(letter)
     for key in keys:
         update_letter_to_key_cache(key, layout=layout)
     
@@ -267,6 +267,10 @@ def find_key(key, layout):
     
     >>> find_key("a", NEO_LAYOUT)
     (2, 3, 0)
+    >>> find_key("A", NEO_LAYOUT)
+    (2, 3, 1)
+    >>> find_key("e", NEO_LAYOUT)
+    (2, 4, 0)
     """
     # check, if the layout already has a cache. If not, create it.
     # this approach reduces the time to find a key by about 50%.
@@ -392,3 +396,8 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
             layout[3][7+i] = (right[i], right[i].upper()) + tuple(layout[3][7+i][2:])
 
     return layout
+
+
+if __name__ == "__main__":
+    from doctest import testmod
+    testmod()

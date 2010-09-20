@@ -122,18 +122,29 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     True
     """
     lay = deepcopy(layout)
+    from pprint import pprint
+    #pprint(lay)
     for pair in keypairs:
-        pos0 = find_key(pair[0], layout=lay)
-        pos1 = find_key(pair[1], layout=lay)
-        if pair[1].upper() == pair[1]: 
-            tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
-        else: tmp0 = (pair[1], pair[1].upper()) + tuple(lay[pos0[0]][pos0[1]][2:])
-        if pair[0].upper() == pair[0]: 
-            tmp1 = (pair[0], ) + tuple(lay[pos1[0]][pos1[1]][1:])
-        else: tmp1 = (pair[0], pair[0].upper()) + tuple(lay[pos1[0]][pos1[1]][2:])
-        lay[pos0[0]][pos0[1]] = tmp0
-        lay[pos1[0]][pos1[1]] = tmp1
-        update_letter_to_key_cache_multiple(pair, layout=lay)
+        try: 
+            pos0 = find_key(pair[0], layout=lay)
+            pos1 = find_key(pair[1], layout=lay)
+            if pair[1].upper() == pair[1]: 
+                tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
+            else:
+                tmp0 = (pair[1], pair[1].upper()) + tuple(lay[pos0[0]][pos0[1]][2:])
+            
+            if pair[0].upper() == pair[0]: 
+                tmp1 = (pair[0], ) + tuple(lay[pos1[0]][pos1[1]][1:])
+            else:
+                tmp1 = (pair[0], pair[0].upper()) + tuple(lay[pos1[0]][pos1[1]][2:])
+
+            lay[pos0[0]][pos0[1]] = tmp0
+            lay[pos1[0]][pos1[1]] = tmp1
+            update_letter_to_key_cache_multiple(pair+pair.upper(), layout=lay)
+        except:
+            pprint(lay)
+            print(pair, tmp0, tmp1)
+            exit()
     
     return lay
 
