@@ -12,7 +12,7 @@
 # Entwicklung von Neo 3 nicht und wird deshalb wahrscheinlich nie
 # erfolgen.
 
-arg0='-t'
+arg0='-p'
 arg1="$1"
 arg2="$2"
 arg3="$3"
@@ -24,7 +24,8 @@ while test -n "$arg0"; do
 		echo "Usage:"
 		echo " -h   display Help and exit"
 		echo " -m   test layouts for missing characters" # don't rely on this
-		echo " -t   sort by total penalty (default)"
+		echo " -p   sort by tot. penalty per letter (default)"
+		echo " -t   sort by total penalty"
 		echo " -k   sort by key position cost"
 		echo " -f   sort by fingerrepeats in 2-gramme"
 		echo " -d   sort by disbalance of fingers"
@@ -54,10 +55,14 @@ while test -n "$arg0"; do
 				echo "$a:$missing missing"
 			fi
 		done
+	elif test "$arg0" = "-p"; then
+		sort='yes'
+		kriterium="tot. penalty per letter"
+		suchzeile="x100 total penalty per letter"
 	elif test "$arg0" = "-t"; then
 		sort='yes'
 		kriterium="total penalty"
-		suchzeile="billion total penalty compared to notime-noeffort"
+		suchzeile="x10 billion total penalty compared to notime-noeffort"
 	elif test "$arg0" = "-k"; then
 		sort='yes'
 		kriterium="keyposition"
@@ -65,7 +70,7 @@ while test -n "$arg0"; do
 	elif test "$arg0" = "-f"; then
 		sort='yes'
 		kriterium="fingerrepeats"
-		suchzeile="finger repeats in file 2gramme.txt ( [0-9]*.[0-9]* )"
+		suchzeile="% finger repeats in file 2gramme.txt ( [0-9]*.[0-9]* )"
 	elif test "$arg0" = "-d"; then
 		sort='yes'
 		kriterium="disbalance of fingers"
@@ -85,7 +90,7 @@ while test -n "$arg0"; do
 	elif test "$arg0" = "-i"; then
 		sort='yes'
 		kriterium="hand disbalance"
-		suchzeile="hand disbalance. Left: [0-9]*.[0-9]* %, Right: [0-9]*.[0-9]* %"
+		suchzeile="hand disbalance. Left: [0-9]*.[0-9]* %, Right: [0-9]*.[0-9]* % ( [0-9]*.[0-9]* )"
 	elif test "$arg0" = "-s"; then
 		sort='yes'
 		kriterium="badly positioned shortcut keys"
@@ -136,11 +141,12 @@ if test -n "$sort"; then
 	suchzeile="s/:$// ; t a ; s/^# // ; t b; d ; :b s/$suchzeile// ; t c; d; :c G; s/\\n//; p; d; :a h; d"
 
 	sed "$suchzeile" "$tmp" | sort -g
-
-	echo "¹äöüß not counted
-²ß not counted
-³ä not counted because of M4L
-⁴. not counted because of M4L"
+	
+	echo "¹äöüß missing
+²ß missing
+³ä missing because of M4L
+⁴. missing because of M4L
+missing letters are getting overall penalty" # dont blame me for my english ;-)
 
 	rm "$tmp"
 fi
