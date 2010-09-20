@@ -437,9 +437,14 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         trigrams=trigrams, number_of_trigrams=number_of_trigrams
         )
 
+    res = ""
+    def c(*args):
+        """concatenate the args to a string similar to how print() does it, just simpler."""
+        return " ".join((str(i) for i in args)) + "\n"
+    
     if print_layout:
-        result(format_layer_1_string(layout))
-        result(format_keyboard_layout(layout))
+        res += c(format_layer_1_string(layout))
+        res += c(format_keyboard_layout(layout))
         #from pprint import pprint
         #pprint(layout[:5])
 
@@ -453,19 +458,20 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     else:
         sn = str
 
-    result("#", sn(total/max(1, number_of_letters)/100), "x100 total penalty per letter")
-    result("#", sn(total / 10000000000), "x10 billion total penalty compared to notime-noeffort")
-    result("#", sn(cost / max(1, number_of_letters)), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
-    result("#", sn(100 * frep_num / max(1, number_of_bigrams)), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
+    res += c("#", sn(total/max(1, number_of_letters)/100), "x100 total penalty per letter")
+    res += c("#", sn(total / 10000000000), "x10 billion total penalty compared to notime-noeffort")
+    res += c("#", sn(cost / max(1, number_of_letters)), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
+    res += c("#", sn(100 * frep_num / max(1, number_of_bigrams)), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
     if verbose: 
-        result("#", sn(disbalance / 1000000), "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
-        result("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
-        result("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
-        result("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
-        result("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance. Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "% (", str(hand_disbalance_w/1000000000), ")")
-        result("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
-        result("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
-        result("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+        res += c("#", sn(disbalance / 1000000), "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
+        res += c("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
+        res += c("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
+        res += c("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
+        res += c("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance. Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "% (", str(hand_disbalance_w/1000000000), ")")
+        res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
+        res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
+        res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+    result(res)
 
 
 def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
