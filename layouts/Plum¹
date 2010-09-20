@@ -12,14 +12,15 @@ kjvb, .wxyz
 ├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
 │Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
 └────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
-# 27.31758 billion total penalty compared to notime-noeffort
-# 5.235746 mean key position cost in file 1gramme.txt ( 15.07393133 )
-# 4.716305 % finger repeats in file 2gramme.txt ( 2.018601472 )
-# 9.677115 million keystrokes disbalance of the fingers ( 2.41927897497 )
+# 1.555362 x100 total penalty per letter
+# 4.477952 x10 billion total penalty compared to notime-noeffort
+# 7.251897 mean key position cost in file 1gramme.txt ( 20.87851519 )
+# 4.716305 % finger repeats in file 2gramme.txt ( 4.037202944 )
+# 11.17700 million keystrokes disbalance of the fingers ( 5.5885010463 )
 # 0.126145 % finger repeats top to bottom or vice versa ( 0.863852544 )
-# 6.566689 % of trigrams have no handswitching (after direction change counted x 1 ) ( 3.8241573 )
-# 6.190753 billion (rows²/dist)² to cross ( 1.23815070546 )
-# 0.030823 hand disbalance. Left: 0.530823430737 %, Right: 0.469176569263 %
+# 6.566689 % of trigrams have no handswitching (after direction change counted x 1 ) ( 7.6483146 )
+# 6.488441 billion (rows²/dist)² to cross ( 3.89306473989 )
+# 0.030823 hand disbalance. Left: 0.530823430737 %, Right: 0.469176569263 % ( 0.266225812488 )
 # 0.172742 badly positioned shortcut keys (weighted).
-# 1.374977 no handswitching after unbalancing key (weighted).
-# 0.331895 movement pattern cost (weighted).
+# 0.571549 no handswitching after unbalancing key (weighted).
+# 0.859551 movement pattern cost (weighted).
