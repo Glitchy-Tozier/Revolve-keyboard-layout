@@ -5,7 +5,7 @@
 Depends on the layouts info starting with OA'Evolved Layout'
 """
 
-from check_neo import string_to_layout, print_layout_with_statistics, csv_data
+from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data
 from os import listdir
 from os.path import join
 
@@ -54,13 +54,15 @@ if __name__ == "__main__":
     
     all_layouts = get_all_layouts_in_text_files_in("results")
 
-    
+
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=data)
+
     for lay in all_layouts:
         if print_csv: 
             print(";".join([str(i)
-                            for i in csv_data(lay, data=data)]
-                           ))
+                            for i in csv_data(lay, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)])
+                           )
         else: 
             print("# Evolved Layout")
-            print_layout_with_statistics(lay, verbose=True, data=data)
+            print_layout_with_statistics(lay, verbose=True, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
             print()
