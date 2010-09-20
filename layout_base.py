@@ -342,20 +342,20 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     lines = layout_string.splitlines()
     # first and second letter row
     for i in range(1, 6):
-        layout[1][i] = lines[0][i-1]
-        layout[1][i+5] = lines[0][i+5]
-        layout[2][i] = lines[1][i-1]
-        layout[2][i+5] = lines[1][i+5]
-    layout[1][-3] = lines[0][11]
-    layout[2][-3] = lines[1][11]
+        layout[1][i] = (lines[0][i-1], ) + tuple(layout[1][i][1:])
+        layout[1][i+5] = (lines[0][i+5], ) + tuple(layout[1][i+5][1:])
+        layout[2][i] = (lines[1][i-1], ) + tuple(layout[2][i][1:])
+        layout[2][i+5] = (lines[1][i+5], ) + tuple(tuple(layout[2][i+5][1:]))
+    layout[1][-3] = (lines[0][11], ) + tuple(layout[1][-3][1:])
+    layout[2][-3] = (lines[1][11], ) + tuple(layout[2][-3][1:])
     if lines[0][12:]: 
-        layout[1][-2] = lines[0][12]
+        layout[1][-2] = (lines[0][12], ) + tuple(layout[1][-2][1:])
     
     # third row
     left, right = lines[2].split()[:2]
     for i in range(len(left)):
-        layout[3][6-i] = left[-i-1]
+        layout[3][6-i] = (left[-i-1], ) + tuple(layout[3][6-i][1:])
     for i in range(len(right)):
-        layout[3][7+i] = right[i]
+        layout[3][7+i] = (right[i], ) + tuple(layout[3][7+i][1:])
 
     return layout
