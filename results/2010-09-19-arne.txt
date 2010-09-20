@@ -26,3 +26,31 @@ zxbwq .göäü
 # 0.0575808308 badly positioned shortcut keys (weighted). 
 # 0.76762218 no handswitching after unbalancing key (weighted). 
 # 0.83973174 movement pattern cost (weighted). 
+
+# Evolved Layout 
+qhouä wcnl,ß´
+kseia mdtrfz
+.xöüy bgpjv 
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ q │ h │ o │ u │ ä │ w │ c │ n │ l │ , │ ß │ ´ │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ k │ s │ e │ i │ a │ m │ d │ t │ r │ f │ z │ ⇘ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ M4│ . │ x │ ö │ ü │ y │ b │ g │ p │ j │ v │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ 
+# 0.956356397955 x100 total penalty per letter 
+# 2.75338979676 x10 billion total penalty compared to notime-noeffort 
+# 6.20909342628 mean key position cost in file 1gramme.txt ( 17.8762379 ) 
+# 1.93403532641 % finger repeats in file 2gramme.txt ( 1.655553024 ) 
+# 1.18135335135 million keystrokes disbalance of the fingers ( 0.590676675673 ) 
+# 0.0296235891083 % finger repeats top to bottom or vice versa ( 0.20286464 ) 
+# 1.63698342776 % of trigrams have no handswitching (after direction change counted x 1 ) ( 1.9066173 ) 
+# 5.64642940021 billion (rows²/dist)² to cross ( 3.38785764013 ) 
+# 0.0103238935764 hand disbalance. Left: 0.510323893576 %, Right: 0.489676106424 % ( 0.0891687553833 ) 
+# 0.1727424924 badly positioned shortcut keys (weighted). 
+# 0.67915252 no handswitching after unbalancing key (weighted). 
+# 0.97302702 movement pattern cost (weighted). 
