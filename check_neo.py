@@ -109,7 +109,17 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     'q'
     >>> get_key((1, 10, 0), layout=lay)
     'w'
+    >>> get_key((1, 1, 1), layout=lay)
+    'L'
+    >>> get_key((1, 3, 1), layout=lay)
+    'X'
+    >>> get_key((1, 5, 1), layout=lay)
+    'Q'
+    >>> get_key((1, 10, 1), layout=lay)
+    'W'
     >>> find_key("l", layout=lay) == (1, 1, 0)
+    True
+    >>> find_key("L", layout=lay) == (1, 1, 1)
     True
     >>> NEO_LAYOUT_lxwq == lay[:5]
     True
@@ -120,14 +130,24 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     >>> lay = switch_keys(["ab"], layout=lay)
     >>> a == find_key("b", layout=lay)
     True
+    >>> dot = find_key(".", layout=NEO_LAYOUT)
+    >>> d = find_key("d", layout=NEO_LAYOUT)
+    >>> lay = switch_keys([".d"], layout=NEO_LAYOUT)
+    >>> d == find_key(".", layout=lay)
+    True
+    >>> dot == find_key("d", layout=lay)
+    True
     """
     lay = deepcopy(layout)
     from pprint import pprint
     #pprint(lay)
     for pair in keypairs:
-        try: 
             pos0 = find_key(pair[0], layout=lay)
             pos1 = find_key(pair[1], layout=lay)
+            if None in lay[5].values():
+                print(prev, pos0, pos1, pair)
+                exit()
+
             if pair[1].upper() == pair[1]: 
                 tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
             else:
@@ -141,10 +161,11 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1
             update_letter_to_key_cache_multiple(pair+pair.upper(), layout=lay)
-        except:
-            pprint(lay)
-            print(pair, tmp0, tmp1)
-            exit()
+            prev = pair
+        #except:
+        #    pprint(lay)
+        #    print(prev, pair, pos0, pos1, tmp0, tmp1)
+        #    exit()
     
     return lay
 
