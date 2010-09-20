@@ -41,24 +41,29 @@ def get_all_layouts_in_text_files_in(folder="results"):
 
 if __name__ == "__main__":
 
-    print_csv = False
+    from optparse import OptionParser
 
-    if print_csv: 
+    parser = OptionParser(description="recheck all result layouts with the current config.")
+    parser.add_option("--file", dest="data", type="string", default=None,
+                      help="use the given textfile as korpus", metavar="file")
+    parser.add_option("--csv",
+                      action="store_true", dest="print_csv", default=False,
+                      help="print a csv instead of the normal layout statistics")
+    (options, args) = parser.parse_args()
+
+    if options.print_csv: 
         print("total penalty per word;key position cost;finger repeats;disbalance of fingers;top to bottom or vice versa;handswitching in trigram;(rows²/dist)²;shortcut keys;handswitching after unbalancing;movement pattern")
 
-    data = None
-    i_want_the_data_for_the_reference_sentence = False
-    if i_want_the_data_for_the_reference_sentence: 
-        with open("beispieltext-reference-sentence.txt") as f:
-            data = f.read()
+    if options.data: 
+        with open(options.data) as f:
+            options.data = f.read()
     
     all_layouts = get_all_layouts_in_text_files_in("results")
 
-
-    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=data)
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=options.data)
 
     for lay in all_layouts:
-        if print_csv: 
+        if options.print_csv: 
             print(";".join([str(i)
                             for i in csv_data(lay, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)])
                            )
