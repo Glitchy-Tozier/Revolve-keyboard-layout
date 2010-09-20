@@ -9,17 +9,15 @@ from check_neo import string_to_layout, print_layout_with_statistics, csv_data
 from os import listdir
 from os.path import join
 
-def get_all_layouts_in_text_files_in(folder="results"):
-    """get all layouts from check_neo runs saved in the textfile."""
-    d = ""
-    for i in listdir("results"):
-        if not i.endswith(".txt"):
-            continue
-        with open(join("results", i), encoding="utf-8") as f:
-            try: 
-                d += f.read()
-            except UnicodeError:
-                print("can’t open", i)
+def get_all_layouts_in_textfile(textfile):
+    """Get all layouts in the given textfile.
+
+    @return: a list of layout strings."""
+    with open(textfile, encoding="utf-8") as f:
+        try: 
+            d = f.read()
+        except UnicodeError:
+            print("can’t open", textfile)
 
     e = d.split("Evolved Layout")
     layout_strings = []
@@ -27,6 +25,17 @@ def get_all_layouts_in_text_files_in(folder="results"):
         layout_strings.append("\n".join(i.splitlines()[1:4]))
     
     all_layouts = [string_to_layout(l) for l in layout_strings]
+    return all_layouts
+    
+    
+def get_all_layouts_in_text_files_in(folder="results"):
+    """get all layouts from check_neo runs saved in the textfile."""
+    all_layouts = []
+    for i in listdir("results"):
+        if not i.endswith(".txt"):
+            continue
+        all_layouts.extend(get_all_layouts_in_textfile(join("results", i))) 
+
     return all_layouts
 
 
