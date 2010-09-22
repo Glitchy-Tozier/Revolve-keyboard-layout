@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# encoding: utf-8
 
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 

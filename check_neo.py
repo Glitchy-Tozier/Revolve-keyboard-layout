@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
+# encoding: utf-8
 
 """Optimize keyboard layouts evolutionally (with mutations).
 
 """
+
+# python 2.6 compatibility via 3to2
+from __future__ import print_function
+
 __usage__ = """Usage:
 
 - check_neo.py --help (display this text)

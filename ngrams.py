@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# encoding: utf-8
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 

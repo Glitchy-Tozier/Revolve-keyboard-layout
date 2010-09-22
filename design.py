@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# encoding: utf-8
 
 """Design discusions and decisions for the layout optimizer (mostly in german)."""
 

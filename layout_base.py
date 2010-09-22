@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# encoding: utf-8
 
 """Basic functions and constants for working with keyboard layouts."""
 

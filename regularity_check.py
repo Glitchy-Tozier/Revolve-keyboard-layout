@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# encoding: utf-8
+
 """Check the regularity of a keyboard layout for a reference textfile."""
 
 from optparse import OptionParser

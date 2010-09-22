@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# encoding: utf-8
+
 """Run a full evolution of keyboard layouts."""
 
 from optparse import OptionParser
