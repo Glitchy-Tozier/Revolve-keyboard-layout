@@ -149,9 +149,6 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     for pair in keypairs:
             pos0 = find_key(pair[0], layout=lay)
             pos1 = find_key(pair[1], layout=lay)
-            if None in lay[5].values():
-                print(prev, pos0, pos1, pair)
-                exit()
 
             if pair[1].upper() == pair[1]: 
                 tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
