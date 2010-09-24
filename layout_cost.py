@@ -262,12 +262,10 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
     disbalance = std(fingers.values())
     return disbalance
 
-def _no_handswitching(trigram_numbers, trigram_trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE):
+def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE):
     """Do the hard work for no_handswitching without any call to outer functions."""
     no_switch = 0
-    for i in range(len(trigram_numbers)):
-            num = trigram_numbers[i]
-            trig = trigram_trigs[i]
+    for num, trig in trigrams: 
             # if we have a shift in it, we also have a handswitch. 
             if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
                 continue
@@ -314,10 +312,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
         if pos is not None: 
             key_pos_horizontal_table[key] = pos[1]
 
-    trigram_numbers = [num for num, trig in trigrams]
-    trigram_trigs = [trig for num, trig in trigrams]
-    
-    return _no_handswitching(trigram_numbers, trigram_trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
+    return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
 
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
