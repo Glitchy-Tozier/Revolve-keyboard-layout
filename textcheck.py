@@ -11,6 +11,11 @@ idea: allow selecting different 1gram, 2gram and 3gram files.
 
 """
 
+from sys import argv
+if "--help" in argv: 
+    print(__doc__)
+    exit()
+
 from math import log
 
 def read_file(path):
