@@ -262,6 +262,30 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
     disbalance = std(fingers.values())
     return disbalance
 
+def _no_handswitching(trigram_numbers, trigram_trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE):
+    """Do the hard work for no_handswitching without any call to outer functions."""
+    no_switch = 0
+    for i in range(len(trigram_numbers)):
+            num = trigram_numbers[i]
+            trig = trigram_trigs[i]
+            # if we have a shift in it, we also have a handswitch. 
+            if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
+                continue
+            hand0 = key_hand_table.get(trig[0], None)
+            hand1 = key_hand_table.get(trig[1], None)
+            hand2 = key_hand_table.get(trig[2], None)
+            if hand0 == hand1 and hand1 == hand2:
+                pos0 = key_pos_horizontal_table[trig[0]]
+                pos1 = key_pos_horizontal_table[trig[1]]
+                pos2 = key_pos_horizontal_table[trig[2]]
+                if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
+                    num *= WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
+                else: 
+                    num *= WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
+                no_switch += num
+    return no_switch
+    
+
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
     """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
 
@@ -289,26 +313,11 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
         pos = find_key(key, layout=layout)
         if pos is not None: 
             key_pos_horizontal_table[key] = pos[1]
-    
 
-    no_switch = 0
-    for num, trig in trigrams:
-            # if we have a shift in it, we also have a handswitch. 
-            if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
-                continue
-            hand0 = key_hand_table.get(trig[0], None)
-            hand1 = key_hand_table.get(trig[1], None)
-            hand2 = key_hand_table.get(trig[2], None)
-            if hand0 == hand1 and hand1 == hand2:
-                pos0 = key_pos_horizontal_table[trig[0]]
-                pos1 = key_pos_horizontal_table[trig[1]]
-                pos2 = key_pos_horizontal_table[trig[2]]
-                if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
-                    num *= WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
-                else: 
-                    num *= WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
-                no_switch += num
-    return no_switch
+    trigram_numbers = [num for num, trig in trigrams]
+    trigram_trigs = [trig for num, trig in trigrams]
+    
+    return _no_handswitching(trigram_numbers, trigram_trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
 
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
