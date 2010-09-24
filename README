@@ -1,0 +1,31 @@
+Intro
+=====
+
+evolve-keyboard-layout is an evolutionary keyboard optimizer. 
+
+It optimizes the keyboard layout based on several cost criteria by doing random mutations and keeping those which reduce the cost. 
+
+Install
+=======
+
+Prerequisites: 
+
+* Python 3.x: http://python.org/download
+* Mercurial: http://mercurial.selenic.com/downloads/
+
+hg clone https://bitbucket.org/ArneBab/evolve-keyboard-layout/
+
+Usage
+=====
+
+Do an evolution and store the results in output.txt: 
+
+./evolution.py 
+
+Additional options: 
+
+./evolution.py --help
+./check_neo.py --help
+./convert_text_between_layouts.py
+./regularity_check.py --help
+./textcheck.py --help
