@@ -306,6 +306,8 @@ def find_key(key, layout):
     (2, 4, 0)
     >>> find_key(",", NEO_LAYOUT)
     (3, 9, 0)
+    >>> find_key("⇧", layout=NEO_LAYOUT)
+    (3, 0, 0)
     """
     # check, if the layout already has a cache. If not, create it.
     # this approach reduces the time to find a key by about 50%.
