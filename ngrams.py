@@ -35,24 +35,30 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             ]
     up = []
     for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
+        # calculate the lowercase only once, as it grows quite expensive in the bulk
+        rep0 = rep[0]
+        rep0_lower = rep0.lower()
+        rep1 = rep[1]
+        rep1_lower = rep1.lower()
+        
         # use both shifts, but half weight each
-        if not rep[0] == rep[0].lower() and not rep[1] == rep[1].lower(): # AB
+        if not rep0 == rep0_lower and not rep1 == rep1_lower: # AB
             up.append((max(1, num//2), "⇗⇧"))
             up.append((max(1, num//2), "⇧⇗"))
-        if not rep[0] == rep[0].lower(): # Ab od. AB
-            finger = key_to_finger(rep[0].lower(), layout=layout)
+        if not rep0 == rep0_lower: # Ab od. AB
+            finger = key_to_finger(rep0_lower, layout=layout)
             if finger and finger[-1] == "L": 
-                up.append((num, "⇗"+rep[1].lower()))
+                up.append((num, "⇗"+rep1_lower))
             elif finger and finger[-1] == "R": 
-                up.append((num, "⇧"+rep[1].lower()))
-        if not rep[1] == rep[1].lower(): # aB od. AB
-            finger = key_to_finger(rep[1].lower(), layout=layout)
+                up.append((num, "⇧"+rep1_lower))
+        if not rep1 == rep1_lower: # aB od. AB
+            finger = key_to_finger(rep1_lower, layout=layout)
             if finger and finger[-1] == "L": 
-                up.append((num, rep[0].lower() + "⇗"))
+                up.append((num, rep0_lower + "⇗"))
             elif finger and finger[-1] == "R": 
-                up.append((num, rep[0].lower() + "⇧"))
+                up.append((num, rep0_lower + "⇧"))
 
-        up.append((num, rep[0].lower()+rep[1].lower()))
+        up.append((num, rep0_lower+rep1_lower))
 
     reps.extend(up)
     # cleanup
