@@ -1,12 +1,26 @@
 syntax: glob
+# python temp files
 *.pyc
-*~
-*.png
 *.pyo
+# editor backup files
+*~
 *\#
-*.txt
+# the default output file
+output.txt
+# images and csv: eval output files
+*.png
+*.csv
+*.eps
+# compressed files
+*.xz
+*.zip
+# all eval stuff (temporary files)
 eval/*
+# interrupted and unsuccessfull merges
 *.orig
 *.rej
+# data from R
 .RData
 .Rhistory
+# and generally all non-committed textfiles (because I have many of them lying around in the tree for testing)
+*.txt
