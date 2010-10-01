@@ -29,11 +29,11 @@ def get_all_layouts_in_textfile(textfile):
     return all_layouts
     
     
-def get_all_layouts_in_text_files_in(folder="results"):
+def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     """get all layouts from check_neo runs saved in the textfile."""
     all_layouts = []
     for i in listdir("results"):
-        if not i.endswith(".txt"):
+        if not i.endswith(".txt") or not namepart in i:
             continue
         all_layouts.extend(get_all_layouts_in_textfile(join("results", i))) 
 
@@ -47,6 +47,8 @@ if __name__ == "__main__":
     parser = OptionParser(description="recheck all result layouts with the current config.")
     parser.add_option("--file", dest="data", type="string", default=None,
                       help="use the given textfile as korpus", metavar="file")
+    parser.add_option("--namepart", dest="namepart", type="string", default="",
+                      help="read only files whose names contain the given string", metavar="string")
     parser.add_option("--csv",
                       action="store_true", dest="print_csv", default=False,
                       help="print a csv instead of the normal layout statistics")
@@ -59,7 +61,7 @@ if __name__ == "__main__":
         with open(options.data) as f:
             options.data = f.read()
     
-    all_layouts = get_all_layouts_in_text_files_in("results")
+    all_layouts = get_all_layouts_in_text_files_in("results", namepart = options.namepart)
 
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=options.data)
 
