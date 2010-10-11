@@ -23,7 +23,7 @@ prerandomize = 3000
 controlled = False
 
 #: Should we spout out information on the shell? (Windows users disable this. Your shell can’t take Unicode)
-quiet = False
+quiet = True
 
 #: Should we give additional statistics for the final layout?
 verbose = True
