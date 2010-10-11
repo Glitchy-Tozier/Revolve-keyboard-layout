@@ -40,7 +40,6 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     for i in listdir("results"):
         if not i.endswith(".txt") or not namepart in i:
             continue
-        print(i)
         all_layouts.extend(get_all_layouts_in_textfile(join("results", i))) 
 
     return all_layouts
