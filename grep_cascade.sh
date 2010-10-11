@@ -40,77 +40,84 @@
 
 # $ ./csv-ftw.sh
 # $ R
-# > a = read.csv("layouts.csv", sep=";")
+# > a = read.csv("2010-09-19.1-zusammen.csv", sep=";")
 # > summary(a)
-#  total.penalty   key.position.cost finger.repeats   disbalance.of.fingers
-#  Min.   :19.83   Min.   :14.77     Min.   :0.3489   Min.   :0.4052       
-#  1st Qu.:20.48   1st Qu.:15.05     1st Qu.:0.6555   1st Qu.:0.8973       
-#  Median :20.84   Median :15.19     Median :0.7570   Median :1.0663       
-#  Mean   :21.01   Mean   :15.23     Mean   :0.7976   Mean   :1.0761       
-#  3rd Qu.:21.47   3rd Qu.:15.38     3rd Qu.:0.9091   3rd Qu.:1.2407       
-#  Max.   :23.48   Max.   :16.58     Max.   :1.6705   Max.   :1.8463       
-#  top.to.bottom.or.vice.versa handswitching.in.trigram X.rows..dist..  
-#  Min.   :0.08527             Min.   :0.5506           Min.   :0.4390  
-#  1st Qu.:0.19885             1st Qu.:0.9338           1st Qu.:0.6151  
-#  Median :0.24342             Median :1.1292           Median :0.7269  
-#  Mean   :0.25161             Mean   :1.2533           Mean   :0.7525  
-#  3rd Qu.:0.29633             3rd Qu.:1.4689           3rd Qu.:0.8267  
-#  Max.   :0.61345             Max.   :2.7018           Max.   :1.5323  
-#  shortcut.keys     handswitching.after.unbalancing movement.pattern
-#  Min.   :0.00000   Min.   :0.9096                  Min.   :3.198   
-#  1st Qu.:0.05758   1st Qu.:1.1441                  1st Qu.:3.281   
-#  Median :0.11516   Median :1.2089                  Median :3.402   
-#  Mean   :0.09858   Mean   :1.2138                  Mean   :3.383   
-#  3rd Qu.:0.11516   3rd Qu.:1.2797                  3rd Qu.:3.477   
-#  Max.   :0.23032   Max.   :1.5518                  Max.   :3.524 
+# total.penalty.per.word key.position.cost finger.repeats  
+# Min.   :0.8995         Min.   :16.71     Min.   :0.7223  
+# 1st Qu.:0.9221         1st Qu.:17.13     1st Qu.:1.3244  
+# Median :0.9464         Median :17.31     Median :1.4832  
+# Mean   :0.9575         Mean   :17.38     Mean   :1.5385  
+# 3rd Qu.:0.9868         3rd Qu.:17.52     3rd Qu.:1.6811  
+# Max.   :1.1441         Max.   :20.31     Max.   :3.0542  
+# disbalance.of.fingers top.to.bottom.or.vice.versa handswitching.in.trigram
+# Min.   :0.3004        Min.   :0.07742             Min.   :1.147           
+# 1st Qu.:1.2421        1st Qu.:0.22758             1st Qu.:1.735           
+# Median :1.9504        Median :0.27188             Median :2.020           
+# Mean   :1.8921        Mean   :0.28142             Mean   :2.268           
+# 3rd Qu.:2.4224        3rd Qu.:0.32899             3rd Qu.:2.589           
+# Max.   :4.5609        Max.   :0.71921             Max.   :5.498           
+# X.rows..dist..  shortcut.keys     handswitching.after.unbalancing
+# Min.   :1.247   Min.   :0.00000   Min.   :0.5089                 
+# 1st Qu.:1.872   1st Qu.:0.05758   1st Qu.:0.6789                 
+# Median :2.387   Median :0.11516   Median :0.7258                 
+# Mean   :2.285   Mean   :0.10489   Mean   :0.7331                 
+# 3rd Qu.:2.509   3rd Qu.:0.11516   3rd Qu.:0.7826                 
+# Max.   :4.583   Max.   :0.23032   Max.   :1.0646                 
+# movement.pattern
+# Min.   :0.7969  
+# 1st Qu.:0.8569  
+# Median :0.9478  
+# Mean   :0.9200  
+# 3rd Qu.:0.9760  
+# Max.   :1.0098
 
 # alle Werte unten sind getestet, dass sie min 10 Layouts geben. 
 
 alias grep="grep -h"
 
 #                              lines_before lines_after
-tot="20\\..*compared.*        -B 16        -A 11" # ignored
-pos="position.*15\\.[0123]         -B 17        -A 10"
-rep="2gramme.*0\\.[78]      -B 18        -A 9"
-dis="fingers.*[01]\\.[0129]          -B 19        -A 8"
-bot="bottom.*0\\.2           -B 20        -A 7"
-swi="trigram.*1\\.[012]          -B 21        -A 6"
-row="rows.*0\\.[678]             -B 22        -A 5"
-sho="0\\.1.*shortcut         -B 23        -A 4" # ignored: no effect on typing.
-unb="1\\.2.*unbalancing      -B 24        -A 3"
-pat="3\\.4.*pattern          -B 25        -A 2" # ignored: useless optimization
+tot="0\\.9.*per.*        -B 16        -A 11" # ignored
+pos="position.*17\\.[01234]         -B 18        -A 10"
+rep="2gramme.*1\\.[345]      -B 19        -A 9"
+dis="fingers.*1\\.[23456789]          -B 20        -A 8"
+bot="bottom.*0\\.2[23456789]           -B 21        -A 7"
+swi="trigram.*1\\.[6789]        -B 22        -A 6"
+row="rows.*2\\.[0123]             -B 23        -A 5"
+sho="0\\.1.*shortcut         -B 24        -A 4" # ignored: no effect on typing.
+unb="0\\.7[012345678].*unbalancing      -B 25        -A 3"
+pat="0\\.9[01234567].*pattern          -B 26        -A 2"
 
 echo --- reference layouts ---
-grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb
+grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
 
 # partial
 echo " " 
 echo " "  
 echo " "  --- finger-repeats ---
 echo " " 
-grep $pos results/2010-* | grep $dis | grep $bot | grep $swi | grep $row | grep $unb
+grep $pos all-uniq.txt | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
 echo " " 
 echo " " 
 echo " "  --- finger-disbalance ---
 echo " " 
-grep $pos results/2010-* | grep $rep | grep $bot | grep $swi | grep $row | grep $unb
+grep $pos all-uniq.txt | grep $rep | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
 echo " " 
 echo " " 
 echo " "  --- top-bottom ---
 echo " " 
-grep $pos results/2010-* | grep $rep | grep $dis | grep $swi | grep $row | grep $unb
+grep $pos all-uniq.txt | grep $rep | grep $dis | grep $swi | grep $row | grep $unb | grep $pat
 echo " " 
 echo " " 
 echo " "  --- handswitching ---
 echo " " 
-grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $row | grep $unb
+grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $row | grep $unb | grep $pat
 echo " " 
 echo " " 
 echo " "  --- rows ---
 echo " " 
-grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb
+grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb | grep $pat
 echo " " 
 echo " " 
 echo " "  --- switch-after-unbalancing ---
 echo " " 
-grep $pos results/2010-* | grep $rep | grep $dis | grep $bot | grep $swi | grep $row
+grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $pat
