@@ -24,6 +24,11 @@ def get_all_layouts_in_textfile(textfile):
     layout_strings = []
     for i in e[1:]:
         layout_strings.append("\n".join(i.splitlines()[1:4]))
+
+    # all_layouts = []
+    # for i in layout_strings:
+    #     print(i, textfile)
+    #     all_layouts.append(string_to_layout(i))
     
     all_layouts = [string_to_layout(l) for l in layout_strings]
     return all_layouts
