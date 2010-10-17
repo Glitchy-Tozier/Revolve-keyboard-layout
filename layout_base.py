@@ -308,6 +308,10 @@ def find_key(key, layout):
     (3, 9, 0)
     >>> find_key("⇧", layout=NEO_LAYOUT)
     (3, 0, 0)
+    >>> find_key("A", layout=QWERTZ_LAYOUT)
+    (2, 1, 1)
+    >>> find_key("a", layout=QWERTZ_LAYOUT)
+    (2, 1, 0)
     """
     # check, if the layout already has a cache. If not, create it.
     # this approach reduces the time to find a key by about 50%.
@@ -328,7 +332,10 @@ def find_key(key, layout):
     try: pos = LETTER_TO_KEY_CACHE[key]
     except KeyError:
         # maybe we didn’t add the uppercase key, should only happen for incomplete layouts.
-        try: pos = LETTER_TO_KEY_CACHE[key.lower()]
+        try: 
+            pos = LETTER_TO_KEY_CACHE[key.lower()]
+            if not pos[2]: # == 0
+                pos = pos[:2] + (1,) # this is an uppercase key.
         except KeyError: 
             pos = None # all keys are in there. None means, we don’t need to check by hand.
     return pos
