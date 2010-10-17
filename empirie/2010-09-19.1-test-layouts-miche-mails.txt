@@ -1,0 +1,94 @@
+Mail 1: Positionskosten
+=======================
+
+Betreff: Tipptests: Es geht weiter, strukturierter
+
+Hi, 
+
+Ich arbeite an der Eval. Dass es sich etwas verzögert hat war leider unvermeidlich: Mein Sohn Leandro hat am Freitag den Weg in unsere kalte, grelle, aber von sehr vielen Freunden bewohnte Welt gefunden. 
+
+Als Zwischenstand habe ich hier mal einen ersten Tipptest nach Miche ( >] ). 
+
+Um ihn zu testen, tippt einfach die Texte und sortiert sie danach, wie gut sie sich tippen lassen (z.B. als X>Y>Z oder Z>X>Y – ich verwende hier absichtlich nicht die richtigen Namen, um keine unterbewusste Prägung reinzubringen). 
+
+Ihr könnt auch gerne beschreiben, wie sie sich für euch unterscheiden. 
+
+Ein paar Hintergründe gibt es weiter unten. Die Werte und Layouts dann in einer späteren Mail :) (sie sind auch im Repo, wer sich also die Spannung nehmen will… ;) ). 
+
+# d #
+
+Keg kigar rog rvlf aer yiig Üedvsanag jvr has irhagar Nasyad arnuagrnp idt hea Tlfinnar iot has Fessad qo uiddar bamirrarp telf idt Ygvnaünvgar fagiottnaddnar orh hisen saera tlfdesstnar Bauwglfnormar batnönemnarc
+
+# δ #
+
+Wmo wnori ifo iglt rmi jnno Dmvgpraro qgi urp niurori Arpjrv riaüroiah nve umr Eltnaari nfe urp Tmpprv yf ünvvri ärcniirih emlt nve Jogardagori tronfeearvvari fiu unpma prmir eltvmppeari Ärükoltaficri äreabamcaris
+
+# Δ #
+
+Kcg kagir rog rlhe icr .aag Ycslbitig ,lr nib arnigir Tib.is irtdigrtq asu nci Uheattir aou nib Ecbbis jo dassir fimarrirq uche asu .gltiytlgir eigaouutisstir orn nabct bicri uhescbbutir Fidpghetormir fiutvtcmtirw
+
+
+
+
+…SPOILER…
+
+
+
+
+
+
+…SPOILER…
+
+
+
+
+
+
+…SPOILER…
+
+
+
+
+
+
+…SPOILER…
+
+
+
+
+
+
+…SPOILER…
+
+
+
+
+
+Wer jetzt noch liest, hat die Texte hoffentlich getippt und sortiert (beispielweise als 2>0>1). Oder ist sehr neugierig ;)
+
+
+Die Texte unterscheiden sich grundlegend in den Positionskosten pro Zeichen. Die Sortierung soll zeigen, ob wir das Tippgefühl bei dem Wert unterscheiden können. Wenn sie mit den Positionskosten übereinstimmt, 
+
+Die Kosten sind alle für den Referenztext¹ neugerechnet, also wirklich für den Text gerechnet, den wir testen. Optimiert sind sie allerdings auf den allgemeinen Korpus (aus unseren 10 000), so dass wir den Unterschied der Werte bei realer Optimierung sehen. 
+
+Ausgewählt wurden die Texte mit grep_cascade.sh aus dem repo: http://bitbucket.org/ArneBab/evolve-keyboard-layout/
+
+
+Ein Layout ist ein Referenzlayout, das in den Positionskosten fast genau zwischen den anderen liegt. Die anderen sind das schlechteste und das Beste. 
+
+
+Wenn die Sortierung meist vollständig stimmt, deutet das auf einen spürbaren Effekt bei 0.25 Unterschied in den Positionskosten hin. 
+
+Wenn nur die besten und schlechtesten klar unterschieden sind, das Referenzlayout aber immer mal wieder oben oder unten ist, deutet es darauf hin, dass erst 0.5 Unterschied sicher zu spüren sind. 
+
+Wenn sie nicht konsistent zu unterscheiden sind, deutet das darauf hin, dass 0.5 Unterschied in den Positionskosten noch größtenteils egal sind. Oder dass ein anderer Parameter viel stärker ist, als ich beim Eingrenzen dachte… In jedem Fall sollten wir die Layouts in dem Fall genauer unter die Lupe nehmen. 
+
+
+Ich hoffe, der Test war interessant für euch! 
+
+Wenn ihr Anmerkungen und/oder Verbesserungsvorschläge dazu habt, sagt sie bitte! 
+
+Liebe Grüße, 
+Arne
+
+¹: Referenztext: Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten.
