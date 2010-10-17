@@ -71,53 +71,91 @@
 # 3rd Qu.:0.9760  
 # Max.   :1.0098
 
+# $ R
+# > a <- read.csv("empirie/2010-09-19.1-result-layouts-reference.csv", sep=";")
+# > summary(a)
+# total.penalty.per.word key.position.cost   finger.repeats     
+# Min.   :0.6752         Min.   :9.510e-06   Min.   :0.000e+00  
+# 1st Qu.:0.7623         1st Qu.:9.950e-06   1st Qu.:2.560e-07  
+# Median :0.7946         Median :1.009e-05   Median :5.120e-07  
+# Mean   :0.8029         Mean   :1.017e-05   Mean   :6.447e-07  
+# 3rd Qu.:0.8329         3rd Qu.:1.032e-05   3rd Qu.:1.024e-06  
+# Max.   :1.1157         Max.   :1.237e-05   Max.   :2.816e-06  
+# disbalance.of.fingers top.to.bottom.or.vice.versa handswitching.in.trigram
+# Min.   :2.964e-06     Min.   :0.000e+00           Min.   :0.000e+00
+# 1st Qu.:3.193e-06     1st Qu.:0.000e+00           1st Qu.:6.000e-07
+# Median :3.318e-06     Median :0.000e+00           Median :9.000e-07
+# Mean   :3.341e-06     Mean   :2.001e-10           Mean   :9.731e-07
+# 3rd Qu.:3.475e-06     3rd Qu.:0.000e+00           3rd Qu.:1.200e-06
+# Max.   :4.169e-06     Max.   :2.048e-06           Max.   :7.200e-06
+# X.rows..dist..      shortcut.keys       handswitching.after.unbalancing
+# Min.   :7.769e-08   Min.   :0.000e+00   Min.   :1.200e-07
+# 1st Qu.:6.011e-07   1st Qu.:4.280e-08   1st Qu.:2.800e-07
+# Median :7.886e-07   Median :8.560e-08   Median :3.200e-07
+# Mean   :7.996e-07   Mean   :7.839e-08   Mean   :3.255e-07
+# 3rd Qu.:8.817e-07   3rd Qu.:8.560e-08   3rd Qu.:3.600e-07
+# Max.   :3.979e-06   Max.   :1.712e-07   Max.   :7.600e-07
+# movement.pattern    
+# Min.   :3.800e-07
+# 1st Qu.:5.000e-07
+# Median :5.000e-07
+# Mean   :5.163e-07
+# 3rd Qu.:5.600e-07
+
 # alle Werte unten sind getestet, dass sie min 10 Layouts geben. 
 
 alias grep="grep -h"
 
+lays="empirie/2010-09-19.1-result-layouts-reference-uniq.txt"
+
 #                              lines_before lines_after
-tot="0\\.9.*per.*        -B 16        -A 11" # ignored
-pos="position.*17\\.[01234]         -B 18        -A 10"
-rep="2gramme.*1\\.[345]      -B 19        -A 9"
-dis="fingers.*1\\.[23456789]          -B 20        -A 8"
-bot="bottom.*0\\.2[23456789]           -B 21        -A 7"
-swi="trigram.*1\\.[6789]        -B 22        -A 6"
-row="rows.*2\\.[0123]             -B 23        -A 5"
-sho="0\\.1.*shortcut         -B 24        -A 4" # ignored: no effect on typing.
-unb="0\\.7[012345678].*unbalancing      -B 25        -A 3"
-pat="0\\.9[01234567].*pattern          -B 26        -A 2"
+tot="0\\.7.*per.*        -B 16        -A 11" # ignored
+pos="position.*1\\.0[0123].*e-05         -B 18        -A 10"
+rep="2gramme.*[2345]\\..*e-07      -B 19        -A 9"
+dis="fingers.*3\\.[23].*e-06          -B 20        -A 8"
+bot="bottom.*0\\.0           -B 21        -A 7"
+swi="trigram.*6e-07        -B 22        -A 6"
+row="rows.*[67]\\..*e-07             -B 23        -A 5"
+sho="8\\.560.*shortcut         -B 24        -A 4" # ignored: no effect on typing.
+unb="3\\.*[1234]*e-07.*unbalancing      -B 25        -A 3"
+pat="5e-07.*pattern          -B 26        -A 2"
 
 echo --- reference layouts ---
-grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
 
 # partial
 echo " " 
-echo " "  
-echo " "  --- finger-repeats ---
 echo " " 
-grep $pos all-uniq.txt | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+echo " " --- position-cost ---
 echo " " 
-echo " " 
-echo " "  --- finger-disbalance ---
-echo " " 
-grep $pos all-uniq.txt | grep $rep | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+cat $lays | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat 
 echo " " 
 echo " " 
-echo " "  --- top-bottom ---
+echo " " --- finger-repeats ---
 echo " " 
-grep $pos all-uniq.txt | grep $rep | grep $dis | grep $swi | grep $row | grep $unb | grep $pat
-echo " " 
-echo " " 
-echo " "  --- handswitching ---
-echo " " 
-grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $row | grep $unb | grep $pat
+cat $lays | grep $pos | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat 
 echo " " 
 echo " " 
-echo " "  --- rows ---
+echo " " --- finger-disbalance ---
 echo " " 
-grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+# echo " " 
+# echo " " 
+# echo " " --- top-bottom ---
+# echo " " 
+# cat $lays | grep $pos | grep $rep | grep $dis | grep $swi | grep $row | grep $unb | grep $pat
 echo " " 
 echo " " 
-echo " "  --- switch-after-unbalancing ---
+echo " " --- handswitching ---
 echo " " 
-grep $pos all-uniq.txt | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $row | grep $unb | grep $pat
+echo " " 
+echo " " 
+echo " " --- rows ---
+echo " " 
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb | grep $pat
+echo " " 
+echo " " 
+echo " " --- switch-after-unbalancing ---
+echo " " 
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $pat
