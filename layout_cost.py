@@ -167,8 +167,8 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         if pos1 and pos2:
             if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
                 # check if we”re on the same hand
-                is_left1 = RIGHT_HAND_LOWEST_INDEXES[pos1[0]] > pos1[1]
-                is_left2 = RIGHT_HAND_LOWEST_INDEXES[pos2[0]] > pos2[1]
+                is_left1 = pos_is_left(pos1)
+                is_left2 = pos_is_left(pos2)
                 if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
             # row 3 is shifted 1 key to the right → fix that.
