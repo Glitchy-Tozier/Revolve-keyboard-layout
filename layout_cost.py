@@ -146,15 +146,16 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
 
     no_switch = 0
     for number, pair in repeats:
-        key1 = pair[0]
-        key2 = pair[1]
-        pos1 = find_key(key1, layout=layout)
-        pos2 = find_key(key2, layout=layout)
-        if pos1 and pos2 and pos1 in UNBALANCING_POSITIONS:
+        pos1 = find_key(pair[0], layout=layout)
+        if not pos1 or not pos1 in UNBALANCING_POSITIONS:
+            continue
+        pos2 = find_key(pair[1], layout=layout)
+        if pos2:
                 # check if we”re on the same hand
-                finger1 = key_to_finger(key1, layout=layout)
-                finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2 and finger1[-1] == finger2[-1]:
+                is_left1 = pos_is_left(pos1)
+                is_left2 = pos_is_left(pos2)
+                if is_left1 == is_left2:
+                    # using .get here, because most positions aren’t unbalancing.
                     no_switch += UNBALANCING_POSITIONS.get(pos1, 0)*number
     return no_switch
 
