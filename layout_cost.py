@@ -59,10 +59,10 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     """
     if data is not None: 
         repeats = repeats_in_file(data)
+        repeats = split_uppercase_repeats(repeats, layout=layout)
     elif repeats is None:
         raise Exception("Need either repeats or data")
 
-    repeats = split_uppercase_repeats(repeats, layout=layout)
     
     finger_repeats = []
     for number, pair in repeats:
@@ -105,10 +105,9 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
     """
     if data is not None: 
         repeats = repeats_in_file(data)
+        repeats = split_uppercase_repeats(repeats, layout=layout)
     elif repeats is None:
         raise Exception("Need either repeats or data")
-
-    repeats = split_uppercase_repeats(repeats, layout=layout)
 
     fingtups = []
     for num, rep in repeats:
@@ -139,10 +138,9 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     """
     if data is not None: 
         repeats = repeats_in_file(data)
+        repeats = split_uppercase_repeats(repeats, layout=layout)
     elif repeats is None:
         raise Exception("Need either repeats or data")
-    
-    repeats = split_uppercase_repeats(repeats, layout=layout)
 
     no_switch = 0
     for number, pair in repeats:
@@ -162,7 +160,7 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
-    Don’t care about the hand (left index low and right high is still not nice). 
+    TODO: Don’t care about the hand (left index low and right high is still not nice). 
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
@@ -170,10 +168,10 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """
     if data is not None: 
         repeats = repeats_in_file(data)
+        repeats = split_uppercase_repeats(repeats, layout=layout)
     elif repeats is None:
         raise Exception("Need either repeats or data")
     
-    repeats = split_uppercase_repeats(repeats, layout=layout)
 
     line_changes = 0
     for number, pair in repeats:
@@ -364,10 +362,16 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         letters = letters_in_file(data)
         repeats = repeats_in_file(data)
         trigrams = trigrams_in_file(data)
+        # first split uppercase repeats *here*, so we don’t have to do it in each function.
+        reps = split_uppercase_repeats(repeats, layout=layout)
+        
     elif letters is None or repeats is None:
         raise Exception("Need either repeats und letters or data")
     else:
-        finger_repeats = finger_repeats_from_file(repeats=repeats, layout=layout)
+        # first split uppercase repeats *here*, so we don’t have to do it in each function.
+        reps = split_uppercase_repeats(repeats, layout=layout)
+
+        finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
         position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
 
     no_handswitches = no_handswitching(trigrams, layout=layout)
@@ -377,13 +381,13 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     frep_num_top_bottom = sum([num for num, fing, rep in finger_repeats_top_bottom])
 
     # the number of times neighboring fingers are used – weighted by the ease of transition for the respective fingers
-    neighboring_fings = neighboring_fingers(repeats=repeats, layout=layout)
+    neighboring_fings = neighboring_fingers(repeats=reps, layout=layout)
 
     # the number of changes between lines on the same hand.
-    line_change_same_hand = line_changes(repeats=repeats, layout=layout)
+    line_change_same_hand = line_changes(repeats=reps, layout=layout)
 
     # how often the hand wasn’t switched after an unbalancing key, weighted by the severity of the unbalancing.
-    no_switch_after_unbalancing = no_handswitch_after_unbalancing_key(repeats=repeats, layout=layout)
+    no_switch_after_unbalancing = no_handswitch_after_unbalancing_key(repeats=reps, layout=layout)
 
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
