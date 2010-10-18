@@ -291,7 +291,7 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
                 hand1 = key_hand_table[trig[1]]
                 hand2 = key_hand_table[trig[2]]
             except KeyError: continue # this should never happen, since we tested this.
-            if hand0 == hand1 and hand1 == hand2:
+            if hand0 is hand1 and hand1 is hand2:
                 pos0 = key_pos_horizontal_table[trig[0]]
                 pos1 = key_pos_horizontal_table[trig[1]]
                 pos2 = key_pos_horizontal_table[trig[2]]
