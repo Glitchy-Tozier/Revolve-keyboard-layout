@@ -3,7 +3,7 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key
+from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, RIGHT_HAND_LOWEST_INDEXES, pos_is_left
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split uppercase repeats into two to three lowercase repeats.
@@ -95,21 +95,25 @@ def split_uppercase_letters(reps, layout):
     [(4, 'a'), (3, '⇗'), (3, 'a')]
     """
     # replace uppercase by ⇧ and char1
-    upper = [(num, rep) for num, rep in reps if not rep == rep.lower()]
-    reps = [rep for rep in reps if not rep in upper]
+    upper = []
+    repeats = []
+    for num, rep in reps:
+        pos = find_key(rep, layout=layout)
+        if pos and pos[2]:
+            upper.append((num, rep))
+        else:
+            repeats.append((num, rep))
+    reps = repeats
+
     up = []
     
     for num, rep in upper:
-        fing = key_to_finger(rep.lower(), layout=layout)
-        try: 
-            hand = fing[-1]
-            if hand == "L":
-                up.append((num, "⇗"))
-            elif hand == "R":
-                up.append((num, "⇧"))
-        except IndexError:
-            # not in there (special letters not on keyboard layer 1)
-            pass
+        pos = find_key(rep, layout=layout)
+        if pos_is_left(pos): 
+            up.append((num, "⇗"))
+        else: 
+            up.append((num, "⇧"))
+
         up.append((num, rep.lower()))
                 
     reps.extend(up)
@@ -363,3 +367,10 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
 
     return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
    
+
+def _test():
+    from doctest import testmod
+    testmod()
+
+if __name__ == "__main__":
+    _test()
