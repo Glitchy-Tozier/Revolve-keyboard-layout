@@ -128,11 +128,13 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     >>> no_handswitch_after_unbalancing_key(data)
     2
     >>> reps =  [(3, "Ab")]
+    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
     6
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     0
     >>> reps = [(3, "Ga")]
+    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     3
     """
