@@ -167,9 +167,9 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
         if pos1 and pos2:
             if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
                 # check if we”re on the same hand
-                finger1 = key_to_finger(key1, layout=layout)
-                finger2 = key_to_finger(key2, layout=layout)
-                if finger1 and finger2 and finger1[-1] != finger2[-1]:
+                is_left1 = RIGHT_HAND_LOWEST_INDEXES[pos1[0]] > pos1[1]
+                is_left2 = RIGHT_HAND_LOWEST_INDEXES[pos2[0]] > pos2[1]
+                if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
             # row 3 is shifted 1 key to the right → fix that.
             if pos1[0] == 3:
@@ -395,3 +395,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     else:
         return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num , WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
 
+
+def _test():
+    from doctest import testmod
+    testmod()
+
+if __name__ == "__main__":
+    _test()
