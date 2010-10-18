@@ -346,12 +346,12 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
 
     >>> for name in FINGER_NAMES:
     ...    name, finger_keys(name)
-    ('Klein_L', ['x', '⇩', 'u', '⇧', 'None', 'ü'])
+    ('Klein_L', ['x', '⇩', 'u', '⇧', '⇚', 'ü'])
     ('Ring_L', ['v', 'i', 'ö'])
     ('Mittel_L', ['l', 'a', 'ä'])
     ('Zeige_L', ['c', 'e', 'p', 'w', 'o', 'z'])
     ('Daumen_L', [' '])
-    ('Daumen_R', [' '])
+    ('Daumen_R', [' ', '⇙'])
     ('Zeige_R', ['k', 's', 'b', 'h', 'n', 'm'])
     ('Mittel_R', ['g', 'r', ','])
     ('Ring_R', ['f', 't', '.'])
@@ -378,6 +378,17 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     # first check the cache
     finger = KEY_TO_FINGER.get(pos, "")
     return finger
+
+
+def pos_is_left(pos):
+    """check if the given position is on the left hand.
+
+    >>> clear_left_positions = [(0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0), (4, 0, 0)]
+    >>> False in [pos_is_left(pos) for pos in clear_left_positions]
+    False
+    
+    """
+    return RIGHT_HAND_LOWEST_INDEXES[pos[0]] > pos[1]
 
 
 def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
