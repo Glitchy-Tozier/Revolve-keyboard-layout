@@ -100,12 +100,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
                 repeats.append((num, m1+m2))
             # each of the first mods with the second base key
             ## counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
-            repeats.append((num, m1+base2))#((0.5*num, m1+base2))
+            repeats.append((num, m1+base2))# TODO: ((0.5*num, m1+base2))
 
         # the first base key with the second mods.
         ## counted 2x as strong, because the mod is normally hit and released short before the key is.
         for m2 in mods2:
-            repeats.append((num, base1+m2))# ((2*num, base1+m2))
+            repeats.append((num, base1+m2))# TODO: ((2*num, base1+m2))
             # alse the second mod with the second base key
             repeats.append((num, m2+base2))
 
