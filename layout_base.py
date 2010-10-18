@@ -194,6 +194,43 @@ TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1,
     0.5] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
+TEST_FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
+    "Klein_L": {
+        "Ring_L": 3, 
+        "Mittel_L": 3
+        }, 
+    "Ring_L": {
+        "Klein_L": 4,
+        "Mittel_L": 3
+        }, 
+    "Mittel_L": {
+        "Klein_L": 1,
+        "Ring_L": 2
+        }, 
+    "Zeige_L": {
+        "Klein_L": 1
+        }, 
+    "Daumen_L": {
+        },
+    "Daumen_R": {
+        },
+    "Zeige_R": {
+        "Klein_R": 1
+        },
+    "Mittel_R": {
+        "Ring_R": 2, 
+        "Klein_R": 1
+        },
+    "Ring_R": {
+        "Mittel_R": 3,
+        "Klein_R": 4
+        }, 
+    "Klein_R": {
+        "Mittel_R": 3,
+        "Ring_R": 3
+        }
+} # iutd, drua, uidt, rdau, airt, ndeu :)
+
 
 ### Caches
 

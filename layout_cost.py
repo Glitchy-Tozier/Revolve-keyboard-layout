@@ -22,12 +22,13 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     150
     >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY)
     11
+    >>> from check_neo import switch_keys
     >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
     >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     20
     >>> data = "UIaĥK\\n"
     >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    90
+    150
     """
     if data is not None: 
         letters = letters_in_file(data)
@@ -87,24 +88,34 @@ def finger_repeats_top_and_bottom(finger_repeats, layout):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
-def neighboring_fingers(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Return the number of times we have to use fingers next to each other.
+def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
+    """Calculate a movement cost based on the FINGER_SWITCH_COST. 
+
+    # TODO: Adjust the doctest to use 
 
     >>> data = read_file("testfile")
-    >>> neighboring_fingers(data)
-    23
+    >>> print(data)
+    uiaenrtAaAa
+    eod
+    rg
+    aa
+    <BLANKLINE>
+    >>> neighboring_fingers(data, FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
+    16
     """
     if data is not None: 
         repeats = repeats_in_file(data)
     elif repeats is None:
         raise Exception("Need either repeats or data")
-    
+
     repeats = split_uppercase_repeats(repeats, layout=layout)
 
     fingtups = ((num, (key_to_finger(rep[0]), key_to_finger(rep[1]))) for num, rep in repeats if key_to_finger(rep[0]) and key_to_finger(rep[1]))
+    
     neighcosts = (num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if fings[1] in FINGER_SWITCH_COST[fings[0]])
     return sum(neighcosts)
-    
+
+neighboring_fingers = movement_pattern_cost
 
 def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too). 
@@ -289,13 +300,15 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
 
     If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE.
 
+    If there is no direction change, it gets multiplied with WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE. If that is 0, handswitches without direction change are ignored.
+
     (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
 
     TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
 
-    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi")]
+    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
-    1
+    2
     """
     # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
     key_hand_table = {}
