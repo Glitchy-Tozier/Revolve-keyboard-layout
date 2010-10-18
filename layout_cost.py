@@ -110,9 +110,14 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
 
     repeats = split_uppercase_repeats(repeats, layout=layout)
 
-    fingtups = ((num, (key_to_finger(rep[0]), key_to_finger(rep[1]))) for num, rep in repeats if key_to_finger(rep[0]) and key_to_finger(rep[1]))
-    
-    neighcosts = (num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if fings[1] in FINGER_SWITCH_COST[fings[0]])
+    fingtups = []
+    for num, rep in repeats:
+        finger1 = key_to_finger(rep[0], layout=layout)
+        finger2 = key_to_finger(rep[1], layout=layout)
+        if finger1 and finger2:
+            fingtups.append((num, (finger1, finger2)))
+
+    neighcosts = (num*FINGER_SWITCH_COST.get(fings[0], {}).get(fings[1], 0) for num, fings in fingtups)
     return sum(neighcosts)
 
 neighboring_fingers = movement_pattern_cost
