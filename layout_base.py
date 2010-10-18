@@ -412,11 +412,11 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     'Klein_L'
     """
     pos = find_key(key, layout=layout)
-    if pos:
-        pos = pos[:2] + (0, )
+    try: pos = pos[:2] + (0, )
+    except TypeError: return "" # pos is None
     # first check the cache
-    finger = KEY_TO_FINGER.get(pos, "")
-    return finger
+    try: return KEY_TO_FINGER[pos]
+    except KeyError: return ""
 
 
 def pos_is_left(pos):
