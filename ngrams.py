@@ -3,7 +3,7 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left
+from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
@@ -67,7 +67,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             continue
         # if any key isn’t found, the repeat doesn’t need splitting.
         # same is true if all keys are layer 0. 
-        if pos1 is None or pos2 is None or (pos1[2] == 0 and pos2[2] == 0):
+        if pos1 is None or pos2 is None or (not pos1[2] and not pos2[2]):
             repeats.append((num, rep))
             continue # caught all lowercase repeats and all for which one key isn’t in the layout. We don’t need to change anything for these.
 
@@ -79,14 +79,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
         repeats.append((num, base1+base2))
 
         # now check for the mods which are needed to get the key
-        pos1_is_left = pos_is_left(pos1)
-        pos2_is_left = pos_is_left(pos2)
         # if the pos is left, we need the modifiers on the right.
-        if pos1_is_left: 
+        if pos_is_left(pos1): 
             mods1 = mods[pos1[2]][1]
         else:
             mods1 = mods[pos1[2]][0]
-        if pos2_is_left: 
+        if pos_is_left(pos2): 
             mods2 = mods[pos2[2]][1]
         else:
             mods2 = mods[pos2[2]][0]
@@ -99,11 +97,11 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             for m2 in mods2:
                 repeats.append((num, m1+m2))
             # each of the first mods with the second base key
-            ## counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
-            repeats.append((num, m1+base2))# TODO: ((0.5*num, m1+base2))
+            ## TODO: counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
+            repeats.append((num, m1+base2))# TODO: ((int(0.5*num), m1+base2))
 
         # the first base key with the second mods.
-        ## counted 2x as strong, because the mod is normally hit and released short before the key is.
+        ## TODO: counted 2x as strong, because the mod is normally hit and released short before the key is.
         for m2 in mods2:
             repeats.append((num, base1+m2))# TODO: ((2*num, base1+m2))
             # alse the second mod with the second base key
@@ -111,21 +109,17 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
 
         # the mods of the first with each other
         # 0123 → 01 02 03 12 13 23
-        i = 0
-        while mods1[i+1:]:
+        for i in range(len(mods1)):
             for m2 in mods1[i+1:]:
                 repeats.append((num, mods1[i]+m2))
-            i += 1
 
         # the mods of the second with each other
         # 0123 → 01 02 03 12 13 23
-        i = 0
-        while mods2[i+1:]:
+        for i in range(len(mods2)):
             for m2 in mods2[i+1:]:
                 repeats.append((num, mods2[i]+m2))
-            i += 1
 
-    reps = [(int(num), r) for num, r in repeats if r[1:]]
+    reps = repeats
     reps.sort()
     reps.reverse()
     return reps
