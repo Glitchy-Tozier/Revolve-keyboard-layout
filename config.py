@@ -128,6 +128,9 @@ COST_LAYER_ADDITION = [0, 15, 12, 10, 27, 22]
 
 COST_PER_KEY_NOT_FOUND = 60
 
+#: The modifiers, sorted by layer, split into left and right, counting from 0.
+MODIFIERS_PER_LAYER = [("", ""), ("⇧", "⇗"), ("⇩", "⇘"), ("⇚", "⇙"), ("⇩⇧", "⇘⇗"), ("⇩⇚", "⇘⇙")]
+
 # for reference the neo layout
 NEO = [
     [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),("←")], # Zahlenreihe (0)
