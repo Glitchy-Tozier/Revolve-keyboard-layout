@@ -3,7 +3,7 @@ Intro
 
 evolve-keyboard-layout is an evolutionary keyboard layout optimizer and a framework for evaluating the effect of the keyboard layout on typing. 
 
-It optimizes the keyboard layout based on several cost criteria by doing random mutations and keeping those which reduce the cost. 
+The most common use is to optimize the keyboard layout based on several cost criteria by doing random mutations and keeping those which reduce the cost. 
 
 Install
 =======
