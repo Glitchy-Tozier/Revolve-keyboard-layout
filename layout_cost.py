@@ -286,9 +286,11 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
             # if we have a shift in it, we also have a handswitch. 
             if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
                 continue
-            hand0 = key_hand_table.get(trig[0], None)
-            hand1 = key_hand_table.get(trig[1], None)
-            hand2 = key_hand_table.get(trig[2], None)
+            try: 
+                hand0 = key_hand_table[trig[0]]
+                hand1 = key_hand_table[trig[1]]
+                hand2 = key_hand_table[trig[2]]
+            except KeyError: continue # this should never happen, since we tested this.
             if hand0 == hand1 and hand1 == hand2:
                 pos0 = key_pos_horizontal_table[trig[0]]
                 pos1 = key_pos_horizontal_table[trig[1]]
@@ -316,13 +318,16 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)
     2
     """
-    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). 
+    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). Since we only need to know if the hands are the same, left hand is False and right hand is True
     key_hand_table = {}
     for key in abc_full:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         finger = key_to_finger(key, layout=layout)
-        if finger and not finger[:6] == "Daumen": 
-            key_hand_table[key] = finger[-1]
+        if finger and not finger[:6] == "Daumen":
+            if finger[-1] == "L": 
+                key_hand_table[key] = False
+            else:
+                key_hand_table[key] = True
 
     key_pos_horizontal_table = {}
     for key in abc_full:
