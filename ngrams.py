@@ -3,66 +3,129 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, RIGHT_HAND_LOWEST_INDEXES, pos_is_left
+from layout_base import NEO_LAYOUT, key_to_finger, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
-    """Split uppercase repeats into two to three lowercase repeats.
+    """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
 
-    TODO: treat left and right shift differently. Currently we always use both shifts (⇧ and ⇗) and half the value (but stay in integers => 1 stays 1). Needs major refactoring, since it needs knowledge of the layout. Temporary fix: always use both shifts. → Almost completely done in finger repeats evaluation. Only remaining: ⇧⇗ and ⇗⇧, but these aren’t relevant to finger collisions, only to handswitching (and there we ignore them, as the difference is at most one more letter without switching). Also remaining: very rare repeats are now counted more strongly, since 
-
-    Shift und die Taste werden gleichzeitig gedrückt => in einem bigramm, in dem der erste Buchstabe groß ist, gibt es sowohl die Fingerwiederholung Shift-Buchstabe 1, als auch Shift-Buchstabe2. => einfach verdoppeln. - done
-
-    TODO: aB should be counted about 2x, Ab only 0.5 times, because shift is pressed and released a short time before the key. 
+    TODO: aB should be counted about 2x, Ab only 0.5 times, because shift is pressed and released a short time before the key is. 
 
         Ab -> shift-a, shift-b, a-b.
         aB -> a-shift, shift-b, a-b.
         AB -> shift-a, shift-b, a-b, 0.5*(shift_L-shift_R, shift_R-shift_L)
+        (a -> mod3-n, mod3-a, n-a.
+        () -> mod3L-n, mod3L-r, n-r, 0.5*(mod3L-mod3L, mod3L-mod3L)
+        (} -> mod3L-n, mod3R-e, n-e, 0.5*(mod3L-mod3R, mod3R-mod3L)
+        ∃ℕ -> mod3R-e, mod4R-e, mod3L-n, mod4L-n,
+              mod3R-n, mod4R-n, e-mod3L, e-mod4L,
+              mod3R-mod3L, mod3R-mod4L, mod4R-mod3L, mod4R-mod4L,
+              0.5*(mod3R-mod4R, mod4R-mod3R, mod3L-mod4L, mod4L-mod3L)
 
-    Jeweils sowohl rechts als auch links. 
+        Ψ∃: 
 
+            # Modifiers from different keys
+            '⇩⇙', M3L + M4R
+            '⇩⇘', M3L + M3R
+            '⇚⇙', M4L + M4R
+            '⇚⇘', M4L + M3R
 
-    >>> reps = [(12, "ab"), (6, "Ab"), (4, "aB"), (1, "AB")]
+            # The different Modifiers of one of the keys with each other
+            # sorted – should that be 0.5*(m3-m4, m4-m3)?
+            '⇩⇚', M3L + M4L
+            '⇘⇙', M3R + M4R
+            
+            # Modifiers with the corresponding base keys
+            '⇩h', shiftL + h
+            '⇚h', M4L + h
+            '⇙e', M4R + e
+            '⇘e', M3R + e
+            
+            # Modifiers with the other base key
+            '⇩e', shiftL + e
+            '⇚e', M4L + e
+            'h⇙', h + M4R
+            'h⇘', h + M3R
+            
+            # The base keys on the base layer
+            'he'
+    
+    >>> reps = [(36, "ab"), (24, "Ab"), (16, "aB"), (10, "AB"), (6, "¾2"), (4, "(}"), (2, "Ψ∃"), (1, "q")]
     >>> split_uppercase_repeats(reps)
-    [(12, 'ab'), (6, '⇗b'), (6, 'ab'), (4, 'a⇧'), (4, 'ab'), (1, '⇧⇗'), (1, '⇗⇧'), (1, '⇗b'), (1, 'a⇧'), (1, 'ab')]
+    [(36, 'ab'), (24, '⇗b'), (24, '⇗a'), (24, 'ab'), (16, '⇧b'), (16, 'a⇧'), (16, 'ab'), (10, '⇧b'), (10, '⇗⇧'), (10, '⇗b'), (10, '⇗a'), (10, 'a⇧'), (10, 'ab'), (6, '¾2'), (4, '⇩⇘'), (4, '⇩n'), (4, '⇩e'), (4, '⇘e'), (4, 'n⇘'), (4, 'ne'), (2, '⇩⇚'), (2, '⇩⇙'), (2, '⇩⇘'), (2, '⇩h'), (2, '⇩e'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇚e'), (2, '⇙e'), (2, '⇘⇙'), (2, '⇘e'), (2, 'h⇙'), (2, 'h⇘'), (2, 'he')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
-    upper = [(num, rep) for num, rep in reps if
-             (find_key(rep[0], layout=layout) == 1 or find_key(rep[1], layout=layout) == 1 or not rep == rep.lower())
-             ]
-    reps = [(num, rep) for (num, rep) in reps if not
-             (find_key(rep[0], layout=layout) == 1 or find_key(rep[1], layout=layout) == 1 or not rep == rep.lower())
-            ]
-    up = []
-    for num, rep in upper: # Ab = ab,⇗b aB = a⇧,ab AB = a⇧,⇗b,ab (A links, B rechts)
-        # calculate the lowercase only once, as it grows quite expensive in the bulk
-        rep0 = rep[0]
-        rep0_lower = rep0.lower()
-        rep1 = rep[1]
-        rep1_lower = rep1.lower()
-        
-        # use both shifts, but half weight each
-        if not rep0 == rep0_lower and not rep1 == rep1_lower: # AB
-            up.append((max(1, num//2), "⇗⇧"))
-            up.append((max(1, num//2), "⇧⇗"))
-        if not rep0 == rep0_lower: # Ab od. AB
-            finger = key_to_finger(rep0_lower, layout=layout)
-            if finger and finger[-1] == "L": 
-                up.append((num, "⇗"+rep1_lower))
-            elif finger and finger[-1] == "R": 
-                up.append((num, "⇧"+rep1_lower))
-        if not rep1 == rep1_lower: # aB od. AB
-            finger = key_to_finger(rep1_lower, layout=layout)
-            if finger and finger[-1] == "L": 
-                up.append((num, rep0_lower + "⇗"))
-            elif finger and finger[-1] == "R": 
-                up.append((num, rep0_lower + "⇧"))
+    mods = MODIFIERS_PER_LAYER
+    #: The resulting bigrams after splitting.
+    repeats = []
+    for num, rep in reps:
+        try: 
+            pos1 = find_key(rep[0], layout=layout)
+            pos2 = find_key(rep[1], layout=layout)
+        except IndexError:
+            # this is no repeat but at most a single key.
+            continue
+        # if any key isn’t found, the repeat doesn’t need splitting.
+        # same is true if all keys are layer 0. 
+        if pos1 is None or pos2 is None or (pos1[2] == 0 and pos2[2] == 0):
+            repeats.append((num, rep))
+            continue # caught all lowercase repeats and all for which one key isn’t in the layout. We don’t need to change anything for these.
 
-        up.append((num, rep0_lower+rep1_lower))
+        # now get the base keys.
+        base1 = get_key(pos1[:2] + (0, ), layout=layout)
+        base2 = get_key(pos2[:2] + (0, ), layout=layout)
 
-    reps.extend(up)
-    # cleanup
-    reps = [(int(num), r) for num, r in reps if r[1:]]
+        # add the base keys as repeat
+        repeats.append((num, base1+base2))
+
+        # now check for the mods which are needed to get the key
+        pos1_is_left = pos_is_left(pos1)
+        pos2_is_left = pos_is_left(pos2)
+        # if the pos is left, we need the modifiers on the right.
+        if pos1_is_left: 
+            mods1 = mods[pos1[2]][1]
+        else:
+            mods1 = mods[pos1[2]][0]
+        if pos2_is_left: 
+            mods2 = mods[pos2[2]][1]
+        else:
+            mods2 = mods[pos2[2]][0]
+
+        # now we have the mods, so we do the splitting by mods.
+        for m1 in mods1:
+            # each of the mods with the key itself
+            repeats.append((num, m1+base1))
+            # each mod of the first with each mod of the second
+            for m2 in mods2:
+                repeats.append((num, m1+m2))
+            # each of the first mods with the second base key
+            ## counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
+            repeats.append((num, m1+base2))#((0.5*num, m1+base2))
+
+        # the first base key with the second mods.
+        ## counted 2x as strong, because the mod is normally hit and released short before the key is.
+        for m2 in mods2:
+            repeats.append((num, base1+m2))# ((2*num, base1+m2))
+            # alse the second mod with the second base key
+            repeats.append((num, m2+base2))
+
+        # the mods of the first with each other
+        # 0123 → 01 02 03 12 13 23
+        i = 0
+        while mods1[i+1:]:
+            for m2 in mods1[i+1:]:
+                repeats.append((num, mods1[i]+m2))
+            i += 1
+
+        # the mods of the second with each other
+        # 0123 → 01 02 03 12 13 23
+        i = 0
+        while mods2[i+1:]:
+            for m2 in mods2[i+1:]:
+                repeats.append((num, mods2[i]+m2))
+            i += 1
+
+    reps = [(int(num), r) for num, r in repeats if r[1:]]
     reps.sort()
     reps.reverse()
     return reps
