@@ -374,7 +374,9 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     >>> key_to_finger("⇧")
     'Klein_L'
     """
-    pos = find_key(key, layout=layout)[:2] + (0, )
+    pos = find_key(key, layout=layout)
+    if pos:
+        pos = pos[:2] + (0, )
     # first check the cache
     finger = KEY_TO_FINGER.get(pos, "")
     return finger
