@@ -154,3 +154,6 @@ FINGER_POSITIONS = {
     "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
     "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
 }
+
+#: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index).
+RIGHT_HAND_LOWEST_INDEXES = [6, 7, 6, 7, 4]
