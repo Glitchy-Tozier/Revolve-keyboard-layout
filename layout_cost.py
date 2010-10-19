@@ -110,13 +110,14 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
         raise Exception("Need either repeats or data")
 
     fingtups = []
+    append = fingtups.append
     for num, rep in repeats:
         finger1 = key_to_finger(rep[0], layout=layout)
         finger2 = key_to_finger(rep[1], layout=layout)
         if finger1 and finger2:
-            fingtups.append((num, (finger1, finger2)))
+            append((num, (finger1, finger2)))
 
-    neighcosts = (num*FINGER_SWITCH_COST.get(fings[0], {}).get(fings[1], 0) for num, fings in fingtups)
+    neighcosts = (num*FINGER_SWITCH_COST[fings[0]].get(fings[1], 0) for num, fings in fingtups if fings[0] in FINGER_SWITCH_COST)
     return sum(neighcosts)
 
 neighboring_fingers = movement_pattern_cost
