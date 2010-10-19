@@ -414,7 +414,7 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     pos = find_key(key, layout=layout)
     try: pos = pos[:2] + (0, )
     except TypeError: return "" # pos is None
-    # first check the cache
+    # check the cache
     try: return KEY_TO_FINGER[pos]
     except KeyError: return ""
 

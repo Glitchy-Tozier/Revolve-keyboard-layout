@@ -88,6 +88,16 @@ def finger_repeats_top_and_bottom(finger_repeats, layout):
             top_down_repeats.append((number, finger, letters))
     return top_down_repeats
 
+def _rep_to_fingtuple(num, rep, layout, finger_switch_cost):
+    """Turn a repeat and occurance number into num and a fingtuple."""
+    finger1 = key_to_finger(rep[0], layout=layout)
+    if not finger1 or not finger1 in finger_switch_cost:
+        return None, None
+    finger2 = key_to_finger(rep[1], layout=layout)
+    if not finger2 or not finger2 in finger_switch_cost[finger1]:
+        return None, None
+    return num, (finger1, finger2)
+
 def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
     """Calculate a movement cost based on the FINGER_SWITCH_COST. 
 
@@ -109,16 +119,9 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
     elif repeats is None:
         raise Exception("Need either repeats or data")
 
-    fingtups = []
-    append = fingtups.append
-    for num, rep in repeats:
-        finger1 = key_to_finger(rep[0], layout=layout)
-        finger2 = key_to_finger(rep[1], layout=layout)
-        if finger1 and finger2:
-            append((num, (finger1, finger2)))
+    fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in repeats)
 
-    neighcosts = (num*FINGER_SWITCH_COST[fings[0]].get(fings[1], 0) for num, fings in fingtups if fings[0] in FINGER_SWITCH_COST)
-    return sum(neighcosts)
+    return sum((num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if num))
 
 neighboring_fingers = movement_pattern_cost
 
