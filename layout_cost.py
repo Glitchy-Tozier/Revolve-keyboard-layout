@@ -282,24 +282,19 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
 def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE):
     """Do the hard work for no_handswitching without any call to outer functions."""
     no_switch = 0
-    for num, trig in trigrams: 
-            # if we have a shift in it, we also have a handswitch. 
-            if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
-                continue
-            try: 
-                hand0 = key_hand_table[trig[0]]
-                hand1 = key_hand_table[trig[1]]
-                hand2 = key_hand_table[trig[2]]
-            except KeyError: continue # this should never happen, since we tested this.
-            if hand0 is hand1 and hand1 is hand2:
-                pos0 = key_pos_horizontal_table[trig[0]]
-                pos1 = key_pos_horizontal_table[trig[1]]
-                pos2 = key_pos_horizontal_table[trig[2]]
-                if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
-                    num *= WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
-                else: 
-                    num *= WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
-                no_switch += num
+    for num, trig in trigrams:
+        # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
+        if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
+            continue
+        hand1 = key_hand_table[trig[1]]
+        if key_hand_table[trig[0]] is hand1 and hand1 is key_hand_table[trig[2]]:
+            pos0 = key_pos_horizontal_table[trig[0]]
+            pos1 = key_pos_horizontal_table[trig[1]]
+            pos2 = key_pos_horizontal_table[trig[2]]
+            if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
+                no_switch += num * WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
+            else: 
+                no_switch += num * WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
     return no_switch
     
 
@@ -333,8 +328,11 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     for key in abc_full:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
         pos = find_key(key, layout=layout)
-        if pos is not None: 
+        try: 
             key_pos_horizontal_table[key] = pos[1]
+        except TypeError:
+            raise Exception("One of the mutated keys is not on the keyboard layout. This kills the optimization. Please don’t…")
+        
 
     return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
 
