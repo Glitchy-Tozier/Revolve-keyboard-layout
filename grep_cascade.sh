@@ -111,51 +111,51 @@ lays="empirie/2010-09-19.1-result-layouts-reference-uniq.txt"
 #                              lines_before lines_after
 tot="0\\.7.*per.*        -B 16        -A 11" # ignored
 pos="position.*1\\.0[0123].*e-05         -B 18        -A 10"
-rep="2gramme.*[2345]\\..*e-07      -B 19        -A 9"
-dis="fingers.*3\\.[23].*e-06          -B 20        -A 8"
+rep="2gramme.*[23]\\..*e-07      -B 19        -A 9"
+dis="fingers.*3\\.[2].*e-06          -B 20        -A 8"
 bot="bottom.*0\\.0           -B 21        -A 7"
 swi="trigram.*6e-07        -B 22        -A 6"
-row="rows.*[67]\\..*e-07             -B 23        -A 5"
+row="rows.*[6]\\..*e-07             -B 23        -A 5"
 sho="8\\.560.*shortcut         -B 24        -A 4" # ignored: no effect on typing.
 unb="3\\.*[1234]*e-07.*unbalancing      -B 25        -A 3"
 pat="5e-07.*pattern          -B 26        -A 2"
 
 echo --- reference layouts ---
-cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat
 
 # partial
 echo " " 
 echo " " 
 echo " " --- position-cost ---
 echo " " 
-cat $lays | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat 
+cat $lays | grep $dis | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat 
 echo " " 
 echo " " 
 echo " " --- finger-repeats ---
 echo " " 
-cat $lays | grep $pos | grep $dis | grep $bot | grep $swi | grep $row | grep $unb | grep $pat 
+cat $lays | grep $pos | grep $dis | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat 
 echo " " 
 echo " " 
 echo " " --- finger-disbalance ---
 echo " " 
-cat $lays | grep $pos | grep $rep | grep $bot | grep $swi | grep $row | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat
 # echo " " 
 # echo " " 
 # echo " " --- top-bottom ---
 # echo " " 
-# cat $lays | grep $pos | grep $rep | grep $dis | grep $swi | grep $row | grep $unb | grep $pat
+# cat $lays | grep $pos | grep $rep | grep $dis | grep $swi | grep $row | grep $unb #| grep $pat
 echo " " 
 echo " " 
 echo " " --- handswitching ---
 echo " " 
-cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $row | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $row | grep $unb #| grep $pat
 echo " " 
 echo " " 
 echo " " --- rows ---
 echo " " 
-cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $unb #| grep $pat
 echo " " 
 echo " " 
 echo " " --- switch-after-unbalancing ---
 echo " " 
-cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $pat
+cat $lays | grep $pos | grep $rep | grep $dis | grep $bot | grep $swi | grep $row #| grep $pat
