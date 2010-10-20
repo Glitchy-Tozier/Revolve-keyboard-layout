@@ -30,12 +30,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             '⇚⇘', M4L + M3R
 
             # The different Modifiers of one of the keys with each other
-            # sorted – should that be 0.5*(m3-m4, m4-m3)?
-            '⇩⇚', M3L + M4L
-            '⇘⇙', M3R + M4R
+            # sorted – should that be (m3-m4, m4-m3)/64?
+            '⇩⇚', M3L + M4L / 32 (because this mistakenly gives a finger repeat, since we can’t yet simulate hitting M4 with the ringfinger and M3 with the pinky. 
+            '⇘⇙', M3R + M4R / 32
             
             # Modifiers with the corresponding base keys
-            '⇩h', shiftL + h
+            '⇩h', M3L + h
             '⇚h', M4L + h
             '⇙e', M4R + e
             '⇘e', M3R + e
@@ -56,6 +56,8 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     mods = MODIFIERS_PER_LAYER
+    #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
+    mods_on_same_hand_adjustment = 1/32
     #: The resulting bigrams after splitting.
     repeats = []
     for num, rep in reps:
@@ -109,15 +111,17 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
 
         # the mods of the first with each other
         # 0123 → 01 02 03 12 13 23
-        for i in range(len(mods1)):
-            for m2 in mods1[i+1:]:
-                repeats.append((num, mods1[i]+m2))
+        if mods1[1:]: 
+            for i in range(len(mods1)):
+                for m2 in mods1[i+1:]:
+                    repeats.append((num*mods_on_same_hand_adjustment, mods1[i]+m2))
 
         # the mods of the second with each other
         # 0123 → 01 02 03 12 13 23
-        for i in range(len(mods2)):
-            for m2 in mods2[i+1:]:
-                repeats.append((num, mods2[i]+m2))
+        if mods2[1:]: 
+            for i in range(len(mods2)):
+                for m2 in mods2[i+1:]:
+                    repeats.append((num*mods_on_same_hand_adjustment, mods2[i]+m2))
 
     reps = repeats
     reps.sort()
