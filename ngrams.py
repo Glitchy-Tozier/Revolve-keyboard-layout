@@ -26,12 +26,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             # Modifiers from different keys
             '⇩⇙', M3L + M4R
             '⇩⇘', M3L + M3R
-            '⇚⇙', M4L + M4R
-            '⇚⇘', M4L + M3R
+            '⇚⇙', M4L + M4R # TODO: M4L is hit with the ringfinger, here. Take that into account.
+            '⇚⇘', M4L + M3R # TODO: M4L is hit with the ringfinger, here. Take that into account.
 
             # The different Modifiers of one of the keys with each other
             # sorted – should that be (m3-m4, m4-m3)/64?
-            '⇩⇚', M3L + M4L / 32 (because this mistakenly gives a finger repeat, since we can’t yet simulate hitting M4 with the ringfinger and M3 with the pinky. 
+            '⇩⇚', M3L + M4L / 32 (because this mistakenly gives a finger repeat, since we can’t yet simulate hitting M4 with the ringfinger and M3 with the pinky. # TODO: M4L is hit with the ringfinger, here. Take that into account.
             '⇘⇙', M3R + M4R / 32
             
             # Modifiers with the corresponding base keys
@@ -42,7 +42,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             
             # Modifiers with the other base key
             '⇩e', shiftL + e
-            '⇚e', M4L + e
+            '⇚e', M4L + e # TODO: M4L is hit with the ringfinger, here. Take that into account.
             'h⇙', h + M4R
             'h⇘', h + M3R
             
