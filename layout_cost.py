@@ -325,8 +325,9 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
         if finger and not finger[:6] == "Daumen":
             if finger[-1] == "L": 
                 key_hand_table[key] = False
-            else:
+            elif finger[-1] == "R":
                 key_hand_table[key] = True
+            # with this, not found is ignored.
 
     key_pos_horizontal_table = {}
     for key in abc_full:
@@ -335,7 +336,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
         try: 
             key_pos_horizontal_table[key] = pos[1]
         except TypeError:
-            raise Exception("One of the mutated keys is not on the keyboard layout. This kills the optimization. Please don’t…")
+            pass # not found. Ignore as above.
         
 
     return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
