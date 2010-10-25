@@ -111,7 +111,7 @@ lays="empirie/2010-09-19.1-result-layouts-reference-uniq.txt"
 #                              lines_before lines_after
 tot="0\\.7.*per.*        -B 16        -A 11" # ignored
 pos="position.*1\\.0[0123].*e-05         -B 18        -A 10"
-rep="2gramme.*[23]\\..*e-07      -B 19        -A 9"
+rep="2gramme.*2\\.56e-07      -B 19        -A 9"
 dis="fingers.*3\\.[2].*e-06          -B 20        -A 8"
 bot="bottom.*0\\.0           -B 21        -A 7"
 swi="trigram.*6e-07        -B 22        -A 6"
@@ -128,7 +128,7 @@ echo " "
 echo " " 
 echo " " --- position-cost ---
 echo " " 
-cat $lays | grep $dis | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat 
+cat $lays | grep $rep | grep $dis | grep $bot | grep $swi | grep $row | grep $unb #| grep $pat 
 echo " " 
 echo " " 
 echo " " --- finger-repeats ---
