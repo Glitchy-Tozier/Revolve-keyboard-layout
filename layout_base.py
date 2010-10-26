@@ -191,6 +191,20 @@ for finger in FINGER_POSITIONS:
         KEY_TO_FINGER[pos] = finger
 
 ### Constants for testing
+
+TEST_LAYOUT = [
+    [("^", "ˇ", "↻")], # Zahlenreihe (0)
+
+    [("⇥"),], # Reihe 1
+
+    [("u", "U", "\\", "⇱", "", "⊂"),("\n")], # Reihe 2
+
+    [],        # Reihe 3
+
+    [(), (), (), (" "), ("⇙"), (), (), ()] # Reihe 4 mit Leertaste
+    ]
+    
+
 # Weighting for the tests — DON’T CHANGE THIS, it’s necessary for correct testing
 TEST_COST_PER_KEY  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
@@ -320,18 +334,28 @@ def update_letter_to_key_cache(key, layout):
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
+def get_all_keys_in_layout(layout):
+    """Get all keys which are in the layout along with their positions.
+
+    >>> get_all_keys_in_layout(TEST_LAYOUT)
+    ['^', 'ˇ', '↻', '⇥', 'u', 'U', '\\\\', '⇱', '⊂', '\\n', ' ', '⇙']
+    """
+    keys = []
+    for line in layout:
+        for key in line:
+            for letter in key:
+                if letter: 
+                    keys.append(letter)
+    return keys
+
+
 def update_letter_to_key_cache_multiple(keys, layout):
     """Update the cache entries for many keys.
 
     @param keys: the keys to update. If it’s None, update ALL.
     """
     if keys is None:
-        keys = []
-        for line in layout:
-            for key in line:
-                for letter in key:
-                    if letter: 
-                        keys.append(letter)
+        keys = get_all_keys_in_layout(layout)
     for key in keys:
         update_letter_to_key_cache(key, layout=layout)
     
@@ -516,7 +540,7 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
             layout[3][7+i] = (right[i], right[i].upper()) + tuple(layout[3][7+i][2:])
 
     return layout
-
+    
 
 if __name__ == "__main__":
     from doctest import testmod
