@@ -334,19 +334,35 @@ def update_letter_to_key_cache(key, layout):
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
+def get_all_positions_in_layout(layout):
+    """Get all positions for which there are keys in the layout. 
+
+    >>> get_all_positions_in_layout(TEST_LAYOUT)
+    [(0, 0, 0), (0, 0, 1), (0, 0, 2), (1, 0, 0), (2, 0, 0), (2, 0, 1), (2, 0, 2), (2, 0, 3), (2, 0, 5), (2, 1, 0), (4, 3, 0), (4, 4, 0)]
+    """
+    positions = []
+    for line in range(len(layout[:5])): # :5 to avoid finding a cache.
+        for key in range(len(layout[line])):
+            for letter in range(len(layout[line][key])):
+                if layout[line][key][letter]: 
+                    positions.append((line, key, letter))
+    return positions
+
+
 def get_all_keys_in_layout(layout):
-    """Get all keys which are in the layout along with their positions.
+    """Get all keys which are in the layout. Sorted the same way as the positions from get_all_positions_in_layout(). 
 
     >>> get_all_keys_in_layout(TEST_LAYOUT)
     ['^', 'ˇ', '↻', '⇥', 'u', 'U', '\\\\', '⇱', '⊂', '\\n', ' ', '⇙']
     """
     keys = []
-    for line in layout:
+    for line in layout[:5]:
         for key in line:
             for letter in key:
                 if letter: 
                     keys.append(letter)
     return keys
+
 
 
 def update_letter_to_key_cache_multiple(keys, layout):
