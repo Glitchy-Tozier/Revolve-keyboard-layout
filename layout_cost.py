@@ -28,7 +28,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     20
     >>> data = "UIaĥK\\n"
     >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    150
+    240
     """
     if data is not None: 
         letters = letters_in_file(data)
