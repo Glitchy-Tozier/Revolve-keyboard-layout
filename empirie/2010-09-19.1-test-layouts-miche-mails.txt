@@ -92,3 +92,358 @@ Liebe Grüße,
 Arne
 
 ¹: Referenztext: Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten.
+
+
+Auswertung
+----------
+
+From: Nora Geißler
+  To: Arne Babenhauserheide, "Neo-Layout"
+
+Hallöle,
+
+ich habe den Fehler gemacht, Arne im irc zu fragen, ob ich ihm bei der
+Auswertung helfen kann (eigentlich im Sinne von: Noch mehr Tipptests
+machen…) und statt dessen den „Auftrag“ bekommen, die Auflösung zu posten :)
+
+Nochmal zur Erinnerung Auszüge aus Arnes Mail vom 18.10.2010 01:28:
+> Als Zwischenstand habe ich hier mal einen ersten Tipptest nach Miche
+>  ( >] ).
+> 
+> Um ihn zu testen, tippt einfach die Texte und sortiert sie danach, 
+> wie gut sie sich tippen lassen (z.B. als X>Y>Z oder Z>X>Y – ich 
+> verwende hier absichtlich nicht die richtigen Namen, um keine 
+> unterbewusste Prägung reinzubringen).
+
+> […] Die Texte unterscheiden sich grundlegend in den Positionskosten
+> pro Zeichen. Die Sortierung soll zeigen, ob wir das Tippgefühl bei
+> dem Wert unterscheiden können.
+
+> […] Wenn die Sortierung meist vollständig stimmt, deutet das auf
+> einen spürbaren Effekt bei 0.25 Unterschied in den Positionskosten
+> hin.
+> 
+> Wenn nur die besten und schlechtesten klar unterschieden sind, das 
+> Referenzlayout aber immer mal wieder oben oder unten ist, deutet es 
+> darauf hin, dass erst 0.5 Unterschied sicher zu spüren sind.
+
+Die Infos zu den 3 Layouts gibt es hier:
+http://bitbucket.org/ArneBab/evolve-keyboard-layout/src/tip/empirie/2010-09-19.1-test-layouts-miche.txt#cl-144
+
+d war in Bezug auf die Positionskosten (mean position cost) das beste
+Layout mit einem Wert von 4.53738317757,
+δ war das schlechteste Layout mit 5.07009345794,
+Δ das Referenzlayout mit 4.84579439252.
+
+Bei der Umfrage haben 10 Leute mitgemacht (wenn ich jetzt keinen
+übersehen habe?).
+Wenn ich dem besten Layout 1 Punkt, dem mittleren 2 Punkte und dem
+schlechtesten 3 Punkte gebe, sowie bei Unentschieden entsprechend beiden
+1,5 bzw. 2,5, dann komme ich insgesamt auf:
+d: 14,5 Punkte
+δ: 18,5 Punkte
+Δ: 27 Punkte
+
+Es liegt also das Referenzlayout recht eindeutig hinten obwohl es in der
+Mitte erwartet wurde …
+Immerhin ist das Layout mit den geringsten Positionskosten vorne
+gelandet, wenn auch knapp vor dem mit den höchsten Kosten.
+
+Es ist also der letzte Punkt eingetreten:
+
+> Wenn sie nicht konsistent zu unterscheiden sind, deutet das darauf 
+> hin, dass 0.5 Unterschied in den Positionskosten noch größtenteils 
+> egal sind. Oder dass ein anderer Parameter viel stärker ist, als ich 
+> beim Eingrenzen dachte… In jedem Fall sollten wir die Layouts in dem 
+> Fall genauer unter die Lupe nehmen.
+
+Irgendwas muss ja recht eindeutig die Layouts unterscheiden, sonst wäre
+nicht so ein recht eindeutiges Ergebnis rausgekommen.
+
+Übrigens haben Björn und Dennis-ſ die Reihenfolge der Positionskosten
+herausgefunden (d>Δ>δ). Zufall oder besondere Empfindlichkeit auf diesen
+Punkt?
+
+Nora
+
+--- 
+
+Hi Nora, 
+
+Danke, dass du die Auswertung übernommen hast! 
+
+Ich möchte noch ein paar Zusatzinfos geben: 
+
+On Friday 22 October 2010 16:13:56 Nora Geißler wrote:
+> Die Infos zu den 3 Layouts gibt es hier:
+> http://bitbucket.org/ArneBab/evolve-keyboard-
+layout/src/tip/empirie/2010-09-19.1-test-layouts-miche.txt#cl-144
+
+# d
+xoc.ü wdrhzq´
+faeiu mtnslp
+käy,ö bgßjv
+
+# δ
+ßlcgw ü,ouvq´
+dntsr .aehkz
+fxbmj äiöyp
+
+# Δ
+xäoi. wcrb,ß´
+seahu ldntfk
+jyöüq mgvpz
+
+
+(Achtung: Alle nur Mittelfeld!)
+
+
+Die Interessanteste Frage ist nun: Nach welchen Kriterien ist welches Layout 
+vorne? Haben manche von uns ein anderes als das nach den Zahlenwerten 
+dominante Kriterium gesehen? 
+
+"A > B" nehme ich als "A ist besser als B". 
+
+Ich nehme überall die gewichteten Kosten, damit die Unterschiede vergleichbar 
+sind. Alle Differenz jeweils x · 10⁻⁶
+
+Positionskosten haben wir schon: d > Δ > δ; diff: 1,14
+d: 4.53738317757 ~ 9.71e-06
+δ: 5.07009345794 ~ 1.085e-05
+Δ: 4.84579439252 ~ 1.037e-05
+
+Fingerwiederholungen: δ > d == Δ; diff: 0,256
+d: 0.93896713615 % ~ 5.12e-07
+δ: 0.469483568075 % ~ 2.56e-07
+Δ: 0.93896713615 % ~ 5.12e-07
+
+Fingerdisbalance: d > Δ > δ; diff: 0,16
+d: 3.23837107575e-06
+δ: 3.39859113463e-06
+Δ: 3.38403656819e-06
+
+Hand-Disbalance: d > Δ > δ; diff: 0.58
+d: 1.01674208145e-07
+δ: 6.82669683258e-07
+Δ: 2.17873303167e-07
+
+Handwechsel: d == δ == Δ; diff: 0
+d: 0.763358778626
+δ: 0.763358778626 
+Δ: 0.763358778626
+
+Zeilenwechsel: δ > d > Δ; diff: 0.085
+d: 6.84931333333e-07
+δ: 6.57395833333e-07
+Δ: 7.42868e-07
+
+Handwechsel nach Disbalance: d > δ == Δ; diff: 0.02
+d: 3.2e-07
+δ: 3.4e-07
+Δ: 3.4e-07
+
+Die verschiedenen Ergebnisse: 
+d > Δ > δ – Björn, Dennis
+d >> δ == Δ – Jurek
+d == δ > Δ – Nora
+d > δ ≈ Δ – Paul (δ und Δ abgehackt)
+d > δ > Δ – Martin, Arne Zweiervergleich
+δ > d >> Δ – Stephan (kein sonderlich großer Unterschied zwischen δ und d)
+δ > d > Δ – Ulrich, Timo, Cornelis
+δ > Δ >> d – Florian
+δ > Δ > d – Arne einfach
+
+
+Zwei davon lassen sich aus den Parametern erklären: 
+
+d > Δ > δ – Björn, Dennis → Buchstabenposition, Fingerdisbalance und 
+Handdisbalance?
+δ > d > Δ – Ulrich, Timo, Cornelis → Zeilenwechsel (eigentlich zu geringe 
+Unterschiede)?
+
+Da δ in Fingerwiederholungen noch besser war als die beiden anderen, könnte 
+das drei weitere Ergebnisse erklären: 
+
+d >> δ == Δ – Jurek
+d > δ ≈ Δ – Paul (δ und Δ abgehackt)
+
+Mit Fingerwiederholungen und Zeilenwechseln (in beidem ist δ besser als d) 
+kommt noch dazu: 
+
+δ > d >> Δ – Stephan (kein sonderlich großer Unterschied zwischen δ und d)
+
+
+Bleiben noch 4 aus den Parametern schwer zu erklärende: 
+
+d == δ > Δ – Nora
+d > δ > Δ – Martin, Arne Zweiervergleich
+δ > Δ >> d – Florian
+δ > Δ > d – Arne einfach
+
+
+Da ich in den Werten keine direkte Möglichkeit gesehen habe, die Ergebnisse zu 
+erklären, habe ich mir mal einen weiteren Parameter angeschaut: Wie leicht ist 
+der zu tippende Text aussprechbar? Dazu habe ich ihn einfach gesprochen und 
+jedem schlecht aussprechbaren Wort nach Gefühl eine Zahl zwischen 1 (geht so) 
+und 3 (wie spricht man das‽) zugeordnet. 
+
+d: Keg kigar rog rvlf aer yiig Üedvsanag jvr has irhagar Nasyad arnuagrnp idt 
+hea Tlfinnar iot has Fessad qo uiddar bamirrarp telf idt Ygvnaünvgar 
+fagiottnaddnar orh hisen saera tlfdesstnar Bauwglfnormar batnönemnarc
+11123121
+δ: Wmo wnori ifo iglt rmi jnno Dmvgpraro qgi urp niurori Arpjrv riaüroiah nve 
+umr Eltnaari nfe urp Tmpprv yf ünvvri ärcniirih emlt nve Jogardagori 
+tronfeearvvari fiu unpma prmir eltvmppeari Ärükoltaficri äreabamcaris
+12121
+Δ: Kcg kagir rog rlhe icr .aag Ycslbitig ,lr nib arnigir Tib.is irtdigrtq asu 
+nci Uheattir aou nib Ecbbis jo dassir fimarrirq uche asu .gltiytlgir 
+eigaouutisstir orn nabct bicri uhescbbutir Fidpghetormir fiutvtcmtirw
+1323111
+
+Das ganze addiert: 
+d: 12
+δ: 7
+Δ:12
+
+d.h. δ > Δ == d
+
+Was zwar nichts mit den Layouts zu tun hat, aber vermutlich ein Artefakt ist, 
+das die Art der Tipptests mitbringt: Wir sehen, wie die Texte in unserem 
+Layout wären. Und sie verletzen unser Sprachgefühl (verschieden stark) :)
+
+Damit ist aber immernoch nicht erklärt, warum Δ so schlecht abschneidet. Das 
+könnten die Satzzeichen im Wort erklären (die Ulrich schon gefunden hat). 
+
+Als Spielerei versuche ich die Verzerrung einfach mal rauszurechnen: Ich gebe 
+den durch die Auswertungsmethode benachteiligten Layouts Boni. Beispiel für 
+Boni: A > B, B bekommt Bonus ⇒ A == B'. d erhält einen Punkt Bonus (wegen 
+Unaussprechlichkeit) und Δ zwei (wegen Unaussprechlichkeit und Satzzeichen in 
+den Wörtern). Dann sieht das ganze so aus: 
+
+## Ergebnisse, Boni: 1 für d, 2 für Δ
+
+### Aus Parametern vorher plausible
+
+d > Δ >> δ – Jurek
+d > Δ > δ – Martin, Arne Zweiervergleich
+d = Δ >>> δ – Björn, Dennis-ſ
+d = Δ >> δ – Paul (δ und Δ abgehackt)
+d = Δ = δ  – Ulrich, Timo, Cornelis ⇒ kein Unterschied
+
+### Nur aus Parametern vorher schwer zu erklärende
+
+d = Δ > δ – Nora
+d = δ > Δ – Stephan (kein sonderlich großer Unterschied zwischen δ und d)
+Δ > d = δ – Arne einfach
+Δ > δ > d – Florian
+
+Um die Anpassung zu erklären: δ ist besser lesbar als die beiden anderen. 
+Diesen Bonus versuche ich rauszurechnen. Zusätzlich hat Δ Satzzeichen in 
+Worten. Das sehe ich als Malus und versuche es auch herauszurechnen. Ob das so 
+erlaubt ist, sei dahingestellt. Es ist auf jeden Fall ist es mehr schwarze 
+Magie als gesicherte Erkenntnis… 
+
+## Fazit
+
+Die Satzzeichen in Wörtern könnten erklären, warum Δ so schlecht abgeschnitten 
+hat, und die Aussprechbarkeit könnte erklären, woher die vielen Ergebnisse 
+kamen, in denen d schlechter war als δ: Kein spürbarer Effekt der Parameter: 
+Effekt von der Aussprechbarkeit überlagert. 
+
+Der Unterschied zwischen d und δ wird auch ohne diese Anpassungen sichtbar. 
+Sie erklären allerdings einige der stärkeren Abweichungen. 
+
+6 von 12 Vergleichen zeigen einen mit den Parametern konsistenten Unterschied 
+zwischen den Layouts (d ≥ Δ ≤ δ). 3 zeigen keinen sichtbaren Effekt. 
+
+Mit Korrektur sehen 7 von 12 Tests den Unterschied von 1,14 · 10⁻⁶ (d>δ), ohne 
+nur 6 von 12. Mit Korrektur sieht einer das Gegenteil (δ < d), ohne 6. Eine 
+Erklärungsmöglichkeit ist, dass die Fingerwiederholungen hier bereits eine 
+Rolle spielen (1 statt 2). 
+
+Der Unterschied von 0,48 (d>Δ bzw. Δ>δ) wird mit Korrektur von 4 bzw. 9 
+erkannt, während 2 bzw. 1 das Gegenteil sehen. Ohne Korrektur sind es 7 bzw. 3 
+und 2 bzw. 9 sehen das Gegenteil. 
+
+
+### Ergebnis
+
+Ohne Korrektur wäre also kein positiver Effekt von ≤ 1,14 · 10⁻⁶ Unterschied 
+bei den Positionskosten erkennbar. 
+
+Mit Korrektur steht es 7 zu 1 bei 1,14 · 10⁻⁶ und 4 zu 2 bzw. 9 zu 1 bei 0.48 
+· 10⁻⁶, im Durchschnitt 6,5 zu 1,5. 
+
+
+Für den nächsten Test sollten , und . in Wörtern ersetzt werden, um zumindest 
+die eine Hälfte der Verzerrung zu vermeiden, die kein subjektives 
+Sprachverständnis zum Korrigieren braucht. 
+
+Die Frage für die weiteren Tests ist: wie viele erkennen das bessere Layout?
+
+Dann können wir vergleichen: Wie groß war jeweils der Unterschied? Bei 
+gleichem Unterschied sollten wir in etwa eine vergleichbare Erkennungsrate als 
+Ziel haben (für die Anpassung der Gewichtung). Dann werden Änderungen, die 
+eine erkennbare Verschlechterung bringen, auch in den Gesamtkosten sichtbar 
+und dadurch bei der Opimierung vermieden. 
+
+Liebe Grüße, 
+Arne
+
+PS: Wurde jetzt doch länger als geplant… :)
+
+Mail 2: Fingerwiederholungen
+============================
+
+Hi, 
+
+Ich warte gerade noch darauf, dass das Fläschchen meines Sohnes fertig ausgekocht wird, und ich dachte mir, ich nutze die Zeit, um den nächsten Tipptest vorzubereiten. 
+
+Ohne viel Vorrede: 
+
+#### d
+
+Yeg yigar rog rcvf aer jiig Üescbanag qcr hab irhagar Nabjas arnuagrnp ist hea Tvfinnar iot hab Febbas öo uissar damirrarp tevf ist Jgcnaüncgar fagiottnassnar orh hiben baera tvfsebbtnar Dauägvfnormar datnlnemnarw
+
+#### δ
+
+Pni pgire emi eslf rne yggi Dnvsorari qse uro geurire Aroyrv reacrieah gvt unr Tlfgaare gmt uro Fnoorv üm cgvvre wrägeereh tnlf gvt Yisardasire frigmttarvvare meu ugona orner tlfvnootare Wrckilfameäre wrtajanäareb
+
+#### Δ
+
+Keg kigar rog rcvf aer jiig Üedcsanag öcr has irhagar Nasjad arnyagrnp idt hea Tvfinnar iot has Fessad uo yiddar bamirrarp tevf idt Jgcnaüncgar fagiottnaddnar orh hisen saera tvfdesstnar Bayägvfnormar batnlnemnarw
+
+
+
+Der Test läuft genauso wie der vorrige: Ziel ist, die drei Layouts zu sortieren (A > B > C ⇔ besser > mittel > schlechter). 
+
+Ich habe selbst gute Erfahrung damit gemacht, drei Tests zu machen: d gegen δ, d gegen Δ und δ gegen Δ. Falls ihr das auch machen wollt, hilft euch das hier vielleicht :) 
+
+
+# d gg δ
+
+Yeg yigar rog rcvf aer jiig Üescbanag qcr hab irhagar Nabjas arnuagrnp ist hea Tvfinnar iot hab Febbas öo uissar damirrarp tevf ist Jgcnaüncgar fagiottnassnar orh hiben baera tvfsebbtnar Dauägvfnormar datnlnemnarw
+
+Pni pgire emi eslf rne yggi Dnvsorari qse uro geurire Aroyrv reacrieah gvt unr Tlfgaare gmt uro Fnoorv üm cgvvre wrägeereh tnlf gvt Yisardasire frigmttarvvare meu ugona orner tlfvnootare Wrckilfameäre wrtajanäareb
+
+
+# d gg Δ
+
+Yeg yigar rog rcvf aer jiig Üescbanag qcr hab irhagar Nabjas arnuagrnp ist hea Tvfinnar iot hab Febbas öo uissar damirrarp tevf ist Jgcnaüncgar fagiottnassnar orh hiben baera tvfsebbtnar Dauägvfnormar datnlnemnarw
+
+Keg kigar rog rcvf aer jiig Üedcsanag öcr has irhagar Nasjad arnyagrnp idt hea Tvfinnar iot has Fessad uo yiddar bamirrarp tevf idt Jgcnaüncgar fagiottnaddnar orh hisen saera tvfdesstnar Bayägvfnormar batnlnemnarw
+
+
+# δ gg Δ
+
+Pni pgire emi eslf rne yggi Dnvsorari qse uro geurire Aroyrv reacrieah gvt unr Tlfgaare gmt uro Fnoorv üm cgvvre wrägeereh tnlf gvt Yisardasire frigmttarvvare meu ugona orner tlfvnootare Wrckilfameäre wrtajanäareb
+
+Keg kigar rog rcvf aer jiig Üedcsanag öcr has irhagar Nasjad arnyagrnp idt hea Tvfinnar iot has Fessad uo yiddar bamirrarp tevf idt Jgcnaüncgar fagiottnaddnar orh hisen saera tvfdesstnar Bayägvfnormar batnlnemnarw
+
+
+Viel Spaß beim Testen! 
+
+Wenn ihr Lust habt, kännt ihr ja auch schauen, ob ihr herausfindet, welcher Parameter grade dran ist :)
+
+Liebe Grüße, 
+Arne
