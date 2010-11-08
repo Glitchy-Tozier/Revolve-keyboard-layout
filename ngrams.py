@@ -82,7 +82,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
 
         # now check for the mods which are needed to get the key
         # if the pos is left, we need the modifiers on the right.
-        if pos_is_left(pos1): 
+        if pos_is_left(pos1):
             mods1 = mods[pos1[2]][1]
         else:
             mods1 = mods[pos1[2]][0]
