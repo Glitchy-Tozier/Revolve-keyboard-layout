@@ -466,13 +466,14 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     return line
     
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
-        data=data, 
-        letters=letters, number_of_letters=number_of_letters,
-        repeats=repeats, number_of_bigrams=number_of_bigrams,
-        trigrams=trigrams, number_of_trigrams=number_of_trigrams
+	    data=data, 
+	    letters=letters, number_of_letters=number_of_letters,
+	    repeats=repeats, number_of_bigrams=number_of_bigrams,
+	    trigrams=trigrams, number_of_trigrams=number_of_trigrams,
+	    datapath=datapath
         )
 
     res = ""
@@ -565,9 +566,9 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
     
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, data=None, anneal=0, anneal_step=100):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
 
     if prerandomize:
         if not quiet:
@@ -581,10 +582,10 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, data=None):
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, datafile=None):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
-     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
+     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
 
      from pprint import pprint
 
@@ -663,10 +664,10 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          info(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
 
-def best_random_layout(number, prerandomize, quiet=False, data=None, layout=NEO_LAYOUT):
+def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=NEO_LAYOUT):
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
      
     if prerandomize: 
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=layout, abc=abc, quiet=quiet)
@@ -677,11 +678,11 @@ def best_random_layout(number, prerandomize, quiet=False, data=None, layout=NEO_
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
-def compare_a_layout(quiet, verbose, data=None, layout=NEO_LAYOUT):
+def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     if layout == NEO_LAYOUT: 
         info("Neo")
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(data=data)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
      
     print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
     
@@ -698,12 +699,12 @@ def compare_a_layout(quiet, verbose, data=None, layout=NEO_LAYOUT):
 # for compatibility
 check_the_neo_layout = compare_a_layout
 
-def check_a_layout_from_shell(layout, quiet, verbose, data=None):
+def check_a_layout_from_shell(layout, quiet, verbose, datafile=None):
     """Check a layout we get passed as shell argument."""
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data, shorten_numbers=True)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True)
     
 
-def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, data=None):
+def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None):
     """Check a string passed via shell and formatted as
 
     öckäy zhmlß,´
@@ -717,7 +718,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     <yxcvb nm,.-
     """
     layout = string_to_layout(layout_string, base_layout)
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, data=data, shorten_numbers=True)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True)
 
 ### Self-Test 
 
@@ -793,10 +794,6 @@ if __name__ == "__main__":
         # base-string for the base layer.
         options.base = string_to_layout(options.base_string, NEO_LAYOUT)
 
-    if options.file: 
-        options.data = read_file(options.file)
-    else:
-        options.data = None
     if options.check: 
         options.check = eval(options.check)
 
@@ -806,23 +803,23 @@ if __name__ == "__main__":
         check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data)
 
     elif options.check_string:
-        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, data=options.data, base_layout=options.base)
+        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base)
             
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, data=options.data, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step)
         
     elif options.best_random_layout:
-        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, data=options.data, layout=options.base)
+        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, datafile=options.file, layout=options.base)
 
     elif options.challenge_rounds:
             evolution_challenge(rounds=options.challenge_rounds,
                                 iterations=options.challenge_evolution_steps,
                                 challengers=options.challengers,
                                 prerandomize=options.prerandomize,
-                                data=options.data,
+                                datafile=options.file,
                                 layout=options.base,
                                 controlled=options.controlled_evolution)
 
     else:
-        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, data=options.data, layout=options.base)
+        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base)
         

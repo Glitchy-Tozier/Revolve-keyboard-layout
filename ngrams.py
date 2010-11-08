@@ -148,29 +148,6 @@ def repeats_in_file(data):
     #reps = split_uppercase_repeats(sorted_repeats) # wrong place
     return sorted_repeats
 
-def repeats_in_filepath(datapath, slicelength=1000):
-    """Sort the repeats in a file by the number of occurrances.
-
-    >>> repeats_in_filepath("testfile")[:3]
-    [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
-    """
-    f = open(datapath)
-    repeats = {}
-    data = f.read(slicelength)
-    while data[1:]: 
-        for i in range(len(data)-1):
-            rep = data[i] + data[i+1]
-            if rep in repeats:
-                repeats[rep] += 1
-            else:
-                repeats[rep] = 1
-        data = data[-1:] + f.read(slicelength)
-    sorted_repeats = [(repeats[i], i) for i in repeats]
-    sorted_repeats.sort()
-    sorted_repeats.reverse()
-    #reps = split_uppercase_repeats(sorted_repeats) # wrong place
-    return sorted_repeats
-
 def split_uppercase_letters(reps, layout):
     """Split uppercase letters into two lowercase letters (with shift).
 
@@ -219,27 +196,6 @@ def letters_in_file(data):
             letters[letter] += 1
         else:
             letters[letter] = 1
-    sort = [(letters[i], i) for i in letters]
-    sort.sort()
-    sort.reverse()
-    return sort
-
-def letters_in_filepath(datapath, slicelength=1000):
-    """Sort the repeats in a file by the number of occurrances.
-
-    >>> letters_in_filepath("testfile")[:3]
-    [(5, 'a'), (4, '\\n'), (2, 'r')]
-    """
-    f = open(datapath)
-    letters = {}
-    data = f.read(slicelength)
-    while data: 
-        for letter in data:
-            if letter in letters:
-                letters[letter] += 1
-            else:
-                letters[letter] = 1
-        data = f.read(slicelength)
     sort = [(letters[i], i) for i in letters]
     sort.sort()
     sort.reverse()
@@ -408,29 +364,76 @@ def trigrams_in_file(data):
     trigs = split_uppercase_trigrams(sorted_trigs)
     return trigs
 
-def trigrams_in_filepath(datapath, slicelength=1000):
+def ngrams_in_filepath(datapath, slicelength=1000000):
     """Sort the trigrams in a file by the number of occurrances.
 
-    >>> trigrams_in_filepath("testfile")[:12]
+    >>> lett, big, trig = ngrams_in_filepath("testfile")
+    >>> lett[:3]
+    [(5, 'a'), (4, '\\n'), (2, 'r')]
+    >>> big[:3]
+    [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
+    >>> trig[:12]
     [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
     """
     f = open(datapath)
+    letters = {}
+    repeats = {}
     trigs = {}
     data = f.read(slicelength)
-    while data[2:]: 
+    print("reading ngrams from datafile", datapath)
+    while data[2:]:
+        print("read ~", int(f.tell()/10000)/100, "MiB")
         for i in range(len(data)-2):
+            letter = data[i]
+            if letter in letters:
+                letters[letter] += 1
+            else:
+                letters[letter] = 1
+            
+            rep = data[i] + data[i+1]
+            if rep in repeats:
+                repeats[rep] += 1
+            else:
+                repeats[rep] = 1
+            
             trig = data[i] + data[i+1] + data[i+2]
             if trig in trigs:
                 trigs[trig] += 1
             else:
                 trigs[trig] = 1
+                
         data = data[-2:] + f.read(slicelength)
 
-    sorted_trigs = [(trigs[i], i) for i in trigs]
-    sorted_trigs.sort()
-    sorted_trigs.reverse()
-    trigs = split_uppercase_trigrams(sorted_trigs)
-    return trigs
+    # final two letters
+    for letter in data:
+        if letter in letters:
+            letters[letter] += 1
+        else:
+            letters[letter] = 1
+    # final bigram
+    rep = data[-2] + data[-1]
+    if rep in repeats:
+        repeats[rep] += 1
+    else:
+        repeats[rep] = 1
+    
+       
+    
+    letters = [(letters[i], i) for i in letters]
+    letters.sort()
+    letters.reverse()
+
+    repeats = [(repeats[i], i) for i in repeats]
+    repeats.sort()
+    repeats.reverse()
+
+    trigs = [(trigs[i], i) for i in trigs]
+    trigs.sort()
+    trigs.reverse()
+    # split uppercase trigrams here, because we really want to do that only *once*.
+    trigs = split_uppercase_trigrams(trigs)
+    return letters, repeats, trigs
+
 
 def trigrams_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
@@ -468,9 +471,8 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
 
     # if we get a datastring, we use it for everything.
     if datapath is not None:
-        letters = letters_in_filepath(datapath)
-        repeats = bigrams = repeats_in_filepath(datapath)
-        trigrams = trigrams_in_filepath(datapath)
+        letters, repeats, trigrams = ngrams_in_filepath(datapath)
+        bigrams = repeats
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
         number_of_trigrams = sum([i for i, s in trigrams])
