@@ -101,8 +101,6 @@ def _rep_to_fingtuple(num, rep, layout, finger_switch_cost):
 def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
     """Calculate a movement cost based on the FINGER_SWITCH_COST. 
 
-    # TODO: Adjust the doctest to use 
-
     >>> data = read_file("testfile")
     >>> print(data)
     uiaenrtAaAa
@@ -283,41 +281,8 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
     disbalance = std(fingers.values())
     return disbalance
 
-def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE):
-    """Do the hard work for no_handswitching without any call to outer functions."""
-    no_switch = 0
-    for num, trig in trigrams:
-        # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
-        if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
-            continue
-        hand1 = key_hand_table[trig[1]]
-        if key_hand_table[trig[0]] is hand1 and hand1 is key_hand_table[trig[2]]:
-            pos0 = key_pos_horizontal_table[trig[0]]
-            pos1 = key_pos_horizontal_table[trig[1]]
-            pos2 = key_pos_horizontal_table[trig[2]]
-            if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
-                no_switch += num * WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
-            else: 
-                no_switch += num * WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
-    return no_switch
-    
-
-def no_handswitching(trigrams, layout=NEO_LAYOUT):
-    """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
-
-    If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE.
-
-    If there is no direction change, it gets multiplied with WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE. If that is 0, handswitches without direction change are ignored.
-
-    (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
-
-    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
-
-    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
-    >>> no_handswitching(trigs, layout=NEO_LAYOUT)
-    2
-    """
-    # optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). Since we only need to know if the hands are the same, left hand is False and right hand is True
+def _trigram_key_tables(trigrams, layout): 
+    """optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). Since we only need to know if the hands are the same, left hand is False and right hand is True."""
     key_hand_table = {}
     for key in abc_full:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
@@ -337,9 +302,59 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
             key_pos_horizontal_table[key] = pos[1]
         except TypeError:
             pass # not found. Ignore as above.
-        
+    return key_hand_table, key_pos_horizontal_table
 
-    return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE)
+
+def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM):
+    """Do the hard work for no_handswitching without any call to outer functions.
+    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
+    >>> key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigs, layout=NEO_LAYOUT)
+    >>> _no_handswitching(trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM)
+    (2, [(2.5, 'ie'), (1.5, 'ui')])
+    """
+    no_switch = 0
+    secondary_bigrams = [] # [(num, bigram), …]
+    for num, trig in trigrams:
+        # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
+        if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
+            continue
+        hand0 = key_hand_table[trig[0]]
+        hand1 = key_hand_table[trig[1]]
+        hand2 = key_hand_table[trig[2]]
+        if hand0 is hand1 and hand1 is hand2:
+            pos0 = key_pos_horizontal_table[trig[0]]
+            pos1 = key_pos_horizontal_table[trig[1]]
+            pos2 = key_pos_horizontal_table[trig[2]]
+            if pos0 > pos1 and pos1 < pos2 or pos0 < pos1 and pos1 > pos2:
+                no_switch += num * WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
+            else: 
+                no_switch += num * WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
+        # Add bigram cost key 1 and key 3 if there are two handswitches; reduce via a multiplier < 1.0 ; Faktor könnte vom Tippaufwand der mittleren Taste abhängen: Je besser oder schneller die mittlere Taste getippt werden kann, desto grösser der Faktor. Das ist aber vermutlich nur eine unnötige Komplikation.
+        elif hand0 is hand2 and hand0 is not hand1:
+            secondary_bigrams.append((WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM * num, trig[0]+trig[2]))
+
+    return no_switch, secondary_bigrams
+    
+
+def no_handswitching(trigrams, layout=NEO_LAYOUT):
+    """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
+
+    If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE.
+
+    If there is no direction change, it gets multiplied with WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE. If that is 0, handswitches without direction change are ignored.
+
+    (TODO? WEIGHT_TRIGRAM_FINGER_REPEAT_WITHOUT_KEY_REPEAT)
+
+    TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
+
+    >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
+    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
+    2
+    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1][0][1]
+    'ie'
+    """
+    key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
+    return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM)
 
 
 def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
@@ -367,8 +382,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     """
     # the raw costs
     if data is not None: 
-        finger_repeats = finger_repeats_from_file(data, layout=layout)
-        position_cost = key_position_cost_from_file(data, layout=layout, cost_per_key=cost_per_key)
         letters = letters_in_file(data)
         repeats = repeats_in_file(data)
         trigrams = trigrams_in_file(data)
@@ -381,10 +394,11 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
 
-        finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
-        position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
+    no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
+    reps.extend(secondary_bigrams)
 
-    no_handswitches = no_handswitching(trigrams, layout=layout)
+    finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
+    position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats, layout=layout)

@@ -269,6 +269,8 @@ TEST_FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
+TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.5 #: multiplier for the cost of secondary bigrams in trigrams. 
+
 
 ### Caches
 
