@@ -313,7 +313,7 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     (2, [(2.5, 'ie'), (1.5, 'ui')])
     """
     no_switch = 0
-    secondary_bigrams = [] # [(num, bigram), …]
+    secondary_bigrams = {} # {bigram: num, …}
     for num, trig in trigrams:
         # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
         if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
@@ -331,9 +331,12 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
                 no_switch += num * WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
         # Add bigram cost key 1 and key 3 if there are two handswitches; reduce via a multiplier < 1.0 ; Faktor könnte vom Tippaufwand der mittleren Taste abhängen: Je besser oder schneller die mittlere Taste getippt werden kann, desto grösser der Faktor. Das ist aber vermutlich nur eine unnötige Komplikation.
         elif hand0 is hand2 and hand0 is not hand1:
-            secondary_bigrams.append((WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM * num, trig[0]+trig[2]))
+            bi = trig[0]+trig[2]
+            try:
+                secondary_bigrams[bi] += num
+            except KeyError: secondary_bigrams[bi] = num
 
-    return no_switch, secondary_bigrams
+    return no_switch, [(num, bi) for bi, num in secondary_bigrams.items()]
     
 
 def no_handswitching(trigrams, layout=NEO_LAYOUT):
