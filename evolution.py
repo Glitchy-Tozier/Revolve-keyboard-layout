@@ -49,12 +49,17 @@ parser.add_option("-o", "--output", type="string", dest="filename", default=file
 parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=num_layouts, help="number of steps")
 parser.add_option("-f", "--file", type="string", dest="data",
                   default=None, help="use the given textfile as korpus instead of the ngram files.", metavar="filepath")
+parser.add_option("--not-quiet",
+                      action="store_false", dest="quiet", default=quiet,
+                      help="don’t be quiet, regardless of what evolution.py says")
 
 (options, args) = parser.parse_args()
 
 if options.data:
     with open(options.data) as f: 
         options.data = f.read()
+
+quiet = options.quiet
 
 ### run
 
