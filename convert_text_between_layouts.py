@@ -16,11 +16,11 @@ Example:
 ./convert_text_between_layouts.py --layout "
 kuü.ä vgcljf
 hieao dtrnsß
-xyö,q bpwmz
+⇚xyö,q bpwmz
 " --base "
 xvlcw khgfqß
 uiaeo snrtdy
-üöäpz bm,.j
+⇚üöäpz bm,.j
 " --text "blubb"
 
 """
@@ -40,38 +40,38 @@ uiaeo snrtdy
 neo2 = """
 xvlcw khgfqß´
 uiaeo snrtdy
-üöäpz bm,.j
+⇚üöäpz bm,.j
 """
 
 qwertz = """
 qwert zuiopü+
 asdfg hjklöä
-yxcvb nm,.-
+<yxcvb nm,.-
 """
 
 nordtast = """
 äuobp kglmfx´
 aietc hdnrsß
-.,üöq yzwvj
+⇚.,üöq yzwvj
 """
 
 Andreas100504 = """
 jäo.ü khclfv´
 teaiu gdnrsß
-xqö,y bpmwz
+⇚xqö,y bpmwz
 """
 
 Vrijbuiter = """
 joä,ü khclfv´
 taeiu gdnrsß
-xöq.y bpmwz
+⇚xöq.y bpmwz
 """
 
 # just a between-result in massive finger-repeat optimizing. Feels a bit awkward.
 mirea = """
 kuyüä xhcljp´
 mirea dstngz
-b,.oö ßfvwq
+⇚b,.oö ßfvwq
 """
 
 # A layout with similar values as Qwertz.
@@ -80,33 +80,33 @@ b,.oö ßfvwq
 qwertzy = """
 rlnöv xd,fj.´
 qzhäi gpsbuw
-matye üockß
+<matye üockß
 """
 
 qwertzy2 = """
 lfbvh p,cögy´
 äaukß wzedox
-ürsit qm.nj
+<ürsit qm.nj
 """
 
 qwertzy3 = """
 nßeiä wu.cqm´
 xvjt, agürly
-ösdfb ophzk
+<ösdfb ophzk
 """
 
 # has zero repeats top to bottom
 sieh = """
 äuaßq xw.b,z´
 siehg lnrtdm
-öüofk vcypj
+⇚öüofk vcypj
 """
 
 # mainly few rows to cross on the same hand – really strange to type
 rows_per_hand = """
 yßxqj au.fbm´
 häücp eidrsn
-zolgt ö,vwk
+⇚zolgt ö,vwk
 """
 
 # few rows to cross, but also few handswitches.
@@ -114,14 +114,14 @@ zolgt ö,vwk
 rows_total = """
 ßxyöü qjvkpf´
 tcäoi esrngd
-lzua. ,mwbh
+⇚lzua. ,mwbh
 """
 
 # quite good normal result from before (rows/dist)²
 hia1 = """
 ßuoöx wcsdpz´
 hiaeä lnrtgk
-,y.üq fmjbv
+⇚,y.üq fmjbv
 """
 
 # a normal optimization result
@@ -129,7 +129,7 @@ hiaeä lnrtgk
 sic = """
 zuxöä pglmjk´
 sicea tdnrhf
-yßoüq bwv.,
+⇚yßoüq bwv.,
 """
 
 # one other normal result, including the (rows/dist)²
@@ -137,41 +137,41 @@ yßoüq bwv.,
 tic1 = """
 juxäü zhlmpw´
 ticea sdrngk
-yöo.q fvßb,
+⇚yöo.q fvßb,
 """
 
 # feels a bit more awkward than tic1 (tic1 has the better value)
 tic2 = """
 puxäü fglmjz´
 ticea hdrns,
-yöo.q kwvbß
+⇚yöo.q kwvbß
 """
 
 # as little handswitching as possible, but only without direction changes.
 keep_the_hand = """
 ,äqoy pwslfk´
 aeciü hnrtdg
-xö.uj bmßvz
+⇚xö.uj bmßvz
 """
 
 # Andreas Wettstein, Einwärts, Englisch+Deutsch
 einw = """
 kuü.ä vgcljf´
 hieao dtrnsß
-xyö,q bpwmz
+⇚xyö,q bpwmz
 """
 
 # zwischenergebnis
 hea = """
 q.okü vcslzj´
 heaiu dtrngf
-xöä,y mbßwp
+⇚xöä,y mbßwp
 """
 
 testing = """
 xko.ü vcslzq´
 heaiu dtrnmf
-yjä,ö bgßwp
+⇚yjä,ö bgßwp
 """
 
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
