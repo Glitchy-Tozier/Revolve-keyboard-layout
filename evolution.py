@@ -7,8 +7,8 @@ from optparse import OptionParser
 
 ### config
 
-#: The number of new layouts to create. Can be overwritten with the -n parameter.
-num_layouts = 50
+#: The number of new layouts to create. Can be overwritten with the -n parameter. 500 should have a 50% chance of finding the best possible layout (the global minimum). 
+num_layouts = 500
 
 #: The output filename. Can be overwritten with the -o parameter.
 filename = "output.txt" # None for shell output
