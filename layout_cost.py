@@ -237,7 +237,8 @@ def load_per_hand(letters=None, finger_load=None, layout=NEO_LAYOUT):
         finger_load = load_per_finger(letters, layout=layout)
     elif letters is None and finger_load is None:
         raise Exception("Need at least letters or precalculated finger_load")
-    hand_load = [sum([finger_load[f] for f in finger_load if f.endswith(hand)]) for hand in ("L", "R")]
+    # ignore the thumbs, because currently space is always hit with the left thumb.
+    hand_load = [sum([finger_load[f] for f in finger_load if f.endswith(hand) and not f.startswith('Daumen')]) for hand in ("L", "R")]
     return hand_load
 
 
