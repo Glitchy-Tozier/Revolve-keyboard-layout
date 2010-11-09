@@ -443,6 +443,23 @@ def find_key(key, layout):
             pos = None # all keys are in there. None means, we don’t need to check by hand.
     return pos
 
+def changed_keys(layout0, layout1):
+    """Find the keys which are in different positions in the two layouts."""
+    # first make sure, we have the caches.
+    try: cache0 = layout0[5]
+    except IndexError:
+        layout.append({})
+        cache0 = layout0[5]
+        update_letter_to_key_cache_multiple(None, layout=layout)
+
+    try: cache1 = layout1[5]
+    except IndexError:
+        layout.append({})
+        cache1 = layout1[5]
+        update_letter_to_key_cache_multiple(None, layout=layout)
+
+    return [l for l in cache0 if not l in cache1 or cache0[l] != cache1[l]] + [l for l in cache1 if not l in cache0]
+
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
     """Get the keys corresponding to the given finger name.
