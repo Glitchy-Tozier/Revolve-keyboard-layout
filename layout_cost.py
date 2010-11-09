@@ -310,7 +310,7 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
     >>> key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigs, layout=NEO_LAYOUT)
     >>> _no_handswitching(trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM)
-    (2, [(2.5, 'ie'), (1.5, 'ui')])
+    (2, [(1.5, 'ui'), (2.5, 'ie')])
     """
     no_switch = 0
     secondary_bigrams = {} # {bigram: num, …}
@@ -333,8 +333,8 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
         elif hand0 is hand2 and hand0 is not hand1:
             bi = trig[0]+trig[2]
             try:
-                secondary_bigrams[bi] += num
-            except KeyError: secondary_bigrams[bi] = num
+                secondary_bigrams[bi] += num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM
+            except KeyError: secondary_bigrams[bi] = num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM
 
     return no_switch, [(num, bi) for bi, num in secondary_bigrams.items()]
     
@@ -354,7 +354,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
     2
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1][0][1]
-    'ie'
+    'ui'
     """
     key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
     return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM)
