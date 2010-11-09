@@ -380,9 +380,14 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     repeats = {}
     trigs = {}
     data = f.read(slicelength)
-    print("reading ngrams from", datapath)
+    step = 0
     while data[2:]:
-        print("read ~", int(f.tell()/10000)/100, "MiB")
+        if step == 1: 
+            print("reading ngrams from", datapath)
+        if step:
+            print("read ~", int(f.tell()/10000)/100, "MiB")
+        step += 1
+        
         for i in range(len(data)-2):
             letter = data[i]
             if letter in letters:
