@@ -380,6 +380,60 @@ def combine_genetically(layout1, layout2):
     return res
 
 
+def layout_difference_weighted(layout0, layout1, letters=None, letter_dict=None, sum_keystrokes=None):
+    """Find the difference between two layouts, weighted with the number of times the differing letters are used in the corpus.
+
+    This only gives 1.0, if one layout contains all letters from the corpus and the other layout has none of them (or all of them in different positions). 
+
+    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT, letters=letters)
+    0.0
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lx, letters=letters)
+    0.036617925978240665
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lxwq, letters=letters)
+    0.050589766759669606
+    >>> layout_difference_weighted(NEO_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    0.9486182821801175
+    >>> layout_difference_weighted(NEO_LAYOUT, NORDTAST_LAYOUT, letters=letters)
+    0.8830111461330287
+    >>> layout_difference_weighted(NORDTAST_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    0.8983918828764104
+    >>> layout_difference_weighted(NEO_LAYOUT, TEST_LAYOUT, letters=letters)
+    0.9999201678764246
+    >>> empty = [[], [], [], [], []]
+    >>> layout_difference_weighted(NEO_LAYOUT, empty, letters=letters)
+    0.9999202512375004
+    """
+    if letter_dict is None and letters is None:
+        raise Exception("Need letters or a letter dict")
+    elif letter_dict is None:
+        letter_dict = {letter: num for num, letter in letters}
+    if sum_keystrokes is None: 
+        sum_keystrokes = sum(letter_dict.values())
+    return sum([letter_dict.get(c, 0) for c in changed_keys(layout0, layout1)])/sum_keystrokes
+
+def find_layout_families(layouts, letters, max_diff=0.2):
+    """Find layout families in a list of layouts using the difference in key-positions, weighted by the occurrance probability of each key.
+
+    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.1))
+    3
+    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.9))
+    2
+    """
+    families = []
+    letter_dict = {letter: num for num, letter in letters}
+    sum_keystrokes = sum(letter_dict.values())
+    for l in layouts:
+        fits = False
+        for f in families:
+            if layout_difference_weighted(l, f, letter_dict=letter_dict, sum_keystrokes=sum_keystrokes) <= max_diff:
+                fits = True
+        if not fits: families.append(l)
+       
+    return families
+
+
 ### UI ###
 
 def format_keyboard_layout(layout):
