@@ -444,19 +444,27 @@ def find_key(key, layout):
     return pos
 
 def changed_keys(layout0, layout1):
-    """Find the keys which are in different positions in the two layouts."""
+    """Find the keys which are in different positions in the two layouts.
+
+    >>> changed_keys(NEO_LAYOUT, NEO_LAYOUT_lx)
+    ['X', 'l', 'x', 'L']
+    >>> from check_neo import switch_keys
+    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT)
+    >>> changed_keys(TEST_LAYOUT, t)
+    ['\\n', 'u', 'U']
+    """
     # first make sure, we have the caches.
     try: cache0 = layout0[5]
     except IndexError:
-        layout.append({})
+        layout0.append({})
         cache0 = layout0[5]
-        update_letter_to_key_cache_multiple(None, layout=layout)
+        update_letter_to_key_cache_multiple(None, layout=layout0)
 
     try: cache1 = layout1[5]
     except IndexError:
-        layout.append({})
+        layout1.append({})
         cache1 = layout1[5]
-        update_letter_to_key_cache_multiple(None, layout=layout)
+        update_letter_to_key_cache_multiple(None, layout=layout1)
 
     return [l for l in cache0 if not l in cache1 or cache0[l] != cache1[l]] + [l for l in cache1 if not l in cache0]
 
