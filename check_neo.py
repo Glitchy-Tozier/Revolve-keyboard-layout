@@ -516,7 +516,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         finger_load = load_per_finger(letters, layout=layout)
         finger_sum = sum(finger_load.values())
         no_thumbs = [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[:4]] + ["-"] + [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[6:]]
-        res += c("# Finger load:", *no_thumbs)
+        res += c("# Finger load %:", *no_thumbs)
     result(res)
 
 
