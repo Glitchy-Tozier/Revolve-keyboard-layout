@@ -466,7 +466,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     return line
     
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
 	    data=data, 
@@ -510,6 +510,13 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+    if fingerstats:
+        # also print statistics
+        # Finger-load:
+        finger_load = load_per_finger(letters, layout=layout)
+        finger_sum = sum(finger_load.values())
+        no_thumbs = [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[:4]] + ["-"] + [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[6:]]
+        res += c("# Finger load:", *no_thumbs)
     result(res)
 
 
@@ -678,33 +685,33 @@ def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
     
 
-def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT):
+def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingerstats=False):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     if layout == NEO_LAYOUT: 
         info("Neo")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
      
-    print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+    print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
     
     if not quiet:
         info("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
         info("\nAnd Nordtast + layers 3-6 from Neo")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
         info("\nAnd Dvorak")
-        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
         info("\nAnd Colemak")
-        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True)
+        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
 
 # for compatibility
 check_the_neo_layout = compare_a_layout
 
-def check_a_layout_from_shell(layout, quiet, verbose, datafile=None):
+def check_a_layout_from_shell(layout, quiet, verbose, datafile=None, fingerstats=False):
     """Check a layout we get passed as shell argument."""
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats)
     
 
-def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None):
+def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None, fingerstats=False):
     """Check a string passed via shell and formatted as
 
     öckäy zhmlß,´
@@ -718,7 +725,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     <yxcvb nm,.-
     """
     layout = string_to_layout(layout_string, base_layout)
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats)
 
 ### Self-Test 
 
@@ -773,6 +780,9 @@ if __name__ == "__main__":
     parser.add_option("--controlled-tail",
                       action="store_true", dest="controlled_tail", default=False,
                       help="do a controlled evolution after the random evolution steps")
+    parser.add_option("--fingerstats",
+                      action="store_true", dest="fingerstats", default=False,
+                      help="Show statistics on the finger load distribution")
     parser.add_option("-q", "--quiet",
                       action="store_true", dest="quiet", default=False,
                       help="don’t print progress messages to stdout")
@@ -800,10 +810,10 @@ if __name__ == "__main__":
     # act
     
     if options.check:
-        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data)
+        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data, fingerstats=options.fingerstats)
 
     elif options.check_string:
-        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base)
+        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats)
             
     elif options.evolve:
         evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step)
@@ -821,5 +831,5 @@ if __name__ == "__main__":
                                 controlled=options.controlled_evolution)
 
     else:
-        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base)
+        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base, fingerstats=options.fingerstats)
         
