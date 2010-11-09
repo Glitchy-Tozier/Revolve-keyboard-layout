@@ -205,9 +205,9 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
 
-    >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " ")]
+    >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (4, "A"), (6, "Δ")]
     >>> load_per_finger(letters)
-    {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3}
+    {'': 10, 'Ring_L': 5, 'Klein_L': 7, 'Mittel_L': 4, 'Klein_R': 10, 'Daumen_L': 3}
     """
     letters = split_uppercase_letters(letters, layout)
     fingers = {}
