@@ -126,10 +126,10 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     True
     >>> find_key("L", layout=lay) == (1, 1, 1)
     True
-    >>> NEO_LAYOUT_lxwq == lay[:5]
+    >>> NEO_LAYOUT_lxwq == lay
     True
     >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT)
-    >>> NEO_LAYOUT_lx == lay[:5]
+    >>> NEO_LAYOUT_lx == lay
     True
     >>> a = find_key("a", layout=lay)
     >>> lay = switch_keys(["ab"], layout=lay)
