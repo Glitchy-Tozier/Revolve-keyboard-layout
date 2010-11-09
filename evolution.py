@@ -55,10 +55,6 @@ parser.add_option("--not-quiet",
 
 (options, args) = parser.parse_args()
 
-if options.data:
-    with open(options.data) as f: 
-        options.data = f.read()
-
 quiet = options.quiet
 
 ### run
@@ -86,7 +82,7 @@ for step in range(options.evolution_steps):
                     verbose,
                     controlled_tail,
                     starting_layout=STARTING_LAYOUT,
-                    data=options.data, 
+                    datafile=options.data, 
                     anneal=anneal,
                     anneal_step = anneal_step)
     print(step+1, "/", options.evolution_steps,
