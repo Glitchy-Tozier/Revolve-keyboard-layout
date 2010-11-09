@@ -380,7 +380,7 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     repeats = {}
     trigs = {}
     data = f.read(slicelength)
-    print("reading ngrams from datafile", datapath)
+    print("reading ngrams from", datapath)
     while data[2:]:
         print("read ~", int(f.tell()/10000)/100, "MiB")
         for i in range(len(data)-2):
