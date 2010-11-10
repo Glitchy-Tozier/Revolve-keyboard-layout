@@ -427,9 +427,11 @@ def find_layout_families(layouts, letters, max_diff=0.2):
     for l in layouts:
         fits = False
         for f in families:
-            if layout_difference_weighted(l, f, letter_dict=letter_dict, sum_keystrokes=sum_keystrokes) <= max_diff:
+            if layout_difference_weighted(l, f[0], letter_dict=letter_dict, sum_keystrokes=sum_keystrokes) <= max_diff:
                 fits = True
-        if not fits: families.append(l)
+        if not fits:
+            families.append([])
+            families[-1].append(l)
        
     return families
 
