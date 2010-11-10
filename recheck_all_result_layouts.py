@@ -20,7 +20,11 @@ def get_all_layouts_in_textfile(textfile):
         except UnicodeError:
             print("can’t open", textfile)
 
-    e = d.split("Evolved Layout")
+    # normal result splitting
+    if "Evolved Layout" in d: 
+        e = d.split("Evolved Layout")
+    else: # splitting for sorted best-XX files.
+        e = d.split("####")
     layout_strings = []
     for i in e[1:]:
         layout_strings.append("\n".join(i.splitlines()[1:4]))
@@ -32,10 +36,11 @@ def get_all_layouts_in_textfile(textfile):
     
     all_layouts = []
     for l in layout_strings:
-        try: all_layouts.append(string_to_layout(l))
-        except IndexError:
-            print("parsing failed for the layout string:")
-            print(l)
+        if l.strip(): 
+            try: all_layouts.append(string_to_layout(l))
+            except IndexError:
+                print("parsing failed for the layout string:")
+                print(l)
     return all_layouts
     
     
@@ -84,8 +89,8 @@ if __name__ == "__main__":
         for lay in all_layouts:
             cost = total_cost(layout=lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
             lays.append((cost, lay))
-            # print (format_layer_1_string(lay))
-            # print()
+            print (format_layer_1_string(lay))
+            print()
         lays.sort()
         # remove the cost information again.
         lays = [lay for cost, lay in lays]
