@@ -64,6 +64,9 @@ if __name__ == "__main__":
                       help="use the given textfile as korpus", metavar="file")
     parser.add_option("--namepart", dest="namepart", type="string", default="",
                       help="read only files whose names contain the given string", metavar="string")
+    parser.add_option("--folder", dest="folder", type="string", default="results",
+                      help="search for result files in the given folder (no recursions, requires .txt suffix)", metavar="string")
+
     parser.add_option("--csv",
                       action="store_true", dest="print_csv", default=False,
                       help="print a csv instead of the normal layout statistics")
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     if options.print_csv: 
         print("total penalty per word;key position cost;finger repeats;disbalance of fingers;top to bottom or vice versa;handswitching in trigram;(rows²/dist)²;shortcut keys;handswitching after unbalancing;movement pattern")
 
-    all_layouts = get_all_layouts_in_text_files_in("results", namepart = options.namepart)
+    all_layouts = get_all_layouts_in_text_files_in(folder=options.folder, namepart = options.namepart)
 
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=options.data)
     trigrams = split_uppercase_trigrams(trigrams)
