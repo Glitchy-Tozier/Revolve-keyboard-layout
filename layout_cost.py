@@ -48,6 +48,62 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
             cost += num * cost_per_key[pos[0]][pos[1]]
     return cost
 
+def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+    """Count the total cost due to key positions.
+
+    >>> data = read_file("testfile")
+    >>> print(data[:3])
+    uia
+    >>> key_position_cost_quadratic_bigrams(data[:3], layout=NEO_LAYOUT, cost_per_key=TEST_COST_PER_KEY)
+    24
+    >>> from check_neo import switch_keys
+    >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
+    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    51
+    >>> lay = switch_keys(["ax", "uq"], layout=NEO_LAYOUT)
+    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    72
+    >>> lay = switch_keys(["ax", "iq"], layout=NEO_LAYOUT)
+    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    204
+    """
+    if data is not None: 
+        bigrams = repeats_in_file(data)
+    elif bigrams is None:
+        raise Exception("Need either bigrams or data")
+    bigrams = split_uppercase_repeats(bigrams, layout=layout)
+    cost = 0
+    for num, bi in bigrams:
+        if not bi[1:]:
+            continue
+        pos0 = find_key(bi[0], layout=layout)
+        pos1 = find_key(bi[1], layout=layout)
+        if pos0 is None: 
+            if pos1 is None: # both not found
+                cost += num * COST_PER_KEY_NOT_FOUND**2
+            else: # one not found
+                cost += num * COST_PER_KEY_NOT_FOUND
+            continue
+        if pos1 is None:
+            cost += num * COST_PER_KEY_NOT_FOUND
+            continue
+        
+        cost0 = 0
+        cost1 = 0
+        # shift, M3 and M4
+        if COST_LAYER_ADDITION[pos0[2]:]:
+            cost0 += COST_LAYER_ADDITION[pos0[2]]
+        if COST_LAYER_ADDITION[pos1[2]:]:
+            cost1 += COST_LAYER_ADDITION[pos1[2]]
+
+        cost0 += num * cost_per_key[pos0[0]][pos0[1]]
+        cost1 += num * cost_per_key[pos1[0]][pos1[1]]
+
+        # add the product of both costs as final cost.
+        cost += cost0*cost1
+        
+    return cost
+
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
