@@ -227,10 +227,10 @@ def load_per_hand(letters=None, finger_load=None, layout=NEO_LAYOUT):
 
     >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (2, "g")]
     >>> load_per_hand(letters)
-    [9, 2]
+    [6, 2]
     >>> finger_load = {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3, 'Mittel_R': 2}
     >>> load_per_hand(finger_load = finger_load)
-    [9, 2]
+    [6, 2]
     
     """
     if finger_load is None and letters is not None: 
