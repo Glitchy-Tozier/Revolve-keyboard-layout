@@ -522,7 +522,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     return line
     
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False, quadratic=False):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
 	    data=data, 
@@ -546,7 +546,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     # unweighted
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:8]
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:11]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:12]
 
     if shorten_numbers: 
         sn = short_number
@@ -566,6 +566,9 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+    if quadratic:
+        # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts. 
+        res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
     if fingerstats:
         # also print statistics
         # Finger-load:
@@ -629,7 +632,7 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
     
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, quadratic=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
 
@@ -642,10 +645,10 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
     lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step)
     
     result("\n# Evolved Layout")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, quadratic=quadratic)
 
 
-def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, datafile=None):
+def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, datafile=None, quadratic=False):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
      letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
@@ -673,7 +676,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              info("\n# round", round)
              info("# top five")
              for cost, lay in layouts[:5]:
-                 print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+                 print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, quadratic=quadratic)
          info("\n# killing the worst", int(challengers * 3/4)-1, "layouts")
          layouts = deepcopy(layouts[:int(challengers / 4)+1])
 
@@ -725,9 +728,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      for num, name in [(0, "\n# gold"), (1, "\n# silver"), (2, "\n# bronze")][:len(layouts)]: 
          cost, lay = layouts[num]
          info(name)
-         print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+         print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, quadratic=quadratic)
 
-def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=NEO_LAYOUT):
+def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=NEO_LAYOUT, quadratic=False):
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
@@ -738,36 +741,36 @@ def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, layout=layout, abc=abc, quiet=quiet)
         
     info("\nBest of the random layouts")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, quadratic=quadratic)
     
 
-def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingerstats=False):
+def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingerstats=False, quadratic=False):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     if layout == NEO_LAYOUT: 
         info("Neo")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
      
-    print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
+    print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
     
     if not quiet:
         info("\nQwertz for comparision")
-        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
+        print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Nordtast + layers 3-6 from Neo")
-        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
+        print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Dvorak")
-        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
+        print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Colemak")
-        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
+        print_layout_with_statistics(COLEMAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
 
 # for compatibility
 check_the_neo_layout = compare_a_layout
 
-def check_a_layout_from_shell(layout, quiet, verbose, datafile=None, fingerstats=False):
+def check_a_layout_from_shell(layout, quiet, verbose, datafile=None, fingerstats=False, quadratic=False):
     """Check a layout we get passed as shell argument."""
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
     
 
-def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None, fingerstats=False):
+def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None, fingerstats=False, quadratic=False):
     """Check a string passed via shell and formatted as
 
     öckäy zhmlß,´
@@ -781,7 +784,7 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     <yxcvb nm,.-
     """
     layout = string_to_layout(layout_string, base_layout)
-    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats)
+    print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
 
 ### Self-Test 
 
@@ -839,6 +842,9 @@ if __name__ == "__main__":
     parser.add_option("--fingerstats",
                       action="store_true", dest="fingerstats", default=False,
                       help="Show statistics on the finger load distribution")
+    parser.add_option("--quadratic",
+                      action="store_true", dest="quadratic", default=False,
+                      help="Show the quadratic positioin cost (bigrams).")
     parser.add_option("-q", "--quiet",
                       action="store_true", dest="quiet", default=False,
                       help="don’t print progress messages to stdout")
@@ -866,16 +872,16 @@ if __name__ == "__main__":
     # act
     
     if options.check:
-        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data, fingerstats=options.fingerstats)
+        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data, fingerstats=options.fingerstats, quadratic=options.quadratic)
 
     elif options.check_string:
-        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats)
+        check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats, quadratic=options.quadratic)
             
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step, quadratic=options.quadratic)
         
     elif options.best_random_layout:
-        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, datafile=options.file, layout=options.base)
+        best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, datafile=options.file, layout=options.base, quadratic=options.quadratic)
 
     elif options.challenge_rounds:
             evolution_challenge(rounds=options.challenge_rounds,
@@ -884,8 +890,9 @@ if __name__ == "__main__":
                                 prerandomize=options.prerandomize,
                                 datafile=options.file,
                                 layout=options.base,
-                                controlled=options.controlled_evolution)
+                                controlled=options.controlled_evolution,
+                                quadratic=options.quadratic)
 
     else:
-        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base, fingerstats=options.fingerstats)
+        check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base, fingerstats=options.fingerstats, quadratic=options.quadratic)
         
