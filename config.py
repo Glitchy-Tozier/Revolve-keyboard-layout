@@ -127,18 +127,12 @@ COST_LAYER_ADDITION = [0, 15, 12, 10, 27, 22]
 #: The cost of any key which isn’t on the keyboard. Should be higher than max(COST_LAYER_ADDITION) + the most expensive key + 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment [local variable in split uppercase bigrams] to make sure that having a key on a bad position in layer 5 is better than not having it at all. Currently (eb0c9e8c8b02 + 1) that means, it must be higher than 27+50+16 = 93. Trial and error shows, it must be about 150 to make the addition of the neo layers to nordtast useful.
 COST_PER_KEY_NOT_FOUND = 150
 
+
+
+### config finished. Additional stuff which might need changing for different layouts or hand positions. 
+
 #: The modifiers, sorted by layer, split into left and right, counting from 0.
 MODIFIERS_PER_LAYER = [("", ""), ("⇧", "⇗"), ("⇩", "⇘"), ("⇚", "⇙"), ("⇩⇧", "⇘⇗"), ("⇩⇚", "⇘⇙")]
-
-# for reference the neo layout
-NEO = [
-    [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("-"),("`"),("←")], # Zahlenreihe (0)
-    [("⇥"),("x"),("v"),("l"),("c"),("w"),("k"),("h"),("g"),("f"),("q"),("ß"),("´"),()], # Reihe 1
-    [("⇩"),("u"),("i"),("a"),("e"),("o"),("s"),("n"),("r"),("t"),("d"),("y"),("⇘"),("\n")], # Reihe 2
-    [("⇧"),(),("ü"),("ö"),("ä"),("p"),("z"),("b"),("m"),(","),("."),("j"),("⇗")],        # Reihe 3
-    [(), (), (), (" "), (), (), (), ()] # Reihe 4 mit Leertaste
-]
-
 
 #: The positions which are by default accessed by the given finger. 
 FINGER_POSITIONS = {
