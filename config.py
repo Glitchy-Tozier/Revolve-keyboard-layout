@@ -51,37 +51,31 @@ WEIGHT_FINGER_SWITCH = 20 #: how much worse is it to switch from middle to index
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
-        "Ring_L": 3, 
-        "Mittel_L": 3
+        "Ring_L": 3
         }, 
     "Ring_L": {
         "Klein_L": 4,
-        "Mittel_L": 3
+        "Mittel_L": 2
         }, 
     "Mittel_L": {
-        "Klein_L": 1,
-        "Ring_L": 2
+        "Ring_L": 3
         }, 
     "Zeige_L": {
-        "Klein_L": 1
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Klein_R": 1
         },
     "Mittel_R": {
-        "Ring_R": 2, 
-        "Klein_R": 1
+        "Ring_R": 3,
         },
     "Ring_R": {
-        "Mittel_R": 3,
+        "Mittel_R": 2,
         "Klein_R": 4
         }, 
     "Klein_R": {
-        "Mittel_R": 3,
         "Ring_R": 3
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
