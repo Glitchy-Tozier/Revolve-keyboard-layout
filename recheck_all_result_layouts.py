@@ -47,10 +47,10 @@ def get_all_layouts_in_textfile(textfile):
 def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     """get all layouts from check_neo runs saved in the textfile."""
     all_layouts = []
-    for i in listdir("results"):
+    for i in listdir(folder):
         if not i.endswith(".txt") or not namepart in i:
             continue
-        all_layouts.extend(get_all_layouts_in_textfile(join("results", i))) 
+        all_layouts.extend(get_all_layouts_in_textfile(join(folder, i))) 
 
     return all_layouts
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     parser.add_option("--families",
                       action="store_true", dest="families", default=False,
                       help="Sort the layouts into families and print only the best layout in each familiy. ")
-    parser.add_option("--family-threshold", dest="family_threshold", type="float", default=0.5,
+    parser.add_option("--family-threshold", dest="family_threshold", type="float", default=0.6,
                       help="Treat layouts with at most the given difference as belonging to the same family", metavar="max_difference")
 
     (options, args) = parser.parse_args()
