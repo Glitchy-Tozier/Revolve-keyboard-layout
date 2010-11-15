@@ -5,23 +5,15 @@
 
 Simple Usage: ./convert_text_between_layouts.py [--name <layout-name>] [--qwertz]
 
-Full Usage: ./convert_text_between_layouts.py [[--layout "\
-<layout-string>\
-"] || --name <layout-name>]] [[--base "\
-<layout-string>\
-"] || [--qwertz] || [--nordtast]] [--text "<text>"]
+Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || --name <layout-name>]] [[--base "<layout-string>"] || [--qwertz] || [--nordtast]] [--text "<text>"]
 
 Example: 
 
-./convert_text_between_layouts.py --layout "
-kuü.ä vgcljf
+./convert_text_between_layouts.py --layout "kuü.ä vgcljf
 hieao dtrnsß
-⇚xyö,q bpwmz
-" --base "
-xvlcw khgfqß
+⇚xyö,q bpwmz" --base "xvlcw khgfqß
 uiaeo snrtdy
-⇚üöäpz bm,.j
-" --text "blubb"
+⇚üöäpz bm,.j" --text "blubb"
 
 """
 
@@ -41,38 +33,38 @@ neo2 = """
 xvlcw khgfqß´
 uiaeo snrtdy
 ⇚üöäpz bm,.j
-"""
+"""[1:]
 
 qwertz = """
 qwert zuiopü+
 asdfg hjklöä
 <yxcvb nm,.-
-"""
+"""[1:]
 
 nordtast = """
 äuobp kglmfx´
 aietc hdnrsß
 ⇚.,üöq yzwvj
-"""
+"""[1:]
 
 Andreas100504 = """
 jäo.ü khclfv´
 teaiu gdnrsß
 ⇚xqö,y bpmwz
-"""
+"""[1:]
 
 Vrijbuiter = """
 joä,ü khclfv´
 taeiu gdnrsß
 ⇚xöq.y bpmwz
-"""
+"""[1:]
 
 # just a between-result in massive finger-repeat optimizing. Feels a bit awkward.
 mirea = """
 kuyüä xhcljp´
 mirea dstngz
 ⇚b,.oö ßfvwq
-"""
+"""[1:]
 
 # A layout with similar values as Qwertz.
 # found in the python3 interpreter via 
@@ -81,33 +73,33 @@ qwertzy = """
 rlnöv xd,fj.´
 qzhäi gpsbuw
 <matye üockß
-"""
+"""[1:]
 
 qwertzy2 = """
 lfbvh p,cögy´
 äaukß wzedox
 <ürsit qm.nj
-"""
+"""[1:]
 
 qwertzy3 = """
 nßeiä wu.cqm´
 xvjt, agürly
 <ösdfb ophzk
-"""
+"""[1:]
 
 # has zero repeats top to bottom
 sieh = """
 äuaßq xw.b,z´
 siehg lnrtdm
 ⇚öüofk vcypj
-"""
+"""[1:]
 
 # mainly few rows to cross on the same hand – really strange to type
 rows_per_hand = """
 yßxqj au.fbm´
 häücp eidrsn
 ⇚zolgt ö,vwk
-"""
+"""[1:]
 
 # few rows to cross, but also few handswitches.
 # slightly strange, but interesting. 
@@ -115,14 +107,14 @@ rows_total = """
 ßxyöü qjvkpf´
 tcäoi esrngd
 ⇚lzua. ,mwbh
-"""
+"""[1:]
 
 # quite good normal result from before (rows/dist)²
 hia1 = """
 ßuoöx wcsdpz´
 hiaeä lnrtgk
 ⇚,y.üq fmjbv
-"""
+"""[1:]
 
 # a normal optimization result
 # not quite flowing as I’d wish it to, but better than sieh for text_ich_bin
@@ -130,7 +122,7 @@ sic = """
 zuxöä pglmjk´
 sicea tdnrhf
 ⇚yßoüq bwv.,
-"""
+"""[1:]
 
 # one other normal result, including the (rows/dist)²
 # flows a good deal better than sic
@@ -138,41 +130,41 @@ tic1 = """
 juxäü zhlmpw´
 ticea sdrngk
 ⇚yöo.q fvßb,
-"""
+"""[1:]
 
 # feels a bit more awkward than tic1 (tic1 has the better value)
 tic2 = """
 puxäü fglmjz´
 ticea hdrns,
 ⇚yöo.q kwvbß
-"""
+"""[1:]
 
 # as little handswitching as possible, but only without direction changes.
 keep_the_hand = """
 ,äqoy pwslfk´
 aeciü hnrtdg
 ⇚xö.uj bmßvz
-"""
+"""[1:]
 
 # Andreas Wettstein, Einwärts, Englisch+Deutsch
 einw = """
 kuü.ä vgcljf´
 hieao dtrnsß
 ⇚xyö,q bpwmz
-"""
+"""[1:]
 
 # zwischenergebnis
 hea = """
 q.okü vcslzj´
 heaiu dtrngf
 ⇚xöä,y mbßwp
-"""
+"""[1:]
 
 testing = """
 xko.ü vcslzq´
 heaiu dtrnmf
 ⇚yjä,ö bgßwp
-"""
+"""[1:]
 
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
 text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
