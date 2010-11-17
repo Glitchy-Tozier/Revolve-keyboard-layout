@@ -93,6 +93,12 @@ Quellen für Wortlisten:
 -   * http://lists.neo-layout.org/pipermail/diskussion/2009-November/015057.html (mit Link auf den Korpus)
     * http://lists.neo-layout.org/pipermail/diskussion/2009-December/015238.html (generierung der N-Gramme) 
 
+
+### Weitere Ideen
+
+* Trigramme sollten vielleicht Bögen schlagen. lieber „ach“ als „leg“.
+* 
+
 """
 __note1__ = """
 > Die Kombination viele Tastenanschläge plus kurze Wege plus
