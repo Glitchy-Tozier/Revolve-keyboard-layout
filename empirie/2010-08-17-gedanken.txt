@@ -9,6 +9,8 @@ Unsortierte Gedanken zum optimieren in dieser Runde
 
 * Die Kosten des Ringfingers unten sind vermutlich zu niedrig.
 
+* Richtungswechsel bei häufigen nGrammen vermeiden, damit die festverdrahteten Trigramme keine Richtungswechsel haben (quadratisch rechnen, weil wir sonst einfach nur lange Wege kriegen. quadratisch ⇒ ein häufiges Trigramm mit Richtungswechsel ist teurer als zwei, die zusammen genauso häufig sind). 
+
 * Ähnliche Buchstaben auf den gleichen Fingern der gegenüberliegenden Hand fordern möglicherweise Verwechslungen heraus (Neo: pb – bp wäre allerdings vll. besser: harter Konsonant bei den anderen Konsonanten, weicher bei den Vokalen).  
 
 * Finden der optimalen Gewichtung:
