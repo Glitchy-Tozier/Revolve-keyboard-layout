@@ -49,7 +49,9 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     return cost
 
 def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
-    """Count the total cost due to key positions, using the product of the cost in bigrams and dividing by the total number of keystrokes to make it rise similarly fast as the single key position cost.
+    """Count the total cost due to key positions, using the inverse product of the cost in bigrams.
+
+    TODO: Remove. Not useful.
 
     >>> data = read_file("testfile")
     >>> print(data[:3])
@@ -77,15 +79,10 @@ def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYO
         if not bi[1:]:
             continue
         pos0 = find_key(bi[0], layout=layout)
-        pos1 = find_key(bi[1], layout=layout)
         if pos0 is None: 
-            if pos1 is None: # both not found
-                cost += num * COST_PER_KEY_NOT_FOUND**2
-            else: # one not found
-                cost += num * COST_PER_KEY_NOT_FOUND
             continue
+        pos1 = find_key(bi[1], layout=layout)
         if pos1 is None:
-            cost += num * COST_PER_KEY_NOT_FOUND
             continue
         
         cost0 = 0
@@ -96,13 +93,13 @@ def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYO
         if COST_LAYER_ADDITION[pos1[2]:]:
             cost1 += COST_LAYER_ADDITION[pos1[2]]
 
-        cost0 += num * cost_per_key[pos0[0]][pos0[1]]
-        cost1 += num * cost_per_key[pos1[0]][pos1[1]]
+        cost0 += cost_per_key[pos0[0]][pos0[1]]
+        cost1 += cost_per_key[pos1[0]][pos1[1]]
 
-        # add the product of both costs as final cost.
-        cost += cost0*cost1
+        # add the product of both costs as final cost. 5,3 → (5+3)/5·3 = 8/15; 4,4 → (4+4)/4·4 = 8/16; 5,4 → 9/20; 5,1 → 5/5
+        cost += num*cost0*cost1
         
-    return cost / sum([num for num, bi in bigrams])
+    return cost #* sum([num for num, bi in bigrams])
 
 def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
