@@ -463,7 +463,10 @@ def letters_in_file_precalculated(data):
     [(44021504, 'e'), (26999087, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    return [(int(num), let) for num, let in letters]
+    try: 
+        return [(int(num), let) for num, let in letters]
+    except ValueError: # floats in there
+        return [(float(num), let) for num, let in letters]
     
 
 def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None): 
