@@ -49,9 +49,19 @@ parser.add_option("-o", "--output", type="string", dest="filename", default=file
 parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=num_layouts, help="number of steps")
 parser.add_option("-f", "--file", type="string", dest="data",
                   default=None, help="use the given textfile as korpus instead of the ngram files.", metavar="filepath")
+parser.add_option("--starting-layout-string", type="string", dest="starting_layout",
+                  default=STARTING_LAYOUT, help="String version of the base layer of the starting layout.", metavar="layout")
+parser.add_option("--prerandomize", type="int", dest="prerandomize", default=prerandomize, help="the number of prerandomization steps to take")
+parser.add_option("--steps", type="int", dest="steps", default=steps, help="the number of mutation steps to take.")
 parser.add_option("--not-quiet",
                       action="store_false", dest="quiet", default=quiet,
                       help="don’t be quiet, regardless of what evolution.py says")
+parser.add_option("--tail",
+                      action="store_true", dest="tail", default=controlled_tail,
+                      help="finalize each evolution with a controlled tail run")
+parser.add_option("--no-tail",
+                      action="store_false", dest="tail", default=not controlled_tail,
+                      help="don’t use the controlled tail.")
 
 (options, args) = parser.parse_args()
 
@@ -69,18 +79,18 @@ if filename is not None:
 from check_neo import evolve_a_layout, string_to_layout
 from time import time
 from datetime import timedelta
-STARTING_LAYOUT = string_to_layout(STARTING_LAYOUT)
+STARTING_LAYOUT = string_to_layout(options.starting_layout)
 
 print("# Starting the evolution.")
 
 t = time()
 for step in range(options.evolution_steps):
-    evolve_a_layout(steps,
-                    prerandomize,
+    evolve_a_layout(options.steps,
+                    options.prerandomize,
                     controlled,
                     quiet,
                     verbose,
-                    controlled_tail,
+                    options.tail,
                     starting_layout=STARTING_LAYOUT,
                     datafile=options.data, 
                     anneal=anneal,
