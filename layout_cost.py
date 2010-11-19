@@ -105,10 +105,13 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     """Get a list of two char strings from the file, which repeat the same finger.
 
     >>> data = read_file("testfile")
-    >>> finger_repeats_from_file(data)
+    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
-    >>> finger_repeats_from_file(data, count_same_key=True)
+    >>> finger_repeats_from_file(data, count_same_key=True, layout=NEO_LAYOUT)
     [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
+    >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
+    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
+    [(1, 'Klein_L', '⇧x'), (1, 'Klein_R', '⇗ß'), (1, 'Zeige_L', 'zo'), (1, 'Klein_L', 'xü'), (1, 'Zeige_L', 'wz'), (1, 'Ring_L', 'vö'), (1, 'Klein_R', 'qj'), (1, 'Zeige_L', 'pw'), (1, 'Mittel_L', 'lä'), (1, 'Zeige_R', 'hb'), (1, 'Mittel_R', 'g,'), (1, 'Ring_R', 'f.'), (1, 'Zeige_L', 'cp'), (1, 'Zeige_R', 'bm')]
     """
     if data is not None: 
         repeats = repeats_in_file(data)
