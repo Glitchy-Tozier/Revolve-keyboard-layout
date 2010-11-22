@@ -449,7 +449,7 @@ def changed_keys(layout0, layout1):
     >>> changed_keys(NEO_LAYOUT, NEO_LAYOUT_lx)
     ['X', 'l', 'x', 'L']
     >>> from check_neo import switch_keys
-    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT)
+    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT, switch_layers=[0,1])
     >>> changed_keys(TEST_LAYOUT, t)
     ['\\n', 'u', 'U']
     """

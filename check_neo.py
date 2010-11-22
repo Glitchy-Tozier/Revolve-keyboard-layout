@@ -99,13 +99,13 @@ from math import log10, log
 
 ### Evolution
 
-def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1]):
+def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
     >>> lay = switch_keys([], layout = NEO_LAYOUT)
     >>> lay == NEO_LAYOUT
     True
-    >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT)
+    >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
     >>> get_key((1, 1, 0), layout=lay)
     'l'
     >>> get_key((1, 3, 0), layout=lay)
@@ -128,7 +128,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1]):
     True
     >>> NEO_LAYOUT_lxwq == lay
     True
-    >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT)
+    >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
     >>> NEO_LAYOUT_lx == lay
     True
     >>> a = find_key("a", layout=lay)
