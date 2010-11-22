@@ -99,7 +99,7 @@ from math import log10, log
 
 ### Evolution
 
-def switch_keys(keypairs, layout=NEO_LAYOUT):
+def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1]):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
     >>> lay = switch_keys([], layout = NEO_LAYOUT)
@@ -132,8 +132,16 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
     >>> NEO_LAYOUT_lx == lay
     True
     >>> a = find_key("a", layout=lay)
-    >>> lay = switch_keys(["ab"], layout=lay)
-    >>> a == find_key("b", layout=lay)
+    >>> A = find_key("A", layout=lay)
+    >>> curly = find_key("{", layout=lay)
+    >>> lay = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
+    >>> a == find_key("e", layout=lay)
+    True
+    >>> A == find_key("E", layout=lay)
+    True
+    >>> curly == find_key("}", layout=lay)
+    True
+    >>> "}" == get_key(find_key("}", layout=lay), layout=lay)
     True
     >>> dot = find_key(".", layout=NEO_LAYOUT)
     >>> d = find_key("d", layout=NEO_LAYOUT)
@@ -150,19 +158,50 @@ def switch_keys(keypairs, layout=NEO_LAYOUT):
             pos0 = find_key(pair[0], layout=lay)
             pos1 = find_key(pair[1], layout=lay)
 
-            if pair[1].upper() == pair[1]: 
-                tmp0 = (pair[1], ) + tuple(lay[pos0[0]][pos0[1]][1:])
-            else:
-                tmp0 = (pair[1], pair[1].upper()) + tuple(lay[pos0[0]][pos0[1]][2:])
-            
-            if pair[0].upper() == pair[0]: 
-                tmp1 = (pair[0], ) + tuple(lay[pos1[0]][pos1[1]][1:])
-            else:
-                tmp1 = (pair[0], pair[0].upper()) + tuple(lay[pos1[0]][pos1[1]][2:])
+            # both positions MUST be on the base layer. 
+            if pos0[2] or pos1[2]:
+                info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
+                continue
+
+            pos0_keys = lay[pos0[0]][pos0[1]]
+            pos1_keys = lay[pos1[0]][pos1[1]]
+
+            # add the supported layers.
+            tmp0 = []
+            for i in range(max(len(pos1_keys), len(pos0_keys))):
+                if i in switch_layers:
+                    try: 
+                        tmp0.append(pos1_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp0.append("")
+                else:
+                    try: 
+                        tmp0.append(pos0_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp0.append("")
+            tmp0 = tuple(tmp0)
+
+            tmp1 = []
+            for i in range(max(len(pos1_keys), len(pos0_keys))):
+                if i in switch_layers:
+                    try: 
+                        tmp1.append(pos0_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp1.append("")
+                else:
+                    try: 
+                        tmp1.append(pos1_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp1.append("")
+            tmp1 = tuple(tmp1)
+
+            cache_update = ""
+            for letter in tmp0 + tmp1:
+                cache_update += letter
 
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1
-            update_letter_to_key_cache_multiple(pair+pair.upper(), layout=lay)
+            update_letter_to_key_cache_multiple(cache_update, layout=lay)
             prev = pair
         #except:
         #    pprint(lay)
