@@ -13,14 +13,15 @@ def p(*args, **kwds):
 def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None): 
     # total, position, finger repeats, finger_repeat_top_to_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, (row²/col)², no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams
     print(format_layer_1_string(layout))
-    print("Häufigkeit, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
+    print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
     info = bigram_info(layout=layout, filepath=filepath)
+    num_bigrams = sum([num for num, cost, rep in info])
     if number is None: number = len(info)
     numlen = len(str(float(info[0][0])))
     for num, cost, rep in info[:number]:
         total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, rows, no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams = cost
-        p(" "*(numlen-len(str(float(num)))))
-        p(float(num), rep, "\t", sn(total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys, 5), "\t")
+        #p(" "*(numlen-len(str(float(num)))))
+        p(sn(100.0*num/num_bigrams, 5), rep, "\t", sn(total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys, 5), "\t")
         p(pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, rows, no_handswitch_after_unbalancing_key, sep="  ")
         p("|")
         if finger_repeats_top_bottom: p("Finger-oben-unten,")
