@@ -25,7 +25,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None):
         if finger_repeats_top_bottom: p("Finger-oben-unten,")
         elif finger_repeats: p("Fingerwiederholung,")
         if movement_pattern: p("Unschöner Fingerübergang,")
-        if rows > 0.5: p("Zeilensprung")
+        if rows > 0.5: p("Zeilensprung,")
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     
