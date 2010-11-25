@@ -314,6 +314,7 @@ def get_key(pos, layout=NEO_LAYOUT):
         return layout[pos[0]][pos[1]][pos[2]]
     except: return None
 
+
 def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
     try: LETTER_TO_KEY_CACHE = layout[5]
@@ -335,6 +336,7 @@ def update_letter_to_key_cache(key, layout):
                         pos = (row, col, idx_rev)
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
+
 
 def get_all_positions_in_layout(layout):
     """Get all positions for which there are keys in the layout. 
@@ -366,7 +368,6 @@ def get_all_keys_in_layout(layout):
     return keys
 
 
-
 def update_letter_to_key_cache_multiple(keys, layout):
     """Update the cache entries for many keys.
 
@@ -377,26 +378,6 @@ def update_letter_to_key_cache_multiple(keys, layout):
     for key in keys:
         update_letter_to_key_cache(key, layout=layout)
     
-
-def diff_dict(d1, d2):
-    """find the difference between two dictionaries.
-
-    >>> a = {1: 2, 3: 4}
-    >>> b = {1:2, 7:8}
-    >>> c = {}
-    >>> diff_dict(a, b)
-    {3: 4, 7: 8}
-    >>> a == diff_dict(a, c)
-    True
-    """
-    diff = {}
-    for key in d1:
-        if not key in d2: 
-            diff[key] = d1[key]
-    for key in d2:
-        if not key in d1:
-            diff[key] = d2[key]
-    return diff
 
 def find_key(key, layout): 
     """Find the position of the key in the layout.
@@ -443,31 +424,6 @@ def find_key(key, layout):
             pos = None # all keys are in there. None means, we don’t need to check by hand.
     return pos
 
-def changed_keys(layout0, layout1):
-    """Find the keys which are in different positions in the two layouts.
-
-    >>> changed_keys(NEO_LAYOUT, NEO_LAYOUT_lx)
-    ['X', 'l', 'x', 'L']
-    >>> from check_neo import switch_keys
-    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT, switch_layers=[0,1])
-    >>> changed_keys(TEST_LAYOUT, t)
-    ['\\n', 'u', 'U']
-    """
-    # first make sure, we have the caches.
-    try: cache0 = layout0[5]
-    except IndexError:
-        layout0.append({})
-        cache0 = layout0[5]
-        update_letter_to_key_cache_multiple(None, layout=layout0)
-
-    try: cache1 = layout1[5]
-    except IndexError:
-        layout1.append({})
-        cache1 = layout1[5]
-        update_letter_to_key_cache_multiple(None, layout=layout1)
-
-    return [l for l in cache0 if not l in cache1 or cache0[l] != cache1[l]] + [l for l in cache1 if not l in cache0]
-
 
 def finger_keys(finger_name, layout=NEO_LAYOUT):
     """Get the keys corresponding to the given finger name.
@@ -487,6 +443,7 @@ def finger_keys(finger_name, layout=NEO_LAYOUT):
     """
     keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[finger_name]]
     return keys
+
 
 def key_to_finger(key, layout=NEO_LAYOUT):
     """Get the finger name used to hit the given key.
@@ -584,6 +541,125 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
 
     return layout
     
+
+def changed_keys(layout0, layout1):
+    """Find the keys which are in different positions in the two layouts.
+
+    >>> changed_keys(NEO_LAYOUT, NEO_LAYOUT_lx)
+    ['X', 'l', 'x', 'L']
+    >>> from check_neo import switch_keys
+    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT, switch_layers=[0,1])
+    >>> changed_keys(TEST_LAYOUT, t)
+    ['\\n', 'u', 'U']
+    """
+    # first make sure, we have the caches.
+    try: cache0 = layout0[5]
+    except IndexError:
+        layout0.append({})
+        cache0 = layout0[5]
+        update_letter_to_key_cache_multiple(None, layout=layout0)
+
+    try: cache1 = layout1[5]
+    except IndexError:
+        layout1.append({})
+        cache1 = layout1[5]
+        update_letter_to_key_cache_multiple(None, layout=layout1)
+
+    return [l for l in cache0 if not l in cache1 or cache0[l] != cache1[l]] + [l for l in cache1 if not l in cache0]
+
+
+def diff_dict(d1, d2):
+    """find the difference between two dictionaries.
+
+    >>> a = {1: 2, 3: 4}
+    >>> b = {1:2, 7:8}
+    >>> c = {}
+    >>> diff_dict(a, b)
+    {3: 4, 7: 8}
+    >>> a == diff_dict(a, c)
+    True
+    """
+    diff = {}
+    for key in d1:
+        if not key in d2: 
+            diff[key] = d1[key]
+    for key in d2:
+        if not key in d1:
+            diff[key] = d2[key]
+    return diff
+
+
+def layout_difference_weighted(layout0, layout1, letters=None, letter_dict=None, sum_keystrokes=None):
+    """Find the difference between two layouts, weighted with the number of times the differing letters are used in the corpus.
+
+    This only gives 1.0, if one layout contains all letters from the corpus and the other layout has none of them (or all of them in different positions). 
+
+    >>> from ngrams import get_all_data
+    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT, letters=letters)
+    0.0
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lx, letters=letters)
+    0.036617925978240665
+    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lxwq, letters=letters)
+    0.050589766759669606
+    >>> layout_difference_weighted(NEO_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    0.9486182821801175
+    >>> layout_difference_weighted(NEO_LAYOUT, NORDTAST_LAYOUT, letters=letters)
+    0.8830111461330287
+    >>> layout_difference_weighted(NORDTAST_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    0.8983918828764104
+    >>> layout_difference_weighted(NEO_LAYOUT, TEST_LAYOUT, letters=letters)
+    0.9999201678764246
+    >>> empty = [[], [], [], [], []]
+    >>> layout_difference_weighted(NEO_LAYOUT, empty, letters=letters)
+    0.9999202512375004
+    """
+    if letter_dict is None and letters is None:
+        raise Exception("Need letters or a letter dict")
+    elif letter_dict is None:
+        letter_dict = {letter: num for num, letter in letters}
+    if sum_keystrokes is None: 
+        sum_keystrokes = sum(letter_dict.values())
+    return sum([letter_dict.get(c, 0) for c in changed_keys(layout0, layout1)])/sum_keystrokes
+
+
+def find_layout_families(layouts, letters, max_diff=0.2):
+    """Find layout families in a list of layouts using the difference in key-positions, weighted by the occurrance probability of each key.
+
+    >>> from ngrams import get_all_data
+    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
+    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.1))
+    3
+    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.9))
+    2
+    """
+    families = []
+    letter_dict = {letter: num for num, letter in letters}
+    sum_keystrokes = sum(letter_dict.values())
+    for l in layouts:
+        fits = False
+        for f in families:
+            if layout_difference_weighted(l, f[0], letter_dict=letter_dict, sum_keystrokes=sum_keystrokes) <= max_diff:
+                fits = True
+        if not fits:
+            families.append([])
+            families[-1].append(l)
+       
+    return families
+
+
+def combine_genetically(layout1, layout2):
+    """Combine two layouts genetically (randomly)."""
+    from random import randint
+    switchlist = []
+    for letter in abc:
+        if randint(0, 1) == 1:
+            pos = find_key(letter, layout=layout1)
+            replacement = get_key(pos, layout=layout2)
+            switchlist.append(letter+replacement)
+    res = deepcopy(switch_keys(switchlist, layout=layout1))
+    return res
+
 
 if __name__ == "__main__":
     from doctest import testmod
