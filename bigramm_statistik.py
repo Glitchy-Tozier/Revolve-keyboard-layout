@@ -10,7 +10,7 @@ def p(*args, **kwds):
     """print without linebreak (saves typing :) )"""
     return print(end=" ", *args, **kwds)
 
-def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None): 
+def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False): 
     # total, position, finger repeats, finger_repeat_top_to_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, (row²/col)², no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams
     print(format_layer_1_string(layout))
     print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
@@ -21,7 +21,12 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None):
     for num, cost, rep in info[:number]:
         total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, rows, no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams = cost
         #p(" "*(numlen-len(str(float(num)))))
-        p(sn(100.0*num/num_bigrams, 5), rep, "\t", sn(total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys, 5), "\t")
+        p(sn(100.0*num/num_bigrams, 5), rep, "\t")
+        tot = total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys
+        if bars: 
+            print("*"*int(tot/60.4))
+            continue
+        p(sn(tot, 5), "\t")
         p(pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, rows, no_handswitch_after_unbalancing_key, sep="  ")
         p("|")
         if finger_repeats_top_bottom: p("Finger-oben-unten,")
@@ -43,11 +48,14 @@ if __name__ == "__main__":
                       help="Use the given korpus file (file with text).", metavar="filepath")
     parser.add_option("-n", "--number", dest="number", default=None, type="int", 
                       help="The number of bigrams to show.", metavar="number")
-    
+
+    parser.add_option("--bars", dest="bars", default=False, action="store_true", 
+                      help="Show cost bars instead of numbers.")
+
     (options, args) = parser.parse_args()
 
     if options.layout_string is not None: 
         options.layout = string_to_layout(options.layout_string, base_layout=NEO_LAYOUT)
     else: options.layout = NEO_LAYOUT
 
-    print_bigram_info(layout=options.layout, number=options.number, filepath=options.filepath)
+    print_bigram_info(layout=options.layout, number=options.number, filepath=options.filepath, bars=options.bars)
