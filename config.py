@@ -23,7 +23,7 @@ WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change w
 
 WEIGHT_FINGER_DISBALANCE = 500 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
-WEIGHT_HAND_DISBALANCE = 200 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
+WEIGHT_HAND_DISBALANCE = 60 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 300 #: how high should it be counted, if the hands aren’t switched in a triple?
 
