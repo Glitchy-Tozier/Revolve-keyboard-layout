@@ -93,7 +93,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
 def bigram_info(layout, secondary=True, only_layer_0=True):
     """Get info about the cost of ngrams and the cost factors."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data()
-    if only_layer_0: repeats = split_uppercase_repeats(repeats, layout=layout)
+    #if only_layer_0: repeats = split_uppercase_repeats(repeats, layout=layout)
     
     reps = {}
     for num, rep in repeats:
@@ -110,7 +110,8 @@ def bigram_info(layout, secondary=True, only_layer_0=True):
 
     reps = []
     for rep, num in repeats.items():
-        reps.append((num, total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=[(1, rep)], layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), rep))
+        tmp = split_uppercase_repeats([(1, rep)], layout=layout)
+        reps.append((num, total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), rep))
     reps.sort()
     reps.reverse()
     return reps
