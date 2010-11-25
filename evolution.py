@@ -60,8 +60,10 @@ parser.add_option("--tail",
                       action="store_true", dest="tail", default=controlled_tail,
                       help="finalize each evolution with a controlled tail run")
 parser.add_option("--no-tail",
-                      action="store_false", dest="tail", default=not controlled_tail,
+                      action="store_false", dest="tail", default=controlled_tail,
                       help="don’t use the controlled tail.")
+parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
+                      help="use simulated annealing. Set to 0 for no anneal.")
 
 (options, args) = parser.parse_args()
 
@@ -93,7 +95,7 @@ for step in range(options.evolution_steps):
                     options.tail,
                     starting_layout=STARTING_LAYOUT,
                     datafile=options.data, 
-                    anneal=anneal,
+                    anneal=options.anneal,
                     anneal_step = anneal_step)
     print(step+1, "/", options.evolution_steps,
           timedelta(seconds=time()-t))
