@@ -90,12 +90,18 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     return line
 
 
-def bigram_info(layout, secondary=False, only_layer_0=False):
+def bigram_info(layout, secondary=True, only_layer_0=True):
     """Get info about the cost of ngrams and the cost factors."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data()
     if only_layer_0: repeats = split_uppercase_repeats(repeats, layout=layout)
     
-    repeats = {rep:num for num, rep in repeats}
+    reps = {}
+    for num, rep in repeats:
+        if not rep in reps:
+            reps[rep] = num
+        else:
+            reps[rep] += num
+    repeats = reps
     if secondary: 
         no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
         for num, rep in secondary_bigrams:
