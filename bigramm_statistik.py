@@ -16,11 +16,12 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None):
     print("Häufigkeit, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
     info = bigram_info(layout=layout, filepath=filepath)
     if number is None: number = len(info)
-    numlen = len(str(info[0][0]))
+    numlen = len(str(float(info[0][0])))
     for num, cost, rep in info[:number]:
         total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, rows, no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams = cost
-        p(" "*(numlen-len(str(int(num)))))
-        p(int(num), rep, sn(total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys), pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, rows, no_handswitch_after_unbalancing_key)
+        p(" "*(numlen-len(str(float(num)))))
+        p(float(num), rep, "\t", sn(total - finger_disbalance - hand_disbalance - no_handswitch_despite_direction_change - position_cost_quadratic_bigrams - shortcut_keys, 5), "\t")
+        p(pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, rows, no_handswitch_after_unbalancing_key, sep="  ")
         p("|")
         if finger_repeats_top_bottom: p("Finger-oben-unten,")
         elif finger_repeats: p("Fingerwiederholung,")
