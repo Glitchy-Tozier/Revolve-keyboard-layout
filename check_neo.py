@@ -100,117 +100,6 @@ from math import log10, log
 
 ### Evolution
 
-def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
-    """Switch keys in the layout, so we don't have to fiddle with actual layout files.
-
-    >>> lay = switch_keys([], layout = NEO_LAYOUT)
-    >>> lay == NEO_LAYOUT
-    True
-    >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
-    >>> get_key((1, 1, 0), layout=lay)
-    'l'
-    >>> get_key((1, 3, 0), layout=lay)
-    'x'
-    >>> get_key((1, 5, 0), layout=lay)
-    'q'
-    >>> get_key((1, 10, 0), layout=lay)
-    'w'
-    >>> get_key((1, 1, 1), layout=lay)
-    'L'
-    >>> get_key((1, 3, 1), layout=lay)
-    'X'
-    >>> get_key((1, 5, 1), layout=lay)
-    'Q'
-    >>> get_key((1, 10, 1), layout=lay)
-    'W'
-    >>> find_key("l", layout=lay) == (1, 1, 0)
-    True
-    >>> find_key("L", layout=lay) == (1, 1, 1)
-    True
-    >>> NEO_LAYOUT_lxwq == lay
-    True
-    >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
-    >>> NEO_LAYOUT_lx == lay
-    True
-    >>> a = find_key("a", layout=lay)
-    >>> A = find_key("A", layout=lay)
-    >>> curly = find_key("{", layout=lay)
-    >>> lay = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
-    >>> a == find_key("e", layout=lay)
-    True
-    >>> A == find_key("E", layout=lay)
-    True
-    >>> curly == find_key("}", layout=lay)
-    True
-    >>> "}" == get_key(find_key("}", layout=lay), layout=lay)
-    True
-    >>> dot = find_key(".", layout=NEO_LAYOUT)
-    >>> d = find_key("d", layout=NEO_LAYOUT)
-    >>> lay = switch_keys([".d"], layout=NEO_LAYOUT)
-    >>> d == find_key(".", layout=lay)
-    True
-    >>> dot == find_key("d", layout=lay)
-    True
-    """
-    lay = deepcopy(layout)
-    from pprint import pprint
-    #pprint(lay)
-    for pair in keypairs:
-            pos0 = find_key(pair[0], layout=lay)
-            pos1 = find_key(pair[1], layout=lay)
-
-            # both positions MUST be on the base layer. 
-            if pos0[2] or pos1[2]:
-                info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
-                continue
-
-            pos0_keys = lay[pos0[0]][pos0[1]]
-            pos1_keys = lay[pos1[0]][pos1[1]]
-
-            # add the supported layers.
-            tmp0 = []
-            for i in range(max(len(pos1_keys), len(pos0_keys))):
-                if i in switch_layers:
-                    try: 
-                        tmp0.append(pos1_keys[i])
-                    except IndexError: # not there: Fill the layer.
-                        tmp0.append("")
-                else:
-                    try: 
-                        tmp0.append(pos0_keys[i])
-                    except IndexError: # not there: Fill the layer.
-                        tmp0.append("")
-            tmp0 = tuple(tmp0)
-
-            tmp1 = []
-            for i in range(max(len(pos1_keys), len(pos0_keys))):
-                if i in switch_layers:
-                    try: 
-                        tmp1.append(pos0_keys[i])
-                    except IndexError: # not there: Fill the layer.
-                        tmp1.append("")
-                else:
-                    try: 
-                        tmp1.append(pos1_keys[i])
-                    except IndexError: # not there: Fill the layer.
-                        tmp1.append("")
-            tmp1 = tuple(tmp1)
-
-            cache_update = ""
-            for letter in tmp0 + tmp1:
-                cache_update += letter
-
-            lay[pos0[0]][pos0[1]] = tmp0
-            lay[pos1[0]][pos1[1]] = tmp1
-            update_letter_to_key_cache_multiple(cache_update, layout=lay)
-            prev = pair
-        #except:
-        #    pprint(lay)
-        #    print(prev, pair, pos0, pos1, tmp0, tmp1)
-        #    exit()
-    
-    return lay
-
 def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
         """Do num_switches random keyswitches on the layout and
         @return: the randomized layout."""
@@ -407,77 +296,69 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
     return layout, cost
 
 
-def combine_genetically(layout1, layout2):
-    """Combine two layouts genetically (randomly)."""
-    from random import randint
-    switchlist = []
-    for letter in abc:
-        if randint(0, 1) == 1:
-            pos = find_key(letter, layout=layout1)
-            replacement = get_key(pos, layout=layout2)
-            switchlist.append(letter+replacement)
-    res = deepcopy(switch_keys(switchlist, layout=layout1))
-    return res
-
-
-def layout_difference_weighted(layout0, layout1, letters=None, letter_dict=None, sum_keystrokes=None):
-    """Find the difference between two layouts, weighted with the number of times the differing letters are used in the corpus.
-
-    This only gives 1.0, if one layout contains all letters from the corpus and the other layout has none of them (or all of them in different positions). 
-
-    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
-    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT, letters=letters)
-    0.0
-    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lx, letters=letters)
-    0.036617925978240665
-    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lxwq, letters=letters)
-    0.050589766759669606
-    >>> layout_difference_weighted(NEO_LAYOUT, QWERTZ_LAYOUT, letters=letters)
-    0.9486182821801175
-    >>> layout_difference_weighted(NEO_LAYOUT, NORDTAST_LAYOUT, letters=letters)
-    0.8830111461330287
-    >>> layout_difference_weighted(NORDTAST_LAYOUT, QWERTZ_LAYOUT, letters=letters)
-    0.8983918828764104
-    >>> layout_difference_weighted(NEO_LAYOUT, TEST_LAYOUT, letters=letters)
-    0.9999201678764246
-    >>> empty = [[], [], [], [], []]
-    >>> layout_difference_weighted(NEO_LAYOUT, empty, letters=letters)
-    0.9999202512375004
-    """
-    if letter_dict is None and letters is None:
-        raise Exception("Need letters or a letter dict")
-    elif letter_dict is None:
-        letter_dict = {letter: num for num, letter in letters}
-    if sum_keystrokes is None: 
-        sum_keystrokes = sum(letter_dict.values())
-    return sum([letter_dict.get(c, 0) for c in changed_keys(layout0, layout1)])/sum_keystrokes
-
-def find_layout_families(layouts, letters, max_diff=0.2):
-    """Find layout families in a list of layouts using the difference in key-positions, weighted by the occurrance probability of each key.
-
-    >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
-    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.1))
-    3
-    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.9))
-    2
-    """
-    families = []
-    letter_dict = {letter: num for num, letter in letters}
-    sum_keystrokes = sum(letter_dict.values())
-    for l in layouts:
-        fits = False
-        for f in families:
-            if layout_difference_weighted(l, f[0], letter_dict=letter_dict, sum_keystrokes=sum_keystrokes) <= max_diff:
-                fits = True
-        if not fits:
-            families.append([])
-            families[-1].append(l)
-       
-    return families
 
 
 ### UI ###
 
+
+    
+
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False, quadratic=False):
+    """Print a layout along with statistics."""
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
+            data=data, 
+            letters=letters, number_of_letters=number_of_letters,
+            repeats=repeats, number_of_bigrams=number_of_bigrams,
+            trigrams=trigrams, number_of_trigrams=number_of_trigrams,
+            datapath=datapath
+        )
+
+    res = ""
+    def c(*args):
+        """concatenate the args to a string similar to how print() does it, just simpler."""
+        return " ".join((str(i) for i in args)) + "\n"
+    
+    if print_layout:
+        res += c(format_layer_1_string(layout))
+        res += c(format_keyboard_layout(layout))
+        #from pprint import pprint
+        #pprint(layout[:5])
+
+    # unweighted
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:8]
+    # weighted
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:12]
+
+    if shorten_numbers: 
+        sn = short_number
+    else:
+        sn = str
+
+    res += c("#", sn(total/max(1, number_of_letters)/100), "x100 total penalty per letter")
+    res += c("#", sn(total / 10000000000), "x10 billion total penalty compared to notime-noeffort")
+    res += c("#", sn(cost / max(1, number_of_letters)), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
+    res += c("#", sn(100 * frep_num / max(1, number_of_bigrams)), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
+    if verbose: 
+        res += c("#", sn(disbalance / 1000000), "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
+        res += c("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
+        res += c("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
+        res += c("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
+        res += c("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance. Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "% (", str(hand_disbalance_w/1000000000), ")")
+        res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
+        res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
+        res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+    if quadratic:
+        # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts. 
+        res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
+    if fingerstats:
+        # also print statistics
+        # Finger-load:
+        finger_load = load_per_finger(letters, layout=layout)
+        finger_sum = sum(finger_load.values())
+        no_thumbs = [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[:4]] + ["-"] + [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[6:]]
+        res += c("# Finger load %:", *no_thumbs)
+    result(res)
+    
     
 def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     """Find a layout with values similar to qwertz."""

@@ -478,6 +478,118 @@ def pos_is_left(pos):
     return RIGHT_HAND_LOWEST_INDEXES[pos[0]] > pos[1]
 
 
+def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
+    """Switch keys in the layout, so we don't have to fiddle with actual layout files.
+
+    >>> lay = switch_keys([], layout = NEO_LAYOUT)
+    >>> lay == NEO_LAYOUT
+    True
+    >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
+    >>> get_key((1, 1, 0), layout=lay)
+    'l'
+    >>> get_key((1, 3, 0), layout=lay)
+    'x'
+    >>> get_key((1, 5, 0), layout=lay)
+    'q'
+    >>> get_key((1, 10, 0), layout=lay)
+    'w'
+    >>> get_key((1, 1, 1), layout=lay)
+    'L'
+    >>> get_key((1, 3, 1), layout=lay)
+    'X'
+    >>> get_key((1, 5, 1), layout=lay)
+    'Q'
+    >>> get_key((1, 10, 1), layout=lay)
+    'W'
+    >>> find_key("l", layout=lay) == (1, 1, 0)
+    True
+    >>> find_key("L", layout=lay) == (1, 1, 1)
+    True
+    >>> NEO_LAYOUT_lxwq == lay
+    True
+    >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
+    >>> NEO_LAYOUT_lx == lay
+    True
+    >>> a = find_key("a", layout=lay)
+    >>> A = find_key("A", layout=lay)
+    >>> curly = find_key("{", layout=lay)
+    >>> lay = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
+    >>> a == find_key("e", layout=lay)
+    True
+    >>> A == find_key("E", layout=lay)
+    True
+    >>> curly == find_key("}", layout=lay)
+    True
+    >>> "}" == get_key(find_key("}", layout=lay), layout=lay)
+    True
+    >>> dot = find_key(".", layout=NEO_LAYOUT)
+    >>> d = find_key("d", layout=NEO_LAYOUT)
+    >>> lay = switch_keys([".d"], layout=NEO_LAYOUT)
+    >>> d == find_key(".", layout=lay)
+    True
+    >>> dot == find_key("d", layout=lay)
+    True
+    """
+    lay = deepcopy(layout)
+    from pprint import pprint
+    #pprint(lay)
+    for pair in keypairs:
+            pos0 = find_key(pair[0], layout=lay)
+            pos1 = find_key(pair[1], layout=lay)
+
+            # both positions MUST be on the base layer. 
+            if pos0[2] or pos1[2]:
+                #info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
+                continue
+
+            pos0_keys = lay[pos0[0]][pos0[1]]
+            pos1_keys = lay[pos1[0]][pos1[1]]
+
+            # add the supported layers.
+            tmp0 = []
+            for i in range(max(len(pos1_keys), len(pos0_keys))):
+                if i in switch_layers:
+                    try: 
+                        tmp0.append(pos1_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp0.append("")
+                else:
+                    try: 
+                        tmp0.append(pos0_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp0.append("")
+            tmp0 = tuple(tmp0)
+
+            tmp1 = []
+            for i in range(max(len(pos1_keys), len(pos0_keys))):
+                if i in switch_layers:
+                    try: 
+                        tmp1.append(pos0_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp1.append("")
+                else:
+                    try: 
+                        tmp1.append(pos1_keys[i])
+                    except IndexError: # not there: Fill the layer.
+                        tmp1.append("")
+            tmp1 = tuple(tmp1)
+
+            cache_update = ""
+            for letter in tmp0 + tmp1:
+                cache_update += letter
+
+            lay[pos0[0]][pos0[1]] = tmp0
+            lay[pos1[0]][pos1[1]] = tmp1
+            update_letter_to_key_cache_multiple(cache_update, layout=lay)
+            prev = pair
+        #except:
+        #    pprint(lay)
+        #    print(prev, pair, pos0, pos1, tmp0, tmp1)
+        #    exit()
+    
+    return lay
+
+
 def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     """Turn a layout_string into a layout.
 
@@ -486,60 +598,47 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     xpfüq bgvwj
 
     """
+    layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
+    to_replace_list = []
+    def switch(current, new, pos_01, layout):
+        """switch a current key in the layout with the new key from the layout string ⇒ pull the correct key to the position."""
+        #: the key which is in the layout at the moment
+        if new in layer_0_keys: 
+            layout = switch_keys([new+current], layout=layout)
+        else: # do the direct replacing at the end.
+            to_replace_list.append((pos_01[0], pos_01[1], new))
+        return layout
+    
     layout = deepcopy(base_layout)
     lines = layout_string.splitlines()
-    # first and second letter row, the ifs are for replacing the second layer with uppercase, where aplicable. 
+    # first and second letter row
     for i in range(1, 6):
-        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
-            layout[1][i] = (lines[0][i-1], ) + tuple(layout[1][i][1:])
-        else:
-            layout[1][i] = (lines[0][i-1], lines[0][i-1].upper()) + tuple(layout[1][i][2:])
+        layout = switch(layout[1][i][0], lines[0][i-1], (1, i), layout)
+        layout = switch(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
+        layout = switch(layout[2][i][0], lines[1][i-1], (2, i), layout)
+        layout = switch(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
 
-        if lines[0][i+5].upper() == lines[0][i+5]: # nonstandard keys. 
-            layout[1][i+5] = (lines[0][i+5], ) + tuple(layout[1][i+5][1:])
-        else:
-            layout[1][i+5] = (lines[0][i+5], lines[0][i+5].upper()) + tuple(layout[1][i+5][2:])
+    layout = switch(layout[1][-3][0], lines[0][11], (1, -3), layout)
+    layout = switch(layout[2][-3][0], lines[1][11], (2, -3), layout)
 
-        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
-            layout[2][i] = (lines[1][i-1], ) + tuple(layout[2][i][1:])
-        else: 
-            layout[2][i] = (lines[1][i-1], lines[1][i-1].upper()) + tuple(layout[2][i][2:])
-
-        if lines[0][i-1].upper() == lines[0][i-1]: # nonstandard keys. 
-            layout[2][i+5] = (lines[1][i+5], ) + tuple(tuple(layout[2][i+5][1:]))
-        else: 
-            layout[2][i+5] = (lines[1][i+5], lines[1][i+5].upper()) + tuple(tuple(layout[2][i+5][2:]))
-
-    if lines[0][11].upper() == lines[0][11]: 
-        layout[1][-3] = (lines[0][11], ) + tuple(layout[1][-3][1:])
-    else:
-        layout[1][-3] = (lines[0][11], lines[0][11].upper()) + tuple(layout[1][-3][2:])
-
-    if lines[1][11].upper() == lines[1][11]: 
-        layout[2][-3] = (lines[1][11], ) + tuple(layout[2][-3][1:])
-    else:
-        layout[2][-3] = (lines[1][11], lines[1][11].upper()) + tuple(layout[2][-3][2:])
-
-    if lines[0][12:]:
-        if lines[0][12].upper() == lines[0][12]: 
-            layout[1][-2] = (lines[0][12], ) + tuple(layout[1][-2][1:])
-        else:
-            layout[1][-2] = (lines[0][12], lines[0][12].upper()) + tuple(layout[1][-2][2:])
-    
     # third row
+    if lines[0][12:]:
+        layout = switch(layout[1][-2][0], lines[0][12], (1, -2), layout)
+    
     left, right = lines[2].split()[:2]
     for i in range(len(left)):
-        if left[-i-1].upper() == left[-i-1]: 
-            layout[3][6-i] = (left[-i-1], ) + tuple(layout[3][6-i][1:])
-        else:
-            layout[3][6-i] = (left[-i-1], left[-i-1].upper()) + tuple(layout[3][6-i][2:])
+        layout = switch(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
     for i in range(len(right)):
-        if right[i].upper() == right[i]: 
-            layout[3][7+i] = (right[i], ) + tuple(layout[3][7+i][1:])
-        else:
-            layout[3][7+i] = (right[i], right[i].upper()) + tuple(layout[3][7+i][2:])
+        layout = switch(layout[3][7+i][0], right[i], (3, 7+i), layout)
 
-    return layout
+    # finally do the exact rewriting
+    for p0, p1, new in to_replace_list:
+        if new.upper == new:
+            layout[p0][p1] = (new, ) + tuple(layout[p0][p1][1:])
+        else:
+            layout[p0][p1] = (new, new.upper()) + tuple(layout[p0][p1][2:])
+
+    return deepcopy(layout)
     
 
 def changed_keys(layout0, layout1):
