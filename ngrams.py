@@ -52,6 +52,11 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     >>> reps = [(36, "ab"), (24, "Ab"), (16, "aB"), (10, "AB"), (6, "¾2"), (4, "(}"), (2, "Ψ∃"), (1, "q")]
     >>> split_uppercase_repeats(reps)
     [(36, 'ab'), (24, '⇗b'), (24, '⇗a'), (24, 'ab'), (16, '⇧b'), (16, 'a⇧'), (16, 'ab'), (10, '⇧b'), (10, '⇗⇧'), (10, '⇗b'), (10, '⇗a'), (10, 'a⇧'), (10, 'ab'), (6, '¾2'), (4, '⇩⇘'), (4, '⇩n'), (4, '⇩e'), (4, '⇘e'), (4, 'n⇘'), (4, 'ne'), (2, '⇩⇚'), (2, '⇩⇙'), (2, '⇩⇘'), (2, '⇩h'), (2, '⇩e'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇚e'), (2, '⇙e'), (2, '⇘⇙'), (2, '⇘e'), (2, 'h⇙'), (2, 'h⇘'), (2, 'he')]
+    >>> reps = [(1, ", ")]
+    >>> from layout_base import string_to_layout
+    >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
+    >>> split_uppercase_repeats(reps, layout=layout)
+    [(1, ', ')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
