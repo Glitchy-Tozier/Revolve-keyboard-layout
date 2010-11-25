@@ -28,7 +28,7 @@ WEIGHT_HAND_DISBALANCE = 30 #: Disbalance between the load on the hands. Calcula
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 300 #: how high should it be counted, if the hands aren’t switched in a triple?
 
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multipleir for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
-WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multipier for triples without handswitch in in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multipier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
 WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.6 #: multiplier for the cost of secondary bigrams in trigrams. 
 
