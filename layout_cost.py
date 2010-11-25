@@ -235,6 +235,9 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
 
     line_changes = 0
     for number, pair in repeats:
+        # ignore pairs with spaces (" "): Space is hit with the thumb, so it is no real row jump.
+        if " " in pair:
+            continue
         key1 = pair[0]
         key2 = pair[1]
         pos1 = find_key(key1, layout=layout)

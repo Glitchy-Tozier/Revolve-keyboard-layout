@@ -3,6 +3,8 @@
 """Get information about keyboard layouts (frontend)."""
 
 from layout_info import *
+from check_neo import short_number
+sn = short_number
 
 def p(*args, **kwds):
     """print without linebreak (saves typing :) )"""
@@ -11,16 +13,19 @@ def p(*args, **kwds):
 def print_bigram_info(layout=NEO_LAYOUT, number=None): 
     # total, position, finger repeats, finger_repeat_top_to_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, (row²/col)², no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams
     print(format_layer_1_string(layout))
-    print("Häufigkeit, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, Kein Handwechsel nach Handverschiebung")
+    print("Häufigkeit, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
     info = bigram_info(layout=layout)
     if number is None: number = len(info)
+    numlen = len(str(info[0][0]))
     for num, cost, rep in info[:number]:
         total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, rows, no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams = cost
-        p(num, rep, total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, no_handswitch_after_unbalancing_key)
+        p(" "*(numlen-len(str(int(num)))))
+        p(int(num), rep, sn(total - finger_disbalance - hand_disbalance), pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, rows, no_handswitch_after_unbalancing_key)
         p("|")
         if finger_repeats_top_bottom: p("Finger-oben-unten,")
         elif finger_repeats: p("Fingerwiederholung,")
         if movement_pattern: p("Unschöner Fingerübergang,")
+        if rows > 0.5: p("Zeilensprung")
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     
