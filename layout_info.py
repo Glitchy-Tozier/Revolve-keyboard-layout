@@ -97,10 +97,8 @@ def bigram_info(layout, secondary=True, only_layer_0=True, filepath=None):
     
     reps = {}
     for num, rep in repeats:
-        if not rep in reps:
-            reps[rep] = num
-        else:
-            reps[rep] += num
+        if not rep in reps: reps[rep] = num
+        else: reps[rep] += num
     repeats = reps
     if secondary: 
         no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)

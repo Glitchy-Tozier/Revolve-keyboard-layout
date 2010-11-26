@@ -10,11 +10,11 @@ def p(*args, **kwds):
     """print without linebreak (saves typing :) )"""
     return print(end=" ", *args, **kwds)
 
-def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False): 
+def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False, secondary=True): 
     # total, position, finger repeats, finger_repeat_top_to_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, (row²/col)², no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams
     print(format_layer_1_string(layout))
     print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
-    info = bigram_info(layout=layout, filepath=filepath)
+    info = bigram_info(layout=layout, filepath=filepath, secondary=secondary)
     num_bigrams = sum([num for num, cost, rep in info])
     if number is None: number = len(info)
     numlen = len(str(float(info[0][0])))
@@ -51,6 +51,8 @@ if __name__ == "__main__":
 
     parser.add_option("--bars", dest="bars", default=False, action="store_true", 
                       help="Show cost bars instead of numbers.")
+    parser.add_option("--no-secondary", dest="secondary", action="store_false", default=True, 
+                      help="Don’s calculate secondary/indirect bigrams.", metavar="number")
 
     (options, args) = parser.parse_args()
 
@@ -58,4 +60,4 @@ if __name__ == "__main__":
         options.layout = string_to_layout(options.layout_string, base_layout=NEO_LAYOUT)
     else: options.layout = NEO_LAYOUT
 
-    print_bigram_info(layout=options.layout, number=options.number, filepath=options.filepath, bars=options.bars)
+    print_bigram_info(layout=options.layout, number=options.number, filepath=options.filepath, bars=options.bars, secondary=options.secondary)
