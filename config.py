@@ -33,16 +33,16 @@ WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multipier for triples witho
 WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.6 #: multiplier for the cost of secondary bigrams in trigrams. 
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
-    1,
+    1.0,
     1.6,
-    2.6,
-    2.6, # is 1/3 faster
-    1,
-    1,
-    2.6,
-    2.6,
+    2.0,
+    2.0, # is 1/3 faster
+    2,
+    2,
+    2.0,
+    2.0,
     1.6,
-    1] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
+    1.0] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 0.1 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
