@@ -21,7 +21,7 @@ WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 6 #: When I have to switch the row in a bigra
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 
-WEIGHT_FINGER_DISBALANCE = 500 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 300 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_HAND_DISBALANCE = 60 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
