@@ -67,7 +67,7 @@ def print_svg(bigrams, layout, svg_output=None):
         # handswitches have far lower opacity
         if is_left0 != is_left1:
             handswitch = True
-            opacity = 0.1
+            opacity = 0.03
             #continue # ignore them, they needlessly blow up the svg.
         else:
             handswitch = False
