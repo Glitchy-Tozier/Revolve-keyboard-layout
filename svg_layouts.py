@@ -82,24 +82,28 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     
     path3=path(start, style=sh.getStyle())
 
-    if not upstroke and xy1[1] > xy0[1]:
-        control_y = 1.4*(xy1[1]-xy0[1])
-    elif not upstroke and not xy1[1] > xy0[1]:
-        control_y = 0.2*(xy1[1]-xy0[1])
-    elif upstroke and xy1[1] > xy0[1]:
-        control_y = 0.2*(xy1[1]-xy0[1])
-    else: 
-        control_y = 1.4*(xy1[1]-xy0[1])
+    dx = xy1[0] - xy0[0]
+    dy = xy1[1] - xy0[1]
+    upwards = dy > 0
 
+    if not upstroke and upwards:
+        control_y = 1.4*(dy)
+    elif not upstroke and not upwards:
+        control_y = 0.2*(dy)
+    elif upstroke and upwards:
+        control_y = 0.2*(dy)
+    else: 
+        control_y = 1.4*(dy)
+    
     # make sure we always have movement up or down.
     if not control_y and upstroke:
-        control_y = 0.2 * abs(xy1[0] - xy0[0])
+        control_y = -0.2 * abs(dx)
     elif not control_y and not upstroke:
-        control_y = -0.2 * abs(xy1[0] - xy0[0])
+        control_y = 0.2 * abs(dx)
     
     path3.appendQuadraticCurveToPath(
-        0.5*(xy1[0]-xy0[0]), control_y, # control point, x, y
-        xy1[0]-xy0[0], xy1[1]-xy0[1] # target
+        0.5*(dx), control_y, # control point, x, y
+        dx, dy # target
         )
     
     return path3

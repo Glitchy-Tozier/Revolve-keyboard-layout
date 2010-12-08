@@ -19,7 +19,7 @@ def print_svg(bigrams, layout, svg_output=None):
     @param bigrams: [(number, cost, bigram), …]
     """
     # only import here to avoid the import overhead for other actions.
-    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder
+    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g
     from layout_base import find_key, pos_is_left
     S = svg("Belegung")
     #oh = ShapeBuilder()
@@ -31,6 +31,14 @@ def print_svg(bigrams, layout, svg_output=None):
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
     num_scale = 1/400000
+    group_handswitch = g()
+    group_inwards = g()
+    group_outwards = g()
+    group_fingerrepeat = g()
+    S.addElement(group_handswitch)
+    S.addElement(group_inwards)
+    S.addElement(group_outwards)
+    S.addElement(group_fingerrepeat)
     for number, cost, bigram in bigrams:
 
         # ignore spaces
@@ -43,19 +51,24 @@ def print_svg(bigrams, layout, svg_output=None):
 
         # handswitches have far lower opacity
         if pos_is_left(pos0) != pos_is_left(pos1):
+            handswitch = True
             opacity = 0.1
             #continue # ignore them, they needlessly blow up the svg.
-        else: opacity = 1.0
+        else:
+            handswitch = False
+            opacity = 1.0
 
-        # out- or inwards
-        inwards = pos_is_left(pos0) and pos0[1] <= pos1[1] or not pos_is_left(pos0) and pos0[1] >= pos1[1]
-        
         # fix, upscale and reorder the positions
         if pos0[0] != 3:
             pos0 = pos0[0], pos0[1] + 1, pos0[2]
         if pos1[0] != 3:
             pos1 = pos1[0], pos1[1] + 1, pos1[2]
             
+        # out- or inwards
+        to_right = pos1[1] > pos0[1]
+        inwards = pos_is_left(pos0) and to_right or not pos_is_left(pos0) and not to_right
+        finger_repeat = pos1[1] == pos0[1]
+        
         # move the left shifts and m4 1/0.5 step(s) towards the center. They look awkward otherwise.
         if pos0[0] == 3 and pos0[1] <= 1:
             pos0 = pos0[0], 0.5*pos0[1] + 1, pos0[2]
@@ -69,7 +82,14 @@ def print_svg(bigrams, layout, svg_output=None):
         color = tuple([255-c for c in color])
         width = num_scale * number
 
-        S.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        if finger_repeat:
+            group_fingerrepeat.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        elif handswitch:
+            group_handswitch.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        elif inwards: 
+            group_inwards.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        else:
+            group_outwards.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
 
     if svg_output is None: 
         print(S.getXML())
