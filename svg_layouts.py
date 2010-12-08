@@ -52,9 +52,9 @@ def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=
     to_right = xy1[0] > xy0[0]
 
     if to_right: 
-        color_id = "r" + "_".join([str(c) for c in color])
+        color_id = "r" + "_".join([str(c) for c in color]) + "_" + str(opacity)
     else: 
-        color_id = "l" + "_".join([str(c) for c in color])
+        color_id = "l" + "_".join([str(c) for c in color]) + "_" + str(opacity)
     color_string = "rgb(" + ",".join([str(c) for c in color]) + ")"
 
     lg = linearGradient()

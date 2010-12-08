@@ -35,10 +35,10 @@ def print_svg(bigrams, layout, svg_output=None):
         if pos0 is None or pos1 is None:
             continue
         # handswitches have far lower opacity
-        if pos_is_left(pos0) is not pos_is_left(pos1):
-            opacity = 0.1
+        if pos_is_left(pos0) != pos_is_left(pos1):
+            opacity = 0.2
             #continue # ignore them, they needlessly blow up the svg.
-        else: opacity = 0.9
+        else: opacity = 1.0
         # out- or inwards
         inwards = pos_is_left(pos0) and pos0[1] <= pos1[1] or not pos_is_left(pos0) and pos0[1] >= pos1[1]
         # fix, upscale and reorder the positions
