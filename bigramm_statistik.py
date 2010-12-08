@@ -39,6 +39,8 @@ def print_svg(bigrams, layout, svg_output=None):
     S.addElement(group_inwards)
     S.addElement(group_outwards)
     S.addElement(group_fingerrepeat)
+    # make sure the most used bigram is shown on top (drawn last)
+    bigrams.sort()
     for number, cost, bigram in bigrams:
 
         # ignore spaces
@@ -49,8 +51,11 @@ def print_svg(bigrams, layout, svg_output=None):
         if pos0 is None or pos1 is None:
             continue
 
+        is_left0 = pos_is_left(pos0)
+        is_left1 = pos_is_left(pos1)
+
         # handswitches have far lower opacity
-        if pos_is_left(pos0) != pos_is_left(pos1):
+        if is_left0 != is_left1:
             handswitch = True
             opacity = 0.1
             #continue # ignore them, they needlessly blow up the svg.
@@ -66,7 +71,7 @@ def print_svg(bigrams, layout, svg_output=None):
             
         # out- or inwards
         to_right = pos1[1] > pos0[1]
-        inwards = pos_is_left(pos0) and to_right or not pos_is_left(pos0) and not to_right
+        inwards = is_left0 and to_right or not is_left0 and not to_right
         finger_repeat = pos1[1] == pos0[1]
         
         # move the left shifts and m4 1/0.5 step(s) towards the center. They look awkward otherwise.
