@@ -27,6 +27,8 @@ def print_svg(bigrams, layout, svg_output=None):
 
     d = defs()
     S.addElement(d)
+    S.setAttribute("xmlns:inkscape", "http://www.inkscape.org/namespaces/inkscape")
+    S.set_height("300")
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
@@ -35,6 +37,13 @@ def print_svg(bigrams, layout, svg_output=None):
     group_inwards = g()
     group_outwards = g()
     group_fingerrepeat = g()
+    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat): 
+        gr.setAttribute("inkscape:groupmode", "layer")
+    group_handswitch.setAttribute("inkscape:label", "Handwechsel")
+    group_inwards.setAttribute("inkscape:label", "Einwärts")
+    group_outwards.setAttribute("inkscape:label", "Auswärts")
+    group_fingerrepeat.setAttribute("inkscape:label", "Fingerwiederholungen")
+
     S.addElement(group_handswitch)
     S.addElement(group_inwards)
     S.addElement(group_outwards)
@@ -80,8 +89,8 @@ def print_svg(bigrams, layout, svg_output=None):
             pos0 = pos0[0], 0.5*pos0[1] + 1, pos0[2]
         if pos1[0] == 3 and pos1[1] <= 1:
             pos1 = pos1[0], 0.5*pos1[1] + 1, pos1[2]
-        pos0 = (50 + 50*pos0[1], 50*pos0[0])
-        pos1 = (50 + 50*pos1[1], 50*pos1[0])
+        pos0 = (50 + 50*pos0[1], 50 + 50*pos0[0])
+        pos1 = (50 + 50*pos1[1], 50 + 50*pos1[0])
 
         color = colorwheel(min(1020, cost*color_scale))
         # invert the color
