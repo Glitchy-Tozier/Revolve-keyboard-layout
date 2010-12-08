@@ -25,7 +25,7 @@ def print_svg(bigrams, layout, svg_output=None):
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
-    num_scale = 1/400000
+    num_scale = 1/500000
     for number, cost, bigram in bigrams:
         # ignore spaces
         if " " in bigram:
@@ -36,7 +36,7 @@ def print_svg(bigrams, layout, svg_output=None):
             continue
         # handswitches have far lower opacity
         if pos_is_left(pos0) != pos_is_left(pos1):
-            opacity = 0.2
+            opacity = 0.1
             #continue # ignore them, they needlessly blow up the svg.
         else: opacity = 1.0
         # out- or inwards
