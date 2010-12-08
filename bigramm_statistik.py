@@ -14,6 +14,7 @@ def print_svg(bigrams, layout, svg_output=None):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
+    cleanup with inkscape: inkscape --vacuum-defs neo2.svg
 
     @param bigrams: [(number, cost, bigram), …]
     """
@@ -73,6 +74,10 @@ def print_svg(bigrams, layout, svg_output=None):
         print(S.getXML())
     else:
         S.save(svg_output)
+        # and try to cleanup the svg with inkscape.
+        from subprocess import call
+        # this just fails when there’s no inkscape there.
+        call(["inkscape", "--vacuum-defs", svg_output])
 
     
 
