@@ -31,18 +31,18 @@ def colorwheel(idx=0):
     255,0,0
     255,255,0
     0,255,0
-    128,128,255
+    0,255,255
     0,0,255
     """
     if idx < 0:
         raise ValueError("idx outside the valid range between 0 and 1020")
     if idx<=255: return 255, idx, 0
     if idx<=510: return 510-idx, 255, 0
-    if idx<=765: return idx+127-765,765+127-idx,idx-510
-    if idx<=1020: return 1020-idx,1020-idx,255
+    if idx<=765: return 0,255,idx-510
+    if idx<=1020: return 0,1020-idx,255
     raise ValueError("idx outside the valid range between 0 and 1020")
 
-def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=True):
+def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=True, opacity=1.0):
     """Draw a single curved line.
 
     @param S: S = svd(name)
@@ -63,12 +63,12 @@ def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=
     s.set_stop_color(color_string)
     if to_right: 
         s.set_stop_opacity(0)
-    else: s.set_stop_opacity(1)
+    else: s.set_stop_opacity(opacity)
     lg.addElement(s)
     s = stop(offset="100%")
     s.set_stop_color(color_string)
     if to_right: 
-        s.set_stop_opacity(1)
+        s.set_stop_opacity(opacity)
     else: s.set_stop_opacity(0)
     lg.addElement(s)
     d.addElement(lg)
@@ -93,9 +93,9 @@ def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=
 
     # make sure we always have movement up or down.
     if not control_y and upstroke:
-        control_y = 0.1 * abs(xy1[0] - xy0[0])
+        control_y = 0.2 * abs(xy1[0] - xy0[0])
     elif not control_y and not upstroke:
-        control_y = -0.1 * abs(xy1[0] - xy0[0])
+        control_y = -0.2 * abs(xy1[0] - xy0[0])
     
     path3.appendQuadraticCurveToPath(
         0.5*(xy1[0]-xy0[0]), control_y, # control point, x, y

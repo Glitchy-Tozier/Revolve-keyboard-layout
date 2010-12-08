@@ -18,15 +18,14 @@ def print_svg(bigrams, layout, svg_output=None):
     from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder
     from layout_base import find_key, pos_is_left
     S = svg("Belegung")
-    S.setAttribute("pagecolor", "black")
     oh = ShapeBuilder()
-    S.addElement(oh.createRect(0,0,700,200, strokewidth=0, fill='black'))
+    S.addElement(oh.createRect(0,0,750,250, strokewidth=0, fill='black'))
 
     d = defs()
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
-    num_scale = 1/1000000
+    num_scale = 1/400000
     for number, cost, bigram in bigrams:
         # ignore spaces
         if " " in bigram:
@@ -35,15 +34,28 @@ def print_svg(bigrams, layout, svg_output=None):
         pos1 = find_key(bigram[1], layout)
         if pos0 is None or pos1 is None:
             continue
-        # ignore handswitches
+        # handswitches have far lower opacity
         if pos_is_left(pos0) is not pos_is_left(pos1):
-            continue
-        # upscale and reorder the positions
-        pos0 = (60*pos0[1], 60*pos0[0])
-        pos1 = (60*pos1[1], 60*pos1[0])
+            opacity = 0.1
+            #continue # ignore them, they needlessly blow up the svg.
+        else: opacity = 0.9
+        # out- or inwards
+        inwards = pos_is_left(pos0) and pos0[1] <= pos1[1] or not pos_is_left(pos0) and pos0[1] >= pos1[1]
+        # fix, upscale and reorder the positions
+        if pos0[0] != 3:
+            pos0 = pos0[0], pos0[1] + 1, pos0[2]
+        if pos1[0] != 3:
+            pos1 = pos1[0], pos1[1] + 1, pos1[2]
+        # move the left shifts and m4 1/0.5 step(s) towards the center. They look awkward otherwise.
+        if pos0[0] == 3 and pos0[1] <= 1:
+            pos0 = pos0[0], 0.5*pos0[1] + 1, pos0[2]
+        if pos1[0] == 3 and pos1[1] <= 1:
+            pos1 = pos1[0], 0.5*pos1[1] + 1, pos1[2]
+        pos0 = (50 + 50*pos0[1], 50*pos0[0])
+        pos1 = (50 + 50*pos1[1], 50*pos1[0])
         color = colorwheel(min(1020, cost*color_scale))
         width = num_scale * number
-        add_line(S, d, color=color, xy0=pos0, xy1=pos1, width=width)
+        add_line(S, d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards)
     if svg_output is None: 
         print(S.getXML())
     else:
@@ -56,7 +68,10 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
     if not svg: 
         print(format_layer_1_string(layout))
         print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
-    info = bigram_info(layout=layout, filepath=filepath, secondary=secondary)
+    # svg should have shifts and such.
+    if svg: only_layer_0 = True
+    else: only_layer_0 = False
+    info = bigram_info(layout=layout, filepath=filepath, secondary=secondary, only_layer_0=only_layer_0)
     num_bigrams = sum([num for num, cost, rep in info])
     if number is None: number = len(info)
     numlen = len(str(float(info[0][0])))
