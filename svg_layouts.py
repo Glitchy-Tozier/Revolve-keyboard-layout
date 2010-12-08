@@ -62,14 +62,14 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     s = stop(offset="0%")
     s.set_stop_color(color_string)
     if to_right: 
-        s.set_stop_opacity(0)
+        s.set_stop_opacity(0.1)
     else: s.set_stop_opacity(opacity)
     lg.addElement(s)
     s = stop(offset="100%")
     s.set_stop_color(color_string)
     if to_right: 
         s.set_stop_opacity(opacity)
-    else: s.set_stop_opacity(0)
+    else: s.set_stop_opacity(0.1)
     lg.addElement(s)
     d.addElement(lg)
 
