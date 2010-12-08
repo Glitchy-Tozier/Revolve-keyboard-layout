@@ -46,6 +46,7 @@ def print_svg(bigrams, layout, svg_output=None):
         # ignore spaces
         if " " in bigram:
             continue
+
         pos0 = find_key(bigram[0], layout)
         pos1 = find_key(bigram[1], layout)
         if pos0 is None or pos1 is None:

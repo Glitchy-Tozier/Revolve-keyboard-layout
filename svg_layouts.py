@@ -49,10 +49,17 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     @param d: d = defs()
     """
 
-    to_right = xy1[0] > xy0[0]
+    dx = xy1[0] - xy0[0]
+    to_right = dx > 0
+    dy = xy1[1] - xy0[1]
+    upwards = dy < 0
 
     if to_right: 
         color_id = "r" + "_".join([str(c) for c in color]) + "_" + str(opacity)
+    elif not dx and upwards:
+        color_id = "u" + "_".join([str(c) for c in color]) + "_" + str(opacity)
+    elif not dx and not upwards:
+        color_id = "d" + "_".join([str(c) for c in color]) + "_" + str(opacity)
     else: 
         color_id = "l" + "_".join([str(c) for c in color]) + "_" + str(opacity)
     color_string = "rgb(" + ",".join([str(c) for c in color]) + ")"
@@ -61,16 +68,20 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     lg.set_id(color_id)
     s = stop(offset="0%")
     s.set_stop_color(color_string)
-    if to_right: 
+    if to_right or not dx and not upwards: 
         s.set_stop_opacity(0.1)
     else: s.set_stop_opacity(opacity)
     lg.addElement(s)
     s = stop(offset="100%")
     s.set_stop_color(color_string)
-    if to_right: 
+    if to_right or not dx and not upwards: 
         s.set_stop_opacity(opacity)
     else: s.set_stop_opacity(0.1)
     lg.addElement(s)
+    if not dx:
+        tb = TransformBuilder()
+        tb.setRotation(90)
+        lg.set_gradientTransform(tb.getTransform())
     d.addElement(lg)
 
     sh=StyleBuilder()
@@ -82,18 +93,14 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     
     path3=path(start, style=sh.getStyle())
 
-    dx = xy1[0] - xy0[0]
-    dy = xy1[1] - xy0[1]
-    upwards = dy > 0
-
     if not upstroke and upwards:
-        control_y = 1.4*(dy)
+        control_y = 0.2*(dy)
     elif not upstroke and not upwards:
-        control_y = 0.2*(dy)
-    elif upstroke and upwards:
-        control_y = 0.2*(dy)
-    else: 
         control_y = 1.4*(dy)
+    elif upstroke and upwards:
+        control_y = .14*(dy)
+    else: 
+        control_y = 0.2*(dy)
     
     # make sure we always have movement up or down.
     if not control_y and upstroke:
