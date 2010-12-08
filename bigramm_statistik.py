@@ -26,6 +26,7 @@ def print_svg(bigrams, layout, svg_output=None):
     #S.addElement(oh.createRect(0,0,750,250, strokewidth=0, fill='black'))
 
     d = defs()
+    S.addElement(d)
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
@@ -68,7 +69,7 @@ def print_svg(bigrams, layout, svg_output=None):
         color = tuple([255-c for c in color])
         width = num_scale * number
 
-        add_line(S, d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards)
+        S.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
 
     if svg_output is None: 
         print(S.getXML())
@@ -77,7 +78,7 @@ def print_svg(bigrams, layout, svg_output=None):
         # and try to cleanup the svg with inkscape.
         from subprocess import call
         # this just fails when there’s no inkscape there.
-        call(["inkscape", "--vacuum-defs", svg_output])
+        #call(["inkscape", "-z", "--vacuum-defs", svg_output])
 
     
 
