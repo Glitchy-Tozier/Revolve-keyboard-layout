@@ -7,8 +7,8 @@ Depends on the layouts info starting with OA'Evolved Layout'
 """
 
 from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data, find_layout_families, total_cost, split_uppercase_trigrams, format_layer_1_string
-from os import listdir
-from os.path import join
+from os import listdir, mkdir
+from os.path import join, isdir
 
 def get_all_layouts_in_textfile(textfile):
     """Get all layouts in the given textfile.
@@ -70,6 +70,9 @@ if __name__ == "__main__":
     parser.add_option("--csv",
                       action="store_true", dest="print_csv", default=False,
                       help="print a csv instead of the normal layout statistics")
+    parser.add_option("--svg",
+                      action="store_true", dest="svg", default=None,
+                      help="save an svg file in the folder svgs/ for every printed layout. Can take a long time. You might want to use --families, too.")
     parser.add_option("--families",
                       action="store_true", dest="families", default=False,
                       help="Sort the layouts into families and print only the best layout in each familiy. ")
@@ -112,4 +115,15 @@ if __name__ == "__main__":
             print("# Evolved Layout")
             print_layout_with_statistics(lay, verbose=True, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
             print()
+
+        if options.svg:
+            
+            if not isdir("svgs"):
+                mkdir("svgs")
+            name_lines = format_layer_1_string(lay).splitlines()
+            name = "-".join((name_lines[1], name_lines[0], name_lines[2])) + ".svg"
+            name = name.replace(" ", "_")
+            name = join("svgs", name)
+            from bigramm_statistik import print_bigram_info
+            print_bigram_info(layout=lay, number=200, svg=True, svg_output=name, filepath=options.data)
     
