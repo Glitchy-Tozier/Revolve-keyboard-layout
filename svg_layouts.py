@@ -31,15 +31,15 @@ def colorwheel(idx=0):
     255,0,0
     255,255,0
     0,255,0
-    0,255,255
+    128,128,255
     0,0,255
     """
     if idx < 0:
         raise ValueError("idx outside the valid range between 0 and 1020")
     if idx<=255: return 255, idx, 0
     if idx<=510: return 510-idx, 255, 0
-    if idx<=765: return 0,255,idx-510
-    if idx<=1020: return 0,1020-idx,255
+    if idx<=765: return idx+127-765,765+127-idx,idx-510
+    if idx<=1020: return 1020-idx,1020-idx,255
     raise ValueError("idx outside the valid range between 0 and 1020")
 
 def add_line(S, d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=True):

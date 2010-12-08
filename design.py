@@ -15,11 +15,11 @@ Design:
 - Eine Kostenfunktion -> Text + Layout = Kosten. 
 - Ein Layout mit Kosten: Zahl für jede Taste -> Exaktere Berechnung der Kosten der Änderung. 
 - Evolution durch Mutation und Kostenminimierung (switch miltiple times (3?) => keep if lower cost).
-- Die Hauptarbeit der Mutation wird von der Funktion total_cost() übernommen. 
+- Die Hauptarbeit der Mutation wird von der Funktion total_cost() übernommen.
 - Groß- und Kleinschreibung wird durch einen preprocessor gemacht werden, der „vrtuelle Zeichen“ vor dem eigentlichen Zeichen einfügt.
-- Erst Evolution (~3000), dann so lange kontrolliert (immer bester Schritt), bis es keine Verbesserung mehr gibt. - done
+- Erst Evolution (~3000), dann so lange kontrolliert (immer bester Schritt), bis es keine Verbesserung mehr gibt.
 
-Später:
+Option:
 - Wettbewerb: Viele Zufällige, dann jeweils Evolution (1000?), dann Auswahl der ersten Hälfte und kombinieren der Layouts (for i in [a:z]: if rand_bool(): 1.switch(1, 2.key_at(1.pos(i))])
 
 
