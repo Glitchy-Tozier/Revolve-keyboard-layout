@@ -13,6 +13,8 @@ def p(*args, **kwds):
 def print_svg(bigrams, layout, svg_output=None):
     """print an svg from the bigrams.
 
+    svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
+
     @param bigrams: [(number, cost, bigram), …]
     """
     from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder
