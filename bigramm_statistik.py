@@ -77,6 +77,10 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
         coord = pos_to_svg_coord(pos1)
         letter_scale = 128 / max(num for num, l in lett)
         l = get_key(pos, layout=layout)
+        if l == "<":
+            l = "≤"
+        elif l == ">":
+            l == "≥"
         try: 
             num = lett[[le for n, le in lett].index(l)][0]
         except ValueError: num = 0
