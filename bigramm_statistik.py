@@ -204,7 +204,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     if svg:
-        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=options.filepath)
+        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath)
     
     
 if __name__ == "__main__":
