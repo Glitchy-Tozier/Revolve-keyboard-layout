@@ -89,13 +89,14 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
         if pos == (2, 13, 0):
             y -= 50
             dy += 50
+            l = "⏎"
         elif pos == (3, 12, 0):
             dx += 100
         letter_dist.addElement(
             oh.createRect(x, y,
                           dx, dy,
                           fill="rgb(" + ",".join([str(c) for c in color]) + ")",
-                          stroke="#eeeeee"))
+                          stroke="#fafafa"))
         t = text(l, coord[0]-5, coord[1]+4)
         t.set_font_size(18)
         letters.addElement(t)
