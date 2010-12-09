@@ -18,7 +18,7 @@ def pos_to_svg_coord(pos):
     return pos
 
 
-def print_svg(bigrams, layout, svg_output=None, filepath=None):
+def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
@@ -63,12 +63,14 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
     S.addElement(group_fingerrepeat)
     S.addElement(letters)
 
-    ## letters, yes, this is kinda not nice to get them here again…
-    lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
 
     # shape builder for rectangles
+    if with_keys: 
+        positions = get_all_positions_in_layout(layout)
+        ## letters, yes, this is kinda not nice to get them here again…
+        lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
+    else: positions = []
     oh = ShapeBuilder()
-    positions = get_all_positions_in_layout(layout)
     for pos in positions:
         if pos[2] or pos[0]>3: continue # only base layer.
         if pos[0] != 3:
