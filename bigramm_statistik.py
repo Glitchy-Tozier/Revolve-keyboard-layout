@@ -10,7 +10,15 @@ def p(*args, **kwds):
     """print without linebreak (saves typing :) )"""
     return print(end=" ", *args, **kwds)
 
-def print_svg(bigrams, layout, svg_output=None):
+def pos_to_svg_coord(pos):
+    """turn a position tuple into corresponding svg coordinates (xy)."""
+    if pos[0] == 3 and pos[1] <= 1:
+        pos = pos[0], 0.5*pos[1] + 1, pos[2]
+    pos = (50*pos[1], 50 + 50*pos[0])
+    return pos
+
+
+def print_svg(bigrams, layout, svg_output=None, filepath=None):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
@@ -19,8 +27,8 @@ def print_svg(bigrams, layout, svg_output=None):
     @param bigrams: [(number, cost, bigram), …]
     """
     # only import here to avoid the import overhead for other actions.
-    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g
-    from layout_base import find_key, pos_is_left
+    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g, text
+    from layout_base import find_key, pos_is_left, get_key, get_all_positions_in_layout
     S = svg("Belegung")
     #oh = ShapeBuilder()
     #S.addElement(oh.createRect(0,0,750,250, strokewidth=0, fill='black'))
@@ -33,21 +41,60 @@ def print_svg(bigrams, layout, svg_output=None):
     color_scale = 1
     #max_num = max(number for number, cost, bigram in bigrams)
     num_scale = 1/400000
+    letters = g()
+    letter_dist = g()
     group_handswitch = g()
     group_inwards = g()
     group_outwards = g()
     group_fingerrepeat = g()
-    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat): 
+    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist): 
         gr.setAttribute("inkscape:groupmode", "layer")
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
     group_outwards.setAttribute("inkscape:label", "Auswärts")
     group_fingerrepeat.setAttribute("inkscape:label", "Fingerwiederholungen")
+    letters.setAttribute("inkscape:label", "Buchstaben")
+    letter_dist.setAttribute("inkscape:label", "Häufigkeit")
 
+    S.addElement(letter_dist)
     S.addElement(group_handswitch)
     S.addElement(group_inwards)
     S.addElement(group_outwards)
     S.addElement(group_fingerrepeat)
+    S.addElement(letters)
+
+    ## letters, yes, this is kinda not nice to get them here again…
+    lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
+
+    # shape builder for rectangles
+    oh = ShapeBuilder()
+    positions = get_all_positions_in_layout(layout)
+    for pos in positions:
+        if pos[2] or pos[0]>3: continue # only base layer.
+        if pos[0] != 3:
+            pos1 = (pos[0], pos[1] + 1, pos[2])
+        else: pos1 = pos
+        coord = pos_to_svg_coord(pos1)
+        letter_scale = 128 / max(num for num, l in lett)
+        l = get_key(pos, layout=layout)
+        try: 
+            num = lett[[le for n, le in lett].index(l)][0]
+        except ValueError: num = 0
+        color = colorwheel(num*letter_scale, palette="grey")
+        x, y, dx, dy = coord[0]-25, coord[1]-25, 50, 50,
+        if pos == (2, 13, 0):
+            y -= 50
+            dy += 50
+        elif pos == (3, 12, 0):
+            dx += 100
+        letter_dist.addElement(
+            oh.createRect(x, y,
+                          dx, dy,
+                          fill="rgb(" + ",".join([str(c) for c in color]) + ")"))
+        t = text(l, coord[0]-5, coord[1])
+        letters.addElement(t)
+
+    
     # make sure the most used bigram is shown on top (drawn last)
     bigrams.sort()
     for number, cost, bigram in bigrams:
@@ -82,22 +129,19 @@ def print_svg(bigrams, layout, svg_output=None):
         # out- or inwards
         to_right = pos1[1] > pos0[1]
         inwards = is_left0 and to_right or not is_left0 and not to_right
-        finger_repeat = pos1[1] == pos0[1]
+
+        column_repeat = pos1[1] == pos0[1]
         
         # move the left shifts and m4 1/0.5 step(s) towards the center. They look awkward otherwise.
-        if pos0[0] == 3 and pos0[1] <= 1:
-            pos0 = pos0[0], 0.5*pos0[1] + 1, pos0[2]
-        if pos1[0] == 3 and pos1[1] <= 1:
-            pos1 = pos1[0], 0.5*pos1[1] + 1, pos1[2]
-        pos0 = (50 + 50*pos0[1], 50 + 50*pos0[0])
-        pos1 = (50 + 50*pos1[1], 50 + 50*pos1[0])
+        pos0 = pos_to_svg_coord(pos0)
+        pos1 = pos_to_svg_coord(pos1)
 
         color = colorwheel(min(1020, cost*color_scale))
         # invert the color
         color = tuple([255-c for c in color])
         width = num_scale * number
 
-        if finger_repeat:
+        if column_repeat:
             group_fingerrepeat.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
         elif handswitch:
             group_handswitch.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
@@ -109,7 +153,7 @@ def print_svg(bigrams, layout, svg_output=None):
     if svg_output is None: 
         print(S.getXML())
     else:
-        S.save(svg_output)
+        S.save(svg_output, encoding="UTF-8")
         # and try to cleanup the svg with inkscape.
         from subprocess import call
         # this just fails when there’s no inkscape there.
@@ -151,7 +195,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     if svg:
-        print_svg(bigrams_with_cost, layout, svg_output=svg_output)
+        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=options.filepath)
     
     
 if __name__ == "__main__":
