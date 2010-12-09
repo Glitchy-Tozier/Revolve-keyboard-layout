@@ -94,7 +94,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
         letter_dist.addElement(
             oh.createRect(x, y,
                           dx, dy,
-                          fill="rgb(" + ",".join([str(c) for c in color]) + ")"))
+                          fill="rgb(" + ",".join([str(c) for c in color]) + ")",
+                          stroke="white"))
         t = text(l, coord[0]-5, coord[1])
         letters.addElement(t)
 
