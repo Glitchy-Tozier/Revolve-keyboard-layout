@@ -96,7 +96,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
                           dx, dy,
                           fill="rgb(" + ",".join([str(c) for c in color]) + ")",
                           stroke="white"))
-        t = text(l, coord[0]-5, coord[1])
+        t = text(l, coord[0]-5, coord[1]+4)
+        t.set_font_size(18)
         letters.addElement(t)
 
     
