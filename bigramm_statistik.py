@@ -14,7 +14,7 @@ def pos_to_svg_coord(pos):
     """turn a position tuple into corresponding svg coordinates (xy)."""
     if pos[0] == 3 and pos[1] <= 1:
         pos = pos[0], 0.5*pos[1] + 1, pos[2]
-    pos = (50*pos[1], 50 + 50*pos[0])
+    pos = (50*pos[1] - 2, 50 + 50*pos[0])
     return pos
 
 
@@ -95,7 +95,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None):
             oh.createRect(x, y,
                           dx, dy,
                           fill="rgb(" + ",".join([str(c) for c in color]) + ")",
-                          stroke="white"))
+                          stroke="#eeeeee"))
         t = text(l, coord[0]-5, coord[1]+4)
         t.set_font_size(18)
         letters.addElement(t)
