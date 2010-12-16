@@ -35,7 +35,7 @@ def colorwheel(idx=0, palette="red_to_blue"):
     0,0,255
     """
     if idx < 0:
-        raise ValueError("idx outside the valid range between 0 and 1020" + str(idx)
+        raise ValueError("idx outside the valid range between 0 and 1020" + str(idx))
     if palette == "red_to_blue": 
         if idx<=255: return 255, idx, 0
         if idx<=510: return 510-idx, 255, 0
