@@ -145,6 +145,28 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
         pos0 = pos_to_svg_coord(pos0)
         pos1 = pos_to_svg_coord(pos1)
 
+        # move the start and endpoints slightly away from the letters: looks better (thanks to Andreas Wettstein)
+        dx0 = dx1 = dy0 = dy1 = 0
+        if pos0[1] < pos1[1]: 
+            dy0 += 7
+            if pos0[0] == pos1[0]: dy1 -= 7
+            elif inwards: dy1 -= 5
+            else: dy1 += 5
+        elif pos0[1] > pos1[1]:
+            dy0 = - 7
+            if pos0[0] == pos1[0]: dy1 += 7
+            elif inwards: dy1 -= 5
+            else: dy1 += 5
+        if pos0[0] < pos1[0]:
+            dx0 = +5
+            dx1 = -5
+        elif pos0[0] > pos1[0]:
+            dx0 = -5
+            dx1 = +5
+        pos0 = pos0[0] + dx0, pos0[1] + dy0
+        pos1 = pos1[0] + dx1, pos1[1] + dy1
+        
+
         color = colorwheel(min(1020, cost*color_scale))
         # invert the color
         color = tuple([255-c for c in color])
