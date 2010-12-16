@@ -24,6 +24,9 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
     cleanup with inkscape: inkscape --vacuum-defs neo2.svg
 
+    TODO: Somehow mark the first letter in words (space-letter bigrams).
+    TODO: Add some statistics below the layout image. 
+
     @param bigrams: [(number, cost, bigram), …]
     """
     # only import here to avoid the import overhead for other actions.
@@ -65,43 +68,77 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
 
 
     # shape builder for rectangles
+    first_letters = {}
     if with_keys: 
         positions = get_all_positions_in_layout(layout)
         ## letters, yes, this is kinda not nice to get them here again…
         lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
+        #: scale the color for the letters
+        letter_scale = 128 / max(num for num, l in lett)
+        # get first letters in words
+        for num, cost, bi in [(num, cost, bi) for num, cost, bi in bigrams if bi[1:] and bi[0] == " "]:
+            fl = bi[1] #: a first letter
+            if fl in first_letters: first_letters[fl] += num
+            else: first_letters[fl] = num
+        #: scale the color for the first letters
+        first_letter_scale = 255 / max(first_letters.values())
+
     else: positions = []
     oh = ShapeBuilder()
     for pos in positions:
         if pos[2] or pos[0]>3: continue # only base layer.
+        # get the letter.
+        l = get_key(pos, layout=layout)
+        # shift the position to fit with the image.
         if pos[0] != 3:
             pos1 = (pos[0], pos[1] + 1, pos[2])
         else: pos1 = pos
+        # get the coords in the image
         coord = pos_to_svg_coord(pos1)
-        letter_scale = 128 / max(num for num, l in lett)
-        l = get_key(pos, layout=layout)
-        if l == "<":
-            l = "≤"
-        elif l == ">":
-            l == "≥"
+        
+        # get the color for the background
         try: 
             num = lett[[le for n, le in lett].index(l)][0]
         except ValueError: num = 0
         color = colorwheel(num*letter_scale, palette="grey")
+        # get the dimensions of the background
         x, y, dx, dy = coord[0]-25, coord[1]-25, 50, 50,
         if pos == (2, 13, 0):
             y -= 50
-            dy += 50
-            l = "⏎"
         elif pos == (3, 12, 0):
             dx += 100
+        # add the background
         letter_dist.addElement(
             oh.createRect(x, y,
                           dx, dy,
                           fill="rgb(" + ",".join([str(c) for c in color]) + ")",
                           stroke="#fafafa"))
-        t = text(l, coord[0]-5, coord[1]+4)
+
+        # add the letter itself.
+        if l == "<":
+            ll = "≤"
+        elif l == ">":
+            ll == "≥"
+        else: ll = l
+        t = text(ll, coord[0]-5, coord[1]+4)
         t.set_font_size(18)
         letters.addElement(t)
+
+        # get the color for the first-letter circle
+        try: 
+            num = first_letters[l]
+        except KeyError: num = 0
+        color = colorwheel(num*first_letter_scale, palette="grey")
+        # get the dimensions of the first-letter circle
+        x, y, dx, dy = coord[0]-15, coord[1]-15, 5, 5
+        if pos == (2, 13, 0):
+            y -= 50
+        # add the background
+        letter_dist.addElement(
+            oh.createCircle(x, y,
+                          dx, dy,
+                          fill="rgb(" + ",".join([str(c) for c in color]) + ")",
+                          stroke=None))
 
     
     # make sure the most used bigram is shown on top (drawn last)
