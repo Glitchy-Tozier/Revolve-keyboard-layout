@@ -131,5 +131,5 @@ if __name__ == "__main__":
             name = cost + "-" + name
             name = join("svgs", name)
             from bigramm_statistik import print_bigram_info
-            print_bigram_info(layout=lay, number=300, svg=True, svg_output=name, filepath=options.data)
+            print_bigram_info(layout=lay, number=1000, svg=True, svg_output=name, filepath=options.data)
     
