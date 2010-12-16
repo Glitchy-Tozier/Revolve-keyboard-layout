@@ -102,7 +102,7 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     elif not upstroke and not upwards:
         control_y = 1.4*(dy)
     elif upstroke and upwards:
-        control_y = .14*(dy)
+        control_y = 1.4*(dy)
     else: 
         control_y = 0.2*(dy)
     
