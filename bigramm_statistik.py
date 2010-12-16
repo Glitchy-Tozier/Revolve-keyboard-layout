@@ -76,7 +76,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
         #: scale the color for the letters
         letter_scale = 128 / max(num for num, l in lett)
         # get first letters in words
-        for num, cost, bi in [(num, cost, bi) for num, cost, bi in bigrams if bi[1:] and bi[0] == " "]:
+        for num, cost, bi in [(num, cost, bi) for num, cost, bi in bigrams if bi[1:] and (bi[0] == " " or bi[0] == "\n")]:
             fl = bi[1] #: a first letter
             if fl in first_letters: first_letters[fl] += num
             else: first_letters[fl] = num
