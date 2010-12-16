@@ -50,6 +50,7 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     for i in listdir(folder):
         if not i.endswith(".txt") or not namepart in i:
             continue
+        print("# reading", join(folder, i))
         all_layouts.extend(get_all_layouts_in_textfile(join(folder, i))) 
 
     return all_layouts
@@ -120,9 +121,15 @@ if __name__ == "__main__":
             
             if not isdir("svgs"):
                 mkdir("svgs")
+            
+            cost = total_cost(layout=lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
+            cost = str(cost)
+            cost = "0"*max(0, 10-len(cost)) + cost
             name_lines = format_layer_1_string(lay).splitlines()
+            # TODO: Add cost.
             name = "-".join((name_lines[1], name_lines[0], name_lines[2])) + ".svg"
             name = name.replace(" ", "_")
+            name = cost + "-" + name
             name = join("svgs", name)
             from bigramm_statistik import print_bigram_info
             print_bigram_info(layout=lay, number=300, svg=True, svg_output=name, filepath=options.data)
