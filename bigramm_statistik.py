@@ -81,7 +81,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
             if fl in first_letters: first_letters[fl] += num
             else: first_letters[fl] = num
         #: scale the color for the first letters
-        first_letter_scale = 255 / max(first_letters.values())
+        first_letter_scale = 254 / max(first_letters.values())
 
     else: positions = []
     oh = ShapeBuilder()
