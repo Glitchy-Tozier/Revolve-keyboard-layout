@@ -126,7 +126,6 @@ if __name__ == "__main__":
             cost = str(cost)
             cost = "0"*max(0, 10-len(cost)) + cost
             name_lines = format_layer_1_string(lay).splitlines()
-            # TODO: Add cost.
             name = "-".join((name_lines[1], name_lines[0], name_lines[2])) + ".svg"
             name = name.replace(" ", "_")
             name = cost + "-" + name
