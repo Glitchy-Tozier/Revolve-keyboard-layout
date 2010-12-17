@@ -50,7 +50,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     group_inwards = g()
     group_outwards = g()
     group_fingerrepeat = g()
-    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist): 
+    group_info = g()
+    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
         gr.setAttribute("inkscape:groupmode", "layer")
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
@@ -58,8 +59,10 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     group_fingerrepeat.setAttribute("inkscape:label", "Fingerwiederholungen")
     letters.setAttribute("inkscape:label", "Buchstaben")
     letter_dist.setAttribute("inkscape:label", "Häufigkeit")
+    group_info.setAttribute("inkscape:label", "Info")
 
     S.addElement(letter_dist)
+    S.addElement(group_info)
     S.addElement(group_handswitch)
     S.addElement(group_inwards)
     S.addElement(group_outwards)
@@ -142,6 +145,12 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
                           fill="rgb(" + ",".join([str(c) for c in color]) + ")",
                           stroke=None))
 
+
+    lay_strings = format_layer_1_string(layout).splitlines()
+    for i in range(len(lay_strings)): 
+        layout_string = text(lay_strings[i], 50, 250 + 20*i)
+        layout_string.set_font_size(18)
+        group_info.addElement(layout_string)
     
     # make sure the most used bigram is shown on top (drawn last)
     bigrams.sort()
