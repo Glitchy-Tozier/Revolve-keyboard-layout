@@ -286,7 +286,7 @@ if __name__ == "__main__":
                       help="The layout to test the bigrams against.", metavar="layout_string")
     parser.add_option("-f", "--file", dest="filepath", default=None, 
                       help="Use the given korpus file (file with text).", metavar="filepath")
-    parser.add_option("-n", "--number", dest="number", default=None, type="int", 
+    parser.add_option("-n", "--number", dest="number", default=1000, type="int", 
                       help="The number of bigrams to show.", metavar="number")
 
     parser.add_option("--bars", dest="bars", default=False, action="store_true", 
