@@ -104,7 +104,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
         # get the dimensions of the background
         x, y, dx, dy = coord[0]-25, coord[1]-25, 50, 50,
         if pos == (2, 13, 0):
-            y -= 500
+            y -= 50
             dy += 50
             l = "⏎"
         elif pos == (3, 12, 0):
