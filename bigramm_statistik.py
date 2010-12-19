@@ -276,6 +276,14 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
     if svg:
         print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath)
     
+
+def ask_for_layout_string_completion(l):
+    """if the layout string only has one line (Windows, I look at you!),
+    ask for the other lines."""
+    if len(l.splitlines()) < 3:
+        for i in range(3-len(l.splitlines())):
+            l += "\n" + input("please enter the next line of the layout string: ")
+    return l
     
 if __name__ == "__main__":
     from optparse import OptionParser
@@ -300,7 +308,8 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
 
-    if options.layout_string is not None: 
+    if options.layout_string is not None:
+        options.layout_string = ask_for_layout_string_completion(options.layout_string)
         options.layout = string_to_layout(options.layout_string, base_layout=NEO_LAYOUT)
     else: options.layout = NEO_LAYOUT
 
