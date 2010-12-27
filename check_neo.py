@@ -13,14 +13,14 @@ __usage__ = """Usage:
 - check_neo.py --help (display this text)
 
 - check_neo.py [-q] [-v] [-o <file>]
-  compare the Neo layout with others, using the included datafiles(*gramme.txt). 
+  compare the Neo layout with others, using the included datafiles(*gramme.txt).
   -q only shows the results for the Neo layout.
   -v shows several additional metrics which are included in the total cost.
   -o writes the output to a file instead of printing it.
 
 - check_neo.py --file <file> [--switch <lx,wq>] [-q] [-v]
-  run the script on the file. 
-  --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q). 
+  run the script on the file.
+  --switch switches letters on the neo keyboard (lx,wq switches l for x and w for q).
   -q removes the qwertz comparision.
   -v adds the list of finger repeats.
 
@@ -29,13 +29,13 @@ __usage__ = """Usage:
   fpgmx ,üöyq"
   check the layout given by a layout string.
   -v gives more statistical info on the layout
-  --file <file> uses a file as corpus for checking the layout. 
+  --file <file> uses a file as corpus for checking the layout.
 
 
 - check_neo.py --evolve <iterations> [--prerandomize <num_switches>] [-q] [-v] [--controlled-evolution] [--controlled-tail]
-  randomly permutate keys on the Neo keyboard to see if a better layout emerges. 
+  randomly permutate keys on the Neo keyboard to see if a better layout emerges.
   --controlled-evolution tells it to use the horribly slow and deterministic code which always chooses the best possible change in each step.
-  --controlled-tail makes it first do <iterations> random mutations and then a controlled evolution, until it can’t go any further. controlled_tail and controlled-evolution are exclusive. When both are used, the tail wins. 
+  --controlled-tail makes it first do <iterations> random mutations and then a controlled evolution, until it can’t go any further. controlled_tail and controlled-evolution are exclusive. When both are used, the tail wins.
   --prerandomize tells it to do num_switches random switches before beginning the evolution. Use >100000 to get a mostly random keyboard layout as starting point.
 
 - check_neo.py --best-random-layout <num of random layouts to try> [--prerandomize <num_switches>] [-q]
@@ -52,11 +52,11 @@ __usage__ = """Usage:
 - check_neo.py [-v] [-q] --check-string "öckäy zhmlß,
 atieo dsnru.
 xpfüq bgvwj"
-  check a layout string for layer 1. 
+  check a layout string for layer 1.
 
 - check_neo.py --test (run doctests)
 
-Note: If --prerandomize is set to 1000000 or more, it just does a real shuffle instead of prerandomizing. 
+Note: If --prerandomize is set to 1000000 or more, it just does a real shuffle instead of prerandomizing.
 
 """
 
@@ -80,16 +80,18 @@ if "-o" in argv:
 else:
     FILE = None
 
+from termctrl import *
+
 def info(*args, **kwds):
     return print(*args, **kwds)
 
 def result(*args, **kwds):
-    if FILE is not None: 
+    if FILE is not None:
         with open(FILE, "a", encoding='utf-8') as f:
             for i in args:
                 f.write(str(i) + " ")
             f.write("\n")
-    else: 
+    else:
         info(*args, **kwds)
 
 from layout_cost import *
@@ -100,7 +102,7 @@ from math import log10, log
 
 ### Evolution
 
-def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT): 
+def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         """Do num_switches random keyswitches on the layout and
         @return: the randomized layout."""
         keypairs = []
@@ -114,13 +116,13 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
             for i in range(num_letters):
                 orig = abc_list[i]
                 new = abc_shuffled[i]
-                if orig != new and not orig+new in keypairs and not new+orig in keypairs: 
+                if orig != new and not orig+new in keypairs and not new+orig in keypairs:
                     new_in_list = abc_list.index(new)
                     abc_list[new_in_list] = orig
                     keypairs.append(orig+new)
             lay = switch_keys(keypairs, layout=deepcopy(layout))
             return lay, keypairs
-        
+
         # incomplete shuffling (only find the given number of switches), slower because we need to avoid dupliates the hard way.
         from random import choice
         max_unique_tries = 1000
@@ -132,31 +134,31 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
             while (key2 == key1 or key1+key2 in keypairs or key2+key1 in keypairs) and (num_switches <= num_letters or tries < max_unique_tries):
                 key1 = choice(abc)
                 key2 = choice(abc)
-                if num_switches > num_letters: 
+                if num_switches > num_letters:
                     tries += log(len(keypairs)+1, 2) + 1
             keypairs.append(key1+key2)
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         return lay, keypairs
 
-def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False): 
+def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False):
         """Create num_tries random keyboards (starting from the layout and doing num_switches random keyswitches), compare them and only keep the best (by total_cost)."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
         cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[0]
-        if not quiet: 
+        if not quiet:
             info("cost of the first random layout:", cost)
-        for i in range(max(0, num_tries-1)): 
-            if not quiet: 
+        for i in range(max(0, num_tries-1)):
+            if not quiet:
                 info("-", i, "/", num_tries)
             lay_tmp, keypairs = randomize_keyboard(abc, num_switches, layout)
             cost_tmp = total_cost(letters=letters, repeats=repeats, layout=lay_tmp, trigrams=trigrams)[0]
-            if cost_tmp < cost: 
+            if cost_tmp < cost:
                 lay = lay_tmp
                 cost = cost_tmp
-                if not quiet: 
+                if not quiet:
                     info("better:", cost)
-        return lay, cost	    
+        return lay, cost
 
-def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet): 
+def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet):
         """Do one random switch. Keep it, if it is beneficial."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:3]
@@ -165,17 +167,17 @@ def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc,
         else:
             return layout, cost, 0, keypairs, frep, pos_cost
 
-def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, cost_per_key=COST_PER_KEY): 
+def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, meter, cost_per_key=COST_PER_KEY):
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
 
-    TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions. 
-    
+    TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
+
     >>> data = read_file("testfile")
     >>> repeats = repeats_in_file(data)
     >>> letters = letters_in_file(data)
     >>> trigrams = trigrams_in_file(data)
     >>> #controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 190, quiet=False, cost_per_key=TEST_COST_PER_KEY)
-    
+
     # checked switch ('rr',) 201.4
     # checked switch ('re',) 181.4
     # checked switch ('ro',) 184.4
@@ -186,7 +188,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     [['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]]
     ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'r', 'o', 's', 'n', 'e', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 181.4, 8.599999999999994)
     >>> #controlled_evolution_step(letters, repeats, trigrams, 1, NEO_LAYOUT, "reo", 25, False, cost_per_key=TEST_COST_PER_KEY)
-    
+
     # checked switch ('rr',) 201.4
     # checked switch ('re',) 181.4
     # checked switch ('ro',) 184.4
@@ -199,100 +201,116 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     # First create one long list of possible switches
     keypairs = []
     best_pairs = []
-    for key1 in abc: 
-        for key2 in abc[abc.index(key1)+1:]: 
+    for key1 in abc:
+        for key2 in abc[abc.index(key1)+1:]:
             keypairs.append(key1+key2)
-    
+
     # then combine it into possible switch tuples (O(N²))
     switches = []
-    for i in range(num_switches): 
+    for i in range(num_switches):
         switches.append([]) # layers
-    for pair1 in keypairs: 
+    for pair1 in keypairs:
         # pair 1 list
-        for i in range(len(keypairs) ** min(1, num_switches - 1)): # ** (num_switches - 1)): 
+        for i in range(len(keypairs) ** min(1, num_switches - 1)): # ** (num_switches - 1)):
             switches[0].append(pair1) # [[1, 1, 1]]
-        for i in range(min(1, num_switches - 1)): # num_switches - 1): # TODO: Make it work for num > 2. 
-            #for j in range(len(keypairs) ** max(0, (num_switches - 2))): 
-                for pair_x in keypairs: #[keypairs.index(pair1)+1:]: 
-                    # add additional possible pairs. 
-                    switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]  
+        for i in range(min(1, num_switches - 1)): # num_switches - 1): # TODO: Make it work for num > 2.
+            #for j in range(len(keypairs) ** max(0, (num_switches - 2))):
+                for pair_x in keypairs: #[keypairs.index(pair1)+1:]:
+                    # add additional possible pairs.
+                    switches[i+1].append(pair_x) # [[1, 1, 1], [1, 2, 3]]
     switches = list(zip(*switches[:2]))
-    
+
     # results for 1 step: [(cost, frep, pos_cost, layout), ...]
     step_results = []
-    for keypairs in switches: 
+    length = len(switches)
+    for keypairs in switches:
+        i += 1
         lay = switch_keys(keypairs, layout=deepcopy(layout))
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
-        if not quiet: 
+        if not quiet:
             info("# checked switch", keypairs, new_cost)
-            
+        if meter:
+            write('switch:  %4d/%4d'%(i,length))
+    if meter:
+        erase(); priorline()
     if min(step_results)[0] < cost:
         best = min(step_results)
         lay, new_cost, best_pairs = best[-1], best[0], best[-2]
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
         return lay, new_cost, cost - new_cost, best_pairs, frep, pos_cost
-    else: 
+    else:
         return layout, cost, 0, keypairs, frep, pos_cost
 
-def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=abc, quiet=False, controlled=False, controlled_tail=False, anneal=0, anneal_step=100):
+def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=abc, quiet=False, meter=False, controlled=False, controlled_tail=False, anneal=0, anneal_step=100):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
     To only mutate a subset of keys, just pass them as
     @param abc: the keys to permutate over.
     @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen?
-    @param anneal: start by switching 1 + int(anneal) keypairs, reduce by 1 after anneal_step iterations. 
+    @param anneal: start by switching 1 + int(anneal) keypairs, reduce by 1 after anneal_step iterations.
     """
     cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
     consecutive_fails = 0
     # take anneal_step steps for the first anneal level, too
-    if anneal: 
+    if anneal:
         anneal += 1
         anneal -= 1/anneal_step
-    
+
     for i in range(iterations):
-        if not controlled: 
+        if not controlled:
             # increase the size of the changes when the system seems to become stable (1000 consecutive fails: ~ 2*24*23 = every combination tried) to avoid deterministic purely local minima.
             if anneal > 0:
                 step = int(anneal + 1)
                 anneal -= 1/anneal_step
-            else: 
+            else:
                 step = int(log10(consecutive_fails + 1) / 3 + 1)
             lay, cost, better, keypairs, frep, pos_cost = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
-        else: 
+        else:
             step = int(consecutive_fails / 2 + 1)
-            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
+            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run.
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet, meter)
         if better:
             consecutive_fails = 0
             # save the good mutation
             layout = lay
-            if not quiet: 
+            if not quiet:
                 info(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
                 info(format_layer_1_string(lay))
         else:
             consecutive_fails += 1
-            if not quiet: 
+            if not quiet:
                 info("worse", keypairs, end = " ")
-        if not quiet: 
+        if not quiet:
             info("- " + str(i) + " / " + str(iterations))
+        if meter:
+            write('steps:   %4d/%4d'%(i+1,iterations))
+    if quiet:
+        print
 
-    if controlled_tail: 
+    if controlled_tail:
         # second round: do controlled evolution steps, as long as they result in better layouts (do a full controlled optimization of the result).
-        if not quiet: 
+        if not quiet:
             info("controlled evolution, until there’s no more to improve")
         better = True
         steps = 0
-        while better: 
-            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run. 
-            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet)
+        while better:
+            steps += 1
+            if meter:
+                erase(); write('tail:    %4d\n'%steps)
+            # only do the best possible step instead => damn expensive. For a single switch about 10 min per run.
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet, meter=meter)
             if better:
                 # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
                 layout = lay
-            if not quiet: 
+            if not quiet:
                 info("-", steps, "/ ?", keypairs)
                 info(format_layer_1_string(lay))
+    if meter:
+        erase()
+        priorline()
+        erase()
     return layout, cost
 
 
@@ -301,12 +319,12 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
 ### UI ###
 
 
-    
+
 
 def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False, quadratic=False):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
-            data=data, 
+            data=data,
             letters=letters, number_of_letters=number_of_letters,
             repeats=repeats, number_of_bigrams=number_of_bigrams,
             trigrams=trigrams, number_of_trigrams=number_of_trigrams,
@@ -317,7 +335,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     def c(*args):
         """concatenate the args to a string similar to how print() does it, just simpler."""
         return " ".join((str(i) for i in args)) + "\n"
-    
+
     if print_layout:
         res += c(format_layer_1_string(layout))
         res += c(format_keyboard_layout(layout))
@@ -329,7 +347,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     # weighted
     total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:12]
 
-    if shorten_numbers: 
+    if shorten_numbers:
         sn = short_number
     else:
         sn = str
@@ -338,7 +356,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     res += c("#", sn(total / 10000000000), "x10 billion total penalty compared to notime-noeffort")
     res += c("#", sn(cost / max(1, number_of_letters)), "mean key position cost in file 1gramme.txt", "(", str(cost_w/1000000000), ")")
     res += c("#", sn(100 * frep_num / max(1, number_of_bigrams)), "% finger repeats in file 2gramme.txt", "(", str(frep_num_w/1000000000), ")")
-    if verbose: 
+    if verbose:
         res += c("#", sn(disbalance / 1000000), "million keystrokes disbalance of the fingers", "(", str(fing_disbalance_w/1000000000), ")")
         res += c("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
         res += c("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
@@ -348,7 +366,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
     if quadratic:
-        # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts. 
+        # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts.
         res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
     if fingerstats:
         # also print statistics
@@ -358,8 +376,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         no_thumbs = [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[:4]] + ["-"] + [int(1000*finger_load.get(name, 0)/finger_sum)/10 for name in FINGER_NAMES[6:]]
         res += c("# Finger load %:", *no_thumbs)
     result(res)
-    
-    
+    return total/max(1, number_of_letters)/100
+
 def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     """Find a layout with values similar to qwertz."""
     info("# Qwertzing Layout")
@@ -368,7 +386,7 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     letters = letters_in_file_precalculated(data1)
     #letters = letters_in_file(data)
     datalen1 = sum([i for i, s in letters])
-    
+
     data2 = read_file("2gramme.txt")
     repeats = repeats_in_file_precalculated(data2)
     #repeats = repeats_in_file(data)
@@ -377,7 +395,7 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     data3 = read_file("3gramme.txt")
     trigrams = trigrams_in_file_precalculated(data3)
     number_of_trigrams = sum([i for i, s in trigrams])
-   
+
     if prerandomize:
         if not quiet:
             info("doing", prerandomize, "randomization switches.")
@@ -394,7 +412,7 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
         hand_load = load_per_hand(letters, layout=lay)
         diff = 0
         to_compare = zip(vals, qvals)
-        for l,q in to_compare: 
+        for l,q in to_compare:
             diff += (l - q)**2
         return diff
 
@@ -411,9 +429,9 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
             diff = d
 
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
-    
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_tail, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, quadratic=False):
+
+def evolve_a_layout(steps, prerandomize, controlled, quiet, meter, verbose, controlled_tail, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, quadratic=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
 
@@ -423,10 +441,10 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=starting_layout)
     else: lay = starting_layout
 
-    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step)
-    
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, meter=meter, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step)
+
     result("\n# Evolved Layout")
-    print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, quadratic=quadratic)
+    return print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, quadratic=quadratic)
 
 
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, datafile=None, quadratic=False):
@@ -448,9 +466,9 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
          lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=layout)
          lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
          layouts.append((cost, lay))
-         
+
      # run the challenge
-     for round in range(rounds): 
+     for round in range(rounds):
          # sort and throw out the worst
          layouts.sort()
          if not quiet:
@@ -475,7 +493,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
                 new, cost = deepcopy(evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True))
                 tries += 1
             layouts.append((cost, new))
-            
+
         # also combine the best one with the upper half
          for i in range(max(0, int(challengers/8))):
             info(i+int(challengers/8), "of", int(challengers/4-1), "from the strongest with the top half")
@@ -485,7 +503,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
             tries = 0
             while (cost, new) in layouts and tries < max_unique_tries:
                 new = deepcopy(combine_genetically(layouts[0][1], layouts[i+1][1]))
-                new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)                
+                new, cost = evolve(letters, repeats, trigrams, layout=new, iterations=iterations, quiet=True)
                 tries += 1
             layouts.append((cost, new))
 
@@ -499,14 +517,14 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
              tries = 0
              while (cost, lay) in layouts and tries < max_unique_tries:
                  lay, keypairs = deepcopy(randomize_keyboard(abc, num_switches=prerandomize, layout=layout))
-                 lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)             
+                 lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=iterations, quiet=True)
                  tries += 1
              layouts.append((cost, lay))
 
      info("# Top 3")
      layouts.sort()
 
-     for num, name in [(0, "\n# gold"), (1, "\n# silver"), (2, "\n# bronze")][:len(layouts)]: 
+     for num, name in [(0, "\n# gold"), (1, "\n# silver"), (2, "\n# bronze")][:len(layouts)]:
          cost, lay = layouts[num]
          info(name)
          print_layout_with_statistics(lay, letters, repeats, datalen1, datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, quadratic=quadratic)
@@ -515,24 +533,24 @@ def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
-     
-    if prerandomize: 
+
+    if prerandomize:
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=layout, abc=abc, quiet=quiet)
-    else: 
+    else:
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, layout=layout, abc=abc, quiet=quiet)
-        
+
     info("\nBest of the random layouts")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, quadratic=quadratic)
-    
+
 
 def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingerstats=False, quadratic=False):
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
-    if layout == NEO_LAYOUT: 
+    if layout == NEO_LAYOUT:
         info("Neo")
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
-     
+
     print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
-    
+
     if not quiet:
         info("\nQwertz for comparision")
         print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
@@ -549,7 +567,7 @@ check_the_neo_layout = compare_a_layout
 def check_a_layout_from_shell(layout, quiet, verbose, datafile=None, fingerstats=False, quadratic=False):
     """Check a layout we get passed as shell argument."""
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
-    
+
 
 def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=NEO_LAYOUT, datafile=None, fingerstats=False, quadratic=False):
     """Check a string passed via shell and formatted as
@@ -567,9 +585,9 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
     layout = string_to_layout(layout_string, base_layout)
     print_layout_with_statistics(layout, print_layout=not quiet, verbose=verbose, datapath=datafile, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
 
-### Self-Test 
+### Self-Test
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     from sys import argv
 
     if "--test" in argv:
@@ -585,19 +603,19 @@ if __name__ == "__main__":
                       help="(action) create the given number of random layouts and show the best one", metavar="number")
     parser.add_option("--challenge", dest="challenge_rounds", type="int", default=0,
                       help="(action) do an evolution challenge for the given number of rounds. Slow", metavar="rounds")
-    parser.add_option("--check", dest="check", 
+    parser.add_option("--check", dest="check",
                       help="(action)check a layout from shell. ignores --base*", metavar="layout")
-    parser.add_option("--check-string", dest="check_string", 
+    parser.add_option("--check-string", dest="check_string",
                       help="(action) check a layout_string from shell", metavar="layout_string")
     parser.add_option("--evolve", dest="evolve", type="int", default=0,
                       help="(action) do the given number of random mutation steps", metavar="number")
-    
+
     # options
-    parser.add_option("--base", dest="base", default=None, 
+    parser.add_option("--base", dest="base", default=None,
                       help="take the given layout as base", metavar="layout")
-    parser.add_option("--base-name", dest="base_name", default=None, 
+    parser.add_option("--base-name", dest="base_name", default=None,
                       help="take the named layout as base. I.e.: NEO_LAYOUT or QWERTZ_LAYOUT", metavar="layout_name")
-    parser.add_option("--base-string", dest="base_string", default=None, 
+    parser.add_option("--base-string", dest="base_string", default=None,
                       help="take the given layout as base for layer 1. Compatible with --base and --base-name", metavar="layout")
     parser.add_option("--challenge-evolution-steps", dest="challenge_evolution_steps", type="int", default=3,
                       help="the number of individual evolution steps to take between evolution challenge rounds", metavar="number")
@@ -611,7 +629,7 @@ if __name__ == "__main__":
                       help="start with number additional keyswitches per iteration and slowly reduce them (simulated annealing)", metavar="number")
     parser.add_option("--anneal-step", dest="anneal_step", type="int", default=100,
                       help="the number of steps after which to reduce the annealing switches by 1", metavar="number")
-    
+
 
     # arguments
     parser.add_option("--controlled",
@@ -636,7 +654,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     # post process options
-    if options.base: 
+    if options.base:
         options.base = eval(options.base)
     elif options.base_name:
         options.base = eval(options.base_name)
@@ -647,20 +665,20 @@ if __name__ == "__main__":
         # base-string for the base layer.
         options.base = string_to_layout(options.base_string, NEO_LAYOUT)
 
-    if options.check: 
+    if options.check:
         options.check = eval(options.check)
 
     # act
-    
+
     if options.check:
         check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data, fingerstats=options.fingerstats, quadratic=options.quadratic)
 
     elif options.check_string:
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats, quadratic=options.quadratic)
-            
+
     elif options.evolve:
         evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step, quadratic=options.quadratic)
-        
+
     elif options.best_random_layout:
         best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, datafile=options.file, layout=options.base, quadratic=options.quadratic)
 
@@ -676,4 +694,4 @@ if __name__ == "__main__":
 
     else:
         check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base, fingerstats=options.fingerstats, quadratic=options.quadratic)
-        
+
