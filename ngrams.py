@@ -349,6 +349,116 @@ def split_uppercase_trigrams(trigs):
     return trigs
 
 
+def split_uppercase_trigrams_correctly(trigs, layout):
+    """Split uppercase repeats into two to three lowercase repeats.
+
+    >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
+    >>> split_uppercase_trigrams(trigs, NEO_LAYOUT)
+    [(8, 'abc'), (7, 'abc'), (3, '⇧bc'), (3, '⇧ab'), (3, '⇗bc'), (3, '⇗ab'), (3, 'a⇧b'), (3, 'a⇗b'), (2, '⇧bc'), (2, '⇗bc'), (2, 'b⇧c'), (2, 'b⇗c'), (2, 'a⇧b'), (2, 'a⇗b'), (2, 'ab⇧'), (2, 'ab⇗'), (1, '⇧b⇧'), (1, '⇧b⇧'), (1, '⇧b⇗'), (1, '⇧b⇗'), (1, '⇧a⇧'), (1, '⇧a⇧'), (1, '⇧a⇗'), (1, '⇧a⇗'), (1, '⇧ab'), (1, '⇗b⇧'), (1, '⇗b⇧'), (1, '⇗b⇗'), (1, '⇗b⇗'), (1, '⇗a⇧'), (1, '⇗a⇧'), (1, '⇗a⇗'), (1, '⇗a⇗'), (1, '⇗ab'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'a⇧b'), (1, 'a⇧b'), (1, 'a⇗b'), (1, 'a⇗b'), (1, 'ab⇧'), (1, 'ab⇗')]
+    >>> #[(8, 'abc'), (7, '⇧ab'), (7, 'abc'), (6, '⇧bc'), (6, 'a⇧b'), (5, 'b⇧c'), (5, 'ab⇧'), (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc'), (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c'), (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c'), (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')]
+    """
+    # kick out any who don’t have a position
+    pos_trig = [(num, (find_key(k, layout=layout) for k in trig), trig) for num, trig in trigs]
+    pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not None in pos]
+    # replace uppercase by ⇧ + char1 and char1 + char2
+    upper = [(num, pos, trig) for num, pos, trig in trigs if True in [p[2]>0 for p in pos]]
+    # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
+    pos_trig = [(num, pos, trig) for num, pos, trig in trigs if not True in [p[2]>0 for p in pos]]
+    up = []
+    # since this gets a bit more complex and the chance to err is high,
+    # we do this dumbly, just checking for the exact cases.
+    # TODO: Do it more elegantly: Replace every uppercase letter by "⇧"+lowercase
+    #       and then turn the x-gram into multiple 3grams (four[:-1], four[1:]; five… ).
+    mod = MODIFIERS_PER_LAYER
+    for num, pos, trig in upper:
+        # lower letters
+        l0 = get_key((pos[0][0], pos[0][1], 0), layout=layout)
+        l1 = get_key((pos[1][0], pos[1][1], 0), layout=layout)
+        l2 = get_key((pos[2][0], pos[2][1], 0), layout=layout)
+        # mods
+        m0 = mod[pos[0][2]]
+        m1 = mod[pos[1][2]]
+        m2 = mod[pos[2][2]]
+        # Abc
+        if pos[0][2] and not pos[1][2] and not pos[2][2]:
+            if pos_is_left(pos[0]): i = 1
+            else: i = 0
+            up.append((num, m0[i]+l0+l1))
+            up.append((num, l0+l1+l2))
+        # aBc
+        elif not pos[0][2] and pos[1][2] and not pos[2][2]: 
+            if pos_is_left(pos[1]): i = 1
+            else: i = 0
+            up.append((num, m1[i]+l1+l2))
+            up.append((num, l0+m1[i]+l1))
+          
+        # abC
+        elif not pos[0][2] and not pos[1][2] and pos[2][2]:
+            if pos_is_left(pos[2]): i = 1
+            else: i = 0
+            up.append((num, l0+l1+m2[i]))
+            up.append((num, l1+m2[i]+l2))
+            
+        # ABc (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc')
+        elif pos[0][2] and pos[1][2] and not pos[2][2]:
+            if pos_is_left(pos[0]): i0 = 1
+            else: i0 = 0
+            if pos_is_left(pos[1]): i1 = 1
+            else: i1 = 0
+            up.append((num, m0[i0]+l0+m1[i1]))
+            up.append((num, l0+m1[i1]+l1))
+            # TODO: finish!
+            #up.append((num, m1[
+            
+        # aBC (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c')
+        elif not pos[0][2] and pos[1][2] and pos[2][2]: 
+            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇧"))
+            up.append((max(1, num//2), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇧"))
+            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇗"))
+            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇗"))
+
+            up.append((max(1, num//2), trig[0].lower()+"⇗"+trig[1].lower()))
+            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
+            
+        # AbC (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c')
+        elif pos[0][2] and not pos[1][2] and pos[2][2]: 
+            up.append((max(1, num//2),  "⇧" + trig[:2].lower()))
+            up.append((max(1, num//2),  trig[:2].lower() + "⇧"))
+            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, num//2),  "⇗" + trig[:2].lower()))
+            up.append((max(1, num//2),  trig[:2].lower() + "⇗"))
+            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
+
+        # ABC (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')
+        elif pos[0][2] and pos[1][2] and pos[2][2]: 
+            up.append((max(1, num//4), "⇧"+trig[0].lower()+"⇧"))
+            up.append((max(1, num//2), trig[0].lower()+"⇧"+trig[1].lower()))
+            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇧"))
+            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
+            
+            up.append((max(1, num//4), "⇗"+trig[0].lower()+"⇧"))
+            up.append((max(1, num//4), "⇧"+trig[0].lower()+"⇗"))
+            up.append((max(1, num//4), "⇗"+trig[0].lower()+"⇗"))
+
+            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇧"))
+            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇗"))
+            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇗"))
+
+            up.append((max(1, num//2), trig[0].lower()+"⇗"+trig[1].lower()))
+            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
+
+    
+    trigs.extend(up)
+    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+    trigs.sort()
+    trigs.reverse()
+    return trigs
+
+
 def trigrams_in_file(data):
     """Sort the trigrams in a file by the number of occurrances.
 
