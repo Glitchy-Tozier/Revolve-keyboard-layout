@@ -286,7 +286,7 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
             info("- " + str(i) + " / " + str(iterations))
         if meter:
             write('steps:   %4d/%4d'%(i+1,iterations))
-    if quiet:
+    if meter:
         print
 
     if controlled_tail:
