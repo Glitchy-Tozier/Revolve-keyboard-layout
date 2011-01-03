@@ -1,6 +1,6 @@
 ü,.py fgctzß/
 aoeiu hdrnsl
-öqjkx bmwv_
+⇚öqjkx bmwv_
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
 │ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
@@ -8,19 +8,19 @@ aoeiu hdrnsl
 ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
 │    ⇩ │ a │ o │ e │ i │ u │ h │ d │ r │ n │ s │ l │ ⇘ │   │
 ├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
-│  ⇧ │ M4│ ö │ q │ j │ k │ x │ b │ m │ w │ v │ _ │ ⇗       │
+│  ⇧ │ ⇚ │ ö │ q │ j │ k │ x │ b │ m │ w │ v │ _ │ ⇗       │
 ├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
 │Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
 └────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
-# 1.282206 x100 total penalty per letter
-# 3.691525 x10 billion total penalty compared to notime-noeffort
-# 6.543240 mean key position cost in file 1gramme.txt ( 18.83826204 )
-# 2.661972 % finger repeats in file 2gramme.txt ( 2.278674432 )
-# 10.56297 million keystrokes disbalance of the fingers ( 5.28148847029 )
-# 0.161678 % finger repeats top to bottom or vice versa ( 1.10718976 )
-# 2.050643 % of trigrams have no handswitching (after direction change counted x 1 ) ( 2.3884134 )
-# 7.435430 billion (rows²/dist)² to cross ( 4.46125851854 )
-# 0.066528 hand disbalance. Left: 0.433471486776 %, Right: 0.566528513224 % ( 0.574615059503 )
-# 0.230323 badly positioned shortcut keys (weighted).
-# 0.782309 no handswitching after unbalancing key (weighted).
-# 0.972718 movement pattern cost (weighted).
+# 1.357502 x100 total penalty per letter
+# 3.908306 x10 billion total penalty compared to notime-noeffort
+# 6.042781 mean key position cost in file 1gramme.txt ( 17.39741919 )
+# 5.266863 % finger repeats in file 2gramme.txt ( 4.5084859904 )
+# 10.24918 million keystrokes disbalance of the fingers ( 3.07475687073 )
+# 0.381354 % finger repeats top to bottom or vice versa ( 2.6115436544 )
+# 2.509644 % of trigrams have no handswitching (after direction change counted x 1 ) ( 2.9230182 )
+# 0.603270 billion (rows²/dist)² to cross ( 3.61962254024 )
+# 0.068071 hand disbalance. Left: 0.431928410856 %, Right: 0.568071589144 % ( 1.17588559703 )
+# 0.115161 badly positioned shortcut keys (weighted).
+# 1.102113 no handswitching after unbalancing key (weighted).
+# 1.037650 movement pattern cost (weighted).
