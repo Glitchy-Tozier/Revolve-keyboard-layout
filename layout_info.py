@@ -115,6 +115,25 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None):
     return reps
 
 
+def trigram_info(layout, only_layer_0=False, filepath=None):
+    """Get info about the cost of ngrams and the cost factors."""
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
+    if only_layer_0: trigrams = split_uppercase_trigrams(trigrams, layout=layout)
+    
+    trigs = {}
+    for num, trig in trigrams:
+        if not trig in trigs: trigs[trig] = num
+        else: trigs[trig] += num
+    trigrams = trigs
+
+    trigs = []
+    for trig, num in trigrams.items():
+        tmp = split_uppercase_trigrams([(1, trig)], layout=layout)
+        trigs.append((num, total_cost(data=None, letters=[(1, trig[0]), (1, rep[1]), (1, trig[2])], repeats=[], layout=layout, cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
+    trigs.sort()
+    trigs.reverse()
+    return trigs
+
 
 if __name__ == "__main__":
     from doctest import testmod
