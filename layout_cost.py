@@ -452,7 +452,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         reps = split_uppercase_repeats(repeats, layout=layout)
         
     elif letters is None or repeats is None:
-        raise Exception("Need either repeats und letters or data")
+        raise Exception("Need either repeats and letters or data")
     else:
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
@@ -505,7 +505,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     if not return_weighted: 
         return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load
     else:
-        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num , WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
 
 
 def _test():
