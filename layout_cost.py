@@ -213,7 +213,7 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
-    TODO: Don’t care about the hand (left index low and right high is still not nice). 
+    TODO: Don’t care about the hand (left index low and right high is still not nice).
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
@@ -242,12 +242,31 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 is_left2 = pos_is_left(pos2)
                 if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
+            num_rows = abs(pos1[0] - pos2[0])
+            # if the keys are in the same row, just switch to the next row.
+            if not num_rows:
+                continue
+
             # row 3 is shifted 1 key to the right → fix that.
             if pos1[0] == 3:
                 pos1 = pos1[0], pos1[1] -1, pos1[2]
             if pos2[0] == 3:
                 pos2 = pos2[0], pos2[1] -1, pos2[2]
-            num_rows = abs(pos1[0] - pos2[0])
+
+            # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
+            short_fingers = [finger for finger in FINGER_POSITIONS if finger.startswith("Zeige") or finger.startswith("Klein")]
+            long_fingers = [finger for finger in FINGER_POSITIONS if finger.startswith("Mittel") or finger.startswith("Ring")]
+            f1_is_short = KEY_TO_FINGER[pos1] in short_fingers
+            f2_is_short = KEY_TO_FINGER[pos2] in short_fingers
+            f1_is_long = KEY_TO_FINGER[pos1] in short_fingers
+            f2_is_long = KEY_TO_FINGER[pos2] in short_fingers
+            upwards = pos2[0] < pos1[0]
+            downwards = pos2[0] > pos1[0]
+            if upwards and f1_is_short and f2_is_long:
+                num_rows -= 1
+            if downwards and f1_is_long and f2_is_short:
+                num_rows -= 1
+            
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
                 cost = num_rows**2 / max(0.25, finger_distance)
