@@ -519,8 +519,62 @@ def pos_is_left(pos):
     return RIGHT_HAND_LOWEST_INDEXES[pos[0]] > pos[1]
 
 
+def switch_positions(pos0, pos1, layout=NEO_LAYOUT):
+    """Switch two positions in the layout.
+
+    >>> lay = switch_positions((1, 1, 0), (1, 3, 0), layout=NEO_LAYOUT)
+    >>> lay = switch_positions((1, 1, 1), (1, 3, 1), layout=lay)
+    >>> lay[:5] == NEO_LAYOUT_lx[:5]
+    True
+    >>> print(lay[1][1])
+    ('l', 'L', '…', '⇞', 'ξ', 'Ξ')
+    >>> print(lay[1][3])
+    ('x', 'X', '[', '⇡', 'λ', 'Λ')
+    >>> lay = switch_positions((1, 1, 0), (1, 1, 1), layout=lay)
+    >>> print(lay[1][1])
+    ('L', 'l', '…', '⇞', 'ξ', 'Ξ')
+    >>> find_key("l", lay)
+    (1, 1, 1)
+    """
+    lay = deepcopy(layout)
+    pos0_keys = lay[pos0[0]][pos0[1]]
+    pos1_keys = lay[pos1[0]][pos1[1]]
+
+    # if they are on the same physical key, just exchange both positions on the single key
+    if pos0[:2] == pos1[:2]:
+        tmp = list(pos0_keys)
+        tmp[pos0[2]] = pos1_keys[pos1[2]]
+        tmp[pos1[2]] = pos0_keys[pos0[2]]
+        tmp = tuple(tmp)
+
+        cache_update = "".join(tmp)
+        lay[pos0[0]][pos0[1]] = tmp
+        update_letter_to_key_cache_multiple(cache_update, layout=lay)
+        return lay
+
+    # generate new tuples for all layers, with tmp0 containing pos1 and tmp1 containing pos0
+    tmp0 = list(pos0_keys)
+    tmp0[pos0[2]] = pos1_keys[pos1[2]]
+    tmp0 = tuple(tmp0)
+    
+    tmp1 = list(pos1_keys)
+    tmp1[pos1[2]] = pos0_keys[pos0[2]]
+    tmp1 = tuple(tmp1)
+    
+    cache_update = ""
+    for letter in tmp0 + tmp1:
+        cache_update += letter
+
+    lay[pos0[0]][pos0[1]] = tmp0
+    lay[pos1[0]][pos1[1]] = tmp1
+    update_letter_to_key_cache_multiple(cache_update, layout=lay)
+    return lay
+    
+
 def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
+
+    @param keypairs: A list of keypairs to switch. The keys in these pairs MUST be the base layer keys.
 
     >>> lay = switch_keys([], layout = NEO_LAYOUT)
     >>> lay == NEO_LAYOUT
@@ -622,7 +676,6 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1
             update_letter_to_key_cache_multiple(cache_update, layout=lay)
-            prev = pair
         #except:
         #    pprint(lay)
         #    print(prev, pair, pos0, pos1, tmp0, tmp1)
