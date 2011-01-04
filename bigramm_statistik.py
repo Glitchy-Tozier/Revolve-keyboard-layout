@@ -218,7 +218,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
         pos1 = pos1[0] + dx1, pos1[1] + dy1
         
 
-        color = colorwheel(min(1020, cost*color_scale))
+        color = colorwheel(max(min(1020, cost*color_scale), 0))
         # invert the color
         color = tuple([255-c for c in color])
         width = num_scale * number

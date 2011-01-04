@@ -373,8 +373,15 @@ def update_letter_to_key_cache(key, layout):
                     idx_rev = key_num - idx -1
                     if layout[row][col][idx_rev] == key:
                         new_pos = (row, col, idx_rev)
-                        if pos is None or single_key_position_cost(new_pos, layout) < single_key_position_cost(pos, layout):
+                        if pos is None:
                             pos = new_pos
+                        else:
+                            # use doubled layer cost, because it ignores the additional bigrams.
+                            new_cost = single_key_position_cost(new_pos, layout) + COST_LAYER_ADDITION[new_pos[2]]
+                            cost = single_key_position_cost(pos, layout) + COST_LAYER_ADDITION[pos[2]]
+
+                            if new_cost < cost:
+                                pos = new_pos
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
