@@ -47,13 +47,15 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     letters = g()
     letter_dist = g()
     group_handswitch = g()
+    group_shifts = g()
     group_inwards = g()
     group_outwards = g()
     group_fingerrepeat = g()
     group_info = g()
-    for gr in (group_handswitch, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
+    for gr in (group_handswitch, group_shifts, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
         gr.setAttribute("inkscape:groupmode", "layer")
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
+    group_shifts.setAttribute("inkscape:label", "Shift")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
     group_outwards.setAttribute("inkscape:label", "Auswärts")
     group_fingerrepeat.setAttribute("inkscape:label", "Fingerwiederholungen")
@@ -64,6 +66,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     S.addElement(letter_dist)
     S.addElement(group_info)
     S.addElement(group_handswitch)
+    S.addElement(group_shifts)
     S.addElement(group_inwards)
     S.addElement(group_outwards)
     S.addElement(group_fingerrepeat)
@@ -220,10 +223,14 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
         color = tuple([255-c for c in color])
         width = num_scale * number
 
+        shift = "⇗" in bigram or "⇧" in bigram
+
         if column_repeat:
             group_fingerrepeat.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
         elif handswitch:
             group_handswitch.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        elif shift:
+            group_shifts.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
         elif inwards: 
             group_inwards.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
         else:
