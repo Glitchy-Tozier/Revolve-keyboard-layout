@@ -38,14 +38,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     cost = 0
     for num, letter in letters:
         pos = find_key(letter, layout=layout)
-        if pos is None: # not found
-            cost += num * COST_PER_KEY_NOT_FOUND
-        # shift, M3 and M4
-        elif COST_LAYER_ADDITION[pos[2]:]:
-            cost += num * (cost_per_key[pos[0]][pos[1]] + COST_LAYER_ADDITION[pos[2]])
-        else:
-            # layer has no addition cost ⇒ undefined layer (higher than layer 6!). Just take the base key…
-            cost += num * cost_per_key[pos[0]][pos[1]]
+        cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
 def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):

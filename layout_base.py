@@ -339,6 +339,21 @@ def get_key(pos, layout=NEO_LAYOUT):
     except: return None
 
 
+def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
+    """Get the position_cost of a single key.
+
+    @param pos: The position of the key.
+    @type pos: tuple (row, col, layer).
+    @return: the cost of that one position."""
+    if pos is None: # not found
+        return COST_PER_KEY_NOT_FOUND
+    # shift, M3 and M4
+    if COST_LAYER_ADDITION[pos[2]:]:
+        return cost_per_key[pos[0]][pos[1]] + COST_LAYER_ADDITION[pos[2]]
+    # layer has no addition cost ⇒ undefined layer (higher than layer 6!). Just take the base key…
+    return cost_per_key[pos[0]][pos[1]]
+
+
 def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
     try: LETTER_TO_KEY_CACHE = layout[5]
@@ -346,18 +361,20 @@ def update_letter_to_key_cache(key, layout):
         layout.append({})
         LETTER_TO_KEY_CACHE = layout[5]
     pos = None
+    # search the whole layout for instances of the key.
     for row in range(len(layout[:5])):
         for col in range(len(layout[row])):
+            # if the key is found, use the key with the lowest cost.
             if key in layout[row][col]:
+                #: the number of keys in the row
                 key_num = len(layout[row][col])
                 for idx in range(key_num):
-                    # make sure that the keys on lower levels always win agains those on higher levels.
-                    # TODO (maybe someday): update the scheme to allow for multiple positions ⇒ only take the lowest cost.
+                    # if the key exists in multiple places, use the position with the lowest cost.
                     idx_rev = key_num - idx -1
                     if layout[row][col][idx_rev] == key:
-                        if pos and pos[2] < idx_rev:
-                            continue
-                        pos = (row, col, idx_rev)
+                        new_pos = (row, col, idx_rev)
+                        if pos is None or single_key_position_cost(new_pos, layout) < single_key_position_cost(pos, layout):
+                            pos = new_pos
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
