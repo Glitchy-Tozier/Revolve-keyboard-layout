@@ -154,7 +154,7 @@ def repeats_in_file(data):
     return sorted_repeats
 
 def split_uppercase_letters(reps, layout):
-    """Split uppercase letters into two lowercase letters (with shift).
+    """Split uppercase letters (or others with any mod) into two lowercase letters (with the mod).
 
     >>> letters = [(4, "a"), (3, "A")]
     >>> split_uppercase_letters(letters, layout=NEO_LAYOUT)
@@ -166,21 +166,26 @@ def split_uppercase_letters(reps, layout):
     for num, rep in reps:
         pos = find_key(rep, layout=layout)
         if pos and pos[2]:
-            upper.append((num, rep))
+            upper.append((num, rep, pos))
         else:
             repeats.append((num, rep))
     reps = repeats
 
     up = []
     
-    for num, rep in upper:
-        pos = find_key(rep, layout=layout)
-        if pos_is_left(pos): 
-            up.append((num, "⇗"))
-        else: 
-            up.append((num, "⇧"))
+    for num, rep, pos in upper:
+        layer_mods = MODIFIERS_PER_LAYER[pos[2]]
+                                         
+        if pos_is_left(pos):
+            for m in layer_mods[1]: # left keys use the right mods
+                up.append((num, m)) 
+        else:
+            for m in layer_mods[0]:  # right keys use the left mods
+                up.append((num, m))
 
-        up.append((num, rep.lower()))
+        # also append the base layer key.
+        up.append((num,
+                   get_key((pos[0], pos[1], 0), layout=layout)))
                 
     reps.extend(up)
     reps = [(int(num), r) for num, r in reps]
