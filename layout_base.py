@@ -726,6 +726,37 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     """
     layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
     to_replace_list = []
+    def set_key(current_key, new_letter, pos_01, layout, base_layout=base_layout, changing_layers = [0,1,4,5]):
+        """Set the new_letter into the pos_01 in the layout. Take the key from the position in the base_layout and from the position in the letter and merge them, using layer 3,4 from the position and the rest from the letter.
+
+        @param pos_01: the key which is currently in the given position. Not needed anymore, except for debugging.
+        @param current_key: The key which is currently in the position. Not needed anymore, except for debugging.
+        @param new_letter: The letter which should be in the position.
+        @param pos_01: The position where the key should be placed.
+        @param changing_layers: The layers in the base layout which change when the keys get changed."""
+        # first get the keys for all layers from position in the base_layout
+        base_keys = base_layout[pos_01[0]][pos_01[1]]
+        # then get the keys corresponding to the position of the new letter.
+        letter_pos = find_key(new_letter, layout=layout)
+        if letter_pos is None:
+            # the new letter is not in the base_layout. Just set it on layer 0.
+            layout[pos_01[0]][pos_01[1]] = (new_letter, ) + base_keys[1:]
+            return layout
+            
+        letter_keys = base_layout[letter_pos[0]][letter_pos[1]]
+        # replace all changing_layers in the base_keys with the new_keys.
+        tmp = []
+        for i in range(6):
+            try: 
+                if i in changing_layers:
+                    tmp.append(letter_keys[i])
+                else:
+                    tmp.append(base_keys[i])
+            except IndexError: # key not found
+                tmp.append("")
+        layout[pos_01[0]][pos_01[1]] = tuple(tmp)
+        return layout
+        
     def switch(current, new, pos_01, layout):
         """switch a current key in the layout with the new key from the layout string ⇒ pull the correct key to the position."""
         #: the key which is in the layout at the moment
