@@ -738,9 +738,9 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
         base_keys = base_layout[pos_01[0]][pos_01[1]]
         # then get the keys corresponding to the position of the new letter.
         letter_pos = find_key(new_letter, layout=layout)
-        if letter_pos is None:
-            # the new letter is not in the base_layout. Just set it on layer 0.
-            layout[pos_01[0]][pos_01[1]] = (new_letter, ) + base_keys[1:]
+        if letter_pos is None or letter_pos[2]:
+            # the new letter is not in the base_layout or not in the base layer, just set it on layer 0.
+            layout[pos_01[0]][pos_01[1]] = (new_letter, ) + tuple(base_keys[1:])
             return layout
             
         letter_keys = base_layout[letter_pos[0]][letter_pos[1]]
@@ -757,43 +757,30 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
         layout[pos_01[0]][pos_01[1]] = tuple(tmp)
         return layout
         
-    def switch(current, new, pos_01, layout):
-        """switch a current key in the layout with the new key from the layout string ⇒ pull the correct key to the position."""
-        #: the key which is in the layout at the moment
-        if new in layer_0_keys: 
-            layout = switch_keys([new+current], layout=layout)
-        else: # do the direct replacing at the end.
-            to_replace_list.append((pos_01[0], pos_01[1], new))
-        return layout
-    
     layout = deepcopy(base_layout)
     lines = layout_string.splitlines()
     # first and second letter row
     for i in range(1, 6):
-        layout = switch(layout[1][i][0], lines[0][i-1], (1, i), layout)
-        layout = switch(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
-        layout = switch(layout[2][i][0], lines[1][i-1], (2, i), layout)
-        layout = switch(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
+        layout = set_key(layout[1][i][0], lines[0][i-1], (1, i), layout)
+        layout = set_key(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
+        layout = set_key(layout[2][i][0], lines[1][i-1], (2, i), layout)
+        layout = set_key(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
 
-    layout = switch(layout[1][-3][0], lines[0][11], (1, -3), layout)
-    layout = switch(layout[2][-3][0], lines[1][11], (2, -3), layout)
+    layout = set_key(layout[1][-3][0], lines[0][11], (1, -3), layout)
+    layout = set_key(layout[2][-3][0], lines[1][11], (2, -3), layout)
 
     # third row
     if lines[0][12:]:
-        layout = switch(layout[1][-2][0], lines[0][12], (1, -2), layout)
+        layout = set_key(layout[1][-2][0], lines[0][12], (1, -2), layout)
     
     left, right = lines[2].split()[:2]
     for i in range(len(left)):
-        layout = switch(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
+        layout = set_key(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
     for i in range(len(right)):
-        layout = switch(layout[3][7+i][0], right[i], (3, 7+i), layout)
+        layout = set_key(layout[3][7+i][0], right[i], (3, 7+i), layout)
 
-    # finally do the exact rewriting
-    for p0, p1, new in to_replace_list:
-        if new.upper == new:
-            layout[p0][p1] = (new, ) + tuple(layout[p0][p1][1:])
-        else:
-            layout[p0][p1] = (new, new.upper()) + tuple(layout[p0][p1][2:])
+    # finally update the cache
+    update_letter_to_key_cache_multiple(None, layout)
 
     return deepcopy(layout)
     

@@ -121,7 +121,7 @@ COST_PER_KEY  = [
     # Don’t put mutated keys there, otherwise the best keys will end up there!
     [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
     [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
-    [12,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+    [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
     [0,0,0,               3           , 0, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
