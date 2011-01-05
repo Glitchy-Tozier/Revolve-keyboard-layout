@@ -22,10 +22,10 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
-    cleanup with inkscape: inkscape --vacuum-defs neo2.svg
 
     TODO: Somehow mark the first letter in words (space-letter bigrams).
-    TODO: Add some statistics below the layout image. 
+    TODO: Add some statistics below the layout image.
+    TODO: Legende einfügen: Farben, Dicken, Hintergründe, Punkte im Hintergrundm Richtung.
 
     @param bigrams: [(number, cost, bigram), …]
     """
