@@ -102,7 +102,8 @@ UNBALANCING_POSITIONS = {
     (2, 13, 0): 2, # Return
     (3, 0, 0): 2, # L_Shift
     (3, 12, 0): 2, # R_Shift
-    (3, 6, 0): 2 # z
+    (3, 6, 0): 2, # z
+    (3, 7, 0): 1 # b
 }
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
