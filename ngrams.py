@@ -362,12 +362,10 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         a → b → c
         | × | × |
         sa→ sb→ sc
-        senkrechte in beide Richtungen. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
+        senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
     >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> split_uppercase_trigrams(trigs, NEO_LAYOUT)
-    [(8, 'abc'), (7, 'abc'), (3, '⇧bc'), (3, '⇧ab'), (3, '⇗bc'), (3, '⇗ab'), (3, 'a⇧b'), (3, 'a⇗b'), (2, '⇧bc'), (2, '⇗bc'), (2, 'b⇧c'), (2, 'b⇗c'), (2, 'a⇧b'), (2, 'a⇗b'), (2, 'ab⇧'), (2, 'ab⇗'), (1, '⇧b⇧'), (1, '⇧b⇧'), (1, '⇧b⇗'), (1, '⇧b⇗'), (1, '⇧a⇧'), (1, '⇧a⇧'), (1, '⇧a⇗'), (1, '⇧a⇗'), (1, '⇧ab'), (1, '⇗b⇧'), (1, '⇗b⇧'), (1, '⇗b⇗'), (1, '⇗b⇗'), (1, '⇗a⇧'), (1, '⇗a⇧'), (1, '⇗a⇗'), (1, '⇗a⇗'), (1, '⇗ab'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'a⇧b'), (1, 'a⇧b'), (1, 'a⇗b'), (1, 'a⇗b'), (1, 'ab⇧'), (1, 'ab⇗')]
-    >>> #[(8, 'abc'), (7, '⇧ab'), (7, 'abc'), (6, '⇧bc'), (6, 'a⇧b'), (5, 'b⇧c'), (5, 'ab⇧'), (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc'), (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c'), (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c'), (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')]
+    >>> #split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
     """
     # kick out any who don’t have a position
     pos_trig = [(num, (find_key(k, layout=layout) for k in trig), trig) for num, trig in trigs]
@@ -391,11 +389,27 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         m0 = mod[pos[0][2]]
         m1 = mod[pos[1][2]]
         m2 = mod[pos[2][2]]
+        ### Algorithm
+        algo = """
+        a → b → c
+        | × | × |
+        sa→ sb→ sc
+        | × | × | – seperate dimension. ma is connected to a and sa.
+        ma→ mb→ mc
+        """
+        sa = pos[0][2]
+        sb = pos[1][2]
+        sc = pos[2][2]
         # Abc
         if pos[0][2] and not pos[1][2] and not pos[2][2]:
             if pos_is_left(pos[0]): i = 1
             else: i = 0
-            up.append((num, m0[i]+l0+l1))
+            # add each modifier needed
+            for m in m0[i]: 
+                up.append((num, m+l0+l1))
+            # if it’s more than 1 mod, add a mod-mod
+            if m0[i][1:]:
+                up.append((num, m0[i][0]+m0[i][1]+l0))
             up.append((num, l0+l1+l2))
         # aBc
         elif not pos[0][2] and pos[1][2] and not pos[2][2]: 
