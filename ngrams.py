@@ -364,21 +364,21 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         sa→ sb→ sc
         senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
-    >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> #split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
+    >>> trigs = [(8, "abc"), (7, "∀Bc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
+    >>> split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
     """
     # kick out any who don’t have a position
-    pos_trig = [(num, (find_key(k, layout=layout) for k in trig), trig) for num, trig in trigs]
+    pos_trig = [(num, [find_key(k, layout=layout) for k in trig], trig) for num, trig in trigs]
     pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not None in pos]
-    # all trigrams with non-baselayer-keys
-    upper = [(num, pos, trig) for num, pos, trig in trigs if True in [p[2]>0 for p in pos]]
+    
+    # get all trigrams with non-baselayer-keys
+    upper = [(num, pos, trig) for num, pos, trig in pos_trig if True in [p[2]>0 for p in pos]]
     # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
-    pos_trig = [(num, pos, trig) for num, pos, trig in trigs if not True in [p[2]>0 for p in pos]]
+    pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not True in [p[2]>0 for p in pos]]
+
+    #: The trigrams to add to the baselayer trigrams
     up = []
-    # since this gets a bit more complex and the chance to err is high,
-    # we do this dumbly, just checking for the exact cases.
-    # TODO: Do it more elegantly: Replace every uppercase letter by "⇧"+lowercase
-    #       and then turn the x-gram into multiple 3grams (four[:-1], four[1:]; five… ).
+
     mod = MODIFIERS_PER_LAYER
     for num, pos, trig in upper:
         # lower letters
@@ -394,90 +394,55 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         a → b → c
         | × | × |
         sa→ sb→ sc
-        | × | × | – seperate dimension. ma is connected to a and sa.
+        | × | × |   ; seperate dimension. ma is connected to a and sa.
         ma→ mb→ mc
         """
-        sa = pos[0][2]
-        sb = pos[1][2]
-        sc = pos[2][2]
-        # Abc
-        if pos[0][2] and not pos[1][2] and not pos[2][2]:
-            if pos_is_left(pos[0]): i = 1
-            else: i = 0
-            # add each modifier needed
-            for m in m0[i]: 
-                up.append((num, m+l0+l1))
-            # if it’s more than 1 mod, add a mod-mod
-            if m0[i][1:]:
-                up.append((num, m0[i][0]+m0[i][1]+l0))
-            up.append((num, l0+l1+l2))
-        # aBc
-        elif not pos[0][2] and pos[1][2] and not pos[2][2]: 
-            if pos_is_left(pos[1]): i = 1
-            else: i = 0
-            up.append((num, m1[i]+l1+l2))
-            up.append((num, l0+m1[i]+l1))
-          
-        # abC
-        elif not pos[0][2] and not pos[1][2] and pos[2][2]:
-            if pos_is_left(pos[2]): i = 1
-            else: i = 0
-            up.append((num, l0+l1+m2[i]))
-            up.append((num, l1+m2[i]+l2))
-            
-        # ABc (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc')
-        elif pos[0][2] and pos[1][2] and not pos[2][2]:
-            if pos_is_left(pos[0]): i0 = 1
-            else: i0 = 0
-            if pos_is_left(pos[1]): i1 = 1
-            else: i1 = 0
-            up.append((num, m0[i0]+l0+m1[i1]))
-            up.append((num, l0+m1[i1]+l1))
-            # TODO: finish!
-            #up.append((num, m1[
-            
-        # aBC (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c')
-        elif not pos[0][2] and pos[1][2] and pos[2][2]: 
-            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇧"))
-            up.append((max(1, num//2), trig[0].lower()+"⇧"+trig[1].lower()))
-            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
-            
-            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇧"))
-            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇗"))
-            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇗"))
+        #: Matrix der Tasten und Modifikatoren
+        m = []
+        for p, c in zip(pos, (l0, l1, l2)):
+            print(p)
+            mx = mod[p[2]] # liste mit bis zu 2 mods
+            if pos_is_left(p): mx = mx[1]
+            else: mx = mx[0]
+            col = [c]
+            if mx: 
+                col.append(mx[0])
+            else: col.append(None)
+            if mx[1:]: 
+                col.append(mx[1])
+            else: col.append(None)
+            m.append(col)
 
-            up.append((max(1, num//2), trig[0].lower()+"⇗"+trig[1].lower()))
-            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
+        # Matrix created
+        #: All possible starting positions for trigrams in that matrix
+        sp = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,1), (2,2)] # not last letter
+        # reduce the starting positions to the actually existing letters.
+        sp = [p for p in sp if m[p[0]][p[1]] is not None]
+
+        #: All possible paths in the matrix for letters
+        paths = [(1,0), (1,1), (1,2)]
+        #: Additional possible paths for modifiers
+        mod_paths = [(0,1), (0, 2), (0,-1)]
+
+        #: The new trigrams which get created due to splitting.
+        new_trigs = [] # option: take a set to avoid double entries.
+
+        # move all paths
+        for s in sp:
+            tri = [s]
+            #: current position
+            c = s
+            # try all possible path for two steps.
+            #: the paths
+            p = paths
+            # modifiers get extra options
+            if c[1]: p.extend(mod_paths)
+                
             
-        # AbC (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c')
-        elif pos[0][2] and not pos[1][2] and pos[2][2]: 
-            up.append((max(1, num//2),  "⇧" + trig[:2].lower()))
-            up.append((max(1, num//2),  trig[:2].lower() + "⇧"))
-            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
-            
-            up.append((max(1, num//2),  "⇗" + trig[:2].lower()))
-            up.append((max(1, num//2),  trig[:2].lower() + "⇗"))
-            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
+        
+        print(m, trig)
+        return
 
-        # ABC (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')
-        elif pos[0][2] and pos[1][2] and pos[2][2]: 
-            up.append((max(1, num//4), "⇧"+trig[0].lower()+"⇧"))
-            up.append((max(1, num//2), trig[0].lower()+"⇧"+trig[1].lower()))
-            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇧"))
-            up.append((max(1, num//2), trig[1].lower()+"⇧"+trig[2].lower()))
-            
-            up.append((max(1, num//4), "⇗"+trig[0].lower()+"⇧"))
-            up.append((max(1, num//4), "⇧"+trig[0].lower()+"⇗"))
-            up.append((max(1, num//4), "⇗"+trig[0].lower()+"⇗"))
-
-            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇧"))
-            up.append((max(1, num//4), "⇧"+trig[1].lower()+"⇗"))
-            up.append((max(1, num//4), "⇗"+trig[1].lower()+"⇗"))
-
-            up.append((max(1, num//2), trig[0].lower()+"⇗"+trig[1].lower()))
-            up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
-
-    
     trigs.extend(up)
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
     trigs.sort()
