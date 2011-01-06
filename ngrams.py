@@ -243,10 +243,10 @@ def repeats_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("2gramme.txt")
-    >>> repeats_in_file_precalculated(data)[:2]
-    [(10159250, 'en'), (10024681, 'er')]
+    >>> repeats_in_file_precalculated(data)[:3]
+    [(10159250, 'en'), (10024681, 'er'), (9051717, 'n ')]
     """
-    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split(" ", 1)[1:]]
     reps = [(int(num), r) for num, r in reps if r[1:]]
     #reps = split_uppercase_repeats(reps) # wrong place, don’t yet know the layout
     
