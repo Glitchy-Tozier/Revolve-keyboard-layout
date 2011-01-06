@@ -579,10 +579,10 @@ def letters_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("1gramme.txt")
-    >>> letters_in_file_precalculated(data)[:2]
-    [(44021504, 'e'), (26999087, 'n')]
+    >>> letters_in_file_precalculated(data)[:3]
+    [(46474641, ' '), (44021504, 'e'), (26999087, 'n')]
     """
-    letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:] or line[-2:] == "  "]
     try: 
         return [(int(num), let) for num, let in letters]
     except ValueError: # floats in there
