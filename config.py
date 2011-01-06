@@ -153,4 +153,4 @@ FINGER_POSITIONS = {
 }
 
 #: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index). TODO: Generate automatically from the finger positions.
-RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 4]
+RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]
