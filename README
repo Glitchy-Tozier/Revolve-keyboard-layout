@@ -29,3 +29,111 @@ Additional options:
 ./convert_text_between_layouts.py --help
 ./regularity_check.py --help
 ./textcheck.py --help
+
+
+Dokumentation
+=============
+
+Ein Leitfaden zum Optimierer. Er soll die Fragen beantworten, die in der Liste (oder bei sonstigen Interessierten) aufkommen könnten. Praktisch gesehen also eure Fragen :)
+
+(Schreibt mir einfach, was ihr gerne wissen würdet, ich versuche es dann zu beantworten. Und scheut euch nicht, mir konstruktiv reinzuschreiben – dafür ist das Pad hier da :))
+
+0. Grundlagen
+-------------
+
+Das Programm hat zwei Hauptfunktionen: 
+
+1. Tastaturbelegungen bewerten
+2. Tastaturbelegungen nach der Bewertung optimieren
+
+Für die Bewertung nutzt es die Häufigkeiten von Buchstaben, Bigrammen und Trigrammen, entweder aus dem Leipziger Korpus oder aus einer beliebigen Textdatei. 
+
+1. Kostenberechnung
+-------------
+
+### 1.1. Buchstaben (1-Gramme)
+
+1. Für die Buchstaben nutzt es eine nach Erfahrung generierte Liste mit Tastenaufwänden (Kosten):
+
+COST_PER_KEY  = [
+    [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
+    [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
+    [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+    [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
+    [0,0,0,               3            , 7, 0, 0, 0] # Reihe 4 mit Leertaste
+]
+
+Für jeden Buchstaben wird seine Häufigkeit mit den Kosten der Taste, auf der er liegt, multipliziert. Alle Buchstabenkosten werden addiert, um die Positionskosten zu erhalten. 
+
+Dabei werden Buchstaben in höheren Ebenen (Großbuchstaben und z. B. δ oder ℝ) in Kleinbuchstaben und Modifikatoren aufgeteilt – bzw. in die Buchstaben auf Ebene 0 und alle für die Buchstaben nötigen Modifikatoren.
+
+10× im Text vorkommendes „(“ wird also zu 10×M3 und 10×n.
+
+
+2. Dazu kommen Kosten für ungleiche Belastung der Finger. Die Anzahl der Anschläge je Fingern soll im Verhältnis 1:1,6:2:2:2::2:2:2:1,6:1 (10 Finger: 4 je Hand + Spreizung nach innen) sein, vom linken kleinen Finger zum Zeigefinger, linken Daumen, rechten Daumen und dann vom rechten Zeigefinger zum kleinen Finger. Muss ein Finger mehr oder weniger anschlagen, wird die jeweilige Abweichung quadriert (das ist etwas vereinfacht; im Detail: Standardabweichung). Alles addiert ergibt die Kosten durch Fingerdisbalance. Die Kosten werden mit 300 multipliziert.
+
+
+3. Außerdem kommt ein Kostenfaktor durch ungleiche Handbelastung dazu. Die Abweichung von 50% (0,5) wird mit der Anzahl Anschläge und mit 60 multipliziert, um die Kosten zu erhalten.
+
+### 1.2. Bigramme
+
+Die Kosten von Bigrammen werden über mehrere Kriterien festgelegt.
+
+
+1. Fingerwiederholungen: Jede Fingerwiederholung (8 Finger: 4 je Hand) gibt 512 Strafpunkte. Geht sie von der oberen in die untere Reihe oder umgekehrt gibt sie sogar 2048 Strafpunkte.
+
+
+2. Zeilenwechsel: Für Zeilenwechsel auf der gleichen Hand gibt es Strafpunkte. Dabei wird Anzahl der Zeilen, die übersprungen werden quadriert, durch die Anzahl der Spalten geteilt, die zwischen den Tasten liegen und das Ergebnis nochmal quadriert. Liegen sie in der selben Spalte, gilt das als ¼-Spaltenabstand.
+
+Das Ergebnis wird mit 6 multipliziert.
+
+Komplexität: Wenn der Zeilenwechsel nach oben geht und ein langer Finger auf einen kurzen Finger folgt, wird die Anzahl der Zeilen um 1 reduziert. Genauso, wenn der Zeilenwechsel nach unten geht und ein kurzer auf einen langen Finger folgt. Lange Finger sind Mittel- und Ringfinger. Kurze Finger sind Zeigefinger und kleiner Finger. 
+
+   Beispiel: In Neo liegt „f“ auf der obener Zeile und „r“ in der mittleren. Ein Wechsel von „f“ auf „r“ hat also einen Abstand von 1 Zeile. Quadriert ist das immernoch 1. Der Abstand in Spalten ist 1. 1 durch 1 ist immernoch 1. Quadriert immernoch 1. Multipliziert mit 6 ergibt das 6 Strafpunkte × Häufigkeit des Bigramms fr. 
+   Andererseits liegt „c“ auf der oberen Zeile und „ä“ auf der unteren. Der Abstand ist also 2, quadriert 4. Der Spaltenabstand ist 1. 4 durch 1 sind immernoch 4, quadriert 16. Multipliziert mit 6 ergibt 96 Strafpunkte × Häufigkeit des Bigramms „cä“, also etwa ⅕ der Kosten einer Fingerwiederholung.
+
+
+3. Fingerübergänge: Bestimmte Übergänge von einem Finger auf den anderen sollen vermieden werden. Kleiner Finger auf Ringfinger gibt 3 Strafpunkte, auf Mittelfinger gibt 2. Ringfinger auf kleinen Finger gibt 4 Strafpunkte, auf Mittelfinger gibt 2. Mittelfinger auf Ringfinger gibt 3 Strafpunkte, auf kleinen Finger gibt 2. Übergänge zum und vom Zeigefinger kosten nichts. Die Strafpunkte aller Bigramme werden addiert und mit 30 multipliziert. 
+
+
+4. Fingerspreizung: Wenn nach einem Anschlag auf eine Taste, die die Hand aus der Grundposition zieht, kein Handwechsel kommt, gibt das 20 Strafpunkte. Ist die Taste besonders weit draußen, werden die Kosten verdoppelt. In Neo2 sind die Buchstaben, die die Hand aus dem Gleichgewicht ziehen M3l, xqosyb. Besonders weit draußen sind Tab, M3r, Return, ShiftL, wkßz. (Definition: config.py, Zeile 90 und layout_cost.py, zeile 175). Die Kosten werden mit 20 multipliziert. 
+
+### 1.3. Trigramme
+
+1. Indirekte Bigramme: Bei Trigrammen mit zwei Handwechseln werden der erste und der letzte Buchstabe als indirektes Bigramm gewertet und mit um 70% reduzierter Häufigkeit zu den Bigrammen hinzugefügt.
+
+2. Handwechsel nach Richtungswechsel: Wenn in einem Trigramm ohne Handwechsel die Richtung gewechselt wird (also die zweite Taste rechts von der ersten ist, die dritte aber links von der zweiten oder umgekehrt), gibt es 300 Strafpunkte.
+
+### 1.4. Buchstabensplitting
+
+Großbuchstaben und auch alle Zeichen von Ebenen über der ersten werden in mehrere Tasten aufgeteilt. 
+
+Bei Einzelbuchstaben kommen einfach die Modifikatortasten mit der gleichenhäufigkeit wie der Buchstabe hinzugefügt und der Buchstabe durch das Zeichen auf der ersten Ebene ersetzt. 
+
+A wird zu Shift+a und Γ wird zu M3+M4+g. 
+
+Bei Bigrammen werden die Modifikatortaste für das modifizierte Zeichen und für das Zeichen danach gewertet. 
+
+Bei Neo2: 
+
+• Ab wird zu ShiftR-a, ShiftR-b, ab. 
+• aB wird zu a-ShiftL, ShiftL-b, ab. 
+
+Jeweils mit der Modifikatortaste auf der anderen Hand als der Buchstabe (logisch). 
+
+Trigramme funktionieren in etwa genauso, nur gibt es mehr Optiomen. Für Großschreibung nimm alle Trigramme, die du aus dem folgenden Bild basteln kannst: 
+
+a → b → c
+| × | × |
+sa→ sb→ sc
+
+Senkrechte in beide Richtungen. Kreuze nur nach vorne. sa = das Shift, das zu a gehört (andere Hand). 
+
+2. Optimierung
+-------------
+
+Mit der Kostenberechnung können jetzt die Kosten jeder Belegung berechnet werden. Zur Optimierung werden nun zwei zufällig gewählte Tasten vertauscht. Wenn danach die Kosten der Belegung geringer sind, wird die geänderte Belegung behalten. Ansonsten wird die Änderung rückgängig gemacht.
+
+Zur Effizienzsteigerung werden bei den ersten Optimierungsschritten mehrere Tasten getauscht, um eine erste Annäherung zu erhalten. Erst 100 Schritte lang 5 Paare, dann 100 Schritte lang 4, dann 3, dann 2. Für alle weiteren Vertauschungen werden dann nur noch Einzelpaare getauscht (Stichwort simulated annealing).
+
+Nach 4000 zufälligen Optimierungsschritten werden dann noch einmal alle möglichen Einzel-Vertauschungen geprüft und die beste davon durchgeführt. Das wird so lange wiederholt, bis es keine Einzel-Vertauschung mehr gibt, deren Kosten geringer sind als die unveränderte Belegung. So wird sichergestellt, dass keine Einzelvertauschung die Belegung verbessern kann.
