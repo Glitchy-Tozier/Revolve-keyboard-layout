@@ -357,6 +357,13 @@ def split_uppercase_trigrams(trigs):
 def split_uppercase_trigrams_correctly(trigs, layout):
     """Split uppercase repeats into two to three lowercase repeats.
 
+    Definition: 
+
+        a → b → c
+        | × | × |
+        sa→ sb→ sc
+        senkrechte in beide Richtungen. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
+
     >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
     >>> split_uppercase_trigrams(trigs, NEO_LAYOUT)
     [(8, 'abc'), (7, 'abc'), (3, '⇧bc'), (3, '⇧ab'), (3, '⇗bc'), (3, '⇗ab'), (3, 'a⇧b'), (3, 'a⇗b'), (2, '⇧bc'), (2, '⇗bc'), (2, 'b⇧c'), (2, 'b⇗c'), (2, 'a⇧b'), (2, 'a⇗b'), (2, 'ab⇧'), (2, 'ab⇗'), (1, '⇧b⇧'), (1, '⇧b⇧'), (1, '⇧b⇗'), (1, '⇧b⇗'), (1, '⇧a⇧'), (1, '⇧a⇧'), (1, '⇧a⇗'), (1, '⇧a⇗'), (1, '⇧ab'), (1, '⇗b⇧'), (1, '⇗b⇧'), (1, '⇗b⇗'), (1, '⇗b⇗'), (1, '⇗a⇧'), (1, '⇗a⇧'), (1, '⇗a⇗'), (1, '⇗a⇗'), (1, '⇗ab'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'a⇧b'), (1, 'a⇧b'), (1, 'a⇗b'), (1, 'a⇗b'), (1, 'ab⇧'), (1, 'ab⇗')]
@@ -365,7 +372,7 @@ def split_uppercase_trigrams_correctly(trigs, layout):
     # kick out any who don’t have a position
     pos_trig = [(num, (find_key(k, layout=layout) for k in trig), trig) for num, trig in trigs]
     pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not None in pos]
-    # replace uppercase by ⇧ + char1 and char1 + char2
+    # all trigrams with non-baselayer-keys
     upper = [(num, pos, trig) for num, pos, trig in trigs if True in [p[2]>0 for p in pos]]
     # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
     pos_trig = [(num, pos, trig) for num, pos, trig in trigs if not True in [p[2]>0 for p in pos]]
