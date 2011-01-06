@@ -217,7 +217,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
-    16.29
+    16.0
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -254,14 +254,12 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 pos2 = pos2[0], pos2[1] -1, pos2[2]
 
             # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
-            short_fingers = [finger for finger in FINGER_POSITIONS if finger.startswith("Zeige") or finger.startswith("Klein")]
-            long_fingers = [finger for finger in FINGER_POSITIONS if finger.startswith("Mittel") or finger.startswith("Ring")]
             p1 = pos1[:2] + (0, )
             p2 = pos2[:2] + (0, )
-            f1_is_short = KEY_TO_FINGER.get(p1, None) in short_fingers
-            f2_is_short = KEY_TO_FINGER.get(p2, None) in short_fingers
-            f1_is_long = KEY_TO_FINGER.get(p1, None) in short_fingers
-            f2_is_long = KEY_TO_FINGER.get(p2, None) in short_fingers
+            f1_is_short = KEY_TO_FINGER.get(p1, None) in SHORT_FINGERS
+            f2_is_short = KEY_TO_FINGER.get(p2, None) in SHORT_FINGERS
+            f1_is_long = KEY_TO_FINGER.get(p1, None) in LONG_FINGERS
+            f2_is_long = KEY_TO_FINGER.get(p2, None) in LONG_FINGERS
             upwards = pos2[0] < pos1[0]
             downwards = pos2[0] > pos1[0]
             if upwards and f1_is_short and f2_is_long:
