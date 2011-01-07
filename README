@@ -141,6 +141,7 @@ Zur Effizienzsteigerung werden bei den ersten Optimierungsschritten mehrere Tast
 Nach 4000 zufälligen Optimierungsschritten werden dann noch einmal alle möglichen Einzel-Vertauschungen geprüft und die beste davon durchgeführt. Das wird so lange wiederholt, bis es keine Einzel-Vertauschung mehr gibt, deren Kosten geringer sind als die unveränderte Belegung. So wird sichergestellt, dass keine Einzelvertauschung die Belegung verbessern kann.
 
 3. Verwendung
+-------------
 
 *Vorbemerkung: Windows-Nutzer sollten das ./ am Anfang von Befehlen weglassen*
 
@@ -177,6 +178,7 @@ Die Parameter können alle kombiniert werden, und auch hier gibt ./evolution.py 
 
 
 4. Weitere Möglichkeiten
+------------------------
 
 Zusätzlich zum Testen gibt es noch einige weitere Skripte. Auch hier zeigt ./script.py --help meist einige weitere Möglichkeiten auf.
 
