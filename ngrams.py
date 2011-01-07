@@ -56,7 +56,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     >>> from layout_base import string_to_layout
     >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
     >>> split_uppercase_repeats(reps, layout=layout)
-    [(1, ', ')]
+    [(1, '⇚s'), (1, '⇚ '), (1, 's ')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
