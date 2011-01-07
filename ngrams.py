@@ -400,7 +400,6 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         #: Matrix der Tasten und Modifikatoren
         m = []
         for p, c in zip(pos, (l0, l1, l2)):
-            print(p)
             mx = mod[p[2]] # liste mit bis zu 2 mods
             if pos_is_left(p): mx = mx[1]
             else: mx = mx[0]
@@ -422,25 +421,32 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         #: All possible paths in the matrix for letters
         paths = [(1,0), (1,1), (1,2)]
         #: Additional possible paths for modifiers
-        mod_paths = [(0,1), (0, 2), (0,-1)]
+        mod_paths = [(0,1), (0,2)]
 
         #: The new trigrams which get created due to splitting.
         new_trigs = [] # option: take a set to avoid double entries.
 
         # move all paths
         for s in sp:
-            tri = [s]
-            #: current position
-            c = s
+            #: trigrams of matrix positions [(p0, p1, p2), …]
+            tri = []
+            #: bigrams of matrix positions [(p0, p1), …]
+            tr = []
             # try all possible path for two steps.
             #: the paths
-            p = paths
+            p = paths[:]
             # modifiers get extra options
-            if c[1]: p.extend(mod_paths)
-                
+            if s[1]: p.extend(mod_paths)
+
+            # try all paths, append to tr if not None
+            for n in p:
+                new_pos = (s[0] + n[0], (s[1] + n[1])%3)
+                if m[new_pos[0]][new_pos[1]] is not None:
+                    tr.append((s, new_pos))
+            print([m[s[0]][s[1]]+m[n[0]][n[1]] for s,n in tr])
             
         
-        print(m, trig)
+        print(m, trig, tr)
         return
 
     trigs.extend(up)
