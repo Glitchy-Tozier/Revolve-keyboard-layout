@@ -364,7 +364,7 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         sa→ sb→ sc
         senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
-    >>> trigs = [(8, "abc"), (7, "∀Bc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
+    >>> trigs = [(8, "abc"), (7, "∀bC"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
     >>> split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
     """
     # kick out any who don’t have a position
@@ -374,13 +374,14 @@ def split_uppercase_trigrams_correctly(trigs, layout):
     # get all trigrams with non-baselayer-keys
     upper = [(num, pos, trig) for num, pos, trig in pos_trig if True in [p[2]>0 for p in pos]]
     # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
-    pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not True in [p[2]>0 for p in pos]]
+    trigs = [(num, trig) for num, pos, trig in pos_trig if not True in [p[2]>0 for p in pos]]
 
     #: The trigrams to add to the baselayer trigrams
     up = []
 
     mod = MODIFIERS_PER_LAYER
     for num, pos, trig in upper:
+        print(trig)
         # lower letters
         l0 = get_key((pos[0][0], pos[0][1], 0), layout=layout)
         l1 = get_key((pos[1][0], pos[1][1], 0), layout=layout)
@@ -441,14 +442,31 @@ def split_uppercase_trigrams_correctly(trigs, layout):
             # try all paths, append to tr if not None
             for n in p:
                 new_pos = (s[0] + n[0], (s[1] + n[1])%3)
-                if m[new_pos[0]][new_pos[1]] is not None:
-                    tr.append((s, new_pos))
-            print([m[s[0]][s[1]]+m[n[0]][n[1]] for s,n in tr])
-            
-        
-        print(m, trig, tr)
-        return
+                try: 
+                    if m[new_pos[0]][new_pos[1]] is not None:
+                        tr.append((s, new_pos))
+                except IndexError: # left the matrix
+                    pass
 
+            # now try all paths, starting from the positions in tr.
+            for s,t in tr:
+                #: the paths
+                p = paths[:]
+                # modifiers get extra options
+                if t[1]: p.extend(mod_paths)
+                for n in p:
+                    new_pos = (t[0]+n[0], (t[1] + n[1])%3)
+                    try: 
+                        if m[new_pos[0]][new_pos[1]] is not None:
+                            tri.append((s, t, new_pos))
+                    except IndexError: # left the matrix
+                        pass
+            print([m[s[0]][s[1]]+m[t[0]][t[1]]+m[n[0]][n[1]] for s,t,n in tri])
+            new_trigs.extend([m[s[0]][s[1]]+m[t[0]][t[1]]+m[n[0]][n[1]] for s,t,n in tri])
+        for tri in new_trigs:
+            up.append((num, tri))
+            
+    print (up)
     trigs.extend(up)
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
     trigs.sort()
