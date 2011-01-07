@@ -5,7 +5,7 @@
 
 usage: ./textcheck.py <textfile to check> [--best-lines]
 
---lines: check each line and return the 10 most similar lines. 
+--best-lines: check each line and return the 10 most similar lines. 
 
 idea: allow selecting different 1gram, 2gram and 3gram files. 
 
