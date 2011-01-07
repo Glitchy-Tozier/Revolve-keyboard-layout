@@ -14,6 +14,7 @@ WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 WEIGHT_POSITION_QUADRATIC_BIGRAMS = 0.1 #:100 #: the product of the cost of the letters in a bigram, divided by the number of keystrokes. The numbers are about factor 50 below the position cost — consistently for text of different length.
 
 WEIGHT_FINGER_REPEATS = 512 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
+WEIGHT_FINGER_REPEATS_INDEXFINGER = 256 #: Sost of a finger repeat on rhe indexfinger (hurts less).
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
@@ -86,7 +87,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 20 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 60 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
