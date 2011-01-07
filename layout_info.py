@@ -128,8 +128,8 @@ def trigram_info(layout, only_layer_0=False, filepath=None):
 
     trigs = []
     for trig, num in trigrams.items():
-        tmp = split_uppercase_trigrams([(1, trig)], layout=layout)
-        trigs.append((num, total_cost(data=None, letters=[(1, trig[0]), (1, rep[1]), (1, trig[2])], repeats=[], layout=layout, cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
+        tmp = split_uppercase_trigrams_correctly([(1, trig)], layout=layout)
+        trigs.append((num, total_cost(data=None, letters=[(1, trig[0]), (1, trig[1]), (1, trig[2])], repeats=[(1, trig[:2]), (1, trig[1:])], layout=layout, cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
     trigs.sort()
     trigs.reverse()
     return trigs
