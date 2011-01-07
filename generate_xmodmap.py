@@ -506,7 +506,7 @@ if __name__ == u'__main__':
 		
 	layout_definition = parseCommandLine(sys.argv)
 	mapp =  key_symbol_map(keysym_map,layout_definition)
-	print len(mapp)
-	print mapp
+#	print len(mapp)
+#	print mapp
 	xmodmap = xmodmap_template % tuple(mapp) 
 	sys.stdout.write(xmodmap.encode(u'utf-8'))
