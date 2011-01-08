@@ -5,7 +5,7 @@
 
 from layout_base import *
 
-from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats
+from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
 
 
 ### Cost Functions
@@ -38,14 +38,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     cost = 0
     for num, letter in letters:
         pos = find_key(letter, layout=layout)
-        if pos is None: # not found
-            cost += num * COST_PER_KEY_NOT_FOUND
-        # shift, M3 and M4
-        elif COST_LAYER_ADDITION[pos[2]:]:
-            cost += num * (cost_per_key[pos[0]][pos[1]] + COST_LAYER_ADDITION[pos[2]])
-        else:
-            # layer has no addition cost ⇒ undefined layer (higher than layer 6!). Just take the base key…
-            cost += num * cost_per_key[pos[0]][pos[1]]
+        cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
 def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
@@ -119,6 +112,8 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     elif repeats is None:
         raise Exception("Need either repeats or data")
 
+    number_of_keystrokes = sum((num for num, pair in repeats))
+    critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     
     finger_repeats = []
     for number, pair in repeats:
@@ -126,8 +121,15 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
         finger2 = key_to_finger(key2, layout=layout)
-                
+        
         if finger1 and finger2 and finger1 == finger2:
+            # reduce the cost for finger repetitions of the index finger (it’s very flexible)
+            if finger1.startswith("Zeige") or finger2.startswith("Zeige"):
+                number *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
+            # increase the cost abovet the critical point
+            if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+                #print(pair, number, number/number_of_keystrokes, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER)
+                number += (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
             finger_repeats.append((number, finger1, key1+key2))
     if not count_same_key:
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
@@ -220,11 +222,11 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
-    TODO: Don’t care about the hand (left index low and right high is still not nice). 
+    TODO: Don’t care about the hand (left index low and right high is still not nice).
 
     >>> data = read_file("testfile")
     >>> line_changes(data)
-    16.29
+    16.0
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -249,12 +251,31 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 is_left2 = pos_is_left(pos2)
                 if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
+            num_rows = abs(pos1[0] - pos2[0])
+            # if the keys are in the same row, just switch to the next row.
+            if not num_rows:
+                continue
+
             # row 3 is shifted 1 key to the right → fix that.
             if pos1[0] == 3:
                 pos1 = pos1[0], pos1[1] -1, pos1[2]
             if pos2[0] == 3:
                 pos2 = pos2[0], pos2[1] -1, pos2[2]
-            num_rows = abs(pos1[0] - pos2[0])
+
+            # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
+            p1 = pos1[:2] + (0, )
+            p2 = pos2[:2] + (0, )
+            f1_is_short = KEY_TO_FINGER.get(p1, None) in SHORT_FINGERS
+            f2_is_short = KEY_TO_FINGER.get(p2, None) in SHORT_FINGERS
+            f1_is_long = KEY_TO_FINGER.get(p1, None) in LONG_FINGERS
+            f2_is_long = KEY_TO_FINGER.get(p2, None) in LONG_FINGERS
+            upwards = pos2[0] < pos1[0]
+            downwards = pos2[0] > pos1[0]
+            if upwards and f1_is_short and f2_is_long:
+                num_rows -= 1
+            if downwards and f1_is_long and f2_is_short:
+                num_rows -= 1
+            
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
                 cost = num_rows**2 / max(0.25, finger_distance)
@@ -452,7 +473,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         reps = split_uppercase_repeats(repeats, layout=layout)
         
     elif letters is None or repeats is None:
-        raise Exception("Need either repeats und letters or data")
+        raise Exception("Need either repeats and letters or data")
     else:
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
@@ -505,7 +526,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     if not return_weighted: 
         return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load
     else:
-        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num , WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
 
 
 def _test():

@@ -5,7 +5,7 @@
 
 Simple Usage: ./convert_text_between_layouts.py [--name <layout-name>] [--qwertz]
 
-Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || --name <layout-name>]] [[--base "<layout-string>"] || [--qwertz] || [--nordtast]] [--text "<text>"]
+Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || --name <layout-name>]] [[--base "<layout-string>"] || [--qwertz] || [--nordtast]] [--text "<text>" || --file file.txt]
 
 Example: 
 
@@ -223,6 +223,10 @@ elif argv[1:] and argv[1] == "--nordtast":
    argv = argv[:1] + argv[2:]
 if argv[2:] and argv[1] == "--text": 
    text = argv[2]
+elif argv[2:] and argv[1] == "--file": 
+   text = argv[2]
+   with open(text) as f:
+      text = f.read()
 
 def konv(text, layout, base=neo2):
     """Convert a text to the given layout, to be typed with the base."""

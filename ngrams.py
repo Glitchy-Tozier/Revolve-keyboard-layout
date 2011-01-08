@@ -56,7 +56,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     >>> from layout_base import string_to_layout
     >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
     >>> split_uppercase_repeats(reps, layout=layout)
-    [(1, ', ')]
+    [(1, '⇚s'), (1, '⇚ '), (1, 's ')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
@@ -154,7 +154,7 @@ def repeats_in_file(data):
     return sorted_repeats
 
 def split_uppercase_letters(reps, layout):
-    """Split uppercase letters into two lowercase letters (with shift).
+    """Split uppercase letters (or others with any mod) into two lowercase letters (with the mod).
 
     >>> letters = [(4, "a"), (3, "A")]
     >>> split_uppercase_letters(letters, layout=NEO_LAYOUT)
@@ -166,21 +166,26 @@ def split_uppercase_letters(reps, layout):
     for num, rep in reps:
         pos = find_key(rep, layout=layout)
         if pos and pos[2]:
-            upper.append((num, rep))
+            upper.append((num, rep, pos))
         else:
             repeats.append((num, rep))
     reps = repeats
 
     up = []
     
-    for num, rep in upper:
-        pos = find_key(rep, layout=layout)
-        if pos_is_left(pos): 
-            up.append((num, "⇗"))
-        else: 
-            up.append((num, "⇧"))
+    for num, rep, pos in upper:
+        layer_mods = MODIFIERS_PER_LAYER[pos[2]]
+                                         
+        if pos_is_left(pos):
+            for m in layer_mods[1]: # left keys use the right mods
+                up.append((num, m)) 
+        else:
+            for m in layer_mods[0]:  # right keys use the left mods
+                up.append((num, m))
 
-        up.append((num, rep.lower()))
+        # also append the base layer key.
+        up.append((num,
+                   get_key((pos[0], pos[1], 0), layout=layout)))
                 
     reps.extend(up)
     reps = [(int(num), r) for num, r in reps]
@@ -238,10 +243,10 @@ def repeats_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("2gramme.txt")
-    >>> repeats_in_file_precalculated(data)[:2]
-    [(10159250, 'en'), (10024681, 'er')]
+    >>> repeats_in_file_precalculated(data)[:3]
+    [(10159250, 'en'), (10024681, 'er'), (9051717, 'n ')]
     """
-    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split(" ", 1)[1:]]
     reps = [(int(num), r) for num, r in reps if r[1:]]
     #reps = split_uppercase_repeats(reps) # wrong place, don’t yet know the layout
     
@@ -342,6 +347,126 @@ def split_uppercase_trigrams(trigs):
             up.append((max(1, num//2), trig[1].lower()+"⇗"+trig[2].lower()))
 
     
+    trigs.extend(up)
+    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+    trigs.sort()
+    trigs.reverse()
+    return trigs
+
+
+def split_uppercase_trigrams_correctly(trigs, layout):
+    """Split uppercase repeats into two to three lowercase repeats.
+
+    Definition: 
+
+        a → b → c
+        | × | × |
+        sa→ sb→ sc
+        senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
+
+    >>> trigs = [(8, "abc"), (7, "∀bC"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
+    >>> split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
+    """
+    # kick out any who don’t have a position
+    pos_trig = [(num, [find_key(k, layout=layout) for k in trig], trig) for num, trig in trigs]
+    pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not None in pos]
+    
+    # get all trigrams with non-baselayer-keys
+    upper = [(num, pos, trig) for num, pos, trig in pos_trig if True in [p[2]>0 for p in pos]]
+    # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
+    trigs = [(num, trig) for num, pos, trig in pos_trig if not True in [p[2]>0 for p in pos]]
+
+    #: The trigrams to add to the baselayer trigrams
+    up = []
+
+    mod = MODIFIERS_PER_LAYER
+    for num, pos, trig in upper:
+        print(trig)
+        # lower letters
+        l0 = get_key((pos[0][0], pos[0][1], 0), layout=layout)
+        l1 = get_key((pos[1][0], pos[1][1], 0), layout=layout)
+        l2 = get_key((pos[2][0], pos[2][1], 0), layout=layout)
+        # mods
+        m0 = mod[pos[0][2]]
+        m1 = mod[pos[1][2]]
+        m2 = mod[pos[2][2]]
+        ### Algorithm
+        algo = """
+        a → b → c
+        | × | × |
+        sa→ sb→ sc
+        | × | × |   ; seperate dimension. ma is connected to a and sa.
+        ma→ mb→ mc
+        """
+        #: Matrix der Tasten und Modifikatoren
+        m = []
+        for p, c in zip(pos, (l0, l1, l2)):
+            mx = mod[p[2]] # liste mit bis zu 2 mods
+            if pos_is_left(p): mx = mx[1]
+            else: mx = mx[0]
+            col = [c]
+            if mx: 
+                col.append(mx[0])
+            else: col.append(None)
+            if mx[1:]: 
+                col.append(mx[1])
+            else: col.append(None)
+            m.append(col)
+
+        # Matrix created
+        #: All possible starting positions for trigrams in that matrix
+        sp = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,1), (2,2)] # not last letter
+        # reduce the starting positions to the actually existing letters.
+        sp = [p for p in sp if m[p[0]][p[1]] is not None]
+
+        #: All possible paths in the matrix for letters
+        paths = [(1,0), (1,1), (1,2)]
+        #: Additional possible paths for modifiers
+        mod_paths = [(0,1), (0,2)]
+
+        #: The new trigrams which get created due to splitting.
+        new_trigs = [] # option: take a set to avoid double entries.
+
+        # move all paths
+        for s in sp:
+            #: trigrams of matrix positions [(p0, p1, p2), …]
+            tri = []
+            #: bigrams of matrix positions [(p0, p1), …]
+            tr = []
+            # try all possible path for two steps.
+            #: the paths
+            p = paths[:]
+            # modifiers get extra options
+            if s[1]: p.extend(mod_paths)
+
+            # try all paths, append to tr if not None
+            for n in p:
+                new_pos = (s[0] + n[0], (s[1] + n[1])%3)
+                try: 
+                    if m[new_pos[0]][new_pos[1]] is not None:
+                        tr.append((s, new_pos))
+                except IndexError: # left the matrix
+                    pass
+
+            # now try all paths, starting from the positions in tr.
+            for s,t in tr:
+                #: the paths
+                p = paths[:]
+                # modifiers get extra options
+                if t[1]: p.extend(mod_paths)
+                for n in p:
+                    new_pos = (t[0]+n[0], (t[1] + n[1])%3)
+                    try: 
+                        if m[new_pos[0]][new_pos[1]] is not None:
+                            tri.append((s, t, new_pos))
+                    except IndexError: # left the matrix
+                        pass
+            print([m[s[0]][s[1]]+m[t[0]][t[1]]+m[n[0]][n[1]] for s,t,n in tri])
+            new_trigs.extend([m[s[0]][s[1]]+m[t[0]][t[1]]+m[n[0]][n[1]] for s,t,n in tri])
+        for tri in new_trigs:
+            up.append((num, tri))
+            
+    print (up)
     trigs.extend(up)
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
     trigs.sort()
@@ -464,10 +589,10 @@ def letters_in_file_precalculated(data):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("1gramme.txt")
-    >>> letters_in_file_precalculated(data)[:2]
-    [(44021504, 'e'), (26999087, 'n')]
+    >>> letters_in_file_precalculated(data)[:3]
+    [(46474641, ' '), (44021504, 'e'), (26999087, 'n')]
     """
-    letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
+    letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:] or line[-2:] == "  "]
     try: 
         return [(int(num), let) for num, let in letters]
     except ValueError: # floats in there

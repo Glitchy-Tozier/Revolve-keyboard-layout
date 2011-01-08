@@ -1,0 +1,5 @@
+To get the Korpus working right: 
+
+* From each Gutenberg file, skip the header and read only up to the footer. 
+* daß → dass
+* read nGrams from each file, normalize them, weight them (add config file with the weights), merge them by language, merge and weight again.

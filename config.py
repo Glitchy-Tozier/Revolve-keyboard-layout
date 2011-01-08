@@ -14,12 +14,17 @@ WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 WEIGHT_POSITION_QUADRATIC_BIGRAMS = 0.1 #:100 #: the product of the cost of the letters in a bigram, divided by the number of keystrokes. The numbers are about factor 50 below the position cost — consistently for text of different length.
 
 WEIGHT_FINGER_REPEATS = 512 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
+WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.5 #: Cost of a finger repeat on rhe indexfinger (hurts less). 
+WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.001 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction.
+WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier.
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
 WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 12 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
+SHORT_FINGERS = ["Klein_L", "Zeige_L", "Zeige_R", "Klein_R"]
+LONG_FINGERS = ["Ring_L", "Mittel_L", "Mittel_R", "Ring_R"]
 
 WEIGHT_FINGER_DISBALANCE = 300 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
@@ -27,8 +32,8 @@ WEIGHT_HAND_DISBALANCE = 60 #: Disbalance between the load on the hands. Calcula
 
 WEIGHT_TOO_LITTLE_HANDSWITCHING = 300 #: how high should it be counted, if the hands aren’t switched in a triple?
 
-WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multipleir for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
-WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multipier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
+WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
 WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.3 #: multiplier for the cost of secondary bigrams in trigrams. 
 
@@ -44,7 +49,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1.6,
     1.0] #: The intended load per finger. Inversed and then used as multiplier for the finger load before calculating the finger disbalance penalty. Any load distribution which strays from this optimum gives a penalty.
 
-WEIGHT_XCVZ_ON_BAD_POSITION = 0.1 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+WEIGHT_XCVZ_ON_BAD_POSITION = 0.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
 WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
 
@@ -84,7 +89,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 20 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 60 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
@@ -94,7 +99,7 @@ UNBALANCING_POSITIONS = {
     (1, 6, 0): 2, # k
     (1, 10, 0): 1, # q
     (1, 11, 0): 2, # ß
-    (2, 0, 0): 2, # L_M3
+    (2, 0, 0): 1, # L_M3
     (2, 5, 0): 1, # o
     (2, 6, 0): 1, # s
     (2, 11, 0): 1, # y
@@ -102,7 +107,8 @@ UNBALANCING_POSITIONS = {
     (2, 13, 0): 2, # Return
     (3, 0, 0): 2, # L_Shift
     (3, 12, 0): 2, # R_Shift
-    (3, 6, 0): 2 # z
+    (3, 6, 0): 2, # z
+    (3, 7, 0): 1 # b
 }
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
@@ -121,9 +127,9 @@ COST_PER_KEY  = [
     # Don’t put mutated keys there, otherwise the best keys will end up there!
     [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
     [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
-    [12,     3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+    [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
-    [0,0,0,               3           , 0, 0, 0, 0] # Reihe 4 mit Leertaste
+    [0,0,0,               3           , 7, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
 
 COST_LAYER_ADDITION = [0, 15, 12, 10, 27, 22]
@@ -153,4 +159,4 @@ FINGER_POSITIONS = {
 }
 
 #: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index). TODO: Generate automatically from the finger positions.
-RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 4]
+RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]

@@ -162,6 +162,55 @@ COLEMAK_LAYOUT = [
 ]
 
 
+AdNW_LAYOUT = [
+    [("^", "ˇ", "↻", "˙", "˞", "̣"),("1", "°", "¹", "ª", "₁", "¬"),("2", "§", "²", "º", "₂", "∨"),("3", "ℓ", "³", "№", "₃", "∧"),
+     ("4", "»", "›", "", "♀", "⊥"),("5", "«", "‹", "·", "♂", "∡"),("6", "$", "¢", "£", "⚥", "∥"),("7", "€", "¥", "¤", "ϰ", "→"),
+     ("8", "„", "‚", "⇥", "⟨", "∞"),("9", "“", "‘", " /", "⟩", "∝"),("0", "”", "’", "*", "₀", "∅"),("-", "—", "-", "‑", "­"),
+     ("`", "¸", "°", "¨", "", "¯"),("←")], # Zahlenreihe (0)
+
+    [("⇥"),("k", "K", "…", "⇞", "κ", ""),("u", "U", "_", "⌫", "", "⊂"),("ü", "Ü", "[", "⇡", "", "∪"),
+     (".", "•", "]", "Entf", "ϑ", "↦"),("ä", "Ä", "^", "⇟", "η", "ℵ"),("v", "V", "!", "¡", "", "√"),("g", "G", "<", "7", "γ", "Γ"),
+     ("c", "C", ">", "8", "χ", "ℂ"),("l", "L", "=", "9", "λ", "Λ"),("j", "J", "&", "+", "θ", "Θ"),("f", "F", "ſ", "−", "φ", "Φ"),
+     ("´", "~", "/", "˝", "", "˘"),()], # Reihe 1
+
+    [("⇩"),("h", "H", "\\", "⇱", "ψ", "Ψ"),("i", "I", "/", "⇠", "ι", "∫"),("e", "E", "}", "⇢", "ε", "∃"),
+     ("a", "A", "{",  "⇣", "α", "∀"),("o", "O", "*", "⇲", "ο", ""),("d", "D", "?", "¿", "δ", "Δ"),("t", "T", "(", "4", "τ", "∂"),
+     ("r", "R", ")", "5", "ρ", "ℝ"),("n", "N", "-", "6", "ν", "ℕ"),("s", "S", ":", ",", "σ", ""),("ß", "ẞ", "@", ".", "ς", ""),
+     ("⇘"),("\n")], # Reihe 2
+
+    [("⇧"),("⇚"),("x", "X", "\#", "", "ξ", "Ξ"),("y", "Y", "$", "", "υ", ""),("ö", "Ö", "|", "⎀", "", "∩"),
+     (",", "–", "~", "\n", "ϱ", "⇒"),("q", "Q", "`", "↶", "ϕ", "ℚ"),("b", "B", "+", ":", "β", "⇐"),("p", "P", "%", "1", "π", "Π"),
+     ("w", "W", '"', "2", "ω", ""),("m", "M", "'", "3", "μ", "⇔"),("z", "Z", ";", ";", "ζ", "ℤ"),("⇗")],        # Reihe 3
+
+    [(), (), (), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ()] # Reihe 4 mit Leertaste
+]
+
+HAEIU_LAYOUT = [
+    [('^', 'ˇ', '↻', '˙', '˞', '̣'), ('1', '°', '¹', 'ª', '₁', '¬'), ('2', '§', '²', 'º', '₂', '∨'), ('3', 'ℓ', '³', '№', '₃', '∧'),
+     ('4', '»', '›', '', '♀', '⊥'), ('5', '«', '‹', '·', '♂', '∡'), ('6', '$', '¢', '£', '⚥', '∥'), ('7', '€', '¥', '¤', 'ϰ', '→'),
+     ('8', '„', '‚', '⇥', '⟨', '∞'), ('9', '“', '‘', ' /', '⟩', '∝'), ('0', '”', '’', '*', '₀', '∅'), ('-', '—', '-', '‑', '←'),
+     ('`', '¸', '°', '¨', '', '¯'), '←'],
+
+    [('⇥'), ('x', 'X', '…', '⇞', 'ξ', 'Ξ'), ('z', 'Z', '_', '⌫', 'ζ', 'ℤ'), ('o', 'O', '[', '⇡', 'ο', '∈'),
+     ('.', '•', ']', 'Entf', 'ϑ', '↦'), (',', '–', '^', '⇟', 'ϱ', '⇒'), ('p', 'P', '!', '¡', 'π', 'Π'), ('c', 'C', '<', '7', 'χ', 'ℂ'),
+     ('s', 'S', '>', '8', 'σ', 'Σ'), ('l', 'L', '=', '9', 'λ', 'Λ'), ('v', 'V', '&', '+', '', '√'), ('ß', 'ẞ', 'ſ', '−', 'ς', '∘'),
+     ('´', '~', '/', '˝', '', '˘'), ()],
+
+    [('⇩'), ('h', 'H', '\\', '⇱', 'ψ', 'Ψ'), ('a', 'A', '/', '⇠', 'α', '∀'), ('e', 'E', '{', '⇣', 'ε', '∃'),
+     ('i', 'I', '}', '⇢', 'ι', '∫'), ('u', 'U', '*', '⇲', '', '⊂'), ('d', 'D', '?', '¿', 'δ', 'Δ'), ('t', 'T', '(', '4', 'τ', '∂'),
+     ('r', 'R', ')', '5', 'ρ', 'ℝ'), ('n', 'N', '-', '6', 'ν', 'ℕ'), ('m', 'M', ':', ',', 'μ', '⇔'), ('f', 'F', '@', '.', 'φ', 'Φ'),
+     ('⇘'), ('\n')],
+
+    [('⇧'), ('⇚'), ('k', 'K', '\#', '', 'κ', '×'), ('y', 'Y', '$', '', 'υ', '∇'), ('ä', 'Ä', '|', '⎀', 'η', 'ℵ'),
+     ('ü', 'Ü', '~', '\n', '', '∪'), ('ö', 'Ö', '`', '↶', 'ϵ', '∩'), ('b', 'B', '+', ':', 'β', '⇐'), ('g', 'G', '%', '1', 'γ', 'Γ'),
+     ('j', 'J', '"', '2', 'θ', 'Θ'), ('q', 'Q', "'", '3', 'ϕ', 'ℚ'), ('w', 'W', ';', ';', 'ω', 'Ω'), ('⇗')],
+
+    [(), (), (), (' ', ' ', ' ', '0', ' ', ' '), '⇙', (), (), ()],
+
+]
+
+
+
 # Ulfs All fingers equal but the small one
 COST_PER_KEY_OLD  = [ # 0 heißt nicht beachtet
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0], # Zahlenreihe (0)
@@ -315,6 +364,21 @@ def get_key(pos, layout=NEO_LAYOUT):
     except: return None
 
 
+def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
+    """Get the position_cost of a single key.
+
+    @param pos: The position of the key.
+    @type pos: tuple (row, col, layer).
+    @return: the cost of that one position."""
+    if pos is None: # not found
+        return COST_PER_KEY_NOT_FOUND
+    # shift, M3 and M4
+    if COST_LAYER_ADDITION[pos[2]:]:
+        return cost_per_key[pos[0]][pos[1]] + COST_LAYER_ADDITION[pos[2]]
+    # layer has no addition cost ⇒ undefined layer (higher than layer 6!). Just take the base key…
+    return cost_per_key[pos[0]][pos[1]]
+
+
 def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
     try: LETTER_TO_KEY_CACHE = layout[5]
@@ -322,18 +386,27 @@ def update_letter_to_key_cache(key, layout):
         layout.append({})
         LETTER_TO_KEY_CACHE = layout[5]
     pos = None
+    # search the whole layout for instances of the key.
     for row in range(len(layout[:5])):
         for col in range(len(layout[row])):
+            # if the key is found, use the key with the lowest cost.
             if key in layout[row][col]:
+                #: the number of keys in the row
                 key_num = len(layout[row][col])
                 for idx in range(key_num):
-                    # make sure that the keys on lower levels always win agains those on higher levels.
-                    # TODO (maybe someday): update the scheme to allow for multiple positions ⇒ only take the lowest cost.
+                    # if the key exists in multiple places, use the position with the lowest cost.
                     idx_rev = key_num - idx -1
                     if layout[row][col][idx_rev] == key:
-                        if pos and pos[2] < idx_rev:
-                            continue
-                        pos = (row, col, idx_rev)
+                        new_pos = (row, col, idx_rev)
+                        if pos is None:
+                            pos = new_pos
+                        else:
+                            # use doubled layer cost, because it ignores the additional bigrams.
+                            new_cost = single_key_position_cost(new_pos, layout) + COST_LAYER_ADDITION[new_pos[2]]
+                            cost = single_key_position_cost(pos, layout) + COST_LAYER_ADDITION[pos[2]]
+
+                            if new_cost < cost:
+                                pos = new_pos
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
 
@@ -478,8 +551,62 @@ def pos_is_left(pos):
     return RIGHT_HAND_LOWEST_INDEXES[pos[0]] > pos[1]
 
 
+def switch_positions(pos0, pos1, layout=NEO_LAYOUT):
+    """Switch two positions in the layout.
+
+    >>> lay = switch_positions((1, 1, 0), (1, 3, 0), layout=NEO_LAYOUT)
+    >>> lay = switch_positions((1, 1, 1), (1, 3, 1), layout=lay)
+    >>> lay[:5] == NEO_LAYOUT_lx[:5]
+    True
+    >>> print(lay[1][1])
+    ('l', 'L', '…', '⇞', 'ξ', 'Ξ')
+    >>> print(lay[1][3])
+    ('x', 'X', '[', '⇡', 'λ', 'Λ')
+    >>> lay = switch_positions((1, 1, 0), (1, 1, 1), layout=lay)
+    >>> print(lay[1][1])
+    ('L', 'l', '…', '⇞', 'ξ', 'Ξ')
+    >>> find_key("l", lay)
+    (1, 1, 1)
+    """
+    lay = deepcopy(layout)
+    pos0_keys = lay[pos0[0]][pos0[1]]
+    pos1_keys = lay[pos1[0]][pos1[1]]
+
+    # if they are on the same physical key, just exchange both positions on the single key
+    if pos0[:2] == pos1[:2]:
+        tmp = list(pos0_keys)
+        tmp[pos0[2]] = pos1_keys[pos1[2]]
+        tmp[pos1[2]] = pos0_keys[pos0[2]]
+        tmp = tuple(tmp)
+
+        cache_update = "".join(tmp)
+        lay[pos0[0]][pos0[1]] = tmp
+        update_letter_to_key_cache_multiple(cache_update, layout=lay)
+        return lay
+
+    # generate new tuples for all layers, with tmp0 containing pos1 and tmp1 containing pos0
+    tmp0 = list(pos0_keys)
+    tmp0[pos0[2]] = pos1_keys[pos1[2]]
+    tmp0 = tuple(tmp0)
+    
+    tmp1 = list(pos1_keys)
+    tmp1[pos1[2]] = pos0_keys[pos0[2]]
+    tmp1 = tuple(tmp1)
+    
+    cache_update = ""
+    for letter in tmp0 + tmp1:
+        cache_update += letter
+
+    lay[pos0[0]][pos0[1]] = tmp0
+    lay[pos1[0]][pos1[1]] = tmp1
+    update_letter_to_key_cache_multiple(cache_update, layout=lay)
+    return lay
+    
+
 def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
+
+    @param keypairs: A list of keypairs to switch. The keys in these pairs MUST be the base layer keys.
 
     >>> lay = switch_keys([], layout = NEO_LAYOUT)
     >>> lay == NEO_LAYOUT
@@ -581,7 +708,6 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1
             update_letter_to_key_cache_multiple(cache_update, layout=lay)
-            prev = pair
         #except:
         #    pprint(lay)
         #    print(prev, pair, pos0, pos1, tmp0, tmp1)
@@ -600,43 +726,61 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     """
     layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
     to_replace_list = []
-    def switch(current, new, pos_01, layout):
-        """switch a current key in the layout with the new key from the layout string ⇒ pull the correct key to the position."""
-        #: the key which is in the layout at the moment
-        if new in layer_0_keys: 
-            layout = switch_keys([new+current], layout=layout)
-        else: # do the direct replacing at the end.
-            to_replace_list.append((pos_01[0], pos_01[1], new))
+    def set_key(current_key, new_letter, pos_01, layout, base_layout=base_layout, changing_layers = [0,1,4,5]):
+        """Set the new_letter into the pos_01 in the layout. Take the key from the position in the base_layout and from the position in the letter and merge them, using layer 3,4 from the position and the rest from the letter.
+
+        @param pos_01: the key which is currently in the given position. Not needed anymore, except for debugging.
+        @param current_key: The key which is currently in the position. Not needed anymore, except for debugging.
+        @param new_letter: The letter which should be in the position.
+        @param pos_01: The position where the key should be placed.
+        @param changing_layers: The layers in the base layout which change when the keys get changed."""
+        # first get the keys for all layers from position in the base_layout
+        base_keys = base_layout[pos_01[0]][pos_01[1]]
+        # then get the keys corresponding to the position of the new letter.
+        letter_pos = find_key(new_letter, layout=layout)
+        if letter_pos is None or letter_pos[2]:
+            # the new letter is not in the base_layout or not in the base layer, just set it on layer 0.
+            layout[pos_01[0]][pos_01[1]] = (new_letter, ) + tuple(base_keys[1:])
+            return layout
+            
+        letter_keys = base_layout[letter_pos[0]][letter_pos[1]]
+        # replace all changing_layers in the base_keys with the new_keys.
+        tmp = []
+        for i in range(6):
+            try: 
+                if i in changing_layers:
+                    tmp.append(letter_keys[i])
+                else:
+                    tmp.append(base_keys[i])
+            except IndexError: # key not found
+                tmp.append("")
+        layout[pos_01[0]][pos_01[1]] = tuple(tmp)
         return layout
-    
+        
     layout = deepcopy(base_layout)
     lines = layout_string.splitlines()
     # first and second letter row
     for i in range(1, 6):
-        layout = switch(layout[1][i][0], lines[0][i-1], (1, i), layout)
-        layout = switch(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
-        layout = switch(layout[2][i][0], lines[1][i-1], (2, i), layout)
-        layout = switch(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
+        layout = set_key(layout[1][i][0], lines[0][i-1], (1, i), layout)
+        layout = set_key(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
+        layout = set_key(layout[2][i][0], lines[1][i-1], (2, i), layout)
+        layout = set_key(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
 
-    layout = switch(layout[1][-3][0], lines[0][11], (1, -3), layout)
-    layout = switch(layout[2][-3][0], lines[1][11], (2, -3), layout)
+    layout = set_key(layout[1][-3][0], lines[0][11], (1, -3), layout)
+    layout = set_key(layout[2][-3][0], lines[1][11], (2, -3), layout)
 
     # third row
     if lines[0][12:]:
-        layout = switch(layout[1][-2][0], lines[0][12], (1, -2), layout)
+        layout = set_key(layout[1][-2][0], lines[0][12], (1, -2), layout)
     
     left, right = lines[2].split()[:2]
     for i in range(len(left)):
-        layout = switch(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
+        layout = set_key(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
     for i in range(len(right)):
-        layout = switch(layout[3][7+i][0], right[i], (3, 7+i), layout)
+        layout = set_key(layout[3][7+i][0], right[i], (3, 7+i), layout)
 
-    # finally do the exact rewriting
-    for p0, p1, new in to_replace_list:
-        if new.upper == new:
-            layout[p0][p1] = (new, ) + tuple(layout[p0][p1][1:])
-        else:
-            layout[p0][p1] = (new, new.upper()) + tuple(layout[p0][p1][2:])
+    # finally update the cache
+    update_letter_to_key_cache_multiple(None, layout)
 
     return deepcopy(layout)
     

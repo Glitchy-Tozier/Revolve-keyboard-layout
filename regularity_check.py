@@ -51,6 +51,15 @@ fiae = """xuc.ö vdsljq´
 fiaeo mtrnhk
 ,üzäy bgßwp"""
 
+haeiu = """xzo., pcslvß´
+haeiu dtrnmf
+⇚kyäüö bgjqw"""
+
+AdNW = """kuü.ä vgcljf´
+hieao dtrnsß
+⇚xyö,q bpwmz"""
+
+
 ### Parse console arguments
 
 parser = OptionParser(usage = "script to check the regularity of the layout for a reference textfile", version = "0.1")

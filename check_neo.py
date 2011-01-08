@@ -313,7 +313,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
             datapath=datapath
         )
 
-    res = ""
+    res = "\n# Evolved Layout\n"
+    
     def c(*args):
         """concatenate the args to a string similar to how print() does it, just simpler."""
         return " ".join((str(i) for i in args)) + "\n"
@@ -425,7 +426,6 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, verbose, controlled_
 
     lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step)
     
-    result("\n# Evolved Layout")
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, quadratic=quadratic)
 
 
@@ -538,6 +538,10 @@ def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingersta
         print_layout_with_statistics(QWERTZ_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Nordtast + layers 3-6 from Neo")
         print_layout_with_statistics(NORDTAST_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
+        info("\nAnd AdNW")
+        print_layout_with_statistics(AdNW_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
+        info("\nAnd Haeiu")
+        print_layout_with_statistics(HAEIU_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Dvorak")
         print_layout_with_statistics(DVORAK_LAYOUT, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats, quadratic=quadratic)
         info("\nAnd Colemak")
