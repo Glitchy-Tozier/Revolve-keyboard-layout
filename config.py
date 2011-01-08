@@ -4,7 +4,7 @@
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
 #: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß,."
+abc = "abcdefghijklmnopqrstuvwxyzäöüß,."# ⇧⇗"
 
 #The letters which are used to calculate the costs - do not change anything or results will become incomparable.
 abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -15,7 +15,7 @@ WEIGHT_POSITION_QUADRATIC_BIGRAMS = 0.1 #:100 #: the product of the cost of the 
 
 WEIGHT_FINGER_REPEATS = 512 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.5 #: Cost of a finger repeat on rhe indexfinger (hurts less). 
-WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.001 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction.
+WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.001 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not).
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier.
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
