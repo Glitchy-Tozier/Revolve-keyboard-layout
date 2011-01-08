@@ -278,7 +278,7 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
             
             finger_distance = abs(pos1[1] - pos2[1])
             if num_rows:
-                cost = num_rows**2 / max(0.25, finger_distance)
+                cost = num_rows**2 / max(0.5, finger_distance)
                 line_changes += cost**2 * number
     return line_changes
 
