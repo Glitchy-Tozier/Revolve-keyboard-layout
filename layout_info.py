@@ -106,10 +106,20 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None):
             if rep in repeats: repeats[rep] += num
             else: repeats[rep] = num
 
+    number_of_keystrokes = sum((num for rep, num in repeats.items()))
+    critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
+
     reps = []
     for rep, num in repeats.items():
         tmp = split_uppercase_repeats([(1, rep)], layout=layout)
-        reps.append((num, total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), rep))
+        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True)
+        # critical point for finger repeats, doing it here instead of layout_cost because it needs the total number of keystrokes.
+        if num > critical_point:
+            fing_reps = finger_repeats_from_file(repeats=tmp, layout=layout)
+            fing_rep_cost = sum(num for num, fing, rep in fing_reps)*WEIGHT_FINGER_REPEATS
+            addition =  fing_rep_cost*(num-critical_point)/num*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
+            cost = (cost[0] + addition, ) + cost[1:]
+        reps.append((num, cost, rep))
     reps.sort()
     reps.reverse()
     return reps

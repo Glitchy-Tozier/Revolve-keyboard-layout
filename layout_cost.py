@@ -112,6 +112,8 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     elif repeats is None:
         raise Exception("Need either repeats or data")
 
+    number_of_keystrokes = sum((num for num, pair in repeats))
+    critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     
     finger_repeats = []
     for number, pair in repeats:
@@ -119,8 +121,15 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
         finger2 = key_to_finger(key2, layout=layout)
-                
+        
         if finger1 and finger2 and finger1 == finger2:
+            # reduce the cost for finger repetitions of the index finger (it’s very flexible)
+            if finger1.startswith("Zeige") or finger2.startswith("Zeige"):
+                number *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
+            # increase the cost abovet the critical point
+            if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+                #print(pair, number, number/number_of_keystrokes, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER)
+                number += (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
             finger_repeats.append((number, finger1, key1+key2))
     if not count_same_key:
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]

@@ -14,11 +14,13 @@ WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 WEIGHT_POSITION_QUADRATIC_BIGRAMS = 0.1 #:100 #: the product of the cost of the letters in a bigram, divided by the number of keystrokes. The numbers are about factor 50 below the position cost — consistently for text of different length.
 
 WEIGHT_FINGER_REPEATS = 512 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
-WEIGHT_FINGER_REPEATS_INDEXFINGER = 256 #: Sost of a finger repeat on rhe indexfinger (hurts less).
+WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.5 #: Cost of a finger repeat on rhe indexfinger (hurts less). 
+WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.001 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction.
+WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier.
 
 WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 6 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 12 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 SHORT_FINGERS = ["Klein_L", "Zeige_L", "Zeige_R", "Klein_R"]
