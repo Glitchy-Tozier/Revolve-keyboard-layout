@@ -193,12 +193,12 @@ HAEIU_LAYOUT = [
 
     [('⇥'), ('x', 'X', '…', '⇞', 'ξ', 'Ξ'), ('z', 'Z', '_', '⌫', 'ζ', 'ℤ'), ('o', 'O', '[', '⇡', 'ο', '∈'),
      ('.', '•', ']', 'Entf', 'ϑ', '↦'), (',', '–', '^', '⇟', 'ϱ', '⇒'), ('p', 'P', '!', '¡', 'π', 'Π'), ('c', 'C', '<', '7', 'χ', 'ℂ'),
-     ('s', 'S', '>', '8', 'σ', 'Σ'), ('l', 'L', '=', '9', 'λ', 'Λ'), ('v', 'V', '&', '+', '', '√'), ('ß', 'ẞ', 'ſ', '−', 'ς', '∘'),
+     ('l', 'L', '>', '8', 'λ', 'Λ'), ('m', 'M', '=', '9', 'μ', '⇔'), ('v', 'V', '&', '+', '', '√'), ('ß', 'ẞ', 'ſ', '−', 'ς', '∘'),
      ('´', '~', '/', '˝', '', '˘'), ()],
 
     [('⇩'), ('h', 'H', '\\', '⇱', 'ψ', 'Ψ'), ('a', 'A', '/', '⇠', 'α', '∀'), ('e', 'E', '{', '⇣', 'ε', '∃'),
      ('i', 'I', '}', '⇢', 'ι', '∫'), ('u', 'U', '*', '⇲', '', '⊂'), ('d', 'D', '?', '¿', 'δ', 'Δ'), ('t', 'T', '(', '4', 'τ', '∂'),
-     ('m', 'M', ')', '5', 'μ', '⇔'), ('r', 'R', '-', '6', 'ρ', 'ℝ'), ('n', 'N', ':', ',', 'ν', 'ℕ'), ('f', 'F', '@', '.', 'φ', 'Φ'),
+     ('n', 'N', ')', '5', 'ν', 'ℕ'), ('r', 'R', '-', '6', 'ρ', 'ℝ'), ('s', 'S', ':', ',', 'σ', ''), ('f', 'F', '@', '.', 'φ', 'Φ'),
      ('⇘'), ('\n')],
 
     [('⇧'), ('⇚'), ('k', 'K', '\#', '', 'κ', '×'), ('y', 'Y', '$', '', 'υ', '∇'), ('ä', 'Ä', '|', '⎀', 'η', 'ℵ'),
@@ -379,6 +379,17 @@ def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
     return cost_per_key[pos[0]][pos[1]]
 
 
+def is_position_cost_lower(pos, new_pos, layout, doubled_layer=True):
+    """
+    >>> is_position_cost_lower((2, 10, 2), (3, 7, 3), NEO_LAYOUT)
+    3
+    """
+    # use doubled layer cost, because it ignores the additional bigrams.
+    new_cost = single_key_position_cost(new_pos, layout) + COST_LAYER_ADDITION[new_pos[2]]
+    cost = single_key_position_cost(pos, layout) + COST_LAYER_ADDITION[pos[2]]
+    return new_cost < cost
+        
+
 def update_letter_to_key_cache(key, layout):
     """Update the cache entry for the given key."""
     try: LETTER_TO_KEY_CACHE = layout[5]
@@ -401,11 +412,7 @@ def update_letter_to_key_cache(key, layout):
                         if pos is None:
                             pos = new_pos
                         else:
-                            # use doubled layer cost, because it ignores the additional bigrams.
-                            new_cost = single_key_position_cost(new_pos, layout) + COST_LAYER_ADDITION[new_pos[2]]
-                            cost = single_key_position_cost(pos, layout) + COST_LAYER_ADDITION[pos[2]]
-
-                            if new_cost < cost:
+                            if is_position_cost_lower(pos, new_pos, layout): 
                                 pos = new_pos
     LETTER_TO_KEY_CACHE[key] = pos
     return pos
