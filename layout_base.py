@@ -481,6 +481,14 @@ def find_key(key, layout):
     (2, 1, 1)
     >>> find_key("a", layout=QWERTZ_LAYOUT)
     (2, 1, 0)
+    >>> find_key("£", layout=NEO_LAYOUT)
+    (0, 6, 3)
+    >>> find_key("»", layout=NEO_LAYOUT)
+    (0, 4, 1)
+    >>> find_key("«", layout=NEO_LAYOUT)
+    (0, 5, 1)
+    >>> find_key("¤", layout=NEO_LAYOUT)
+    (0, 7, 3)
     """
     # check, if the layout already has a cache. If not, create it.
     # this approach reduces the time to find a key by about 50%.
