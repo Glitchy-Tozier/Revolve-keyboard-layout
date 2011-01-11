@@ -184,6 +184,8 @@ neighboring_fingers = movement_pattern_cost
 def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too). 
 
+    TODO: Unbalancing followed by unbalancing on the other side (same hand: maximum stretch) has to have a massive penalty. 
+
     >>> data = read_file("testfile")
     >>> no_handswitch_after_unbalancing_key(data)
     2
