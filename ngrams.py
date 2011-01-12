@@ -354,7 +354,7 @@ def split_uppercase_trigrams(trigs):
     return trigs
 
 
-def split_uppercase_trigrams_correctly(trigs, layout):
+def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=False):
     """Split uppercase repeats into two to three lowercase repeats.
 
     Definition: 
@@ -402,7 +402,10 @@ def split_uppercase_trigrams_correctly(trigs, layout):
         m = []
         for p, c in zip(pos, (l0, l1, l2)):
             mx = mod[p[2]] # liste mit bis zu 2 mods
-            if pos_is_left(p): mx = mx[1]
+            if just_record_the_mod_key:
+                mx = [i+c for i in mx[0]]
+            elif pos_is_left(p):
+                mx = mx[1]
             else: mx = mx[0]
             col = [c]
             if mx: 
