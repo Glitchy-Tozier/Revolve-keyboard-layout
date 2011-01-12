@@ -7,7 +7,7 @@ from optparse import OptionParser
 
 ### config
 
-#: The number of new layouts to create. Can be overwritten with the -n parameter. 500 should have a 50% chance of finding the best possible layout (the global minimum). 
+#: The number of new layouts to create. Can be overwritten with the -n parameter. 500 should have a 50% chance of finding the best possible layout (the global minimum).
 num_layouts = 500
 
 #: The output filename. Can be overwritten with the -o parameter.
@@ -22,8 +22,11 @@ prerandomize = 3000
 #: Should we always do the locally best step (very slow and *not* optimal)
 controlled = False
 
-#: Should we spout out information on the shell? (Windows users disable this. Your shell can’t take Unicode)
+#: Should we spout out information on the shell? (Windows users enable this. Your shell can’t take Unicode)
 quiet = True
+
+#: Should a progressmeter be displayed? (Windows users disable this. Your shell can’t handle control sequences)
+meter = False
 
 #: Should we give additional statistics for the final layout?
 verbose = True
@@ -73,7 +76,7 @@ quiet = options.quiet
 
 # Hack to make the script output to a file instead of the shell (necessary for windows users).
 # MUST come before the imports from check_neo.
-if filename is not None: 
+if filename is not None:
     import sys
     sys.argv.append("-o")
     sys.argv.append(options.filename)
@@ -81,22 +84,41 @@ if filename is not None:
 from check_neo import evolve_a_layout, string_to_layout
 from time import time
 from datetime import timedelta
+from termctrl import *
+from atexit import register
 STARTING_LAYOUT = string_to_layout(options.starting_layout)
 
-print("# Starting the evolution.")
+if not meter:
+    print("# Starting the evolution.")
+else:
+    hide()
+    register(show)
+    write('best tppl:\n')
+    write('avg. time:\n')
+    write('layouts: %4d/%4d\n'%(0,options.evolution_steps))
 
 t = time()
+best_tppl = 10 # not safe
 for step in range(options.evolution_steps):
-    evolve_a_layout(options.steps,
-                    options.prerandomize,
-                    controlled,
-                    quiet,
-                    verbose,
-                    options.tail,
-                    starting_layout=STARTING_LAYOUT,
-                    datafile=options.data, 
-                    anneal=options.anneal,
-                    anneal_step = anneal_step)
-    print(step+1, "/", options.evolution_steps,
-          timedelta(seconds=time()-t))
-    t = time()
+    tppl = evolve_a_layout(options.steps,
+                           options.prerandomize,
+                           controlled,
+                           quiet,
+                           meter,
+                           verbose,
+                           options.tail,
+                           starting_layout=STARTING_LAYOUT,
+                           datafile=options.data,
+                           anneal=options.anneal,
+                           anneal_step = anneal_step)
+    if not meter:
+        print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
+        t = time()
+    else:
+        priorline(); priorline();
+        if tppl < best_tppl:
+            best_tppl = tppl
+            priorline()
+            erase(); write('best tppl: %f\n'%tppl)
+        erase(); write('avg. time: %s\n'%str(timedelta(seconds=(time()-t)/(step+1))))
+        erase(); write('layouts: %4d/%4d\n'%(step+1,options.evolution_steps))
