@@ -17,5 +17,6 @@ def hide():
     control('?25l')
 def show():
     control('?25h')
-hide()
-register(show)
+if meter:
+    hide()
+    register(show)
