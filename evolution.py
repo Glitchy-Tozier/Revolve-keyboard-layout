@@ -85,11 +85,14 @@ from check_neo import evolve_a_layout, string_to_layout
 from time import time
 from datetime import timedelta
 from termctrl import *
+from atexit import register
 STARTING_LAYOUT = string_to_layout(options.starting_layout)
 
 if not meter:
     print("# Starting the evolution.")
 else:
+    hide()
+    register(show)
     write('best tppl:\n')
     write('avg. time:\n')
     write('layouts: %4d/%4d\n'%(0,options.evolution_steps))

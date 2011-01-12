@@ -1,4 +1,3 @@
-from atexit import register
 from sys import stdout
 CSI = '\x1b['
 def write(str):
@@ -17,6 +16,3 @@ def hide():
     control('?25l')
 def show():
     control('?25h')
-if meter:
-    hide()
-    register(show)
