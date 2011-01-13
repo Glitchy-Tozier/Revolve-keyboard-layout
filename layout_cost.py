@@ -192,13 +192,16 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     >>> reps =  [(3, "Ab")]
     >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    6
+    9
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     0
     >>> reps = [(3, "Ga")]
     >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     3
+    >>> reps =  [(3, "xo")]
+    >>> no_handswitch_after_unbalancing_key(repeats=reps)
+    6
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -218,7 +221,12 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                 is_left2 = pos_is_left(pos2)
                 if is_left1 == is_left2:
                     # using .get here, because most positions aren’t unbalancing.
-                    no_switch += UNBALANCING_POSITIONS.get(pos1, 0)*number
+                    cost = UNBALANCING_POSITIONS.get(pos1, 0)*number
+                    # if the second key is unbalancing, too, and on the other side of the hand: add it to the cost
+                    if cost and abs(pos1[1] - pos2[1]) >= 4:
+                        distance = abs(pos1[1] - pos2[1]) + abs(pos1[0] - pos2[0])
+                        cost += UNBALANCING_POSITIONS.get(pos2, 0)*number*WEIGHT_UNBALANCING_AFTER_UNBALANCING
+                    no_switch += cost
     return no_switch
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
