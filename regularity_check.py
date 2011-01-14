@@ -162,5 +162,5 @@ f.close()
 fout.close()
 
 print("mean value and standard deviation of the layout cost:")
-print("snippets of", segment_length, "letters:", sum(res)/len(res), "±", std(res))
-print("words:", sum(res_words)/len(res_words), "±", std(res))
+print("snippets of", segment_length, "letters:", sum(res)/len(res), "±", std(res), "(" + str(100*std(res)/(sum(res)/len(res))) + "%)")
+print("words:", sum(res_words)/len(res_words), "±", std(res_words), "(" + str(100*std(res_words)/(sum(res_words)/len(res_words))) + "%)")
