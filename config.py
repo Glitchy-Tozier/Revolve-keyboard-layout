@@ -138,6 +138,12 @@ COST_LAYER_ADDITION = [0, 15, 5, 10, 27, 22]
 #: The cost of any key which isn’t on the keyboard. Should be higher than max(COST_LAYER_ADDITION) + the most expensive key + 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment [local variable in split uppercase bigrams] to make sure that having a key on a bad position in layer 5 is better than not having it at all. Currently (eb0c9e8c8b02 + 1) that means, it must be higher than 27+50+16 = 93. Trial and error shows, it must be about 150 to make the addition of the neo layers to nordtast useful.
 COST_PER_KEY_NOT_FOUND = 150
 
+WEIGHT_MANUAL_BIGRAM_PENALTY = 500
+#: Manually added bigrams which are bad to type but hard to catch algorithmically.
+COST_MANUAL_BIGRAM_PENALTY = {
+    ((1, 2, 0), (3, 2, 0)): 1, # vü on normal keyboards (lower row shifted to the right)
+    ((3, 2, 0), (1, 2, 0)): 1 # üv on normal keyboards (lower row shifted to the right)
+    }
 
 
 ### config finished. Additional stuff which might need changing for different layouts or hand positions. 
@@ -161,3 +167,4 @@ FINGER_POSITIONS = {
 
 #: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index). TODO: Generate automatically from the finger positions.
 RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]
+

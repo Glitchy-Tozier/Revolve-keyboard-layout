@@ -464,6 +464,18 @@ def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
     return sum(badly_positioned)
 
 
+def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
+    """Add manual penalty for bad to type bigrams which are hard to catch algorithmically."""
+    penalty = 0
+    for num, bi in bigrams:
+        pos1 = find_key(bi[0], layout=layout)
+        pos2 = find_key(bi[1], layout=layout)
+        if pos1 is None or pos2 is None: continue
+
+        penalty += COST_MANUAL_BIGRAM_PENALTY.get((pos1, pos2), 0)*num
+    return penalty
+        
+
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False):
     """Compute a total cost from all costs we have available, wheighted.
 
@@ -522,6 +534,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # the disbalance between the hands. Keystrokes of the left / total strokes - 0.5. From 0 to 0.5, ignoring the direction.
     hand_disbalance = abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)
 
+    # manually defined bad bigrams.
+    manual_penalty = manual_bigram_penalty(reps, layout=layout)
+
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
@@ -534,11 +549,12 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
     total += WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
     total += WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
+    total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
 
     if not return_weighted: 
         return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load
     else:
-        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
 
 
 def _test():
