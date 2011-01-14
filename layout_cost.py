@@ -225,7 +225,9 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                     # if the second key is unbalancing, too, and on the other side of the hand: add it to the cost
                     if cost and abs(pos1[1] - pos2[1]) >= 4:
                         distance = abs(pos1[1] - pos2[1]) + abs(pos1[0] - pos2[0])
-                        cost += UNBALANCING_POSITIONS.get(pos2, 0) * number * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
+                        unb1 = UNBALANCING_POSITIONS.get(pos1, 0)
+                        unb2 = UNBALANCING_POSITIONS.get(pos2, 0)
+                        cost += unb1 * unb2 * number * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
                     no_switch += cost
     return no_switch
 
