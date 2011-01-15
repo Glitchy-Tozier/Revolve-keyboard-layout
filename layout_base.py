@@ -346,7 +346,7 @@ def format_layer_1_string(layout):
     l = ""
     l += "".join((i[0] for i in layout[1][1:6])) + " " + "".join((i[0] for i in layout[1][6:-1])) + "\n"
     l += "".join((i[0] for i in layout[2][1:6])) + " " + "".join((i[0] for i in layout[2][6:-2])) + "\n"
-    if layout[3][1][0] != "⇚": 
+    if layout[3][1] and layout[3][1][0] != "⇚": 
         l += "".join((i[0] for i in layout[3][1:7])) + " " + "".join((i[0] for i in layout[3][7:-1]))
     else:
         l += "".join((i[0] for i in layout[3][2:7])) + " " + "".join((i[0] for i in layout[3][7:-1]))
