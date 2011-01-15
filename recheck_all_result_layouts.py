@@ -9,6 +9,7 @@ Depends on the layouts info starting with OA'Evolved Layout'
 from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data, find_layout_families, total_cost, split_uppercase_trigrams, format_layer_1_string
 from os import listdir, mkdir
 from os.path import join, isdir
+from subprocess import call
 
 def get_all_layouts_in_textfile(textfile):
     """Get all layouts in the given textfile.
@@ -71,9 +72,13 @@ if __name__ == "__main__":
     parser.add_option("--csv",
                       action="store_true", dest="print_csv", default=False,
                       help="print a csv instead of the normal layout statistics")
+    parser.add_option("--regularity",
+                      action="store_true", dest="regularity", default=None,
+                      help="Check the regularity of each result layout against a text file. If --file is not given, it defaults to beispieltext-prosa.txt.")
     parser.add_option("--svg",
                       action="store_true", dest="svg", default=None,
                       help="save an svg file in the folder svgs/ for every printed layout. Can take a long time. You might want to use --families, too.")
+
     parser.add_option("--families",
                       action="store_true", dest="families", default=False,
                       help="Sort the layouts into families and print only the best layout in each familiy. ")
@@ -114,6 +119,11 @@ if __name__ == "__main__":
             print(";".join(csv))
         else: 
             print_layout_with_statistics(lay, verbose=True, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
+            if options.regularity:
+                textfile = options.data
+                if textfile is None:
+                    textfile = "beispieltext-prosa.txt"
+                call(["./regularity_check.py", "-t", textfile, "-l", format_layer_1_string(lay)])
             print()
 
         if options.svg:
