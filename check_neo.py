@@ -369,9 +369,9 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if quadratic:
         # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts.
         res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
-    if show_manual_penalty:
+    if show_manual_penalty and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(manual_penalty_w/1000000000), "manually assigned bigram penalty (weighted)")
-    if show_neighboring_unbalance:
+    if show_neighboring_unbalance and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(neighboring_unbalance_w/1000000000), "unbalancing key after neighboring finger (weighted)")
     if fingerstats:
         # also print statistics

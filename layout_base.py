@@ -473,7 +473,7 @@ def find_key(key, layout):
     (3, 10, 0)
     >>> find_key(":", NEO_LAYOUT)
     (2, 10, 2)
-    >>> find_key("#", NEO_LAYOUT)
+    >>> find_key('#', NEO_LAYOUT)
     (3, 2, 2)
     >>> find_key("⇧", layout=NEO_LAYOUT)
     (3, 0, 0)
@@ -671,10 +671,16 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     True
     >>> dot = find_key(".", layout=NEO_LAYOUT)
     >>> d = find_key("d", layout=NEO_LAYOUT)
-    >>> lay = switch_keys([".d"], layout=NEO_LAYOUT)
+    >>> comma = find_key(",", layout=NEO_LAYOUT)
+    >>> p = find_key("p", layout=NEO_LAYOUT)
+    >>> lay = switch_keys([".d", ",p"], layout=NEO_LAYOUT)
     >>> d == find_key(".", layout=lay)
     True
     >>> dot == find_key("d", layout=lay)
+    True
+    >>> p == find_key(",", layout=lay)
+    True
+    >>> comma == find_key("p", layout=lay)
     True
     """
     lay = deepcopy(layout)
