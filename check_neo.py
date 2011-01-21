@@ -274,10 +274,10 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
         if better:
             consecutive_fails = 0
             # save the good mutation
-            layout = lay
+            layout = deepcopy(lay)
             if not quiet:
                 info(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
-                info(format_layer_1_string(lay))
+                info(format_layer_1_string(layout))
         else:
             consecutive_fails += 1
             if not quiet:
