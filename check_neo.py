@@ -321,7 +321,7 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
 
 
 
-def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False, quadratic=False, show_manual_penalty=False):
+def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, print_layout=True, trigrams=None, number_of_trigrams=None, verbose=False, data=None, shorten_numbers=False, datapath=None, fingerstats=False, quadratic=False, show_manual_penalty=True, show_neighboring_unbalance=True):
     """Print a layout along with statistics."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
             data=data,
@@ -344,9 +344,9 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         #pprint(layout[:5])
 
     # unweighted
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:8]
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w, manual_penalty_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:13]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w, manual_penalty_w, neighboring_unbalance_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:14]
 
     if shorten_numbers:
         sn = short_number
@@ -371,6 +371,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
     if show_manual_penalty:
         res += c("#", sn(manual_penalty_w/1000000000), "manually assigned bigram penalty (weighted)")
+    if show_neighboring_unbalance:
+        res += c("#", sn(neighboring_unbalance_w/1000000000), "unbalancing key after neighboring finger (weighted)")
     if fingerstats:
         # also print statistics
         # Finger-load:
