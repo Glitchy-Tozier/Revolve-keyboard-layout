@@ -92,6 +92,8 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
 WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 60 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too.
 
+WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key following after a neighboring finger.
+
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
     (1, 0, 0): 2, # Tab

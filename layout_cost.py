@@ -184,8 +184,6 @@ neighboring_fingers = movement_pattern_cost
 def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too). 
 
-    TODO: Unbalancing followed by unbalancing on the other side (same hand: maximum stretch) has to have a massive penalty. 
-
     >>> data = read_file("testfile")
     >>> no_handswitch_after_unbalancing_key(data)
     2
@@ -230,6 +228,59 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                         cost += unb1 * unb2 * number * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
                     no_switch += cost
     return no_switch
+
+def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
+    """Check how often an unbalaning key follows a neighboring finger.
+
+    TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
+
+    >>> data = read_file("testfile")
+    >>> no_handswitch_after_unbalancing_key(data)
+    2
+    >>> reps =  [(3, "Ab")]
+    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
+    >>> no_handswitch_after_unbalancing_key(repeats=reps)
+    9
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    0
+    >>> reps = [(3, "Ga")]
+    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    3
+    >>> reps =  [(3, "xo")]
+    >>> no_handswitch_after_unbalancing_key(repeats=reps)
+    6
+    """
+    if data is not None: 
+        repeats = repeats_in_file(data)
+        repeats = split_uppercase_repeats(repeats, layout=layout)
+    elif repeats is None:
+        raise Exception("Need either repeats or data")
+
+    neighboring_unbalance = 0
+    for number, pair in repeats:
+
+        # only take existing, neighboring positions.
+        pos2 = find_key(pair[1], layout=layout)
+        if not pos2 or not pos2 in UNBALANCING_POSITIONS:
+            continue
+        pos1 = find_key(pair[0], layout=layout)
+        if not pos1:
+            continue
+        try: 
+            fing1 = KEY_TO_FINGER[pos1]
+            fing2 = KEY_TO_FINGER[pos2]
+            if fing1.startswith("Daumen") or fing2.startswith("Daumen"):
+                continue
+            neighboring = abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2)) == 1
+        except: continue
+        if not neighboring: continue
+
+        # add the cost
+        # using .get here, because most positions aren’t unbalancing.
+        neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number
+    return neighboring_unbalance
+
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
@@ -522,6 +573,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # how often the hand wasn’t switched after an unbalancing key, weighted by the severity of the unbalancing.
     no_switch_after_unbalancing = no_handswitch_after_unbalancing_key(repeats=reps, layout=layout)
 
+    # how often an unbalancing key follows on a neighboring finger. 
+    neighboring_unbalance = unbalancing_after_neighboring(repeats=reps, layout=layout)
+
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
     number_of_letters = sum([i for i, s in letters])
@@ -550,11 +604,12 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
     total += WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
     total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
+    total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
 
     if not return_weighted: 
-        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load
+        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance
     else:
-        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
 
 
 def _test():
