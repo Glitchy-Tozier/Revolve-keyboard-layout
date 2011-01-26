@@ -18,7 +18,7 @@ def pos_to_svg_coord(pos):
     return pos
 
 
-def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
+def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, lett=None):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
@@ -42,8 +42,9 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     S.set_height("300")
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
-    #max_num = max(number for number, cost, bigram in bigrams)
-    num_scale = 1/400000
+    max_linewidth = 25
+    max_num = max(number for number, cost, bigram in bigrams)
+    num_scale = max_linewidth/max_num
     letters = g()
     letter_dist = g()
     group_handswitch = g()
@@ -78,7 +79,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
     if with_keys: 
         positions = get_all_positions_in_layout(layout)
         ## letters, yes, this is kinda not nice to get them here again…
-        lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
+        if lett is None: 
+            lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
         #: scale the color for the letters
         letter_scale = 128 / max(num for num, l in lett)
         # get first letters in words
@@ -247,15 +249,16 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True):
 
     
 
-def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False, secondary=True, svg=False, svg_output=None): 
-    # total, position, finger repeats, finger_repeat_top_to_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, (row²/col)², no_handswitch_after_unbalancing_key, hand_disbalance, position_cost_quadratic_bigrams
+def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False, secondary=True, svg=False, svg_output=None):
+    """Print bigram-statistics of the layout."""
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
     if not svg: 
         print(format_layer_1_string(layout))
         print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
     # svg should have shifts and such.
     if svg: only_layer_0 = True
     else: only_layer_0 = False
-    info = bigram_info(layout=layout, filepath=filepath, secondary=secondary, only_layer_0=only_layer_0)
+    info = bigram_info(layout=layout, filepath=filepath, repeats=repeats, trigrams=trigrams, secondary=secondary, only_layer_0=only_layer_0)
     num_bigrams = sum([num for num, cost, rep in info])
     if number is None: number = len(info)
     numlen = len(str(float(info[0][0])))
@@ -267,6 +270,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
         if svg:
             bigrams_with_cost.append((num, tot, rep))
             continue
+        
         p(sn(100.0*num/num_bigrams, 5), rep, "\t")
         if bars: 
             print("*"*int(tot/60.4))
@@ -281,7 +285,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     if svg:
-        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath)
+        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath, lett=letters)
     
 
 def ask_for_layout_string_completion(l):
