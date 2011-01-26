@@ -56,6 +56,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     for gr in (group_handswitch, group_shifts, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
         gr.setAttribute("inkscape:groupmode", "layer")
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
+    group_handswitch.setAttribute("display", "none")
     group_shifts.setAttribute("inkscape:label", "Shift")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
     group_outwards.setAttribute("inkscape:label", "Auswärts")
