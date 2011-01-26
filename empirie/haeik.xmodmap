@@ -167,13 +167,13 @@ keycode 20 = minus		emdash		NoSymbol	U2011		KP_Subtract	KP_Subtract	hyphen		NoSy
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
 keycode 24 = 	x		X		ellipsis		Greek_xi		Prior		Prior		Greek_XI		Greek_XI
-keycode 25 = 	period		enfilledcircbullet		underscore		U03D1		BackSpace		BackSpace		U21A6		NoSymbol
+keycode 25 = 	y		Y		underscore		Greek_upsilon		BackSpace		BackSpace		nabla		NoSymbol
 keycode 26 = 	o		O		bracketleft		Greek_omicron		Up		Up		elementof		NoSymbol
 keycode 27 = 	udiaeresis		Udiaeresis		bracketright		NoSymbol		Delete		Delete		union		NoSymbol
 keycode 28 = 	comma		endash		asciicircum		U03F1		Next		Next		U21D2		NoSymbol
 
 keycode 29 = 	p		P		exclam		Greek_pi		exclamdown		NoSymbol		Greek_PI		Greek_PI
-keycode 30 = 	c		C		less		Greek_chi		KP_7		KP_7		U2102		NoSymbol
+keycode 30 = 	d		D		less		Greek_delta		KP_7		KP_7		Greek_DELTA		Greek_DELTA
 keycode 31 = 	l		L		greater		Greek_lambda		KP_8		KP_8		Greek_LAMBDA		Greek_LAMBDA
 keycode 32 = 	m		M		equal		Greek_mu		KP_9		KP_9		ifonlyif		NoSymbol
 keycode 33 = 	v		V		ampersand		NoSymbol		KP_Add		KP_Add		radical		NoSymbol
@@ -190,7 +190,7 @@ keycode 40 = 	e		E		braceleft		Greek_epsilon		Down		Down		U2203		NoSymbol
 keycode 41 = 	i		I		braceright		Greek_iota		Right		Right		integral		NoSymbol
 keycode 42 = 	k		K		asterisk		Greek_kappa		End		End		multiply		NoSymbol
 
-keycode 43 = 	d		D		question		Greek_delta		questiondown		NoSymbol		Greek_DELTA		Greek_DELTA
+keycode 43 = 	c		C		question		Greek_chi		questiondown		NoSymbol		U2102		NoSymbol
 keycode 44 = 	t		T		parenleft		Greek_tau		KP_4		KP_4		partialderivative		NoSymbol
 keycode 45 = 	n		N		parenright		Greek_nu		KP_5		KP_5		U2115		NoSymbol
 keycode 46 = 	r		R		minus		Greek_rho		KP_6		KP_6		U211D		NoSymbol
@@ -206,7 +206,7 @@ keycode 52 = 	z		Z		numbersign		Greek_zeta		Escape		Escape		U2124		NoSymbol
 keycode 53 = 	adiaeresis		Adiaeresis		dollar		Greek_eta		Tab		ISO_Left_Tab		U2135		NoSymbol
 keycode 54 = 	odiaeresis		Odiaeresis		bar		U03F5		Insert		Insert		intersection		NoSymbol
 keycode 55 = 	u		U		asciitilde		NoSymbol		Return		Return		includedin		NoSymbol
-keycode 56 = 	y		Y		grave		Greek_upsilon		Undo		Redo		nabla		NoSymbol
+keycode 56 = 	period		enfilledcircbullet		grave		U03D1		Undo		Redo		U21A6		NoSymbol
 
 keycode 57 = 	b		B		plus		Greek_beta		colon		NoSymbol	U21D0		NoSymbol
 keycode 58 = 	g		G		percent		Greek_gamma		KP_1		KP_1	Greek_GAMMA		Greek_GAMMA
