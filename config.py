@@ -89,10 +89,10 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 60 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter.
-WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 60 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10
+WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
 
-WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key following after a neighboring finger.
+WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key following after a neighboring finger. Wolfs Value: 5
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
@@ -129,7 +129,7 @@ COST_PER_KEY  = [
     # The 0 values aren’t filled in at the moment.
     # Don’t put mutated keys there, otherwise the best keys will end up there!
     [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
-    [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
+    [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,8,36, 0], # Reihe 1
     [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
     [15,10, 16,24,20, 5,    30, 6, 5,22,22,11,      15],     # Reihe 3
     [0,0,0,               3           , 7, 0, 0, 0] # Reihe 4 mit Leertaste
