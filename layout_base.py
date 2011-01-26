@@ -384,9 +384,9 @@ def is_position_cost_lower(pos, new_pos, layout, doubled_layer=True):
     >>> is_position_cost_lower((2, 10, 2), (3, 7, 3), NEO_LAYOUT)
     False
     """
-    # use doubled layer cost, because it ignores the additional bigrams.
+    # use tripled layer cost, because it ignores the additional bigrams.
     new_cost = single_key_position_cost(new_pos, layout) + COST_LAYER_ADDITION[new_pos[2]]
-    cost = single_key_position_cost(pos, layout) + COST_LAYER_ADDITION[pos[2]]
+    cost = single_key_position_cost(pos, layout) + 2*COST_LAYER_ADDITION[pos[2]]
     return new_cost < cost
         
 
