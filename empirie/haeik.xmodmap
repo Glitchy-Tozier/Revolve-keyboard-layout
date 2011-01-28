@@ -173,7 +173,7 @@ keycode 27 = 	udiaeresis		Udiaeresis		bracketright		NoSymbol		Delete		Delete		un
 keycode 28 = 	comma		endash		asciicircum		U03F1		Next		Next		U21D2		NoSymbol
 
 keycode 29 = 	p		P		exclam		Greek_pi		exclamdown		NoSymbol		Greek_PI		Greek_PI
-keycode 30 = 	d		D		less		Greek_delta		KP_7		KP_7		Greek_DELTA		Greek_DELTA
+keycode 30 = 	c		C		less		Greek_chi		KP_7		KP_7		U2102		NoSymbol
 keycode 31 = 	l		L		greater		Greek_lambda		KP_8		KP_8		Greek_LAMBDA		Greek_LAMBDA
 keycode 32 = 	m		M		equal		Greek_mu		KP_9		KP_9		ifonlyif		NoSymbol
 keycode 33 = 	v		V		ampersand		NoSymbol		KP_Add		KP_Add		radical		NoSymbol
@@ -190,7 +190,7 @@ keycode 40 = 	e		E		braceleft		Greek_epsilon		Down		Down		U2203		NoSymbol
 keycode 41 = 	i		I		braceright		Greek_iota		Right		Right		integral		NoSymbol
 keycode 42 = 	k		K		asterisk		Greek_kappa		End		End		multiply		NoSymbol
 
-keycode 43 = 	c		C		question		Greek_chi		questiondown		NoSymbol		U2102		NoSymbol
+keycode 43 = 	d		D		question		Greek_delta		questiondown		NoSymbol		Greek_DELTA		Greek_DELTA
 keycode 44 = 	t		T		parenleft		Greek_tau		KP_4		KP_4		partialderivative		NoSymbol
 keycode 45 = 	n		N		parenright		Greek_nu		KP_5		KP_5		U2115		NoSymbol
 keycode 46 = 	r		R		minus		Greek_rho		KP_6		KP_6		U211D		NoSymbol
