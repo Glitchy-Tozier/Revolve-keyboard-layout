@@ -44,7 +44,7 @@ The program has two main functions:
 1. Evaluate Keyboard layouts
 2. Optimize layouts based on the evaluation
 
-For evaluation it gives any keyboard layout a penalty (signifying the strain and inconvenience it imposes on typing) based on the distribution of letters, bigrams and trigrams, either from the reference corpus of the university of Leipzig, or from any given Textfile. 
+For evaluation it gives any keyboard layout a penalty (signifying the strain and inconvenience it imposes on typing) based on the distribution of letters, bigrams and trigrams, either from the reference corpus of the university of Leipzig or from any given Textfile. 
 
 1. Calculating the cost
 -----------------------
