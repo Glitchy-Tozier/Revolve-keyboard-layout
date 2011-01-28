@@ -34,22 +34,20 @@ Additional options:
 Dokumentation
 =============
 
-Ein Leitfaden zum Optimierer. Er soll die Fragen beantworten, die in der Liste (oder bei sonstigen Interessierten) aufkommen könnten. Praktisch gesehen also eure Fragen :)
+A guide to the Optimizer. It intends to answer common questions. 
 
-(Schreibt mir einfach, was ihr gerne wissen würdet, ich versuche es dann zu beantworten. Und scheut euch nicht, mir konstruktiv reinzuschreiben – dafür ist das Pad hier da :))
+0. Basics
+---------
 
-0. Grundlagen
--------------
+The program has two main functions: 
 
-Das Programm hat zwei Hauptfunktionen:
+1. Evaluate Keyboard layouts
+2. Optimize layouts based on the evaluation
 
-1. Tastaturbelegungen bewerten
-2. Tastaturbelegungen nach der Bewertung optimieren
+For evaluation it gives any keyboard layout a penalty (signifying the strain and inconvenience it imposes on typing) based on the distribution of letters, bigrams and trigrams, either from the reference corpus of the university of Leipzig, or from any given Textfile. 
 
-Für die Bewertung nutzt es die Häufigkeiten von Buchstaben, Bigrammen und Trigrammen, entweder aus dem Leipziger Korpus oder aus einer beliebigen Textdatei.
-
-1. Kostenberechnung
--------------
+1. Calculating the cost
+-----------------------
 
 ### 1.1. Buchstaben (1-Gramme)
 
