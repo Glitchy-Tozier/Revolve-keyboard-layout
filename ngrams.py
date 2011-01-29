@@ -508,7 +508,7 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     >>> trig[:12]
     [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
     """
-    f = open(datapath)
+    f = open(datapath, encoding="utf-8")
     letters = {}
     repeats = {}
     trigs = {}
