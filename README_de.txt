@@ -1,53 +1,57 @@
-Intro
-=====
+Einführung
+==========
 
-evolve-keyboard-layout is an evolutionary keyboard layout optimizer and a framework for evaluating the effect of the keyboard layout on typing.
+evolve-keyboard-layout ist ein evolutionärer Optimierer für die Tastenbelegung der Tastatur und ein Framework zur Abschätzung der Auswirkungen der Tastaturbelegung auf das Tippgefühl. 
 
-The most common use is to optimize the keyboard layout based on several cost criteria by doing random mutations and keeping those which reduce the cost.
+Die wichtigste Anwendung ist die Optimierung der Tastaturbelegung durch wiederholte Einzelmutationen, die auf Grundlage festgelegter  Kostenfaktoren beibehalten oder verworfen werden. 
 
-Install
-=======
+Installation
+============
 
-Prerequisites:
+Abhängigkeiten (müssen separat installiert werden):
 
 * Python 3.x: http://python.org/download
 * Mercurial: http://mercurial.selenic.com/downloads/
 
-hg clone https://bitbucket.org/ArneBab/evolve-keyboard-layout/
+Dann einfach installieren über: 
 
-Usage
-=====
+    hg clone https://bitbucket.org/ArneBab/evolve-keyboard-layout/
 
-Do an evolution and store the results in output.txt:
+Verwendung
+==========
+
+Eine Evolution laufen lassen und die Ausgaben in output.txt speichern: 
 
 ./evolution.py
 
-Additional options:
+Parameter und weitere Nutzungsmöglichkeiten finden Sie über die folgenden Befehle: 
 
-./evolution.py --help
-./check_neo.py --help
-./convert_text_between_layouts.py --help
-./regularity_check.py --help
-./textcheck.py --help
+    ./evolution.py --help
+    ./check_neo.py --help
+    ./convert_text_between_layouts.py --help
+    ./regularity_check.py --help
+    ./textcheck.py --help
 
 
 Dokumentation
 =============
 
-A guide to the Optimizer. It intends to answer common questions. 
+Ein Leitfaden zum Optimierer. Er soll die Fragen beantworten, die in der Liste (oder bei sonstigen Interessierten) aufkommen könnten. Praktisch gesehen also eure Fragen :)
 
-0. Basics
----------
+(Schreibt mir einfach, was ihr gerne wissen würdet, ich versuche es dann zu beantworten. Und scheut euch nicht, mir konstruktiv reinzuschreiben – dafür ist das Pad hier da :))
 
-The program has two main functions: 
+0. Grundlagen
+-------------
 
-1. Evaluate Keyboard layouts
-2. Optimize layouts based on the evaluation
+Das Programm hat zwei Hauptfunktionen:
 
-For evaluation it gives any keyboard layout a penalty (signifying the strain and inconvenience it imposes on typing) based on the distribution of letters, bigrams and trigrams, either from the reference corpus of the university of Leipzig or from any given Textfile. 
+1. Tastaturbelegungen bewerten
+2. Tastaturbelegungen nach der Bewertung optimieren
 
-1. Calculating the cost
------------------------
+Für die Bewertung nutzt es die Häufigkeiten von Buchstaben, Bigrammen und Trigrammen, entweder aus dem Leipziger Korpus oder aus einer beliebigen Textdatei.
+
+1. Kostenberechnung
+-------------
 
 ### 1.1. Buchstaben (1-Gramme)
 
