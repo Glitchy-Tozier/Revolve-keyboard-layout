@@ -68,18 +68,18 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_L": 2
         }, 
     "Zeige_L": {
-        "Klein_L": 1, 
-        "Ring_L": 1,
-        "Mittel_L": 1 # it’s good, but having two directions disturbs the writing flow.
+        "Klein_L": 0.1, 
+        "Ring_L": 0.1,
+        "Mittel_L": 0.1 # it’s good, but having two directions disturbs the writing flow.
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Mittel_R": 1, 
-        "Ring_R": 1,
-        "Klein_R": 1
+        "Mittel_R": 0.1, 
+        "Ring_R": 0.1,
+        "Klein_R": 0.1
         },
     "Mittel_R": {
         "Ring_R": 3,
