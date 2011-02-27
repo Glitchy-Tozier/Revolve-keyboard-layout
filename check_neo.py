@@ -652,6 +652,9 @@ if __name__ == "__main__":
     parser.add_option("--quadratic",
                       action="store_true", dest="quadratic", default=False,
                       help="Show the quadratic positioin cost (bigrams).")
+    parser.add_option("--progress",
+                      action="store_true", dest="progress", default=False,
+                      help="Show a progress meter. Does not work on Windows.")
     parser.add_option("-q", "--quiet",
                       action="store_true", dest="quiet", default=False,
                       help="don’t print progress messages to stdout")
@@ -685,7 +688,7 @@ if __name__ == "__main__":
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats, quadratic=options.quadratic)
 
     elif options.evolve:
-        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step, quadratic=options.quadratic)
+        evolve_a_layout(steps=options.evolve, prerandomize=options.prerandomize, quiet=options.quiet, controlled=options.controlled_evolution, verbose=options.verbose, controlled_tail=options.controlled_tail, datafile=options.file, starting_layout=options.base, anneal=options.anneal, anneal_step=options.anneal_step, quadratic=options.quadratic, meter=options.progress)
 
     elif options.best_random_layout:
         best_random_layout(number=options.best_random_layout, prerandomize=options.prerandomize, quiet=options.quiet, datafile=options.file, layout=options.base, quadratic=options.quadratic)

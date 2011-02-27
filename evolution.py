@@ -65,12 +65,16 @@ parser.add_option("--tail",
 parser.add_option("--no-tail",
                       action="store_false", dest="tail", default=controlled_tail,
                       help="don’t use the controlled tail.")
+parser.add_option("--progress",
+                      action="store_true", dest="progress", default=meter,
+                      help="Show a progress meter. Does not work on Windows.")
 parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
                       help="use simulated annealing. Set to 0 for no anneal.")
 
 (options, args) = parser.parse_args()
 
 quiet = options.quiet
+meter = options.progress
 
 ### run
 
