@@ -230,7 +230,7 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     return no_switch
 
 def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Check how often an unbalaning key follows a neighboring finger.
+    """Check how often an unbalancing key follows a neighboring finger.
 
     TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
 
