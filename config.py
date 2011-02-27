@@ -68,7 +68,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_L": 2
         }, 
     "Zeige_L": {
-        "Klein_L": 1
+        "Klein_L": 1, 
         "Ring_L": 1,
         "Mittel_L": 1 # it’s good, but having two directions disturbs the writing flow.
         }, 
@@ -77,7 +77,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Mittel_R": 1
+        "Mittel_R": 1, 
         "Ring_R": 1,
         "Klein_R": 1
         },
