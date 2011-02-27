@@ -18,7 +18,7 @@ def pos_to_svg_coord(pos):
     return pos
 
 
-def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, lett=None):
+def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, lett=None, trigrams=None, repeats=None, number_of_letters=None):
     """print an svg from the bigrams.
 
     svg to png with inkscape (without gui): inkscape -D -z -e neo2.png -f neo2.svg
@@ -75,13 +75,13 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     S.addElement(letters)
 
 
+    ## letters and trigrams, yes, this is kinda not nice to get them here again…
+    if lett is None or trigrams is None or repeats is None or number_of_letters is None: 
+        lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
     # shape builder for rectangles
     first_letters = {}
     if with_keys: 
         positions = get_all_positions_in_layout(layout)
-        ## letters, yes, this is kinda not nice to get them here again…
-        if lett is None: 
-            lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
         #: scale the color for the letters
         letter_scale = 128 / max(num for num, l in lett)
         # get first letters in words
@@ -157,6 +157,12 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         layout_string = text(lay_strings[i], 50, 250 + 20*i)
         layout_string.set_font_size(18)
         group_info.addElement(layout_string)
+    # add statistics
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=lett, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
+    tppl = total/max(1, number_of_letters)/100
+    cost_string = text("cost (tppl): " + str(tppl), 325, 250)
+    cost_string.set_font_size(18)
+    group_info.addElement(cost_string)
     
     # make sure the most used bigram is shown on top (drawn last)
     bigrams.sort()
@@ -286,7 +292,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
         if no_handswitch_after_unbalancing_key: p("Kein Handwechsel nach Handverschiebung,")
         print()
     if svg:
-        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath, lett=letters)
+        print_svg(bigrams_with_cost, layout, svg_output=svg_output, filepath=filepath, lett=letters, trigrams=trigrams, repeats=repeats, number_of_letters=number_of_letters)
     
 
 def ask_for_layout_string_completion(l):
