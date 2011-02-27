@@ -75,6 +75,8 @@ parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
 
 quiet = options.quiet
 meter = options.progress
+if meter:
+    quiet = True
 
 ### run
 

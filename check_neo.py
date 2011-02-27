@@ -675,6 +675,8 @@ if __name__ == "__main__":
         # base + base-string: base for the surroundings,
         # base-string for the base layer.
         options.base = string_to_layout(options.base_string, NEO_LAYOUT)
+    if options.progress:
+        options.quiet = True
 
     if options.check:
         options.check = eval(options.check)
