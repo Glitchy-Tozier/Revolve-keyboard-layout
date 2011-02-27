@@ -57,7 +57,7 @@ WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to index
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
         "Ring_L": 3,
-        "Mittel_L": 2
+        "Mittel_L": 1
         }, 
     "Ring_L": {
         "Klein_L": 4,
@@ -68,12 +68,14 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_L": 2
         }, 
     "Zeige_L": {
+        "Mittel_L": 1 # it’s good, but having two directions disturbs the writing flow.
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
+        "Mittel_L": 1
         },
     "Mittel_R": {
         "Ring_R": 3,
@@ -85,7 +87,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }, 
     "Klein_R": {
         "Ring_R": 3,
-        "Mittel_R": 2
+        "Mittel_R": 1
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
