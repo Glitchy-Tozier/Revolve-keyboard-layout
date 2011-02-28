@@ -129,7 +129,7 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
             # increase the cost abovet the critical point
             if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
                 #print(pair, number, number/number_of_keystrokes, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER)
-                number += (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
+                number += (number - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
             finger_repeats.append((number, finger1, key1+key2))
     if not count_same_key:
         finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
@@ -543,6 +543,22 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     else:
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
+
+    # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
+    repeats = {}
+    for num, pair in reps:
+        if not pair in repeats:
+            repeats[pair] = num
+        else: repeats[pair] += num
+    number_of_keystrokes = sum(repeats.values())
+    critical_point = WEIGHT_CRITICAL_FRACTION * number_of_keystrokes
+    for pair, number in repeats.items(): 
+        if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+            #print(pair, number, number/number_of_keystrokes, WEIGHT_CRITICAL_FRACTION, (number - critical_point)*(WEIGHT_CRITICAL_FRACTION_MULTIPLIER-1))
+            number += (number - critical_point)*(WEIGHT_CRITICAL_FRACTION_MULTIPLIER -1)
+            repeats[pair] = number
+
+    reps = [(num, pair) for pair, num in repeats.items()]
 
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
