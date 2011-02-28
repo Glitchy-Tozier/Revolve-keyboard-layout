@@ -132,8 +132,8 @@ if __name__ == "__main__":
                 mkdir("svgs")
             
             cost = total_cost(layout=lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
-            cost = str(cost)
-            cost = "0"*max(0, 10-len(cost)) + cost
+            cost = cost/max(1, number_of_letters)
+            cost = "{:>7.4f}".format(cost)
             name_lines = format_layer_1_string(lay).splitlines()
             name = "-".join((name_lines[1], name_lines[0], name_lines[2])) + ".svg"
             name = name.replace(" ", "_")
