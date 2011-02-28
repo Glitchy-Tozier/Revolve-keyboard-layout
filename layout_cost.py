@@ -182,7 +182,9 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
 neighboring_fingers = movement_pattern_cost
 
 def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too). 
+    """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
+
+    If the second key is in another row than the first, multiply by the squared distance in rows + 1.
 
     >>> data = read_file("testfile")
     >>> no_handswitch_after_unbalancing_key(data)
@@ -226,6 +228,11 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                         unb1 = UNBALANCING_POSITIONS.get(pos1, 0)
                         unb2 = UNBALANCING_POSITIONS.get(pos2, 0)
                         cost += unb1 * unb2 * number * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
+                    # if the second key is in another row than the first, increase the cost, quadratic.
+                    row_multiplier = 1 + (abs(pos1[0] - pos2[0]))**2
+                    cost *= row_multiplier
+                    # if abs(pos1[0] - pos2[0]): 
+                    #     print(row_multiplier, pos1[0] - pos2[0], pair)
                     no_switch += cost
     return no_switch
 
@@ -235,21 +242,6 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
     TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
 
     >>> data = read_file("testfile")
-    >>> no_handswitch_after_unbalancing_key(data)
-    2
-    >>> reps =  [(3, "Ab")]
-    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
-    >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    9
-    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
-    0
-    >>> reps = [(3, "Ga")]
-    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
-    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
-    3
-    >>> reps =  [(3, "xo")]
-    >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    6
     """
     if data is not None: 
         repeats = repeats_in_file(data)
@@ -280,7 +272,6 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
         # using .get here, because most positions aren’t unbalancing.
         neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number
     return neighboring_unbalance
-
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
