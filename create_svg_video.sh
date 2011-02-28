@@ -1,7 +1,7 @@
 #!/bin/sh
 # create a video from the svgs in the folder svgs
 # svgs to pngs
-for i in svgs/*svg; do inkscape -D -z -e  $(basename $i .svg).png -f $i; done
+for i in svgs/*svg; do inkscape -D -z -e  $i.png -f $i; done
 # create a temporary file with all pngs in reverse order
 ls svgs/*png | sort -r > /tmp/pnglist.txt
 # create the video
