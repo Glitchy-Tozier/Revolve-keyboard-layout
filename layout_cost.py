@@ -269,7 +269,7 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
 
         # add the cost
         # using .get here, because most positions aren’t unbalancing.
-        neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number
+        neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number
     return neighboring_unbalance
 
 def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=True):
