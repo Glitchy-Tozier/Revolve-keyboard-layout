@@ -237,7 +237,7 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     return no_switch
 
 def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
-    """Check how often an unbalancing key follows a neighboring finger.
+    """Check how often an unbalancing key follows a neighboring finger or vice versa.
 
     TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
 
@@ -254,15 +254,14 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
 
         # only take existing, neighboring positions.
         pos2 = find_key(pair[1], layout=layout)
-        if not pos2 or not pos2 in UNBALANCING_POSITIONS:
-            continue
         pos1 = find_key(pair[0], layout=layout)
-        if not pos1:
+        if not pos2 or not pos 1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
             fing1 = KEY_TO_FINGER[pos1]
             fing2 = KEY_TO_FINGER[pos2]
-            if fing1.startswith("Daumen") or fing2.startswith("Daumen"):
+            # tumbs and handswitches ignored
+            if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
                 continue
             neighboring = abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2)) == 1
         except: continue
