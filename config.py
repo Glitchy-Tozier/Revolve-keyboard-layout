@@ -55,7 +55,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 0.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert).
+WEIGHT_FINGER_SWITCH = 50 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
@@ -74,14 +74,14 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Zeige_L": {
         "Klein_L": 0.1, 
         "Ring_L": 0.1,
-        "Mittel_L": 0.1 # it’s good, but having two directions disturbs the writing flow.
+        "Mittel_L": 0.3 # it’s good, but having two directions disturbs the writing flow.
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Mittel_R": 0.1, 
+        "Mittel_R": 0.3, 
         "Ring_R": 0.1,
         "Klein_R": 0.1
         },
