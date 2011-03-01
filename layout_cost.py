@@ -255,7 +255,7 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
         # only take existing, neighboring positions.
         pos2 = find_key(pair[1], layout=layout)
         pos1 = find_key(pair[0], layout=layout)
-        if not pos2 or not pos 1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
+        if not pos2 or not pos1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
             fing1 = KEY_TO_FINGER[pos1]
