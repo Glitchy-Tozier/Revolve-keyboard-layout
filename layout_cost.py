@@ -309,12 +309,6 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=Tru
             if not num_rows:
                 continue
 
-            # row 3 is shifted 1 key to the right → fix that.
-            if pos1[0] == 3:
-                pos1 = pos1[0], pos1[1] -1, pos1[2]
-            if pos2[0] == 3:
-                pos2 = pos2[0], pos2[1] -1, pos2[2]
-
             # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
             p1 = pos1[:2] + (0, )
             p2 = pos2[:2] + (0, )
@@ -326,13 +320,19 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=Tru
             downwards = pos2[0] > pos1[0]
             if upwards and f1_is_short and f2_is_long or downwards and f1_is_long and f2_is_short:
                 num_rows -= 1
-            else: # moving upwards to short fingers is bad: add ¼
+            elif downwards and f1_is_short and f2_is_long or upwards and f1_is_long and f2_is_short: # moving upwards to short fingers is bad: add ¼
                 num_rows += 0.25
 
             # if it’s now not a row change anymore, save the time for processing the rest :)
             if not num_rows:
                 continue
             
+            # row 3 is shifted 1 key to the right → fix that.
+            if pos1[0] == 3:
+                pos1 = pos1[0], pos1[1] -1, pos1[2]
+            if pos2[0] == 3:
+                pos2 = pos2[0], pos2[1] -1, pos2[2]
+
             # The standard keyboard has each key shifted by almost ⅓ compared to the key above it. Use ¼ because not every keyboard is that broken :)
             if warped_keyboard: 
                 pos1 = pos1[0], pos1[1] +0.25*pos1[0], pos1[2]
