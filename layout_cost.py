@@ -273,7 +273,7 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
         neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number
     return neighboring_unbalance
 
-def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
+def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=True):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
     TODO: Don’t care about the hand (left index low and right high is still not nice).
@@ -329,11 +329,20 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT):
                 num_rows -= 1
             if downwards and f1_is_long and f2_is_short:
                 num_rows -= 1
+
+            # if it’s now not a row change anymore, save the time for processing the rest :)
+            if not num_rows:
+                continue
+            
+            # The standard keyboard has each key shifted by almost ⅓ compared to the key above it. Use ¼ because not every keyboard is that broken :)
+            if warped_keyboard: 
+                pos1 = pos1[0], pos1[1] +0.25*pos1[0], pos1[2]
+                pos2 = pos2[0], pos2[1] +0.25*pos2[0], pos2[2]
             
             finger_distance = abs(pos1[1] - pos2[1])
-            if num_rows:
-                cost = num_rows**2 / max(0.5, finger_distance)
-                line_changes += cost**2 * number
+
+            cost = num_rows**2 / max(0.5, finger_distance)
+            line_changes += cost**2 * number
     return line_changes
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
