@@ -552,6 +552,14 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
 
+    # trigram cleanup
+    tri = {}
+    for num, t in trigrams:
+        if not t in tri:
+            tri[t] = num
+        else: tri[t] += num
+    trigrams = [(num, t) for t, num in tri.items()]
+
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
 
