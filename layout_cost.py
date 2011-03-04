@@ -562,8 +562,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         if not pair in repeats:
             repeats[pair] = num
         else: repeats[pair] += num
+
     number_of_keystrokes = sum(repeats.values())
     critical_point = WEIGHT_CRITICAL_FRACTION * number_of_keystrokes
+
     for pair, number in repeats.items(): 
         if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
             #print(pair, number, number/number_of_keystrokes, WEIGHT_CRITICAL_FRACTION, (number - critical_point)*(WEIGHT_CRITICAL_FRACTION_MULTIPLIER-1))
