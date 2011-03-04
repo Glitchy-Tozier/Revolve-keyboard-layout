@@ -555,9 +555,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # trigram cleanup
     tri = {}
     for num, t in trigrams:
-        if not t in tri:
-            tri[t] = num
-        else: tri[t] += num
+        if t in tri:
+            tri[t] += num
+        else: tri[t] = num
     trigrams = [(num, t) for t, num in tri.items()]
 
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
@@ -569,9 +569,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # Also combine the occurance number of bigrams appearing twice.
     repeats = {}
     for num, pair in reps:
-        if not pair in repeats:
-            repeats[pair] = num
-        else: repeats[pair] += num
+        if pair in repeats:
+            repeats[pair] += num
+        else: repeats[pair] = num
 
     number_of_keystrokes = sum(repeats.values())
     critical_point = WEIGHT_CRITICAL_FRACTION * number_of_keystrokes
