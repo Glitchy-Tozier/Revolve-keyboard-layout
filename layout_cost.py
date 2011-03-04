@@ -552,7 +552,11 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
 
+    no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
+    reps.extend(secondary_bigrams)
+
     # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
+    # Also combine the occurance number of bigrams appearing twice.
     repeats = {}
     for num, pair in reps:
         if not pair in repeats:
@@ -568,8 +572,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     reps = [(num, pair) for pair, num in repeats.items()]
 
-    no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
-    reps.extend(secondary_bigrams)
 
     finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
     position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
