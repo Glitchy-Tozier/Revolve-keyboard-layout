@@ -555,6 +555,8 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
 
+    reps_uncleaned = reps
+
     # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
     # Also combine the occurance number of bigrams appearing twice.
     repeats = {}
@@ -574,6 +576,14 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     reps = [(num, pair) for pair, num in repeats.items()]
 
+    # print(len(reps) /len(reps_uncleaned))
+    # check repeat cleanup
+    # pairs = [pair for num, pair in reps]
+    # pairs_old = [pair for num, pair in reps_uncleaned]
+    # for pair in pairs_old:
+    #     if not pair in pairs:
+    #         print(pair, end=",")
+        
 
     finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
     position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
