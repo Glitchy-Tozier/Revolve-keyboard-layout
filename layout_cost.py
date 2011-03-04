@@ -552,13 +552,12 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
 
-    # trigram cleanup
-    tri = {}
-    for num, t in trigrams:
-        if t in tri:
-            tri[t] += num
-        else: tri[t] = num
-    trigrams = [(num, t) for t, num in tri.items()]
+    # trigram cleanup - takes more time than it saves
+    # tri = {}
+    # for num, t in trigrams:
+    #     try: tri[t] += num
+    #     except KeyError: tri[t] = num
+    # trigrams = [(num, t) for t, num in tri.items()]
 
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
@@ -569,9 +568,8 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # Also combine the occurance number of bigrams appearing twice.
     repeats = {}
     for num, pair in reps:
-        if pair in repeats:
-            repeats[pair] += num
-        else: repeats[pair] = num
+        try: repeats[pair] += num
+        except KeyError: repeats[pair] = num
 
     number_of_keystrokes = sum(repeats.values())
     critical_point = WEIGHT_CRITICAL_FRACTION * number_of_keystrokes
