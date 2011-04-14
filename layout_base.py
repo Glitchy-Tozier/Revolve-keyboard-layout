@@ -932,6 +932,57 @@ def combine_genetically(layout1, layout2):
     return res
 
 
+def mirror_position_horizontally(pos):
+    """Mirror a position horizontally: (2, 1, 0) → (2, 10, 0)
+
+    >>> m = mirror_position_horizontally
+    >>> m((0,0,0))
+    (0, 13, 0)
+    >>> m((0,13,0))
+    (0, 0, 0)
+    >>> m((0,1,0))
+    (0, 12, 0)
+    >>> m((0,9,0))
+    (0, 4, 0)
+    >>> m((0,4,0))
+    (0, 9, 0)
+    >>> m((0,6,0))
+    (0, 7, 0)
+    >>> m((0,7,0))
+    (0, 6, 0)
+    >>> m((1,0,0))
+    (1, 11, 0)
+    >>> m((1,1,0))
+    (1, 10, 0)
+    >>> m((1,11,0))
+    (1, 0, 0)
+    >>> m((1,12,0))
+    (1, 0, 0)
+    >>> m((2,13,0))
+    (2, 0, 0)
+    >>> m((2,4,0))
+    (2, 7, 0)
+    >>> m((2,6,0))
+    (2, 5, 0)
+    >>> m((3,7,0))
+    (3, 6, 0)
+    """
+    if pos[0] == 0: new_pos = pos[0], 7 + (-1)*(pos[1] - 6), pos[2]
+    elif pos[0] == 1: new_pos = pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
+    elif pos[0] == 2: new_pos = pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
+    elif pos[0] == 3: new_pos = pos[0], min(12, 7 + (-1)*(pos[1] - 6)), pos[2]
+    elif pos[0] == 4:
+        if pos[1] == 3: p1 = 3
+        elif pos[1] == 0: p1 = 7
+        elif pos[1] == 1: p1 = 5
+        elif pos[1] == 2: p1 = 4
+        elif pos[1] == 4: p1 = 2
+        elif pos[1] == 5: p1 = 1
+        elif pos[1] == 6: p1 = 0
+        elif pos[1] == 7: p1 = 0
+        new_pos = pos[0], p1, pos[2]
+    return new_pos
+
 if __name__ == "__main__":
     from doctest import testmod
     testmod()
