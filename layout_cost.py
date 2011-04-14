@@ -547,8 +547,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
 
-    reps_uncleaned = reps
-
     # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
     # Also combine the occurance number of bigrams appearing twice.
     repeats = {}
