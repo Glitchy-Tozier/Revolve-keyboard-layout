@@ -60,7 +60,6 @@ def key_position_cost_quadratic_bigrams(bigrams, layout=NEO_LAYOUT, cost_per_key
     >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     204
     """
-    bigrams = split_uppercase_repeats(bigrams, layout=layout)
     cost = 0
     for num, bi in bigrams:
         if not bi[1:]:
