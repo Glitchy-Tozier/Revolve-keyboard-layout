@@ -158,16 +158,16 @@ def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_swi
                     info("better:", cost)
         return lay, cost
 
-def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet):
+def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, pos_cost_cache=None):
         """Do one random switch. Keep it, if it is beneficial."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams, pos_cost_cache=pos_cost_cache)[:3]
         if new_cost < cost:
             return lay, new_cost, cost - new_cost, keypairs, frep, pos_cost
         else:
             return layout, cost, 0, keypairs, frep, pos_cost
 
-def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, meter, cost_per_key=COST_PER_KEY):
+def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet, meter, cost_per_key=COST_PER_KEY, pos_cost_cache=None):
     """Do the most beneficial change. Keep it, if the new layout is better than the old.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
@@ -226,7 +226,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     for keypairs in switches:
         i += 1
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, pos_cost_cache=pos_cost_cache)[:3]
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
             info("# checked switch", keypairs, new_cost)
@@ -237,7 +237,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     if min(step_results)[0] < cost:
         best = min(step_results)
         lay, new_cost, best_pairs = best[-1], best[0], best[-2]
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, pos_cost_cache=pos_cost_cache)[:3]
         return lay, new_cost, cost - new_cost, best_pairs, frep, pos_cost
     else:
         return layout, cost, 0, keypairs, frep, pos_cost
@@ -251,7 +251,8 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
     @param controlled: Do a slow controlled run, where all possible steps are checked and only the best is chosen?
     @param anneal: start by switching 1 + int(anneal) keypairs, reduce by 1 after anneal_step iterations.
     """
-    cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[0]
+    POS_COST_CACHE = {}
+    cost = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, pos_cost_cache=POS_COST_CACHE)[0]
     consecutive_fails = 0
     # take anneal_step steps for the first anneal level, too
     if anneal:
@@ -266,11 +267,11 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
                 anneal -= 1/anneal_step
             else:
                 step = int(log10(consecutive_fails + 1) / 3 + 1)
-            lay, cost, better, keypairs, frep, pos_cost = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet)
+            lay, cost, better, keypairs, frep, pos_cost = random_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet, pos_cost_cache=POS_COST_CACHE)
         else:
             step = int(consecutive_fails + 1)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run.
-            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet, meter)
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet, meter, pos_cost_cache=POS_COST_CACHE)
         if better:
             consecutive_fails = 0
             # save the good mutation
@@ -300,7 +301,7 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
             if meter:
                 erase(); write('tail:    %4d\n'%steps)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run.
-            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet, meter=meter)
+            lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, 1, layout=layout, abc=abc, cost=cost, quiet=quiet, meter=meter, pos_cost_cache=POS_COST_CACHE)
             if better:
                 # save the good mutation - yes, this could go at the start of the loop, but that wouldn’t be as clear.
                 layout = lay

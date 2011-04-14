@@ -7,9 +7,6 @@ from layout_base import *
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
 
-#: Cache for the cost functions: ngram: cost
-NGRAM_COST_CACHE = {}
-
 ### Cost Functions
 
 def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
@@ -89,17 +86,7 @@ def key_position_cost_quadratic_bigrams(bigrams, layout=NEO_LAYOUT, cost_per_key
     return cost #* sum([num for num, bi in bigrams])
 
 def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
-    """Get a list of two char strings from the file, which repeat the same finger.
-
-    >>> data = read_file("testfile")
-    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
-    [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
-    >>> finger_repeats_from_file(data, count_same_key=True, layout=NEO_LAYOUT)
-    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
-    >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
-    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
-    [(1, 'Klein_L', '⇧x'), (1, 'Klein_R', '⇗ß'), (1, 'Zeige_L', 'zo'), (1, 'Klein_L', 'xü'), (1, 'Zeige_L', 'wz'), (1, 'Ring_L', 'vö'), (1, 'Klein_R', 'qj'), (1, 'Zeige_L', 'pw'), (1, 'Mittel_L', 'lä'), (1, 'Zeige_R', 'hb'), (1, 'Mittel_R', 'g,'), (1, 'Ring_R', 'f.'), (1, 'Zeige_L', 'cp'), (1, 'Zeige_R', 'bm')]
-    """
+    """Get a list of two char strings, which repeat the same finger."""
     number_of_keystrokes = sum((num for num, pair in repeats))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     
@@ -509,7 +496,7 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False):
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, pos_cost_cache=None):
     """Compute a total cost from all costs we have available, wheighted.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
@@ -521,7 +508,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     
     (209.4, 3, 150, 0, 3.3380918415851206, 3, 7)
     """
-    # the raw costs
+    #: The total cost.
+    total = 0
+    
+    # ngram preparation
     if data is not None:
         letters, num_letters, repeats, num_repeats, trigrams, number_of_trigrams = get_all_data(data=data)
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
@@ -540,14 +530,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     #     except KeyError: tri[t] = num
     # trigrams = [(num, t) for t, num in tri.items()]
 
-    # get the cost cache
-    global NGRAM_COST_CACHE
-    
-
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
 
-    reps_uncleaned = reps
+    # reps_uncleaned = reps[:]
 
     # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
     # Also combine the occurance number of bigrams appearing twice.
@@ -567,15 +553,23 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     reps = [(num, pair) for pair, num in repeats.items()]
 
+    # caching of cost functions
+    if pos_cost_cache:
+        total += sum((pos_cost_cache.get(find_key(le, layout=layout), 0)*num for num, le in letters if le))
+        total += sum((pos_cost_cache.get((find_key(rep[0], layout=layout), find_key(rep[1], layout=layout)), 0)*num for num, rep in reps if rep[1:]))
+        total += sum((pos_cost_cache.get((find_key(tri[0], layout=layout), find_key(tri[1], layout=layout), find_key(tri[2], layout=layout)), 0)*num for num, tri in trigs if tri[1:]))
+        fill_cache = False
+    else: fill_cache = True
+        
+
     # print(len(reps) /len(reps_uncleaned))
-    # check repeat cleanup
+    # # check repeat cleanup
     # pairs = [pair for num, pair in reps]
     # pairs_old = [pair for num, pair in reps_uncleaned]
     # for pair in pairs_old:
     #     if not pair in pairs:
     #         print(pair, end=",")
         
-
     finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
     position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
     position_cost_quadratic_bigrams = key_position_cost_quadratic_bigrams(bigrams=repeats, layout=layout, cost_per_key=cost_per_key)
@@ -615,7 +609,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     asymmetric_bigrams = asymmetric_bigram_penalty(reps, layout=layout)
 
     # add all together and weight them
-    total = WEIGHT_POSITION * position_cost
+    total += WEIGHT_POSITION * position_cost
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
     total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
     total += WEIGHT_FINGER_SWITCH * neighboring_fings
