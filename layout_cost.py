@@ -12,7 +12,7 @@ NGRAM_COST_CACHE = {}
 
 ### Cost Functions
 
-def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Count the total cost due to key positions.
 
     >>> data = read_file("testfile")
@@ -32,10 +32,6 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
     >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY, layout=lay)
     240
     """
-    if data is not None: 
-        letters = letters_in_file(data)
-    elif letters is None:
-        raise Exception("Need either letters or data")
     letters = split_uppercase_letters(letters, layout=layout)
     cost = 0
     for num, letter in letters:
@@ -43,7 +39,7 @@ def key_position_cost_from_file(data=None, letters=None, layout=NEO_LAYOUT, cost
         cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
-def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def key_position_cost_quadratic_bigrams(bigrams, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Count the total cost due to key positions, using the inverse product of the cost in bigrams.
 
     TODO: Remove. Not useful.
@@ -64,10 +60,6 @@ def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYO
     >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     204
     """
-    if data is not None: 
-        bigrams = repeats_in_file(data)
-    elif bigrams is None:
-        raise Exception("Need either bigrams or data")
     bigrams = split_uppercase_repeats(bigrams, layout=layout)
     cost = 0
     for num, bi in bigrams:
@@ -96,7 +88,7 @@ def key_position_cost_quadratic_bigrams(data=None, bigrams=None, layout=NEO_LAYO
         
     return cost #* sum([num for num, bi in bigrams])
 
-def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layout=NEO_LAYOUT):
+def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
     >>> data = read_file("testfile")
@@ -108,12 +100,6 @@ def finger_repeats_from_file(data=None, repeats=None, count_same_key=False, layo
     >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
     [(1, 'Klein_L', '⇧x'), (1, 'Klein_R', '⇗ß'), (1, 'Zeige_L', 'zo'), (1, 'Klein_L', 'xü'), (1, 'Zeige_L', 'wz'), (1, 'Ring_L', 'vö'), (1, 'Klein_R', 'qj'), (1, 'Zeige_L', 'pw'), (1, 'Mittel_L', 'lä'), (1, 'Zeige_R', 'hb'), (1, 'Mittel_R', 'g,'), (1, 'Ring_R', 'f.'), (1, 'Zeige_L', 'cp'), (1, 'Zeige_R', 'bm')]
     """
-    if data is not None: 
-        repeats = repeats_in_file(data)
-        repeats = split_uppercase_repeats(repeats, layout=layout)
-    elif repeats is None:
-        raise Exception("Need either repeats or data")
-
     number_of_keystrokes = sum((num for num, pair in repeats))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     
@@ -158,7 +144,7 @@ def _rep_to_fingtuple(num, rep, layout, finger_switch_cost):
         return None, None
     return num, (finger1, finger2)
 
-def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
+def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
     """Calculate a movement cost based on the FINGER_SWITCH_COST. 
 
     >>> data = read_file("testfile")
@@ -171,19 +157,13 @@ def movement_pattern_cost(data=None, repeats=None, layout=NEO_LAYOUT, FINGER_SWI
     >>> neighboring_fingers(data, FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
     16
     """
-    if data is not None: 
-        repeats = repeats_in_file(data)
-        repeats = split_uppercase_repeats(repeats, layout=layout)
-    elif repeats is None:
-        raise Exception("Need either repeats or data")
-
     fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in repeats)
 
     return sum((num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if num))
 
 neighboring_fingers = movement_pattern_cost
 
-def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYOUT):
+def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
 
     If the second key is in another row than the first, multiply by the squared distance in rows + 1.
@@ -205,12 +185,6 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
     6
     """
-    if data is not None: 
-        repeats = repeats_in_file(data)
-        repeats = split_uppercase_repeats(repeats, layout=layout)
-    elif repeats is None:
-        raise Exception("Need either repeats or data")
-
     no_switch = 0
     for number, pair in repeats:
         pos1 = find_key(pair[0], layout=layout)
@@ -238,19 +212,13 @@ def no_handswitch_after_unbalancing_key(data=None, repeats=None, layout=NEO_LAYO
                     no_switch += cost
     return no_switch
 
-def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
+def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
     """Check how often an unbalancing key follows a neighboring finger or vice versa.
 
     TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
 
     >>> data = read_file("testfile")
     """
-    if data is not None: 
-        repeats = repeats_in_file(data)
-        repeats = split_uppercase_repeats(repeats, layout=layout)
-    elif repeats is None:
-        raise Exception("Need either repeats or data")
-
     neighboring_unbalance = 0
     for number, pair in repeats:
 
@@ -274,7 +242,7 @@ def unbalancing_after_neighboring(data=None, repeats=None, layout=NEO_LAYOUT):
         neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number
     return neighboring_unbalance
 
-def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=True):
+def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
     TODO: Don’t care about the hand (left index low and right high is still not nice).
@@ -283,13 +251,6 @@ def line_changes(data=None, repeats=None, layout=NEO_LAYOUT, warped_keyboard=Tru
     >>> line_changes(data)
     16.0
     """
-    if data is not None: 
-        repeats = repeats_in_file(data)
-        repeats = split_uppercase_repeats(repeats, layout=layout)
-    elif repeats is None:
-        raise Exception("Need either repeats or data")
-    
-
     line_changes = 0
     for number, pair in repeats:
         # ignore pairs with spaces (" "): Space is hit with the thumb, so it is no real row jump.
@@ -561,15 +522,13 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     (209.4, 3, 150, 0, 3.3380918415851206, 3, 7)
     """
     # the raw costs
-    if data is not None: 
-        letters = letters_in_file(data)
-        repeats = repeats_in_file(data)
-        trigrams = trigrams_in_file(data)
+    if data is not None:
+        letters, num_letters, repeats, num_repeats, trigrams, number_of_trigrams = get_all_data(data=data)
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
         
-    elif letters is None or repeats is None:
-        raise Exception("Need either repeats and letters or data")
+    elif letters is None or repeats is None or trigrams is None:
+        raise Exception("Need either trigrams, repeats and letters or data")
     else:
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
