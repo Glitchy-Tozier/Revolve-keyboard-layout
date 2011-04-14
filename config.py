@@ -148,7 +148,7 @@ UNBALANCING_POSITIONS = {
 }
 
 #: Asymmetric bigrams are harder to type than symmetric ones.
-WEIGHT_ASYMMETRIC_BIGRAMS = 10000
+WEIGHT_ASYMMETRIC_BIGRAMS = 1
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
 # The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
