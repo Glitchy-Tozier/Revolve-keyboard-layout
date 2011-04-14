@@ -502,7 +502,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
     2
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1][0][1]
-    'ui'
+    'ie'
     """
     key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
     return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH)
