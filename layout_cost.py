@@ -39,54 +39,6 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
         cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
-def key_position_cost_quadratic_bigrams(bigrams, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
-    """Count the total cost due to key positions, using the inverse product of the cost in bigrams.
-
-    TODO: Remove. Not useful.
-
-    >>> data = read_file("testfile")
-    >>> print(data[:3])
-    uia
-    >>> key_position_cost_quadratic_bigrams(data[:3], layout=NEO_LAYOUT, cost_per_key=TEST_COST_PER_KEY)
-    24
-    >>> from check_neo import switch_keys
-    >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
-    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    51
-    >>> lay = switch_keys(["ax", "uq"], layout=NEO_LAYOUT)
-    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    72
-    >>> lay = switch_keys(["ax", "iq"], layout=NEO_LAYOUT)
-    >>> key_position_cost_quadratic_bigrams(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    204
-    """
-    cost = 0
-    for num, bi in bigrams:
-        if not bi[1:]:
-            continue
-        pos0 = find_key(bi[0], layout=layout)
-        if pos0 is None: 
-            continue
-        pos1 = find_key(bi[1], layout=layout)
-        if pos1 is None:
-            continue
-        
-        cost0 = 0
-        cost1 = 0
-        # shift, M3 and M4
-        if COST_LAYER_ADDITION[pos0[2]:]:
-            cost0 += COST_LAYER_ADDITION[pos0[2]]
-        if COST_LAYER_ADDITION[pos1[2]:]:
-            cost1 += COST_LAYER_ADDITION[pos1[2]]
-
-        cost0 += cost_per_key[pos0[0]][pos0[1]]
-        cost1 += cost_per_key[pos1[0]][pos1[1]]
-
-        # add the product of both costs as final cost. 5,3 → (5+3)/5·3 = 8/15; 4,4 → (4+4)/4·4 = 8/16; 5,4 → 9/20; 5,1 → 5/5
-        cost += num*cost0*cost1
-        
-    return cost #* sum([num for num, bi in bigrams])
-
 def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
@@ -567,7 +519,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
     position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
-    position_cost_quadratic_bigrams = key_position_cost_quadratic_bigrams(bigrams=repeats, layout=layout, cost_per_key=cost_per_key)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats, layout=layout)
@@ -614,7 +565,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
     total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
     total += WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
-    total += WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams
     total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
     total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
     total += WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
@@ -622,7 +572,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     if not return_weighted: 
         return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance
     else:
-        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_POSITION_QUADRATIC_BIGRAMS * position_cost_quadratic_bigrams, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
+        return total, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
 
 
 def _test():
