@@ -968,14 +968,14 @@ def mirror_position_horizontally(pos):
     (3, 6, 0)
     >>> m(None)
     """
-    if pos is None: return None
-    elif pos[0] == 0: return pos[0], 7 + (-1)*(pos[1] - 6), pos[2]
-    elif pos[0] == 1: return pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
-    elif pos[0] == 2: return pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
-    elif pos[0] == 3: return pos[0], min(12, 7 + (-1)*(pos[1] - 6)), pos[2]
-    elif pos[0] == 4:
-        if pos[1] == 3: p1 = 3
-        elif pos[1] == 0: p1 = 7
+    if not pos: return None
+    if pos[0] == 2: return pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
+    if pos[0] == 1: return pos[0], max(0, 6 + (-1)*(pos[1] - 5)), pos[2]
+    if pos[0] == 3: return pos[0], min(12, 7 + (-1)*(pos[1] - 6)), pos[2]
+    if pos[0] == 0: return pos[0], 7 + (-1)*(pos[1] - 6), pos[2]
+    if pos[0] == 4:
+        if pos[1] == 3: return pos # no change
+        if pos[1] == 0: p1 = 7
         elif pos[1] == 1: p1 = 5
         elif pos[1] == 2: p1 = 4
         elif pos[1] == 4: p1 = 2
@@ -984,7 +984,7 @@ def mirror_position_horizontally(pos):
         elif pos[1] == 7: p1 = 0
         else: p1 = pos[1]
         return pos[0], p1, pos[2]
-    else: raise Exception("Position value out of bounds")
+    raise Exception("Position value out of bounds")
 
 if __name__ == "__main__":
     from doctest import testmod
