@@ -7,6 +7,8 @@ from layout_base import *
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
 
+#: Cache for the cost functions: ngram: cost
+NGRAM_COST_CACHE = {}
 
 ### Cost Functions
 
@@ -578,6 +580,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     #     try: tri[t] += num
     #     except KeyError: tri[t] = num
     # trigrams = [(num, t) for t, num in tri.items()]
+
+    # get the cost cache
+    global NGRAM_COST_CACHE
+    
 
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     reps.extend(secondary_bigrams)
