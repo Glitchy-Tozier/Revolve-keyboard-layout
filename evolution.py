@@ -14,7 +14,7 @@ num_layouts = 500
 filename = "output.txt" # None for shell output
 
 #: The number of random evolution steps to take.
-steps = 4000
+steps = 6000
 
 #: The number of random mutations to do before the evolution to get a random layout
 prerandomize = 3000
