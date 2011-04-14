@@ -539,11 +539,11 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     >>> a = asymmetric_bigram_penalty
     >>> a([(1, "en")])
     0
-    >>> a([(1, "ek")])
-    1
+    >>> a([(2, "ek")])
+    2
 
     Idea: Use symmetric hand movement instead of symmetric keys."""
-    return sum((1 for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
+    return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
 def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False):

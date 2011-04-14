@@ -346,7 +346,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     # unweighted
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w, manual_penalty_w, neighboring_unbalance_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:14]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, position_cost_quadratic_bigrams_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:15]
 
     if shorten_numbers:
         sn = short_number
@@ -366,6 +366,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
+        res += c("#", sn(asymmetric_bigrams_w/1000000000), "asymmetric bigram cost (weighted).")
     if quadratic:
         # also print the quadratic cost of the key position in bigrams. Selectable to avoid breaking old scripts.
         res += c("#", sn(position_cost_quadratic_bigrams_w/1000000000), "quadratic position cost in bigrams (weighted).")
