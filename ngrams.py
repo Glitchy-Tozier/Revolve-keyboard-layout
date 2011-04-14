@@ -137,10 +137,11 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
                     try: repeats[mods2[i]+m2] += num*mods_on_same_hand_adjustment
                     except KeyError: repeats[mods2[i]+m2] = num*mods_on_same_hand_adjustment
 
-    reps = [(num, rep) for rep, num in repeats.items()]
-    reps.sort()
-    reps.reverse()
-    return reps
+    return repeats
+    #reps = [(num, rep) for rep, num in repeats.items()]
+    #reps.sort()
+    #reps.reverse()
+    #return reps
 
 def repeats_in_file(data):
     """Sort the repeats in a file by the number of occurrances.

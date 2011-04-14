@@ -96,12 +96,12 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
     if repeats is None or trigrams is None: 
         letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
     if only_layer_0: repeats = split_uppercase_repeats(repeats, layout=layout)
-    
-    reps = {}
-    for num, rep in repeats:
-        if not rep in reps: reps[rep] = num
-        else: reps[rep] += num
-    repeats = reps
+    else: 
+        reps = {}
+        for num, rep in repeats:
+            if not rep in reps: reps[rep] = num
+            else: reps[rep] += num
+        repeats = reps
     if secondary: 
         no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
         for num, rep in secondary_bigrams:
@@ -113,7 +113,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
 
     reps = []
     for rep, num in repeats.items():
-        tmp = split_uppercase_repeats([(1, rep)], layout=layout)
+        tmp = [(num, rep) for rep, num in split_uppercase_repeats([(1, rep)], layout=layout).items()]
         cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True)
         # critical point for finger repeats, doing it here instead of layout_cost because it needs the total number of keystrokes.
         if num > critical_point:

@@ -539,30 +539,22 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     #     except KeyError: tri[t] = num
     # trigrams = [(num, t) for t, num in tri.items()]
 
-    # get the cost cache
-    global NGRAM_COST_CACHE
-    
-
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
-    reps.extend(secondary_bigrams)
-
+    for num, pair in secondary_bigrams:
+        try: reps[pair] += num
+        except KeyError: reps[pair] = num
+        
     # value bigrams which occur more than once per DinA4 site even higher (psychologically important: get rid of really rough points).
-    # Also combine the occurance number of bigrams appearing twice.
-    repeats = {}
-    for num, pair in reps:
-        try: repeats[pair] += num
-        except KeyError: repeats[pair] = num
-
-    number_of_keystrokes = sum(repeats.values())
+    number_of_keystrokes = sum(reps.values())
     critical_point = WEIGHT_CRITICAL_FRACTION * number_of_keystrokes
 
-    for pair, number in repeats.items(): 
+    for pair, number in reps.items(): 
         if number > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
             #print(pair, number, number/number_of_keystrokes, WEIGHT_CRITICAL_FRACTION, (number - critical_point)*(WEIGHT_CRITICAL_FRACTION_MULTIPLIER-1))
             number += (number - critical_point)*(WEIGHT_CRITICAL_FRACTION_MULTIPLIER -1)
-            repeats[pair] = number
+            reps[pair] = number
 
-    reps = [(num, pair) for pair, num in repeats.items()]
+    reps = [(num, pair) for pair, num in reps.items()]
 
     # print(len(reps) /len(reps_uncleaned))
     # check repeat cleanup
