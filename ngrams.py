@@ -358,7 +358,12 @@ def split_uppercase_trigrams(trigs):
 
     
     trigs.extend(up)
-    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+    trigs = [(num, r) for num, r in trigs if r[1:]]
+    t = {}
+    for num, r in trigs:
+        try: t[r] += num
+        except KeyError: t[r] = num
+    trigs = [(num, r) for r, num in t.items()]
     trigs.sort()
     trigs.reverse()
     return trigs
