@@ -3,11 +3,35 @@
 
 """Configuration of check_neo, mainly the weights of the cost functions. Intended to be easily modified."""
 
+### definitions
+
 #: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
 abc = "abcdefghijklmnopqrstuvwxyzäöüß,."# ⇧⇗"
 
 #The letters which are used to calculate the costs - do not change anything or results will become incomparable.
 abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
+
+#: The modifiers, sorted by layer, split into left and right, counting from 0.
+MODIFIERS_PER_LAYER = [("", ""), ("⇧", "⇗"), ("⇩", "⇘"), ("⇚", "⇙"), ("⇩⇧", "⇘⇗"), ("⇩⇚", "⇘⇙")]
+
+#: The positions which are by default accessed by the given finger. 
+FINGER_POSITIONS = {
+    "Klein_L": [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
+    "Ring_L": [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
+    "Mittel_L": [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
+    "Zeige_L": [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
+    "Daumen_L": [(4, 3, 0)], # Daumen_L
+    "Daumen_R": [(4, 3, 0), (4, 4, 0)], # Daumen_R
+    "Zeige_R": [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
+    "Mittel_R": [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
+    "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
+    "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
+}
+
+#: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index). TODO: Generate automatically from the finger positions.
+RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]
+
+### cost weighting
 
 WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
 
@@ -124,7 +148,7 @@ UNBALANCING_POSITIONS = {
 }
 
 #: Asymmetric bigrams are harder to type than symmetric ones.
-WEIGHT_ASYMMETRIC_BIGRAMS = 1
+WEIGHT_ASYMMETRIC_BIGRAMS = 10000
 
 # Structured key weighting (but still mostly from experience and deducing from the work of others).
 # The speed of the fingers is taken out (see INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY).
@@ -158,27 +182,11 @@ COST_MANUAL_BIGRAM_PENALTY = {
     ((1, 2, 0), (3, 2, 0)): 1, # vü on normal keyboards (lower row shifted to the right)
     ((3, 2, 0), (1, 2, 0)): 1 # üv on normal keyboards (lower row shifted to the right)
     }
+# all pinky repeats
+for finger in ("Klein_L", "Klein_R"): 
+    for pos0 in FINGER_POSITIONS[finger]:
+        for pos1 in FINGER_POSITIONS[finger]:
+            try: COST_MANUAL_BIGRAM_PENALTY[(pos0, pos1)] += 1
+            except KeyError: COST_MANUAL_BIGRAM_PENALTY[(pos0, pos1)] = 1
 
-
-### config finished. Additional stuff which might need changing for different layouts or hand positions. 
-
-#: The modifiers, sorted by layer, split into left and right, counting from 0.
-MODIFIERS_PER_LAYER = [("", ""), ("⇧", "⇗"), ("⇩", "⇘"), ("⇚", "⇙"), ("⇩⇧", "⇘⇗"), ("⇩⇚", "⇘⇙")]
-
-#: The positions which are by default accessed by the given finger. 
-FINGER_POSITIONS = {
-    "Klein_L": [(1, 1, 0), (2, 0, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0), (3, 2, 0)], # Klein_L
-    "Ring_L": [(1, 2, 0), (2, 2, 0), (3, 3, 0)], # Ring_L
-    "Mittel_L": [(1, 3, 0), (2, 3, 0), (3, 4, 0)], # Mittel_L
-    "Zeige_L": [(1, 4, 0), (2, 4, 0), (3, 5, 0), (1, 5, 0), (2, 5, 0), (3, 6, 0)], # Zeige_L
-    "Daumen_L": [(4, 3, 0)], # Daumen_L
-    "Daumen_R": [(4, 3, 0), (4, 4, 0)], # Daumen_R
-    "Zeige_R": [(1, 6, 0), (2, 6, 0), (3, 7, 0), (1, 7, 0), (2, 7, 0), (3, 8, 0)], # Zeige_R
-    "Mittel_R": [(1, 8, 0), (2, 8, 0), (3, 9, 0)], # Mittel_R
-    "Ring_R": [(1, 9, 0), (2, 9, 0), (3, 10, 0)], # Ring_R
-    "Klein_R": [(1, 10, 0), (2, 10, 0), (3, 11, 0), (1, 11, 0), (2, 11, 0), (1, 12, 0), (2, 12, 0), (2, 13, 0), (3, 12, 0)] # Klein_R
-}
-
-#: The lowest index for the right hand per line in the config (pos[0] is the line, pos[1] the index). TODO: Generate automatically from the finger positions.
-RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]
 
