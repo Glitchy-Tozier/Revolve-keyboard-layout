@@ -14,7 +14,7 @@ num_layouts = 500
 filename = "output.txt" # None for shell output
 
 #: The number of random evolution steps to take.
-steps = 6000
+steps = 10000
 
 #: The number of random mutations to do before the evolution to get a random layout
 prerandomize = 3000
@@ -37,7 +37,7 @@ controlled_tail = True
 #: Should we use annealing? How many steps? Per step it adds one switch, so anneal 5 starts with 6 switches aka changing half the layout (12 keys).
 anneal = 5
 #: The number of iterations to spend in one anneal level. The first anneal * anneal_step iterations are spent in simulated annealing.
-anneal_step = 100
+anneal_step = 1000
 
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
 STARTING_LAYOUT = """xvlcw khgfqß´
