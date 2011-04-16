@@ -1,0 +1,8 @@
+Todo (before the optimizer is done)
+===================================
+
+* New Parameter: No similar keys in similar positions (too easy to mix up).
+* Recheck the single key costs.
+* Test the single key costs against the Truly Ergonomic and do minor tweaks. The main target is the standard keyboard, though!
+* Decision: e and n on index or middle finger, or e on index and n on middle? → fix before optimizing instead of discussing it to death later: All of them can give good layouts.
+* 
