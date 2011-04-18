@@ -3,7 +3,7 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left
+from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
@@ -249,15 +249,19 @@ def repeats_in_file_sorted(data):
     repeats.reverse()
     return repeats
 
-def repeats_in_file_precalculated(data):
+def repeats_in_file_precalculated(data, only_existing=True):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("2gramme.txt")
     >>> repeats_in_file_precalculated(data)[:3]
     [(10159250, 'en'), (10024681, 'er'), (9051717, 'n ')]
     """
-    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split(" ", 1)[1:]]
-    reps = [(int(num), r) for num, r in reps if r[1:]]
+    reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.lstrip().split(" ", 1)[1:]]
+    if only_existing: 
+        all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+        reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
+    else:
+        reps = [(int(num), r) for num, r in reps if r[1:]]
     #reps = split_uppercase_repeats(reps) # wrong place, don’t yet know the layout
     
     return reps
@@ -274,9 +278,9 @@ def split_uppercase_trigrams(trigs):
     >>> #[(8, 'abc'), (7, '⇧ab'), (7, 'abc'), (6, '⇧bc'), (6, 'a⇧b'), (5, 'b⇧c'), (5, 'ab⇧'), (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc'), (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c'), (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c'), (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2
-    upper = [(num, trig) for num, trig in trigs if not trig == trig.lower()]
+    upper = [(num, trig) for num, trig in trigs if not trig == trig.lower() and trig[2:]]
     # and remove them temporarily from the list of trigrams - don’t compare list with list, else this takes ~20min!
-    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower()]
+    trigs = [(num, trig) for num, trig in trigs if trig == trig.lower() and trig[2:]]
     up = []
     # since this gets a bit more complex and the chance to err is high,
     # we do this dumbly, just checking for the exact cases.
@@ -492,7 +496,7 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
     return trigs
 
 
-def trigrams_in_file(data):
+def trigrams_in_file(data, only_existing=True):
     """Sort the trigrams in a file by the number of occurrances.
 
     >>> data = read_file("testfile")
@@ -506,7 +510,12 @@ def trigrams_in_file(data):
             trigs[trig] += 1
         else:
             trigs[trig] = 1
-    sorted_trigs = [(trigs[i], i) for i in trigs]
+
+    if only_existing: 
+        all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+        sorted_trigs = [(trigs[i], i) for i in trigs if i[2:] and i[0] in all_keys and i[1] in all_keys and i[2] in all_keys]
+    else:
+        sorted_trigs = [(trigs[i], i) for i in trigs if i[2:]]
     sorted_trigs.sort()
     sorted_trigs.reverse()
     trigs = split_uppercase_trigrams(sorted_trigs)
@@ -588,7 +597,7 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     return letters, repeats, trigs
 
 
-def trigrams_in_file_precalculated(data):
+def trigrams_in_file_precalculated(data, only_existing=True):
     """Get the repeats from a precalculated file.
 
     CAREFUL: SLOW!
@@ -598,12 +607,17 @@ def trigrams_in_file_precalculated(data):
     [(5678513, 'en '), (4414826, 'er '), (2891228, ' de'), (2302691, 'der'), (2272020, 'ie '), (2039215, 'ich')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+
+    if only_existing: 
+        all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+        trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
+    else:
+        trigs = [(int(num), r) for num, r in trigs if r[2:]]
     trigs = split_uppercase_trigrams(trigs)
-    
+
     return trigs
 
-def letters_in_file_precalculated(data):
+def letters_in_file_precalculated(data, only_existing=True):
     """Get the repeats from a precalculated file.
 
     >>> data = read_file("1gramme.txt")
@@ -611,11 +625,24 @@ def letters_in_file_precalculated(data):
     [(46474641, ' '), (44021504, 'e'), (26999087, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:] or line[-2:] == "  "]
-    try: 
-        return [(int(num), let) for num, let in letters]
+    try:
+        if only_existing:
+            all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+            return [(int(num), let) for num, let in letters if let in all_keys]
+        else:
+            return [(int(num), let) for num, let in letters if let]
     except ValueError: # floats in there
-        return [(float(num), let) for num, let in letters]
-    
+        if only_existing:
+            all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+            return [(float(num), let) for num, let in letters if let in all_keys]
+        else:
+            return [(float(num), let) for num, let in letters if let]
+
+def clean_data(data):
+    """Remove cruft from loaded data"""
+    if data[:1] == "\ufeff":
+        data = data[1:]
+    return data
 
 def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None): 
     """Get letters, bigrams and trigrams.
@@ -642,20 +669,20 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
 
     # otherwise we get the missing values from the predefined files. 
     if letters is None or number_of_letters is None: 
-        letterdata = read_file("1gramme.txt")
+        letterdata = clean_data(read_file("1-gramme.15.txt"))
         letters = letters_in_file_precalculated(letterdata)
         #letters = letters_in_file(data)
         number_of_letters = sum([i for i, s in letters])
 
     if repeats is None or number_of_bigrams is None: 
-        bigramdata = read_file("2gramme.txt")
+        bigramdata = clean_data(read_file("2-gramme.15.txt"))
         bigrams = repeats_in_file_precalculated(bigramdata)
         #repeats = repeats_in_file(data)
         number_of_bigrams = sum([i for i, s in bigrams])
     else: bigrams = repeats
 
     if trigrams is None or number_of_trigrams is None:
-        trigramdata = read_file("3gramme.txt")
+        trigramdata = clean_data(read_file("3-gramme.15.txt"))
         trigrams = trigrams_in_file_precalculated(trigramdata)
         number_of_trigrams = sum([i for i, s in trigrams])
 
