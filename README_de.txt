@@ -30,6 +30,11 @@ Eine bestimmte Grundbelegung prüfen (nur *nix Systeme, verflucht sei die Window
 uiaeo snrtdy
 üöäpz bm,.j"
 
+Eine SVG-Darstellung der Belegung erstellen: 
+
+./bigramm_statistik.py --svg --svg-output layout.svg -l "xvlcw khgfqß´
+uiaeo snrtdy
+üöäpz bm,.j"
 
 Parameter und weitere Nutzungsmöglichkeiten finden Sie über die folgenden Befehle: 
 

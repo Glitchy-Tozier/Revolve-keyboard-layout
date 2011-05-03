@@ -28,6 +28,13 @@ Check a layout string (only *nix systems, curse you, windows console!):
 uiaeo snrtdy
 üöäpz bm,.j"
 
+Create a layout SVG: 
+
+./bigramm_statistik.py --svg --svg-output layout.svg -l "xvlcw khgfqß´
+uiaeo snrtdy
+üöäpz bm,.j"
+
+
 Additional options:
 
 ./evolution.py --help
