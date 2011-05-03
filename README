@@ -22,6 +22,12 @@ Do an evolution and store the results in output.txt:
 
 ./evolution.py
 
+Check a layout string (only *nix systems, curse you, windows console!): 
+
+./check_neo.py -v --fingerstats --check-string "xvlcw khgfqß´
+uiaeo snrtdy
+üöäpz bm,.j"
+
 Additional options:
 
 ./evolution.py --help

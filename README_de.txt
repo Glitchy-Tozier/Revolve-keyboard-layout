@@ -24,6 +24,13 @@ Eine Evolution laufen lassen und die Ausgaben in output.txt speichern:
 
 ./evolution.py
 
+Eine bestimmte Grundbelegung prüfen (nur *nix Systeme, verflucht sei die Windows console!):
+
+./check_neo.py -v --fingerstats --check-string "xvlcw khgfqß´
+uiaeo snrtdy
+üöäpz bm,.j"
+
+
 Parameter und weitere Nutzungsmöglichkeiten finden Sie über die folgenden Befehle: 
 
     ./evolution.py --help
