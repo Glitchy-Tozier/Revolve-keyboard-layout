@@ -226,10 +226,12 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
             p1 = pos1[:2] + (0, )
             p2 = pos2[:2] + (0, )
-            f1_is_short = KEY_TO_FINGER.get(p1, None) in SHORT_FINGERS
-            f2_is_short = KEY_TO_FINGER.get(p2, None) in SHORT_FINGERS
-            f1_is_long = KEY_TO_FINGER.get(p1, None) in LONG_FINGERS
-            f2_is_long = KEY_TO_FINGER.get(p2, None) in LONG_FINGERS
+            f1 = KEY_TO_FINGER.get(p1, None)
+            f2 = KEY_TO_FINGER.get(p2, None)
+            f1_is_short = f1 in SHORT_FINGERS
+            f2_is_short = f2 in SHORT_FINGERS
+            f1_is_long = f1 in LONG_FINGERS
+            f2_is_long = f2 in LONG_FINGERS
             upwards = pos2[0] < pos1[0]
             downwards = pos2[0] > pos1[0]
             if upwards and f1_is_short and f2_is_long or downwards and f1_is_long and f2_is_short:
@@ -241,6 +243,10 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             if not num_rows:
                 continue
             
+            # if a key is disbalancing, multiply the cost
+            disbalance1 = UNBALANCING_POSITIONS.get((pos1[0], pos1[1], 0), 0)
+            disbalance2 = UNBALANCING_POSITIONS.get((pos2[0], pos2[1], 0), 0)
+            
             # row 3 is shifted 1 key to the right → fix that.
             if pos1[0] == 3:
                 pos1 = pos1[0], pos1[1] -1, pos1[2]
@@ -251,10 +257,13 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             if warped_keyboard: 
                 pos1 = pos1[0], pos1[1] +0.25*pos1[0], pos1[2]
                 pos2 = pos2[0], pos2[1] +0.25*pos2[0], pos2[2]
-            
-            finger_distance = abs(pos1[1] - pos2[1])
+
+            try:
+                finger_distance = abs(FINGER_NAMES.index(f1) - FINGER_NAMES.index(f2))
+            except ValueError: finger_distance = abs(pos1[1] - pos2[1]) # one key not on a finger.
 
             cost = num_rows**2 / max(0.5, finger_distance)
+            cost *= (disbalance1+1) * (disbalance2+1)
             line_changes += cost**2 * number
     return line_changes
 
