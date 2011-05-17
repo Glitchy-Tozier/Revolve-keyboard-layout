@@ -703,6 +703,8 @@ class NGrams(object):
     NGrams contains ngrams from various sources in raw and weighted
     form and can export them to the simple (1gramme.txt, 2gramme.txt,
     3gramme.txt) form with a given number of total keystrokes.
+
+    self.one, self.two and self.three are dictionaries of 1grams, 2grams and threegrams with their respective probability of occurring.
     """
     def __init__(self, config):
         """Create an ngrams object.
@@ -766,8 +768,7 @@ class NGrams(object):
                     try: weighted[ngram] += num*weight
                     except KeyError: weighted[ngram] = num*weight
 
-
-    def save(one, two, three):
+    def save(self, one, two, three):
         """save the data to the files one, two and three (i.e. 1gramme.txt, 2gramm…).
 
         Plan: Add a total number of keystrokes parameter.
@@ -775,13 +776,14 @@ class NGrams(object):
         """
         for p, ngrams in ((one, self.one),
                           (two, self.two),
-                          (three, self.thee)): 
+                          (three, self.three)): 
             gramlist = [(num, ngram) for ngram, num in ngrams.items()] 
             gramlist.sort()
             data = ""
-            for num, ngram in gramlist.reversed():
-                data += str(num) + " " + ngram
-            with open(p, "write") as f:
+            for num, ngram in reversed(gramlist):
+#                ngram = ngram.replace("\n", "\\n")
+                data += str(num) + " " + ngram + "\n"
+            with open(p, "w") as f:
                 f.write(data)
         
                 
