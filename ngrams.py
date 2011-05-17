@@ -714,6 +714,8 @@ class NGrams(object):
             …
 
         >>> ngrams = NGrams('ngrams_test.config')
+        >>> ngrams.raw
+        [(1.0, ([(5, 'a'), (4, '\n'), (2, 'r'), (2, 'e'), (2, 'A'), (1, 'u'), (1, 't'), (1, 'o'), (1, 'n'), (1, 'i'), (1, 'g'), (1, 'd')], [(2, 'a\n'), (2, 'Aa'), (1, 'ui'), (1, 'tA'), (1, 'rt'), (1, 'rg'), (1, 'od'), (1, 'nr'), (1, 'ia'), (1, 'g\n'), (1, 'eo'), (1, 'en'), (1, 'd\n'), (1, 'ae'), (1, 'aa'), (1, 'aA'), (1, '\nr'), (1, '\ne'), (1, '\na')], [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗'), (1, 'rg\n'), (1, 'od\n'), (1, 'nrt'), (1, 'iae'), (1, 'g\na'), (1, 'eod'), (1, 'enr'), (1, 'd\nr'), (1, 'aen'), (1, 'aa⇧'), (1, 'aa⇗'), (1, 'a\ne'), (1, '\nrg'), (1, '\neo'), (1, '\naa')]))]
         """
         # read the config.
         try:
@@ -733,8 +735,54 @@ class NGrams(object):
             datapath = l[spaceidx+1:]
             one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
             self.raw.append((weight, (one, two, three)))
-        
-        
+
+        # normalize them
+        def _normalize(ngramlist):
+            """normalize a list of ngrams.
+
+            @param ngramlist: [(num, "ngram"), …]
+            @return list with sum([num for num, ngram in ngrams]) == 1
+            """
+            total = sum((num for num, ngram in ngramlist))
+            return [(num / total, ngram) for num, ngram in ngramlist]
+
+        normalized = []
+        for weight, ngrams in self.raw:
+            normalized.append((weight,
+                               [_normalize(ngram) for ngram in ngrams]))
+
+        # weight them.
+        self.one = {}
+        self.two = {}
+        self.three = {}
+        for weight, ngrams in normalized:
+            one = ngrams[0]
+            two = ngrams[1]
+            three = ngrams[2]
+            for norm, weighted in ((one, self.one),
+                                   (two, self.two),
+                                   (three, self.three)): 
+                for num, ngram in norm:
+                    try: weighted[ngram] += num*weight
+                    except KeyError: weighted[ngram] = num*weight
+
+
+    def save(one, two, three):
+        """save the data to the files one, two and three (i.e. 1gramme.txt, 2gramm…).
+
+        Plan: Add a total number of keystrokes parameter.
+        @param one: path to the 1grams file.
+        """
+        for p, ngrams in ((one, self.one),
+                          (two, self.two),
+                          (three, self.thee)): 
+            gramlist = [(num, ngram) for ngram, num in ngrams.items()] 
+            gramlist.sort()
+            data = ""
+            for num, ngram in gramlist.reversed():
+                data += str(num) + " " + ngram
+            with open(p, "write") as f:
+                f.write(data)
         
                 
 
