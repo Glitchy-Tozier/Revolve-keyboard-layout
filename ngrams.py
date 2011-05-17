@@ -797,8 +797,8 @@ class NGrams(object):
             gramlist.sort()
             data = ""
             for num, ngram in reversed(gramlist):
-                ngram = ngram.replace("\n", "\\n")
                 ngram = ngram.replace("\\", "\\\\")
+                ngram = ngram.replace("\n", "\\n")
                 data += str(num) + " " + ngram + "\n"
             with open(p, "w") as f:
                 f.write(data)

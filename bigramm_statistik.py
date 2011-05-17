@@ -58,6 +58,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
     group_handswitch.setAttribute("display", "none")
     group_shifts.setAttribute("inkscape:label", "Shift")
+    group_shifts.setAttribute("display", "none")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
     group_outwards.setAttribute("inkscape:label", "Auswärts")
     group_fingerrepeat.setAttribute("inkscape:label", "Fingerwiederholungen")

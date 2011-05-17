@@ -83,7 +83,7 @@ WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetitio
 
 ## Line changes
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 80 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 20 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 SHORT_FINGERS = ["Zeige_L", "Zeige_R", "Klein_R", "Zeige_R"] #: Fingers from which switching upwards and to which switching downwards is cheaper. Not pinky left, because the default keyboard penalizes its lower key.
@@ -116,7 +116,7 @@ WEIGHT_TOO_LITTLE_HANDSWITCHING = 300 #: how high should it be counted, if the h
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
 WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 30 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 15 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
 WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
 
@@ -149,20 +149,20 @@ WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.1 #: multiplier for the cost of secondary
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
 
-WEIGHT_FINGER_SWITCH = 50 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
+WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
-        "Ring_L": 3,
+        "Ring_L": 4,
         "Mittel_L": 1
         }, 
     "Ring_L": {
-        "Klein_L": 4,
+        "Klein_L": 5,
         "Mittel_L": 2
         }, 
     "Mittel_L": {
-        "Ring_L": 3,
+        "Ring_L": 4,
         "Klein_L": 2
         }, 
     "Zeige_L": {
@@ -180,16 +180,16 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_R": 0.1
         },
     "Mittel_R": {
-        "Ring_R": 3,
-        "Klein_R": 2
+        "Klein_R": 2,
+        "Ring_R": 4
         },
     "Ring_R": {
         "Mittel_R": 2,
-        "Klein_R": 4
+        "Klein_R": 5
         }, 
     "Klein_R": {
-        "Ring_R": 3,
-        "Mittel_R": 1
+        "Mittel_R": 1,
+        "Ring_R": 4
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
 
