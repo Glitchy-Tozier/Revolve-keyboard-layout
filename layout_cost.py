@@ -265,7 +265,7 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             cost = num_rows**2 / max(0.5, finger_distance)
             cost *= (disbalance1+1) * (disbalance2+1)
             line_changes += cost**2 * number
-    return line_changes
+    return line_changes # to make it not rise linearly (don’t uncomment!): / sum((num for num, rep in repeats))
 
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
