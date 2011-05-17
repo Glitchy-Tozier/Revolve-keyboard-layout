@@ -145,6 +145,21 @@ sa→ sb→ sc
 
 Senkrechte in beide Richtungen. Kreuze nur nach vorne. sa = das Shift, das zu a gehört (andere Hand).
 
+### 1.5 Korpus
+
+#### Allgemein
+
+#### Nur für Arne
+
+ngrams.NGrams("ngrams.config")
+
+ngrams.config: 
+
+    # ngrams source v0.1
+    weight filepath
+    weight filepath
+    …
+
 2. Optimierung
 -------------
 
