@@ -687,7 +687,57 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
         number_of_trigrams = sum([i for i, s in trigrams])
 
     return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
-   
+
+### Classes
+
+class FileNotFoundException(Exception):
+    def __str__(self):
+        return repr(self.parameter)
+
+class ParseException(Exception):
+    def __str__(self):
+        return repr(self.parameter)
+
+class NGrams(object):
+    """
+    NGrams contains ngrams from various sources in raw and weighted
+    form and can export them to the simple (1gramme.txt, 2gramme.txt,
+    3gramme.txt) form with a given number of total keystrokes.
+    """
+    def __init__(self, config):
+        """Create an ngrams object.
+
+        config: plain text file (utf-8 encoded).
+            # ngrams source v0.0
+            weight filepath
+            weight filepath
+            …
+
+        >>> ngrams = NGrams('ngrams_test.config')
+        """
+        # read the config.
+        try:
+            with open(config) as f:
+                self.config = f.read()
+        except IOError:
+            raise FileNotFoundException("File", config, "can’t be read.")
+
+        lines = self.config.splitlines()
+        if not lines[0].startswith("# ngrams source v0.0"):
+            raise ParseException("ngrams config has no version header. Please start it with # ngrams source v0.0")
+        # the raw list of included ngrams.
+        self.raw = []
+        for l in lines[1:]:
+            spaceidx = l.index(" ")
+            weight = float(l[:spaceidx])
+            datapath = l[spaceidx+1:]
+            one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
+            self.raw.append((weight, (one, two, three)))
+        
+        
+        
+                
+
 
 def _test():
     from doctest import testmod
