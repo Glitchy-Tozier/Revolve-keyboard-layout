@@ -153,9 +153,9 @@ def repeats_in_file(data):
     repeats = {}
     for i in range(len(data)-1):
         rep = data[i] + data[i+1]
-        if rep in repeats:
+        try:
             repeats[rep] += 1
-        else:
+        except KeyError:
             repeats[rep] = 1
     sorted_repeats = [(repeats[i], i) for i in repeats]
     sorted_repeats.sort()
@@ -249,6 +249,16 @@ def repeats_in_file_sorted(data):
     repeats.reverse()
     return repeats
 
+def _unescape_ngram_list(ngrams): 
+    """unescape \n and \ in an ngram list."""
+    for i in range(len(ngrams)):
+        if "\\" in ngrams[i][1]: 
+            ngrams[i] = (ngrams[i][0], ngrams[i][1].replace("\\\\", "\\"))
+            ngrams[i] = (ngrams[i][0], ngrams[i][1].replace("\\n", "\n"))
+    return ngrams
+                  
+
+
 def repeats_in_file_precalculated(data, only_existing=True):
     """Get the repeats from a precalculated file.
 
@@ -262,8 +272,10 @@ def repeats_in_file_precalculated(data, only_existing=True):
         reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
     else:
         reps = [(int(num), r) for num, r in reps if r[1:]]
-    #reps = split_uppercase_repeats(reps) # wrong place, don’t yet know the layout
-    
+
+    # cleanup
+    _unescape_ngram_list(reps)
+
     return reps
 
 
@@ -613,6 +625,8 @@ def trigrams_in_file_precalculated(data, only_existing=True):
         trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
     else:
         trigs = [(int(num), r) for num, r in trigs if r[2:]]
+    # cleanup
+    _unescape_ngram_list(trigs)
     trigs = split_uppercase_trigrams(trigs)
 
     return trigs
@@ -625,6 +639,8 @@ def letters_in_file_precalculated(data, only_existing=True):
     [(46474641, ' '), (44021504, 'e'), (26999087, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:] or line[-2:] == "  "]
+    # cleanup
+    _unescape_ngram_list(letters)
     try:
         if only_existing:
             all_keys = get_all_keys_in_layout(NEO_LAYOUT)
@@ -717,7 +733,7 @@ class NGrams(object):
 
         >>> ngrams = NGrams('ngrams_test.config')
         >>> ngrams.raw
-        [(1.0, ([(5, 'a'), (4, '\n'), (2, 'r'), (2, 'e'), (2, 'A'), (1, 'u'), (1, 't'), (1, 'o'), (1, 'n'), (1, 'i'), (1, 'g'), (1, 'd')], [(2, 'a\n'), (2, 'Aa'), (1, 'ui'), (1, 'tA'), (1, 'rt'), (1, 'rg'), (1, 'od'), (1, 'nr'), (1, 'ia'), (1, 'g\n'), (1, 'eo'), (1, 'en'), (1, 'd\n'), (1, 'ae'), (1, 'aa'), (1, 'aA'), (1, '\nr'), (1, '\ne'), (1, '\na')], [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗'), (1, 'rg\n'), (1, 'od\n'), (1, 'nrt'), (1, 'iae'), (1, 'g\na'), (1, 'eod'), (1, 'enr'), (1, 'd\nr'), (1, 'aen'), (1, 'aa⇧'), (1, 'aa⇗'), (1, 'a\ne'), (1, '\nrg'), (1, '\neo'), (1, '\naa')]))]
+        [(1.0, ([(5, 'a'), (4, '\\n'), (2, 'r'), (2, 'e'), (2, 'A'), (1, 'u'), (1, 't'), (1, 'o'), (1, 'n'), (1, 'i'), (1, 'g'), (1, 'd')], [(2, 'a\\n'), (2, 'Aa'), (1, 'ui'), (1, 'tA'), (1, 'rt'), (1, 'rg'), (1, 'od'), (1, 'nr'), (1, 'ia'), (1, 'g\\n'), (1, 'eo'), (1, 'en'), (1, 'd\\n'), (1, 'ae'), (1, 'aa'), (1, 'aA'), (1, '\\nr'), (1, '\\ne'), (1, '\\na')], [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗'), (1, 'rg\\n'), (1, 'od\\n'), (1, 'nrt'), (1, 'iae'), (1, 'g\\na'), (1, 'eod'), (1, 'enr'), (1, 'd\\nr'), (1, 'aen'), (1, 'aa⇧'), (1, 'aa⇗'), (1, 'a\\ne'), (1, '\\nrg'), (1, '\\neo'), (1, '\\naa')]))]
         """
         # read the config.
         try:
@@ -781,13 +797,11 @@ class NGrams(object):
             gramlist.sort()
             data = ""
             for num, ngram in reversed(gramlist):
-#                ngram = ngram.replace("\n", "\\n")
+                ngram = ngram.replace("\n", "\\n")
+                ngram = ngram.replace("\\", "\\\\")
                 data += str(num) + " " + ngram + "\n"
             with open(p, "w") as f:
                 f.write(data)
-        
-                
-
 
 def _test():
     from doctest import testmod
