@@ -163,7 +163,8 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }, 
     "Mittel_L": {
         "Ring_L": 4,
-        "Klein_L": 2
+        "Klein_L": 2,
+        "Zeige_L": 0.1 # it’s fast but dangerous (Sehnenscheidenentzündung)
         }, 
     "Zeige_L": {
         "Klein_L": 0.1, 
@@ -180,6 +181,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_R": 0.1
         },
     "Mittel_R": {
+        "Zeige_L": 0.1,
         "Klein_R": 2,
         "Ring_R": 4
         },
