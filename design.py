@@ -160,4 +160,3 @@ Das könnten wir direkt einfließen lassen: Bei schlechten Bigrammen die durchsc
 __results__ = """
 
 """
-
