@@ -151,42 +151,44 @@ WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.1 #: multiplier for the cost of secondary
 
 WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
-#: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html
+#: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html - Also: Sehnenscheidenentzündung vermeiden: Nachbarfinger vermeiden. Ring- und Mittelfinger verbunden → Ring = ⅓ Nachbar von Zeige.
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
-        "Ring_L": 4,
-        "Mittel_L": 1
+        "Ring_L": 4, # slow + dangerous
+        "Mittel_L": 1 # a bit dangerous
         }, 
     "Ring_L": {
-        "Klein_L": 5,
-        "Mittel_L": 2
+        "Klein_L": 5, # slow + dangerous + outwards
+        "Mittel_L": 3, # dangerous
+        "Zeige_L": 0.1 # a tiny bit dangerous
         }, 
     "Mittel_L": {
-        "Ring_L": 4,
-        "Klein_L": 2,
-        "Zeige_L": 0.1 # it’s fast but dangerous (Sehnenscheidenentzündung)
+        "Ring_L": 4, # dangerous + outwards
+        "Klein_L": 2, # a bit dangerous + outwards
+        "Zeige_L": 0.3 # it’s fast but dangerous (Sehnenscheidenentzündung)
         }, 
     "Zeige_L": {
         "Klein_L": 0.1, 
-        "Ring_L": 0.1,
-        "Mittel_L": 0.3 # it’s good, but having two directions disturbs the writing flow.
+        "Ring_L": 0.3, # gegen Sehnenscheidenentzündung
+        "Mittel_L": 0.9 # it’s good, but having two directions disturbs the writing flow.
         }, 
     "Daumen_L": {
         },
     "Daumen_R": {
         },
     "Zeige_R": {
-        "Mittel_R": 0.3, 
-        "Ring_R": 0.1,
+        "Mittel_R": 0.9, 
+        "Ring_R": 0.3,
         "Klein_R": 0.1
         },
     "Mittel_R": {
-        "Zeige_L": 0.1,
+        "Zeige_L": 0.3,
         "Klein_R": 2,
         "Ring_R": 4
         },
     "Ring_R": {
-        "Mittel_R": 2,
+        "Zeige_L": 0.1,
+        "Mittel_R": 3,
         "Klein_R": 5
         }, 
     "Klein_R": {
