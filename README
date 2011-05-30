@@ -37,11 +37,11 @@ uiaeo snrtdy
 
 Additional options:
 
-./evolution.py --help
-./check_neo.py --help
-./convert_text_between_layouts.py --help
-./regularity_check.py --help
-./textcheck.py --help
+./evolution.py --help # simple evolution
+./check_neo.py --help # various actions
+./convert_text_between_layouts.py --help # generate text for writing tests
+./regularity_check.py --help # check the deviations from the typing flow
+./textcheck.py --help # check the difference between a given text and an ngram korpus
 
 
 Dokumentation
