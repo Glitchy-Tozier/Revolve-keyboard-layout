@@ -207,3 +207,158 @@ Notizen bab
 
 Kleiner Finger aus Grundposition ist sehr Sehnenscheidengefährlich, mindestens schon wegen der Zusatzbelastung durch shift/strg/enter → deutlich höhere Kosten.
 
+
+Erstellung der Statistik
+========================
+
+    import scipy
+    scipy.matrix()
+    with open("2011-05-30-tastenkosten-umfrage.csv") as f: 
+     a = f.readlines()
+    a
+    b = [n.split() for n in a]
+    b
+    c = [[float(n) for n in x] for x in b]]
+    c = [[float(n) for n in x] for x in b]
+    c
+    c = [l for l in c if l]
+    c
+    scipy.mean(c)
+    scipy.mean(c,1)
+    c
+    scipy.std(c,1)
+    c[13]
+    c[12]
+    c[11]
+    c[10]
+    c[14]
+    c[15]
+    scipy.std(c,1) / scipy.mean(c,1)
+    min(scipy.std(c,1) / scipy.mean(c,1))
+    c[6]
+    c[5]
+    scipy.mean(c,1)
+    scipy.std(c,1)
+    min(scipy.std(c,1) / scipy.mean(c,1))
+    scipy.std(c,1) / scipy.mean(c,1)
+    scipy.std(c,1) / (4-scipy.mean(c,1))
+    scipy.std(c,1) / (4.5-scipy.mean(c,1))
+    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+    c[:4]
+    b
+    a
+    c = [[float(n) for n in x] for x in b]
+    c
+    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+    c = [l for l in c if l]
+    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+    scipy.std(c,1) / abs(3.5-scipy.mean(c,1))
+    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+    c[:4]
+    c[,4]
+    c[4]
+    c
+    scipy.std(c,1) * abs(4.5-scipy.mean(c,1))
+    d = []
+    for i in c: 
+     for j in i: 
+    for j in c[0]: 
+     d.append(j)
+    d
+    d = []
+    for j in c[0]: 
+     d.append([])
+    for i in range(len(c)): 
+     for j in range(len(c[i])): 
+      d[j].append(c[i][j])
+    d
+    d
+    array(d)
+    scipy.array(d)
+    matrix(c)
+    scipy.matrix(c)
+    scipy.matrix(c).transpose()
+    for i in d: 
+    e = []
+    for i in d: 
+     for j in i: 
+      pass # e.append(9 / max(i) * j)
+    for i in d: 
+     e.append([])
+     for j in i: 
+      e[-1].append(9.0/max(i)*j)
+    e
+    array(e)
+    scipy.array(e)
+    e = []
+    for i in d: 
+     e.append([])
+     for j in i: 
+      e[-1].append(4.5/j[-5])
+    for i in d: 
+     e.append([])
+     for j in i: 
+      e[-1].append(4.5/i[-5])
+    e
+    e = []
+    for i in d: 
+     e.append([])
+     for j in i: 
+      e[-1].append(4.5/i[-5])
+    scipy.mat(e)
+    e = []
+    for i in d: 
+     e.append([])
+     for j in i: 
+      e[-1].append(4.5/i[-5]*j)
+    scipy.mat(e)
+    f = []
+    for i in d: 
+     f.append([])
+     for j in i: 
+      f[-1].append(3.5/i[-7]*j)
+    scipy.mat(f)
+    mean([e, f])
+    scipy.mean([e, f])
+    scipy.mean([e, f], 1)
+    scipy.mean([e, f], 2)
+    scipy.mean([e, f], 1)
+    scipy.std([e, f], 1)
+    g = e[:] + f[:]
+    g
+    g = scipy.mat(e)[:] + scipy.mat(f)[:]
+    g
+    g = (scipy.mat(e)[:] + scipy.mat(f)[:])/2
+    g
+    let(e)
+    len(e)
+    len(g)
+    g
+    scipy.mean(g)
+    scipy.mean(g, 1)
+    scipy.mean(g, 2)
+    scipy.mean(g, 1)
+    scipy.mean(g, 2)
+    g
+    array(g)
+    scipy.array(g)
+    scipy.mean(scipy.array(g))
+    scipy.mean(scipy.array(g), 2)
+    scipy.mean(scipy.array(e), 2)
+    scipy.mean(scipy.array(e), 1)
+    scipy.mean([e, f], 2)
+    scipy.mean([e, f], 1)
+    scipy.mean(scipy.array(g), 0)
+    scipy.std(scipy.array(g), 0)
+    scipy.std(scipy.array(g), 0)[-6]
+    scipy.mean(scipy.array(g), 0)[-6]
+    scipy.std(scipy.array(g), 0)*5
+    scipy.mean(scipy.array(g), 0)*5
+    scipy.array(e)
+    mean(scipy.array(e), 1)
+    scipy.mean([e, f], 1)
+    scipy.mean(scipy.array(g), 0)*5
+    scipy.std(scipy.array(g), 0)*5
+    scipy.mean(scipy.array(g), 0)
+    scipy.std(scipy.array(g), 0)
