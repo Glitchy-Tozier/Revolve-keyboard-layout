@@ -231,6 +231,8 @@ elif argv[2:] and argv[1] == "--file":
 def konv(text, layout, base=neo2):
     """Convert a text to the given layout, to be typed with the base."""
     res = ""
+    if len(layout) != len(base):
+       raise IndexError("The layout strings don’t have the same length. This will create strange problems. Bailing out.")
     for i in text:
         if i in layout:
             res += base[layout.index(i)]
