@@ -773,20 +773,67 @@ class NGrams(object):
                 two = repeats_in_file_precalculated(bigramdata)
                 trigramdata = clean_data(read_file(threegrams))
                 three = trigrams_in_file_precalculated(trigramdata)
-                self.raw.append((weight, (one, two, three)))         
+                self.raw.append((weight, (one, two, three)))
+            elif typ=="maildir":
+                self.read_maildir_dir(datapath)
             else: print("unrecognized filetype", typ, datapath)
+
+    def read_maildir_dir(self, folderpath):
+        """Read all message contents from within a maildir folder.
+
+        see http://docs.python.org/library/mailbox.html#mailbox.Maildir
+        """
+        text = ""
+        from mailbox import Maildir
+        m = Maildir(folderpath)
+        num = 0
+        for message in m.itervalues():
+            print (num, "/", len(m))
+            text += self._maildir_message_own_content(message)
+            num += 1
+
+    def _maildir_message_own_content(self, message):
+        """Remove all quotes and headers from the message.
+
+        @return string of the content which was written by the author."""
+        from email.charset import Charset
+        text = ""
+        for t in message.walk():
+            if t.get_content_type() == "text/plain":
+                body = t.as_string()
+                c = Charset(body)
+#                print (c.get_body_encoding())
+#                print(c.get_output_charset())
+                #body = c.body_encode(body)
+                body = body[body.index("\n\n"):]
+                # we only ever add the previous line, so we can remove fullquotes along with their data.
+                previous_line = ""
+                for l in body.splitlines():
+                    # skip comments and datablocks
+                    if (previous_line.startswith(">") or
+                        previous_line.startswith(" >") or
+                        not " " in previous_line): # most likely an escaped datablock
+                        previous_line = l
+                        continue
+                    # add all lines which are not the beginning of a comment.
+                    if not ">" in l and not previous_line.endswith(":"):
+                        text += previous_line
+                    previous_line = l
+                    text += "\n"
+#        print(text)
+        return text
 
     def read_pykeylogger_logfile(self, datapath):
         """Read a logfile from pykeylogger and extract all normal keys."""
         with open(datapath) as f:
             data = f.read()
-        # replace all special chars we know by the special chars used in our keyboard definition
-        data = data.replace("[KeyName:Return]", "\n")
-        data = data.replace("[KeyName:BackSpace]", "←")
         text = ""
         for line in data.splitlines():
             # skip the beginning
             line = "|".join(line.split("|")[6:])
+            # replace all special chars we know by the special chars used in our keyboard definition
+            Line = line.replace("[KeyName:Return]", "\n")
+            line = line.replace("[KeyName:BackSpace]", "←")
             try: 
                 text += line[:line.index("[KeyName")]
             except ValueError:
@@ -881,7 +928,6 @@ if __name__ == "__main__":
     args = parser.parse_args(argv)
     if args.config:
         ngrams = NGrams(args.config)
-        print(ngrams.raw)
     if args.config and args.one and args.two and args.three:
         ngrams.save(args.one, args.two, args.three)
     if args.test:
