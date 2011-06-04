@@ -775,7 +775,11 @@ class NGrams(object):
                 three = trigrams_in_file_precalculated(trigramdata)
                 self.raw.append((weight, (one, two, three)))
             elif typ=="maildir":
-                self.read_maildir_dir(datapath)
+                one, two, three = self.read_maildir_dir(datapath)
+                self.raw.append((weight, (one, two, three)))
+            elif typ=="chatlog":
+                one, two, three = self.read_mirc_chatlog(datapath)
+                self.raw.append((weight, (one, two, three)))
             else: print("unrecognized filetype", typ, datapath)
 
     def read_maildir_dir(self, folderpath):
@@ -790,15 +794,15 @@ class NGrams(object):
         for message in m.itervalues():
             #print (num, "/", len(m))
             text += self._maildir_message_own_content(message)
-            print (text)
             num += 1
+        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        return one, two, three
 
     def _maildir_message_own_content(self, message):
         """Remove all quotes and headers from the message.
 
         @return string of the content which was written by the author."""
         import quopri
-#        import email.errors
         text = ""
         for t in message.walk():
             if t.get_content_type() == "text/plain":
@@ -818,14 +822,6 @@ class NGrams(object):
                         print (t.as_string())
                         body = t.as_string()
 
-#                try: 
-#                    c = Charset(body)
-#                except email.errors.CharsetError:
-#                    pass
-#                print(c.__dict__)
-#                print (c.get_body_encoding())
-#                print(c.get_output_charset())
-                #body = c.body_encode(body)
                 body = body[body.index("\n\n"):]
                 # we only ever add the previous line, so we can remove fullquotes along with their data.
                 previous_line = ""
@@ -847,6 +843,28 @@ class NGrams(object):
                     text += "\n"
 #        print(text)
         return text
+
+    def read_mirc_chatlog(self, datapath):
+        """Read a chatlog and remove date and usernames."""
+        text = ""
+        # we use regexps
+        import re
+        with open(datapath) as f:
+            for line in f.readlines():
+                # no lines without time (status stuff)
+                if not line.startswith("["):
+                    continue
+                # kill time
+                line = re.sub(r"^\[\d\d:\d\d\.\d\d\]\ ", "", line)
+                # kill status
+                if line.startswith("***"):
+                    continue
+                # remove username
+                re.sub(r"^<\w>\ ", "", line)
+                text += line
+        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        return one, two, three
+
 
     def read_pykeylogger_logfile(self, datapath):
         """Read a logfile from pykeylogger and extract all normal keys."""
