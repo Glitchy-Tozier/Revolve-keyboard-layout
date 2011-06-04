@@ -726,9 +726,9 @@ class NGrams(object):
         """Create an ngrams object.
 
         config: plain text file (utf-8 encoded).
-            # ngrams source v0.0
-            weight filepath
-            weight filepath
+            # ngrams source v0.1
+            weight type filepath
+            weight type filepath
             …
 
         >>> ngrams = NGrams('ngrams_test.config')
@@ -741,7 +741,14 @@ class NGrams(object):
                 self.config = f.read()
         except IOError:
             raise FileNotFoundException("File", config, "can’t be read.")
-
+        if self.config.startswith("# ngrams source v0.0"):
+            self.parse_config_0_0()
+        elif self.config.startswith("# ngrams source v0.1"):
+            self.parse_config_0_1()
+        
+    
+        
+    def parse_config_0_0(self): 
         lines = self.config.splitlines()
         if not lines[0].startswith("# ngrams source v0.0"):
             raise ParseException("ngrams config has no version header. Please start it with # ngrams source v0.0")
@@ -808,4 +815,16 @@ def _test():
     testmod()
 
 if __name__ == "__main__":
-    _test()
+    import argparse
+    parser = argparse.ArgumentParser(description="Read nGrams from files.")
+    parser.add_argument("args")
+    parser.add_argument("--conf", dest="config", help="The ngram config file to use.")
+    parser.add_argument("--test", dest="test", action="store_true", help="Run the self-test.")
+    from sys import argv
+    args = parser.parse_args(argv)
+    if args.config:
+        ngrams = NGrams(args.config)
+        print(ngrams.raw)
+    elif args.test:
+        _test()
+
