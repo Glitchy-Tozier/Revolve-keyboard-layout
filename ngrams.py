@@ -764,7 +764,16 @@ class NGrams(object):
                 self.raw.append((weight, (one, two, three)))
             elif typ=="pykeylogger":
                 one, two, three = self.read_pykeylogger_logfile(datapath)
-                self.raw.append((weight, (one, two, three)))        
+                self.raw.append((weight, (one, two, three)))
+            elif typ=="pregenerated":
+                onegrams, twograms, threegrams = datapath.split(";")
+                letterdata = clean_data(read_file(onegrams))
+                one = letters_in_file_precalculated(letterdata)
+                bigramdata = clean_data(read_file(twograms))
+                two = repeats_in_file_precalculated(bigramdata)
+                trigramdata = clean_data(read_file(threegrams))
+                three = trigrams_in_file_precalculated(trigramdata)
+                self.raw.append((weight, (one, two, three)))         
             else: print("unrecognized filetype", typ, datapath)
 
     def read_pykeylogger_logfile(self, datapath):
