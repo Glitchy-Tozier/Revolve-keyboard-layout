@@ -797,11 +797,16 @@ class NGrams(object):
 
         @return string of the content which was written by the author."""
         from email.charset import Charset
+        import email.errors
         text = ""
         for t in message.walk():
             if t.get_content_type() == "text/plain":
                 body = t.as_string()
-                c = Charset(body)
+#                try: 
+#                    c = Charset(body)
+#                except email.errors.CharsetError:
+#                    pass
+#                print(c.__dict__)
 #                print (c.get_body_encoding())
 #                print(c.get_output_charset())
                 #body = c.body_encode(body)
