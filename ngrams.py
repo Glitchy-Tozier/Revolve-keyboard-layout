@@ -760,6 +760,26 @@ class NGrams(object):
             if typ=="text":
                 one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
                 self.raw.append((weight, (one, two, three)))
+            elif typ=="pykeylogger":
+                with open(datapath) as f:
+                    data = f.read()
+                text = ""
+                for line in data.splitlines():
+                    # skip the beginning
+                    line = "|".join(line.split("|")[6:])
+                    try: 
+                        text += line[:line.index("[KeyName")]
+                    except ValueError:
+                        # no key name in there.
+                        text += line
+                        continue
+                    for part in line.split("[KeyName:")[1:]:
+                        try: 
+                            text += part[part.index("]"):]
+                        except ValueError:
+                            print(part, line)
+                one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+                self.raw.append((weight, (one, two, three)))
             else: print("unrecognized filetype", typ, datapath)
         
     def parse_config_0_0(self): 
