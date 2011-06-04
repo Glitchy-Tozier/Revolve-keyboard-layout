@@ -660,49 +660,13 @@ def clean_data(data):
         data = data[1:]
     return data
 
-def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None): 
-    """Get letters, bigrams and trigrams.
-
-    @param data: a string of text.
-    @return: letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
-    """
-    #data = read_file("/tmp/sskreszta")
-
-    # if we get a datastring, we use it for everything.
-    if datapath is not None:
-        letters, repeats, trigrams = ngrams_in_filepath(datapath)
-        bigrams = repeats
-        number_of_letters = sum([i for i, s in letters])
-        number_of_bigrams = sum([i for i, s in bigrams])
-        number_of_trigrams = sum([i for i, s in trigrams])
-    elif data is not None:
-        letters = letters_in_file(data)
-        repeats = bigrams = repeats_in_file(data)
-        trigrams = trigrams_in_file(data)
-        number_of_letters = sum([i for i, s in letters])
-        number_of_bigrams = sum([i for i, s in bigrams])
-        number_of_trigrams = sum([i for i, s in trigrams])
-
-    # otherwise we get the missing values from the predefined files. 
-    if letters is None or number_of_letters is None: 
-        letterdata = clean_data(read_file("1-gramme.15.txt"))
-        letters = letters_in_file_precalculated(letterdata)
-        #letters = letters_in_file(data)
-        number_of_letters = sum([i for i, s in letters])
-
-    if repeats is None or number_of_bigrams is None: 
-        bigramdata = clean_data(read_file("2-gramme.15.txt"))
-        bigrams = repeats_in_file_precalculated(bigramdata)
-        #repeats = repeats_in_file(data)
-        number_of_bigrams = sum([i for i, s in bigrams])
-    else: bigrams = repeats
-
-    if trigrams is None or number_of_trigrams is None:
-        trigramdata = clean_data(read_file("3-gramme.15.txt"))
-        trigrams = trigrams_in_file_precalculated(trigramdata)
-        number_of_trigrams = sum([i for i, s in trigrams])
-
-    return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
+def ngrams_in_data(data):
+    """Get ngrams from a dataset."""
+    letters = letters_in_file(data)
+    repeats = bigrams = repeats_in_file(data)
+    trigrams = trigrams_in_file(data)
+    return letters, repeats, trigrams
+    
 
 ### Classes
 
@@ -765,7 +729,7 @@ class NGrams(object):
             datapath = l[l.index(typ)+len(typ)+1:]
             print ("Reading", typ, datapath)
             if typ=="text":
-                one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
+                one, two, three= ngrams_in_datapath(datapath=datapath)
                 self.raw.append((weight, (one, two, three)))
             elif typ=="pykeylogger":
                 one, two, three = self.read_pykeylogger_logfile(datapath)
@@ -804,7 +768,7 @@ class NGrams(object):
             num += 1
         home()
         erase()
-        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        one, two, three = ngrams_in_data(data=text)
         return one, two, three
 
     def _maildir_message_own_content(self, message):
@@ -871,7 +835,7 @@ class NGrams(object):
                 # remove username
                 re.sub(r"^<\w>\ ", "", line)
                 text += line
-        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        one, two, three = ngrams_in_data(data=text)
         return one, two, three
 
 
@@ -904,7 +868,7 @@ class NGrams(object):
                 except ValueError:
                     print(part, line)
         
-        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        one, two, three = ngrams_in_data(data=text)
         return one, two, three
         
     def parse_config_0_0(self): 
@@ -915,7 +879,7 @@ class NGrams(object):
             spaceidx = l.index(" ")
             weight = float(l[:spaceidx])
             datapath = l[spaceidx+1:]
-            one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
+            one, two, three = ngrams_in_datapath(datapath=datapath)
             self.raw.append((weight, (one, two, three)))
 
     def normalize_raw(self):
@@ -969,6 +933,59 @@ class NGrams(object):
                 data += str(num) + " " + ngram + "\n"
             with open(p, "w") as f:
                 f.write(data)
+
+
+### Get all data: the main interface to this module
+
+def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None, ngram_config_path=None): 
+    """Get letters, bigrams and trigrams.
+
+    @param data: a string of text.
+    @param ngram_config_path: the path to an ngram config file. If this is specified, all other values are ignored.
+    @return: letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
+    """
+    #data = read_file("/tmp/sskreszta")
+
+    if ngram_config_path:
+        ngrams = NGrams(ngram_config_path)
+        return ngrams.one, len(ngrams.one), ngrams.two, len(ngrams.two), ngrams.three, len(ngrams.three)
+
+    # if we get a datastring, we use it for everything.
+    if datapath is not None:
+        letters, repeats, trigrams = ngrams_in_filepath(datapath)
+        bigrams = repeats
+        number_of_letters = sum([i for i, s in letters])
+        number_of_bigrams = sum([i for i, s in bigrams])
+        number_of_trigrams = sum([i for i, s in trigrams])
+    elif data is not None:
+        letters, repeats, trigrams = ngrams_in_data(data)
+        number_of_letters = sum([i for i, s in letters])
+        number_of_bigrams = sum([i for i, s in bigrams])
+        number_of_trigrams = sum([i for i, s in trigrams])
+
+    # otherwise we get the missing values from the predefined files. 
+    if letters is None or number_of_letters is None: 
+        letterdata = clean_data(read_file("1-gramme.15.txt"))
+        letters = letters_in_file_precalculated(letterdata)
+        #letters = letters_in_file(data)
+        number_of_letters = sum([i for i, s in letters])
+
+    if repeats is None or number_of_bigrams is None: 
+        bigramdata = clean_data(read_file("2-gramme.15.txt"))
+        bigrams = repeats_in_file_precalculated(bigramdata)
+        #repeats = repeats_in_file(data)
+        number_of_bigrams = sum([i for i, s in bigrams])
+    else: bigrams = repeats
+
+    if trigrams is None or number_of_trigrams is None:
+        trigramdata = clean_data(read_file("3-gramme.15.txt"))
+        trigrams = trigrams_in_file_precalculated(trigramdata)
+        number_of_trigrams = sum([i for i, s in trigrams])
+
+    return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
+
+
+### Self test
 
 def _test():
     from doctest import testmod
