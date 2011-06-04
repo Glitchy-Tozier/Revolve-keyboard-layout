@@ -763,26 +763,34 @@ class NGrams(object):
                 one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
                 self.raw.append((weight, (one, two, three)))
             elif typ=="pykeylogger":
-                with open(datapath) as f:
-                    data = f.read()
-                text = ""
-                for line in data.splitlines():
-                    # skip the beginning
-                    line = "|".join(line.split("|")[6:])
-                    try: 
-                        text += line[:line.index("[KeyName")]
-                    except ValueError:
-                        # no key name in there.
-                        text += line
-                        continue
-                    for part in line.split("[KeyName:")[1:]:
-                        try: 
-                            text += part[part.index("]")+1:]
-                        except ValueError:
-                            print(part, line)
-                one, onenum, two, twonum, three, threenum = get_all_data(data=text)
-                self.raw.append((weight, (one, two, three)))
+                one, two, three = self.read_pykeylogger_logfile(datapath)
+                self.raw.append((weight, (one, two, three)))        
             else: print("unrecognized filetype", typ, datapath)
+
+    def read_pykeylogger_logfile(self, datapath):
+        """Read a logfile from pykeylogger and extract all normal keys."""
+        with open(datapath) as f:
+            data = f.read()
+        # replace all special chars we know by the special chars used in our keyboard definition
+        data = data.replace("[KeyName:Return]", "\n")
+        data = data.replace("[KeyName:BackSpace]", "←")
+        text = ""
+        for line in data.splitlines():
+            # skip the beginning
+            line = "|".join(line.split("|")[6:])
+            try: 
+                text += line[:line.index("[KeyName")]
+            except ValueError:
+                # no key name in there.
+                text += line
+                continue
+            for part in line.split("[KeyName:")[1:]:
+                try: 
+                    text += part[part.index("]")+1:]
+                except ValueError:
+                    print(part, line)
+        one, onenum, two, twonum, three, threenum = get_all_data(data=text)
+        return one, two, three
         
     def parse_config_0_0(self): 
         lines = self.config.splitlines()
