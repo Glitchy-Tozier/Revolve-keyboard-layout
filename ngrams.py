@@ -788,20 +788,36 @@ class NGrams(object):
         m = Maildir(folderpath)
         num = 0
         for message in m.itervalues():
-            print (num, "/", len(m))
+            #print (num, "/", len(m))
             text += self._maildir_message_own_content(message)
+            print (text)
             num += 1
 
     def _maildir_message_own_content(self, message):
         """Remove all quotes and headers from the message.
 
         @return string of the content which was written by the author."""
-        from email.charset import Charset
+        import quopri
 #        import email.errors
         text = ""
         for t in message.walk():
             if t.get_content_type() == "text/plain":
-                body = t.as_string()
+                # remove quoted printable
+                # the following should work, but does not. 
+                # body = quopri.decodestring(t.as_string())
+                # fix directly from quopri: 
+                from io import BytesIO
+                infp = BytesIO(t.as_string().encode("utf-8"))
+                outfp = BytesIO()
+                quopri.decode(infp, outfp, header=False)
+                try: 
+                    body = outfp.getvalue().decode("utf-8")
+                except UnicodeDecodeError:
+                    try: body = outfp.getvalue().decode("iso-8859-1")
+                    except UnicodeDecodeError:                     
+                        print (t.as_string())
+                        body = t.as_string()
+
 #                try: 
 #                    c = Charset(body)
 #                except email.errors.CharsetError:
@@ -814,10 +830,14 @@ class NGrams(object):
                 # we only ever add the previous line, so we can remove fullquotes along with their data.
                 previous_line = ""
                 for l in body.splitlines():
-                    # skip comments and datablocks
+                    # stop reading the message
+                    if "Forwarded Message" in previous_line or previous_line.startswith("--"):
+                        break
+                    # skip quotes and stuff I want to ignore.
                     if (previous_line.startswith(">") or
                         previous_line.startswith(" >") or
-                        not " " in previous_line): # most likely an escaped datablock
+                        not " " in previous_line or # most likely an escaped datablock
+                        "http://" in previous_line): # an url
                         previous_line = l
                         continue
                     # add all lines which are not the beginning of a comment.
