@@ -748,6 +748,7 @@ class NGrams(object):
             self.parse_config_0_1()
         else:
             raise ParseException("ngrams config has no version header. Please start it with # ngrams source v<version>")
+        self.normalize_raw() # gets one, two and three
 
     def parse_config_0_1(self):
         lines = self.config.splitlines()
@@ -756,6 +757,7 @@ class NGrams(object):
         for l in lines[1:]:
             parts = l.split()
             weight, typ = parts[:2]
+            weight = float(weight)
             datapath = l[l.index(typ)+len(typ)+1:]
             if typ=="text":
                 one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
@@ -775,7 +777,7 @@ class NGrams(object):
                         continue
                     for part in line.split("[KeyName:")[1:]:
                         try: 
-                            text += part[part.index("]"):]
+                            text += part[part.index("]")+1:]
                         except ValueError:
                             print(part, line)
                 one, onenum, two, twonum, three, threenum = get_all_data(data=text)
@@ -793,7 +795,10 @@ class NGrams(object):
             one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
             self.raw.append((weight, (one, two, three)))
 
-        # normalize them
+    def normalize_raw(self):
+        """Normalize the raw ngrams and store them in self.one, self.two and self.three."""
+        
+        # normalize ngrams
         def _normalize(ngramlist):
             """normalize a list of ngrams.
 
