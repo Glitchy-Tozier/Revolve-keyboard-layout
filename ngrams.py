@@ -714,6 +714,7 @@ class ParseException(Exception):
     def __str__(self):
         return repr(self.parameter)
 
+
 class NGrams(object):
     """
     NGrams contains ngrams from various sources in raw and weighted
@@ -745,13 +746,24 @@ class NGrams(object):
             self.parse_config_0_0()
         elif self.config.startswith("# ngrams source v0.1"):
             self.parse_config_0_1()
-        
-    
+        else:
+            raise ParseException("ngrams config has no version header. Please start it with # ngrams source v<version>")
+
+    def parse_config_0_1(self):
+        lines = self.config.splitlines()
+        # the raw list of included ngrams.
+        self.raw = []
+        for l in lines[1:]:
+            parts = l.split()
+            weight, typ = parts[:2]
+            datapath = l[l.index(typ)+len(typ)+1:]
+            if typ=="text":
+                one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
+                self.raw.append((weight, (one, two, three)))
+            else: print("unrecognized filetype", typ, datapath)
         
     def parse_config_0_0(self): 
         lines = self.config.splitlines()
-        if not lines[0].startswith("# ngrams source v0.0"):
-            raise ParseException("ngrams config has no version header. Please start it with # ngrams source v0.0")
         # the raw list of included ngrams.
         self.raw = []
         for l in lines[1:]:
