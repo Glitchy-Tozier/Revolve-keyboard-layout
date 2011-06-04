@@ -857,11 +857,16 @@ if __name__ == "__main__":
     parser.add_argument("args")
     parser.add_argument("--conf", dest="config", help="The ngram config file to use.")
     parser.add_argument("--test", dest="test", action="store_true", help="Run the self-test.")
+    parser.add_argument("--save1", dest="one", help="File for the 1-grams.")
+    parser.add_argument("--save2", dest="two", help="File for the 2-grams.")
+    parser.add_argument("--save3", dest="three", help="File for the 3-grams.")
     from sys import argv
     args = parser.parse_args(argv)
     if args.config:
         ngrams = NGrams(args.config)
         print(ngrams.raw)
-    elif args.test:
+    if args.config and args.one and args.two and args.three:
+        ngrams.save(args.one, args.two, args.three)
+    if args.test:
         _test()
 
