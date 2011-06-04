@@ -729,6 +729,7 @@ class NGrams(object):
         config: plain text file (utf-8 encoded).
             # ngrams source v0.1
             weight type filepath
+            # comment
             weight type filepath
             …
 
@@ -755,6 +756,9 @@ class NGrams(object):
         # the raw list of included ngrams.
         self.raw = []
         for l in lines[1:]:
+            # # start a comment
+            if l.startswith("#"):
+                continue
             parts = l.split()
             weight, typ = parts[:2]
             weight = float(weight)
