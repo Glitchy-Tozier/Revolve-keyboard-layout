@@ -763,6 +763,7 @@ class NGrams(object):
             weight, typ = parts[:2]
             weight = float(weight)
             datapath = l[l.index(typ)+len(typ)+1:]
+            print ("Reading", typ, datapath)
             if typ=="text":
                 one, onenum, two, twonum, three, threenum = get_all_data(datapath=datapath)
                 self.raw.append((weight, (one, two, three)))
@@ -793,12 +794,16 @@ class NGrams(object):
         """
         text = ""
         from mailbox import Maildir
+        from termctrl import home, erase
         m = Maildir(folderpath)
         num = 0
         for message in m.itervalues():
-            #print (num, "/", len(m))
+            home()
+            print (num, "/", len(m), end="")
             text += self._maildir_message_own_content(message)
             num += 1
+        home()
+        erase()
         one, onenum, two, twonum, three, threenum = get_all_data(data=text)
         return one, two, three
 
