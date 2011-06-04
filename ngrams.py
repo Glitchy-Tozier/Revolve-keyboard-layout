@@ -797,7 +797,7 @@ class NGrams(object):
 
         @return string of the content which was written by the author."""
         from email.charset import Charset
-        import email.errors
+#        import email.errors
         text = ""
         for t in message.walk():
             if t.get_content_type() == "text/plain":
@@ -837,8 +837,14 @@ class NGrams(object):
             # skip the beginning
             line = "|".join(line.split("|")[6:])
             # replace all special chars we know by the special chars used in our keyboard definition
-            Line = line.replace("[KeyName:Return]", "\n")
+            line = line.replace("[KeyName:Return]", "\n")
             line = line.replace("[KeyName:BackSpace]", "←")
+            line = line.replace("[KeyName:Control_L]", "♕")
+            line = line.replace("[KeyName:Control_R]", "♛")
+            line = line.replace("[KeyName:Alt_L]", "♔")
+            line = line.replace("[KeyName:Alt_R]", "♚")
+            line = line.replace("[KeyName:Tab]", "⇥")
+            # remove all other special chars
             try: 
                 text += line[:line.index("[KeyName")]
             except ValueError:
@@ -850,6 +856,7 @@ class NGrams(object):
                     text += part[part.index("]")+1:]
                 except ValueError:
                     print(part, line)
+        
         one, onenum, two, twonum, three, threenum = get_all_data(data=text)
         return one, two, three
         
