@@ -128,8 +128,8 @@ class App():
             print "No outfile specified. use -o filename to do so.\nFile will be overwritten if it exists"
             sys.exit(0)
         filename = os.path.expanduser(self.opts.out)
-        outfile = codecs.open(filename, "wb", "iso8859_15", errors="replace")
-        #outfile = codecs.open(filename, "wb", "utf-8")
+        #outfile = codecs.open(filename, "wb", "iso8859_15", errors="replace")
+        outfile = codecs.open(filename, "wb", "utf-8", errors="replace")
         sys.stdout.write("Writing Logfile %s of channel %s on network %s for user %s... "%(filename, self.opts.channel, self.opts.network, self.opts.user))
         sys.stdout.flush()
         counter = Consolecounter("", "\nDone\n")
