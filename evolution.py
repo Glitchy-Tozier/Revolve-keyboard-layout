@@ -52,6 +52,8 @@ parser.add_option("-o", "--output", type="string", dest="filename", default=file
 parser.add_option("-n", "--number", type="int", dest="evolution_steps", default=num_layouts, help="number of steps")
 parser.add_option("-f", "--file", type="string", dest="data",
                   default=None, help="use the given textfile as korpus instead of the ngram files.", metavar="filepath")
+parser.add_option("--ngrams", dest="ngram_config",
+                  help="take the ngram sources from the config file", metavar="ngram.config")
 parser.add_option("--starting-layout-string", type="string", dest="starting_layout",
                   default=STARTING_LAYOUT, help="String version of the base layer of the starting layout.", metavar="layout")
 parser.add_option("--prerandomize", type="int", dest="prerandomize", default=prerandomize, help="the number of prerandomization steps to take")
@@ -115,6 +117,7 @@ for step in range(options.evolution_steps):
                            options.tail,
                            starting_layout=STARTING_LAYOUT,
                            datafile=options.data,
+                           ngram_config=options.ngram_config,
                            anneal=options.anneal,
                            anneal_step = anneal_step)
     if not meter:

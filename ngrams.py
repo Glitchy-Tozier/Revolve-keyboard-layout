@@ -65,6 +65,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     mods_on_same_hand_adjustment = 1/32
     #: The resulting bigrams after splitting.
     repeats = {}
+    
     for num, rep in reps:
         try: 
             pos1 = find_key(rep[0], layout=layout)
@@ -269,9 +270,15 @@ def repeats_in_file_precalculated(data, only_existing=True):
     reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.lstrip().split(" ", 1)[1:]]
     if only_existing: 
         all_keys = get_all_keys_in_layout(NEO_LAYOUT)
-        reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
+        try: 
+            reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
+        except ValueError: # we got floats
+            reps = [(float(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
     else:
-        reps = [(int(num), r) for num, r in reps if r[1:]]
+        try:
+            reps = [(int(num), r) for num, r in reps if r[1:]]
+        except ValueError: # we got floats
+            reps = [(float(num), r) for num, r in reps if r[1:]]
 
     # cleanup
     _unescape_ngram_list(reps)
@@ -622,9 +629,15 @@ def trigrams_in_file_precalculated(data, only_existing=True):
 
     if only_existing: 
         all_keys = get_all_keys_in_layout(NEO_LAYOUT)
-        trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
+        try: 
+            trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
+        except ValueError: # we got floats
+            trigs = [(float(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
     else:
-        trigs = [(int(num), r) for num, r in trigs if r[2:]]
+        try:
+            trigs = [(int(num), r) for num, r in trigs if r[2:]]
+        except ValueError: # we got floats
+            trigs = [(float(num), r) for num, r in trigs if r[2:]]
     # cleanup
     _unescape_ngram_list(trigs)
     trigs = split_uppercase_trigrams(trigs)
@@ -948,7 +961,7 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
 
     if ngram_config_path:
         ngrams = NGrams(ngram_config_path)
-        return ngrams.one, len(ngrams.one), ngrams.two, len(ngrams.two), ngrams.three, len(ngrams.three)
+        return [(num, ngram) for ngram, num in ngrams.one.items()], len(ngrams.one), [(num, ngram) for ngram, num in ngrams.two.items()], len(ngrams.two), [(num, ngram) for ngram, num in ngrams.three.items()], len(ngrams.three)
 
     # if we get a datastring, we use it for everything.
     if datapath is not None:
