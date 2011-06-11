@@ -716,7 +716,7 @@ class NGrams(object):
         """
         # read the config.
         try:
-            with open(config) as f:
+            with open(config, encoding="utf-8") as f:
                 self.config = f.read()
         except IOError:
             raise FileNotFoundException("File", config, "can’t be read.")
@@ -835,7 +835,7 @@ class NGrams(object):
         text = ""
         # we use regexps
         import re
-        with open(datapath) as f:
+        with open(datapath, encoding="utf-8") as f:
             for line in f.readlines():
                 # no lines without time (status stuff)
                 if not line.startswith("["):
@@ -854,7 +854,7 @@ class NGrams(object):
 
     def read_pykeylogger_logfile(self, datapath):
         """Read a logfile from pykeylogger and extract all normal keys."""
-        with open(datapath) as f:
+        with open(datapath, encoding="utf-8") as f:
             data = f.read()
         text = ""
         for line in data.splitlines():
@@ -944,7 +944,7 @@ class NGrams(object):
                 ngram = ngram.replace("\\", "\\\\")
                 ngram = ngram.replace("\n", "\\n")
                 data += str(num) + " " + ngram + "\n"
-            with open(p, "w") as f:
+            with open(p, "w", encoding="utf-8") as f:
                 f.write(data)
 
 
@@ -978,20 +978,20 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
 
     # otherwise we get the missing values from the predefined files. 
     if letters is None or number_of_letters is None: 
-        letterdata = clean_data(read_file("1-gramme.15.txt"))
+        letterdata = clean_data(read_file("1-gramme.arne.txt"))
         letters = letters_in_file_precalculated(letterdata)
         #letters = letters_in_file(data)
         number_of_letters = sum([i for i, s in letters])
 
     if repeats is None or number_of_bigrams is None: 
-        bigramdata = clean_data(read_file("2-gramme.15.txt"))
+        bigramdata = clean_data(read_file("2-gramme.arne.txt"))
         bigrams = repeats_in_file_precalculated(bigramdata)
         #repeats = repeats_in_file(data)
         number_of_bigrams = sum([i for i, s in bigrams])
     else: bigrams = repeats
 
     if trigrams is None or number_of_trigrams is None:
-        trigramdata = clean_data(read_file("3-gramme.15.txt"))
+        trigramdata = clean_data(read_file("3-gramme.arne.txt"))
         trigrams = trigrams_in_file_precalculated(trigramdata)
         number_of_trigrams = sum([i for i, s in trigrams])
 
