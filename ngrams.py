@@ -551,7 +551,7 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     >>> trig[:12]
     [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
     """
-    f = open(datapath, encoding="utf-8")
+    f = open(datapath, encoding="utf-8", errors="ignore")
     letters = {}
     repeats = {}
     trigs = {}
@@ -742,7 +742,7 @@ class NGrams(object):
             datapath = l[l.index(typ)+len(typ)+1:]
             print ("Reading", typ, datapath)
             if typ=="text":
-                one, two, three= ngrams_in_datapath(datapath=datapath)
+                one, two, three = ngrams_in_filepath(datapath=datapath)
                 self.raw.append((weight, (one, two, three)))
             elif typ=="pykeylogger":
                 one, two, three = self.read_pykeylogger_logfile(datapath)
