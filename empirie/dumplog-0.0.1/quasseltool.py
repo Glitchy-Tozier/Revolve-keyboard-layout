@@ -288,6 +288,15 @@ class Logformat_mIRC (Logformat):
     def topicjoin2(self, time, user, logtime):
         return "%s *** Set by %s on %s\n"%(self._now(time), user, logtime)
 
+
+class Logformat_bab(Logformat_mIRC):
+    def __init__(self, buffer):
+        Logformat_mIRC.__init__(self, buffer)
+
+    def _now(self, timestamp):
+        return time.strftime("[%Y-%m-%d %H:%M.%S]", time.localtime(timestamp))
+
+
 def mirc_color(num, num2=None):
     newnum = str(num).rjust(2, "0")
     if num2 is None:
@@ -407,7 +416,7 @@ class Logutil:
         except:
             return False
         
-    def getlog(self, username, network, buffer, outstream, fmt=Logformat_mIRC(buffer), counter=None):
+    def getlog(self, username, network, buffer, outstream, fmt=Logformat_bab(buffer), counter=None):
         """gets a logfile
         outstream must support .write() for strings
         fmt must be a Logformat child"""
