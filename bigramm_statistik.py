@@ -14,6 +14,8 @@ def p(*args, **kwds):
 def _pos_cleanup(pos):
     """Cleanup a position for a better image."""
     # shift the position to fit with the image.
+    if pos[0] == 0:
+        pos = (pos[0], pos[1] - 1, pos[2])
     if pos[0] == 4:
         if pos[1] == 4: pos = (pos[0], pos[1] + 3, pos[2])
         elif pos[1] == 8: pos = (pos[0], pos[1] + 6, pos[2])
@@ -23,7 +25,7 @@ def _pos_cleanup(pos):
 def pos_to_svg_coord(pos):
     """turn a position tuple into corresponding svg coordinates (xy)."""
     pos = _pos_cleanup(pos)
-    if pos[0] == 3 and pos[1] <= 1:
+    if (pos[0] == 3 or pos[0] == 0) and pos[1] <= 1:
         pos = pos[0], 0.5*pos[1] + 1, pos[2]
     pos = (50*pos[1] - 2, 50 + 50*pos[0])
     return pos
@@ -138,7 +140,9 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
             dy += 50
             l = "⏎"
         elif pos == (3, 12, 0):
-            dx += 100
+            dx += 100 # shift_R
+        elif pos == (0, 13, 0):
+            dx += 50 # backspace
         # add the background
         letter_dist.addElement(
             oh.createRect(x, y,
