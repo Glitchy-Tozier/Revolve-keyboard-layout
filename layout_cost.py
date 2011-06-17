@@ -115,7 +115,9 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
 neighboring_fingers = movement_pattern_cost
 
 def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
-    """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances und with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
+    """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances and with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
+
+    If the second key is unbalancing, too, and on the other side of the hand: add it to the cost.
 
     If the second key is in another row than the first, multiply by the squared distance in rows + 1.
 
