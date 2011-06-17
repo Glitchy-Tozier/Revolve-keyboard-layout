@@ -122,6 +122,13 @@ WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key followi
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
+    (0, 0, 0): 2, # ^
+    (0, 1, 0): 2, # 1
+    (0, 2, 0): 2, # 2
+    (0, 10, 0): 2, # 0
+    (0, 11, 0): 2, # -
+    (0, 12, 0): 2, # `
+    (0, 13, 0): 3, # Backspace
     (1, 0, 0): 2, # Tab
     (1, 1, 0): 1,# x
     (1, 5, 0): 2, # w
@@ -137,7 +144,9 @@ UNBALANCING_POSITIONS = {
     (3, 0, 0): 2, # L_Shift
     (3, 12, 0): 2, # R_Shift
     (3, 6, 0): 2, # z
-    (3, 7, 0): 1 # b
+    (3, 7, 0): 1, # b
+    (4, 0, 0): 3, # L_Ctrl
+    (4, 0, 7): 3 # R_Ctrl
 }
 
 
