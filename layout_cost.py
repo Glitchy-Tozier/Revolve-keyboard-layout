@@ -213,10 +213,6 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
         key2 = pair[1]
         pos1 = find_key(key1, layout=layout)
         pos2 = find_key(key2, layout=layout)
-        # ignore line changes involving the thumb.
-        with_thumb = pos1 in FINGER_POSITIONS["Daumen_L"] or pos1 in FINGER_POSITIONS["Daumen_R"] or pos2 in FINGER_POSITIONS["Daumen_L"] or pos2 in FINGER_POSITIONS["Daumen_R"]
-        if with_thumb:
-            continue
         if pos1 and pos2:
             if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
                 # check if we’re on the same hand
@@ -234,6 +230,11 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             p2 = pos2[:2] + (0, )
             f1 = KEY_TO_FINGER.get(p1, None)
             f2 = KEY_TO_FINGER.get(p2, None)
+            
+            # ignore line changes involving the thumb.
+            if not f1 or not f2 or (f1.startswith("Daumen") or f2.startswith("Daumen")):
+                continue
+
             f1_is_short = f1 in SHORT_FINGERS
             f2_is_short = f2 in SHORT_FINGERS
             f1_is_long = f1 in LONG_FINGERS
