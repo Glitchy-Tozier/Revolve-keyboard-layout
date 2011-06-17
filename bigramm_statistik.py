@@ -10,13 +10,23 @@ def p(*args, **kwds):
     """print without linebreak (saves typing :) )"""
     return print(end=" ", *args, **kwds)
 
+
+def _pos_cleanup(pos):
+    """Cleanup a position for a better image."""
+    # shift the position to fit with the image.
+    if pos[0] == 4:
+        if pos[1] == 4: pos = (pos[0], pos[1] + 3, pos[2])
+        elif pos[1] == 8: pos = (pos[0], pos[1] + 6, pos[2])
+        elif pos[1] > 4: pos = (pos[0], pos[1] + 5, pos[2])
+    return pos
+
 def pos_to_svg_coord(pos):
     """turn a position tuple into corresponding svg coordinates (xy)."""
+    pos = _pos_cleanup(pos)
     if pos[0] == 3 and pos[1] <= 1:
         pos = pos[0], 0.5*pos[1] + 1, pos[2]
     pos = (50*pos[1] - 2, 50 + 50*pos[0])
     return pos
-
 
 def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, lett=None, trigrams=None, repeats=None, number_of_letters=None):
     """print an svg from the bigrams.
@@ -39,7 +49,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     d = defs()
     S.addElement(d)
     S.setAttribute("xmlns:inkscape", "http://www.inkscape.org/namespaces/inkscape")
-    S.set_height("300")
+    S.set_height("350")
     #max_cost = max(cost for number, cost, bigram in bigrams)
     color_scale = 1
     max_linewidth = 25
@@ -48,15 +58,21 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     letters = g()
     letter_dist = g()
     group_handswitch = g()
+    group_space = g()
+    group_commands = g()
     group_shifts = g()
     group_inwards = g()
     group_outwards = g()
     group_fingerrepeat = g()
     group_info = g()
-    for gr in (group_handswitch, group_shifts, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
+    for gr in (group_handswitch, group_space, group_commands, group_shifts, group_inwards, group_outwards, group_fingerrepeat, letters, letter_dist, group_info): 
         gr.setAttribute("inkscape:groupmode", "layer")
     group_handswitch.setAttribute("inkscape:label", "Handwechsel")
     group_handswitch.setAttribute("display", "none")
+    group_space.setAttribute("inkscape:label", "Leerzeichen")
+    group_space.setAttribute("display", "none")
+    group_commands.setAttribute("inkscape:label", "Befehl")
+    group_commands.setAttribute("display", "none")
     group_shifts.setAttribute("inkscape:label", "Shift")
     group_shifts.setAttribute("display", "none")
     group_inwards.setAttribute("inkscape:label", "Einwärts")
@@ -69,6 +85,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     S.addElement(letter_dist)
     S.addElement(group_info)
     S.addElement(group_handswitch)
+    S.addElement(group_space)
+    S.addElement(group_commands)
     S.addElement(group_shifts)
     S.addElement(group_inwards)
     S.addElement(group_outwards)
@@ -96,13 +114,15 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     else: positions = []
     oh = ShapeBuilder()
     for pos in positions:
-        if pos[2] or pos[0]>3: continue # only base layer.
-        # get the letter.
-        l = get_key(pos, layout=layout)
-        # shift the position to fit with the image.
+        if pos[2] or pos[0]>4: continue # only base layer.
+
+        # fix positions: lower row shifted one to the left, because it is (on standard keyboards)
         if pos[0] != 3:
             pos1 = (pos[0], pos[1] + 1, pos[2])
         else: pos1 = pos
+
+        # get the letter.
+        l = get_key(pos, layout=layout)
         # get the coords in the image
         coord = pos_to_svg_coord(pos1)
         
@@ -155,23 +175,19 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
     lay_strings = format_layer_1_string(layout).splitlines()
     for i in range(len(lay_strings)): 
-        layout_string = text(lay_strings[i], 50, 250 + 20*i)
+        layout_string = text(lay_strings[i], 50, 300 + 20*i)
         layout_string.set_font_size(18)
         group_info.addElement(layout_string)
     # add statistics
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=lett, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
     tppl = total/max(1, number_of_letters)
-    cost_string = text("cost (tppl): " + str(tppl), 325, 250)
+    cost_string = text("cost (tppl): " + str(tppl), 325, 300)
     cost_string.set_font_size(18)
     group_info.addElement(cost_string)
     
     # make sure the most used bigram is shown on top (drawn last)
     bigrams.sort()
     for number, cost, bigram in bigrams:
-
-        # ignore spaces
-        if " " in bigram:
-            continue
 
         pos0 = find_key(bigram[0], layout)
         pos1 = find_key(bigram[1], layout)
@@ -233,18 +249,27 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         color = tuple([255-c for c in color])
         width = num_scale * number
 
+        # select the group
         shift = "⇗" in bigram or "⇧" in bigram
+        space = " " in bigram
+        command = bigram[0] == "♕" or bigram[0] == "♔" or bigram[0] == "♛" or bigram[0] == "♚"
 
-        if column_repeat:
-            group_fingerrepeat.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        if space:
+            group = group_space
+        elif command:
+            group = group_commands
+        elif column_repeat:
+            group = group_fingerrepeat
         elif handswitch:
-            group_handswitch.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+            group = group_handswitch
         elif shift:
-            group_shifts.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+            group = group_shifts
         elif inwards: 
-            group_inwards.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+            group = group_inwards
         else:
-            group_outwards.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+            group = group_outwards
+        
+        group.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
 
     if svg_output is None: 
         print(S.getXML())
