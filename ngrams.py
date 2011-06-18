@@ -5,6 +5,29 @@
 
 from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
+### Constants
+
+# shorthand: ngrams in these are more seldomly between word-parts.
+#: shorthand pre and suffixes
+_steno_fix = "all ant ander bis da dar ent er es ge gegen hab her hin hint ich in könn konnt keit kon lich mit rück schaft sei seid seine selbst so sollst sonders sondern tum tüm über übr un ung unser unter ver voll völl voll völl wenn werd wieder widr wiedr wider willst zer zu zurück zum zur"
+
+#: shorthand words
+_steno_short = "als also auf aus das dass deine dem den der des dessen deutsch die dies doch durch eine fort für hast hat haft hatt hätt heit ist kannst keine meine miss nicht nichts nieder noch nur ohne schon sich sie sind solch und usw vom woll wir wird wirst wo worden wurde würde"
+
+#: shorthand, too much
+_steno_short_too_long = "besonders zusammen zwischen vielleicht"
+
+#: shorthand ngram-letters
+_steno_letters = "pf cht ng h ch eit tr br gr kr rr dr fr pr pfr wr uhr ur au eu rs ss tz sch st nd ndr rd mp mpf sp spr str schr zw schw schm schn st cr qu ex ion"
+
+#: shorthand, higher level letters
+_steno_eil_letters = "en es ge  ber ger ter ker rer der fer per wer pfer igkeit ung du st est pro frag fall fahr zahl hand man männ dis bot isch istisch ie bar sam ial iell"
+
+#: shorthand, higher level words → these are likely too much.
+_steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr komm kömm schließ kauf käuf tisch immer nimmer gleich wachs  selb stell schreib schrieb schrift zeit tag groß etwa etwas wer jetzt größ geschäft mensch punkt tausend million mindestens wenigstens einzeln volk völk prozentual darauf gesamt insgesamt sonst forder förder konto selbstverständlich kunst zunächst gesetz allgemein angenehm ungefähr gesellschaft möglich wirtschaft versicher genossenschaft kapital sozial beschäftig person fabrik finanz organisation"
+
+### Functions
+
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
 
@@ -728,6 +751,9 @@ class NGrams(object):
             raise ParseException("ngrams config has no version header. Please start it with # ngrams source v<version>")
         self.normalize_raw() # gets one, two and three
 
+        # increases the weight for ngrams which are shorts in steno: profit from 100 years of professional writing experience.
+        self.weight_steno()
+
     def parse_config_0_1(self):
         lines = self.config.splitlines()
         # the raw list of included ngrams.
@@ -808,7 +834,9 @@ class NGrams(object):
                         print (t.as_string())
                         body = t.as_string()
 
-                body = body[body.index("\n\n"):]
+                try: 
+                    body = body[body.index("\n\n"):]
+                except ValueError: continue # no body
                 # we only ever add the previous line, so we can remove fullquotes along with their data.
                 previous_line = ""
                 for l in body.splitlines():
@@ -927,6 +955,36 @@ class NGrams(object):
                 for num, ngram in norm:
                     try: weighted[ngram] += num*weight
                     except KeyError: weighted[ngram] = num*weight
+
+    def weight_steno(self, factor=0.25):
+        """weight shorthand ngrams higher by the factor than others, because they are seldomly at the rim between word-segments.
+
+        profit from 100 years of professional writing experience."""
+        # get the steno
+        _steno = _steno_fix.split() + _steno_short.split() + _steno_letters.split() + _steno_eil_letters.split()
+        stenotwo = set()
+        for ngram in _steno:
+            while ngram[1:]:
+                stenotwo.add(ngram[:2])
+                ngram = ngram[1:]
+        stenothree = set()
+        for ngram in _steno:
+            while ngram[2:]:
+                stenothree.add(ngram[:3])
+                ngram = ngram[1:]
+
+        #print(set(self.two.keys()).difference(stenotwo))
+        #print(len(stenotwo)/len(self.two)) # → 0.008315677966101696
+
+        # weight the ngrams
+        for two in stenotwo:
+            try:
+                self.two[two] *= 1+factor
+            except KeyError: pass
+        for three in stenothree:
+            try:
+                self.three[three] *= 1+factor
+            except KeyError: pass
 
     def save(self, one, two, three):
         """save the data to the files one, two and three (i.e. 1gramme.txt, 2gramm…).
