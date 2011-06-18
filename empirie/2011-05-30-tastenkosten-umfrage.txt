@@ -172,35 +172,33 @@ Abweichung:
 
 
 (4) (das hier kann in den Optimierer)
-scipy.mean(scipy.array(g), 0)*5
-array([ 31.78571429,  24.95684524,  16.32886905,  17.65401786,
-        23.44345238,  40.75      ,  20.50223214,  16.48065476,
-        23.43675595,  29.58035714,  34.18638393,   5.45386905,
-         1.78125   ,   0.890625  ,   0.31696429,  13.18452381,
-        12.72247024,   0.31696429,   0.57366071,   2.13020833,
-         5.83333333,  21.71577381,  29.22395833,  32.50520833,
-        29.82886905,  18.359375  ,  35.17931548,  23.31845238,
-        19.23065476,  22.59821429,  26.00744048,  25.74255952])
-
-scipy.std(scipy.array(g), 0)*5
-array([ 20.13301414,  16.92330995,  12.84703818,  12.94259122,
-         9.49098697,  19.9642099 ,  13.00536592,  12.77103352,
-        17.01769223,  12.28493272,  15.48204197,   5.05161804,
-         3.81869739,   2.39904272,   1.14283098,   8.55101063,
-         8.78825397,   1.14283098,   1.41419419,   3.14061266,
-         5.02668505,   8.16682082,  12.44181819,  16.35482196,
-        12.02581221,   2.88625393,  11.3764268 ,   6.89816816,
-        12.40593192,   9.05221323,   9.7489335 ,   7.99820404])
+>>> scipy.mean(scipy.array(g), 0)*2
+array([ 12.71428571,   9.9827381 ,   6.53154762,   7.06160714,
+         9.37738095,  16.3       ,   8.20089286,   6.5922619 ,
+         9.37470238,  11.83214286,  13.67455357,   2.18154762,
+         0.7125    ,   0.35625   ,   0.12678571,   5.27380952,
+         5.0889881 ,   0.12678571,   0.22946429,   0.85208333,
+         2.33333333,   8.68630952,  11.68958333,  13.00208333,
+        11.93154762,   7.34375   ,  14.07172619,   9.32738095,
+         7.6922619 ,   9.03928571,  10.40297619,  10.29702381])
+>>> scipy.std(scipy.array(g), 0)*2
+array([ 8.05320565,  6.76932398,  5.13881527,  5.17703649,  3.79639479,
+        7.98568396,  5.20214637,  5.10841341,  6.80707689,  4.91397309,
+        6.19281679,  2.02064721,  1.52747896,  0.95961709,  0.45713239,
+        3.42040425,  3.51530159,  0.45713239,  0.56567767,  1.25624506,
+        2.01067402,  3.26672833,  4.97672727,  6.54192878,  4.81032488,
+        1.15450157,  4.55057072,  2.75926726,  4.96237277,  3.62088529,
+        3.8995734 ,  3.19928161])
 
 Werte: 
-32 25 16 18 23   41 21 16 23 30 34
- 5  2  1  0 13   13  0  1  2  6 22
-29 33 30 18 35   23 19 23 26 26
+13 10  7  7  9   16  8  7  9 11 14
+ 2  1  0  0  5    5  0  0  1  2  9
+12 13 12  7 14    9  8  9 10 10
 
 Standardabweichung (Bereich, in dem der Wert liegen sollte; Wert ± std): 
-20 17 13 13  9   20 13 13 17 12 15
- 5  3  2  1  9    9  1  1  3  5  8
-12 16 12  3 11    7 12  9 10  8
+ 8  7  5  5  3    8  5  5  7  5  6
+ 2  2  1  0  3    4  0  1  1  2  3
+ 5  7  5  1  5    3  5  4  4  3
 
 Notizen bab
 ===========
@@ -211,154 +209,60 @@ Kleiner Finger aus Grundposition ist sehr Sehnenscheidengefährlich, mindestens 
 Erstellung der Statistik
 ========================
 
-    import scipy
-    scipy.matrix()
-    with open("2011-05-30-tastenkosten-umfrage.csv") as f: 
-     a = f.readlines()
-    a
-    b = [n.split() for n in a]
-    b
-    c = [[float(n) for n in x] for x in b]]
-    c = [[float(n) for n in x] for x in b]
-    c
-    c = [l for l in c if l]
-    c
-    scipy.mean(c)
-    scipy.mean(c,1)
-    c
-    scipy.std(c,1)
-    c[13]
-    c[12]
-    c[11]
-    c[10]
-    c[14]
-    c[15]
-    scipy.std(c,1) / scipy.mean(c,1)
-    min(scipy.std(c,1) / scipy.mean(c,1))
-    c[6]
-    c[5]
-    scipy.mean(c,1)
-    scipy.std(c,1)
-    min(scipy.std(c,1) / scipy.mean(c,1))
-    scipy.std(c,1) / scipy.mean(c,1)
-    scipy.std(c,1) / (4-scipy.mean(c,1))
-    scipy.std(c,1) / (4.5-scipy.mean(c,1))
-    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
-    c[:4]
-    b
-    a
-    c = [[float(n) for n in x] for x in b]
-    c
-    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
-    c = [l for l in c if l]
-    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
-    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
-    scipy.std(c,1) / abs(3.5-scipy.mean(c,1))
-    scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
-    c[:4]
-    c[,4]
-    c[4]
-    c
-    scipy.std(c,1) * abs(4.5-scipy.mean(c,1))
-    d = []
-    for i in c: 
-     for j in i: 
-    for j in c[0]: 
-     d.append(j)
-    d
-    d = []
-    for j in c[0]: 
-     d.append([])
-    for i in range(len(c)): 
-     for j in range(len(c[i])): 
-      d[j].append(c[i][j])
-    d
-    d
-    array(d)
-    scipy.array(d)
-    matrix(c)
-    scipy.matrix(c)
-    scipy.matrix(c).transpose()
-    for i in d: 
-    e = []
-    for i in d: 
-     for j in i: 
-      pass # e.append(9 / max(i) * j)
-    for i in d: 
-     e.append([])
-     for j in i: 
-      e[-1].append(9.0/max(i)*j)
-    e
-    array(e)
-    scipy.array(e)
-    e = []
-    for i in d: 
-     e.append([])
-     for j in i: 
-      e[-1].append(4.5/j[-5])
-    for i in d: 
-     e.append([])
-     for j in i: 
-      e[-1].append(4.5/i[-5])
-    e
-    e = []
-    for i in d: 
-     e.append([])
-     for j in i: 
-      e[-1].append(4.5/i[-5])
-    scipy.mat(e)
-    e = []
-    for i in d: 
-     e.append([])
-     for j in i: 
-      e[-1].append(4.5/i[-5]*j)
-    scipy.mat(e)
-    f = []
-    for i in d: 
-     f.append([])
-     for j in i: 
-      f[-1].append(3.5/i[-7]*j)
-    scipy.mat(f)
-    mean([e, f])
-    scipy.mean([e, f])
-    scipy.mean([e, f], 1)
-    scipy.mean([e, f], 2)
-    scipy.mean([e, f], 1)
-    scipy.std([e, f], 1)
-    g = e[:] + f[:]
-    g
-    g = scipy.mat(e)[:] + scipy.mat(f)[:]
-    g
-    g = (scipy.mat(e)[:] + scipy.mat(f)[:])/2
-    g
-    let(e)
-    len(e)
-    len(g)
-    g
-    scipy.mean(g)
-    scipy.mean(g, 1)
-    scipy.mean(g, 2)
-    scipy.mean(g, 1)
-    scipy.mean(g, 2)
-    g
-    array(g)
-    scipy.array(g)
-    scipy.mean(scipy.array(g))
-    scipy.mean(scipy.array(g), 2)
-    scipy.mean(scipy.array(e), 2)
-    scipy.mean(scipy.array(e), 1)
-    scipy.mean([e, f], 2)
-    scipy.mean([e, f], 1)
-    scipy.mean(scipy.array(g), 0)
-    scipy.std(scipy.array(g), 0)
-    scipy.std(scipy.array(g), 0)[-6]
-    scipy.mean(scipy.array(g), 0)[-6]
-    scipy.std(scipy.array(g), 0)*5
-    scipy.mean(scipy.array(g), 0)*5
-    scipy.array(e)
-    mean(scipy.array(e), 1)
-    scipy.mean([e, f], 1)
-    scipy.mean(scipy.array(g), 0)*5
-    scipy.std(scipy.array(g), 0)*5
-    scipy.mean(scipy.array(g), 0)
-    scipy.std(scipy.array(g), 0)
+import scipy
+scipy.matrix()
+with open("2011-05-30-tastenkosten-umfrage.csv") as f: 
+ a = f.readlines()
+
+b = [n.split() for n in a]
+c = [[float(n) for n in x] for x in b]]
+c = [[float(n) for n in x] for x in b]
+c = [l for l in c if l]
+
+scipy.mean(c)
+scipy.mean(c,1)
+
+scipy.std(c,1)
+scipy.std(c,1) / scipy.mean(c,1)
+min(scipy.std(c,1) / scipy.mean(c,1))
+scipy.mean(c,1)
+scipy.std(c,1)
+min(scipy.std(c,1) / scipy.mean(c,1))
+scipy.std(c,1) / scipy.mean(c,1)
+scipy.std(c,1) / (4-scipy.mean(c,1))
+scipy.std(c,1) / (4.5-scipy.mean(c,1))
+scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+c = [[float(n) for n in x] for x in b]
+scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+c = [l for l in c if l]
+scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+scipy.std(c,1) / abs(3.5-scipy.mean(c,1))
+scipy.std(c,1) / abs(4.5-scipy.mean(c,1))
+scipy.std(c,1) * abs(4.5-scipy.mean(c,1))
+d = []
+for j in c[0]: 
+ d.append([])
+
+for i in range(len(c)): 
+ for j in range(len(c[i])): 
+  d[j].append(c[i][j])
+
+e = []
+for i in d: 
+ e.append([])
+ for j in i: 
+  e[-1].append(4.5/i[-5]*j)
+
+f = []
+for i in d: 
+ f.append([])
+ for j in i: 
+  f[-1].append(3.5/i[-7]*j)
+
+scipy.std([e, f], 1)
+g = (scipy.mat(e)[:] + scipy.mat(f)[:])/2
+
+scipy.mean([e, f], 1)
+scipy.mean(scipy.array(g), 0)*2
+scipy.std(scipy.array(g), 0)*2
