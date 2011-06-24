@@ -58,7 +58,7 @@ WEIGHT_CRITICAL_FRACTION_MULTIPLIER = 2 #: The amount of usage higher than the c
 COST_PER_KEY  = [
     # The 0 values aren’t filled in at the moment.
     # Don’t put mutated keys there, otherwise the best keys will end up there!
-    [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
+    [80,    70,60,50,50,60,    60,50,50,50,50,60,70,80], # Zahlenreihe (0)
     [24,    20,10, 7, 7, 9,    16, 8, 7, 9,11, 14,36, 0], # Reihe 1
     [5,      5, 3, 3, 3, 5,     5, 3, 3, 3, 5,  9,20,30], # Reihe 2
     [18,14, 17,24,20, 9,    30, 10, 8,22,22,15,      17],     # Reihe 3

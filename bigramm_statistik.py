@@ -114,6 +114,13 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         first_letter_scale = 254 / max(first_letters.values())
 
     else: positions = []
+
+    position_costs = {find_key(le, layout=layout): num for num, le in lett}
+    p = {}
+    for pos in position_costs:
+        try: p[pos[:2] + (0 ,)] += position_costs[pos]
+        except KeyError: p[pos[:2] + (0 ,)] = position_costs[pos]
+
     oh = ShapeBuilder()
     for pos in positions:
         if pos[2] or pos[0]>4: continue # only base layer.
@@ -129,9 +136,10 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         coord = pos_to_svg_coord(pos1)
         
         # get the color for the background
-        try: 
-            num = lett[[le for n, le in lett].index(l)][0]
-        except ValueError: num = 0
+        try:
+            num = p[pos]
+            #num = lett[[le for n, le in lett].index(l)][0]
+        except KeyError: num = 0
         color = colorwheel(num*letter_scale, palette="grey")
         # get the dimensions of the background
         x, y, dx, dy = coord[0]-25, coord[1]-25, 50, 50,
