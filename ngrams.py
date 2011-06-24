@@ -896,6 +896,12 @@ class NGrams(object):
             line = line.replace("[KeyName:Alt_L]", "♔")
             line = line.replace("[KeyName:Alt_R]", "♚")
             line = line.replace("[KeyName:Tab]", "⇥")
+            m3 = "[KeyName:Mode_switch]"
+            m4 = "[KeyName:[65027]]"
+            # 3rd and 4th layer are not captured correctly: cut the rest of the line when they are pressed
+            for cut in (m3, m4): 
+                if cut in line:
+                    line=line[:line.index(cut)]
             # remove all other special chars
             try: 
                 text += line[:line.index("[KeyName")]
