@@ -42,7 +42,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     @param bigrams: [(number, cost, bigram), …]
     """
     # only import here to avoid the import overhead for other actions.
-    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g, text
+    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g, text, add_circle
     from layout_base import find_key, pos_is_left, get_key, get_all_positions_in_layout
     S = svg("Belegung")
     #oh = ShapeBuilder()
@@ -274,6 +274,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
             group = group_outwards
         
         group.addElement(add_line(d, color=color, xy0=pos0, xy1=pos1, width=width, opacity=opacity, upstroke=inwards))
+        group.addElement(add_circle(d, color, xy=pos1, width=width/2, opacity=opacity))
 
     if svg_output is None: 
         print(S.getXML())

@@ -116,9 +116,39 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
         0.5*(dx), control_y, # control point, x, y
         dx, dy # target
         )
-    
+
     return path3
 
+
+def add_circle(d, color=(255,0,0), xy=(0,0), width=3, opacity=1.0):
+    """Draw a single curved line.
+
+    @param S: S = svd(name)
+    @param d: d = defs()
+    """
+
+    color_id = "c" + "_".join([str(c) for c in color]) + "_" + str(opacity)
+    color_string = "rgb(" + ",".join([str(c) for c in color]) + ")"
+
+    cx, cy = xy
+
+    lg = linearGradient()
+    lg.set_id(color_id)
+    for i in ("0%", "100%"):
+        s = stop(offset=i)
+        s.set_stop_color(color_string)
+        s.set_stop_opacity(opacity)
+        lg.addElement(s)
+    d.addElement(lg)
+    
+    sh=StyleBuilder()
+    sh.setFilling('url(#' + color_id + ')')
+    sh.setStroke('url(#' + color_id + ')')
+    sh.setStrokeWidth(str(width)+'px')
+
+    c = circle(cx=cx, cy=cy, r=width/2, style=sh.getStyle())
+
+    return c
 
 ### Self-Test ###
 
