@@ -73,14 +73,14 @@ def add_line(d, color=(255,0,0), xy0=(0,0), xy1=(200,400), width=3, upstroke=Tru
     s = stop(offset="0%")
     s.set_stop_color(color_string)
     if to_right or not dx and not upwards: 
-        s.set_stop_opacity(0.1)
+        s.set_stop_opacity(0.01)
     else: s.set_stop_opacity(opacity)
     lg.addElement(s)
     s = stop(offset="100%")
     s.set_stop_color(color_string)
     if to_right or not dx and not upwards: 
         s.set_stop_opacity(opacity)
-    else: s.set_stop_opacity(0.1)
+    else: s.set_stop_opacity(0.01)
     lg.addElement(s)
     if not dx:
         tb = TransformBuilder()
@@ -142,7 +142,7 @@ def add_circle(d, color=(255,0,0), xy=(0,0), width=3, opacity=1.0):
     d.addElement(lg)
     
     sh=StyleBuilder()
-    sh.setFilling('url(#' + color_id + ')')
+    sh.setFilling('none')#'url(#' + color_id + ')')
     sh.setStroke('url(#' + color_id + ')')
     sh.setStrokeWidth(str(width)+'px')
 

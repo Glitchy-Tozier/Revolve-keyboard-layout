@@ -212,8 +212,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         # handswitches have far lower opacity
         if is_left0 != is_left1:
             handswitch = True
-            opacity = 0.03
-            #continue # ignore them, they needlessly blow up the svg.
+            opacity = 0.2
         else:
             handswitch = False
             opacity = 1.0
@@ -268,12 +267,12 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
         if space:
             group = group_space
+        elif handswitch:
+            group = group_handswitch
         elif command:
             group = group_commands
         elif column_repeat:
             group = group_fingerrepeat
-        elif handswitch:
-            group = group_handswitch
         elif shift:
             group = group_shifts
         elif inwards: 
