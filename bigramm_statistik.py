@@ -222,9 +222,9 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
             pos0 = pos0[0], pos0[1] + 1, pos0[2]
         if pos1[0] != 3:
             pos1 = pos1[0], pos1[1] + 1, pos1[2]
-            
+        
         # out- or inwards
-        to_right = pos1[1] > pos0[1]
+        to_right = _pos_cleanup(pos1)[1] > _pos_cleanup(pos0)[1]
         inwards = is_left0 and to_right or not is_left0 and not to_right
 
         column_repeat = pos1[1] == pos0[1]
