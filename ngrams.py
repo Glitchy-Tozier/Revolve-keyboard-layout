@@ -1036,6 +1036,7 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
         number_of_trigrams = sum([i for i, s in trigrams])
     elif data is not None:
         letters, repeats, trigrams = ngrams_in_data(data)
+        bigrams = repeats
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
         number_of_trigrams = sum([i for i, s in trigrams])
