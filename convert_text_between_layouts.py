@@ -5,7 +5,7 @@
 
 Simple Usage: ./convert_text_between_layouts.py [--name <layout-name>] [--qwertz]
 
-Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || --name <layout-name>]] [[--base "<layout-string>"] || [--qwertz] || [--nordtast]] [--text "<text>" || --file file.txt]
+Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || --name <layout-name>]] [[--base "<layout-string>"] || --base-name <layout-name> || [--qwertz] || [--nordtast]] [--text "<text>" || --file file.txt]
 
 Example: 
 
@@ -166,6 +166,18 @@ heaiu dtrnmf
 ⇚yjä,ö bgßwp
 """[1:]
 
+haeik = """
+xyoü, pclmvß´
+haeik dtnrsw
+zäöu. bgjqf
+"""
+
+ghei = """
+juo,ö qpmlvzß
+ghei. ctnrs⇘
+kyüaä bdwxf
+"""
+
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
 text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
 
@@ -214,6 +226,9 @@ elif argv[2:] and argv[1] == "--name":
    argv = argv[:1] + argv[3:]
 if argv[2:] and argv[1] == "--base": 
    base = argv[2]
+   argv = argv[:1] + argv[3:]
+elif argv[2:] and argv[1] == "--base-name": 
+   base = eval(argv[2])
    argv = argv[:1] + argv[3:]
 elif argv[1:] and argv[1] == "--qwertz":
    base = qwertz

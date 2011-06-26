@@ -61,7 +61,7 @@ def letters_in_file_precalculated(data):
     [(44034982, 'e'), (27012723, 'n')]
     """
     letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    letters = [(int(num), let) for num, let in letters]
+    letters = [(float(num), let) for num, let in letters]
     lett = {l: num for num, l in letters}
     return lett
     
@@ -89,7 +89,7 @@ def repeats_in_file_precalculated(data):
     [(10162743, 'en'), (10028050, 'er')]
     """
     reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    reps = [(int(num), r) for num, r in reps if r[1:]]
+    reps = [(float(num), r) for num, r in reps if r[1:]]
     r = {r: num for num, r in reps}
     return r
 
@@ -119,7 +119,7 @@ def trigrams_in_file_precalculated(data):
     [(5679632, 'en '), (4417443, 'er '), (2891983, ' de'), (2303238, 'der'), (2273056, 'ie '), (2039537, 'ich')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
-    trigs = [(int(num), r) for num, r in trigs if r[1:]]
+    trigs = [(float(num), r) for num, r in trigs if r[1:]]
     t = {t: num for num, t in trigs}
     return t
 
@@ -196,11 +196,11 @@ def shorten(text, max_len=270):
 def run(textfile, best_lines=False, max_len=270):
     """test the file."""
     # reference data
-    data = read_file("1gramme.txt")
+    data = read_file("1-gramme.arne.txt")
     reference1grams = letters_in_file_precalculated(data)
-    data = read_file("2gramme.txt")
+    data = read_file("2-gramme.arne.txt")
     reference2grams = repeats_in_file_precalculated(data)
-    data = read_file("3gramme.txt")
+    data = read_file("3-gramme.arne.txt")
     reference3grams = trigrams_in_file_precalculated(data)
 
     if best_lines: 
