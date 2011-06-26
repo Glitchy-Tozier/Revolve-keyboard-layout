@@ -230,8 +230,9 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
             tppl = (new_cost - cost)/sum((num for num, l in letters))
-            info("#", tppl, "checked switch", keypairs, new_cost)
-            info(format_layer_1_string(lay))
+            if tppl > 0: tppl = "+" + str(tppl)
+            info("#", tppl, ", ".join(keypairs))
+            # info(format_layer_1_string(lay))
         if meter:
             write('switch:  %4d/%4d'%(i,length))
     if meter:
