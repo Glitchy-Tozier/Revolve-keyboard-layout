@@ -230,7 +230,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
             tppl = (new_cost - cost)/sum((num for num, l in letters))
-            if tppl > 0: tppl = "+" + str(tppl)
+            tppl = "{:+07,.2f}".format(tppl)
             info("#", tppl, ", ".join(keypairs))
             # info(format_layer_1_string(lay))
         if meter:
