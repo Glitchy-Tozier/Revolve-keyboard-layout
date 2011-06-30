@@ -5,6 +5,8 @@
 
 from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
+from textcheck import occurrence_dict_difference as diffdict
+
 ### Constants
 
 # shorthand: ngrams in these are more seldomly between word-parts.
@@ -753,6 +755,50 @@ class NGrams(object):
 
         # increases the weight for ngrams which are shorts in steno: profit from 100 years of professional writing experience.
         self.weight_steno()
+
+    def diff(self, other):
+        """Compare two ngram distributions.
+
+        >>> n = NGrams('ngrams_test.config')
+        >>> from copy import deepcopy
+        >>> m = deepcopy(n)
+        >>> m.one["a"] += 3
+        >>> n.diff(m)
+
+        @return the differences of the normalized 1-, 2- and 3grams as dicts.
+        """
+        def _normalize_dict(d):
+            """Normalize a dict to have a valuesum of 1"""
+            s = sum(d.values())
+            # no zero division
+            if s == 0:
+                return d
+            return {key: num/s for key, num in d.items()}
+
+        def _diffdict(d1, d2):
+            """All different keys with the difference."""
+            diff = {key: d1[key] - d2[key] for key in d1 if key in d2}
+            for key in d1:
+                if key in d2: continue
+                diff[key] = d1[key]
+            for key in d2:
+                if key in d1: continue
+                diff[key] = d2[key]
+            # kill almost zero values
+            diff = {key: diff[key] for key in diff if abs(diff[key]) <= 1.0e-9}
+            return diff
+
+        # normalized
+        one = _normalize_dict(self.one)
+        two = _normalize_dict(self.two)
+        three = _normalize_dict(self.three)
+
+        o1 = _normalize_dict(other.one)
+        o2 = _normalize_dict(other.two)
+        o3 = _normalize_dict(other.three)
+
+        return [_diffdict(s, o) for s, o in ((one, o1), (two, o2), (three, o3))]
+
 
     def parse_config_0_1(self):
         lines = self.config.splitlines()
