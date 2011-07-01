@@ -120,6 +120,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     for pos in position_costs:
         try: p[pos[:2] + (0 ,)] += position_costs[pos]
         except KeyError: p[pos[:2] + (0 ,)] = position_costs[pos]
+        except TypeError: pass # position None
 
     oh = ShapeBuilder()
     for pos in positions:
