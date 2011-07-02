@@ -119,7 +119,8 @@ for step in range(options.evolution_steps):
                            datafile=options.data,
                            ngram_config=options.ngram_config,
                            anneal=options.anneal,
-                           anneal_step = anneal_step)
+                           anneal_step = anneal_step,
+                           fingerstats = True)
     if not meter:
         print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
         t = time()
