@@ -222,9 +222,11 @@ WEIGHT_ASYMMETRIC_BIGRAMS = 1
 
 ## Manual tweaks
 
-WEIGHT_MANUAL_BIGRAM_PENALTY = 500
+WEIGHT_MANUAL_BIGRAM_PENALTY = 1000
 #: Manually added bigrams which are bad to type but hard to catch algorithmically.
 COST_MANUAL_BIGRAM_PENALTY = {
+#    ((1, 2, 0), (2, 3, 0)): 0.1, # vd on normal keyboards (lower row shifted to the right)
+#    ((1, 9, 0), (2, 8, 0)): 0.1, # ok on normal keyboards (lower row shifted to the right)
     ((1, 2, 0), (3, 2, 0)): 1, # vü on normal keyboards (lower row shifted to the right)
     ((3, 2, 0), (1, 2, 0)): 1 # üv on normal keyboards (lower row shifted to the right)
     }
