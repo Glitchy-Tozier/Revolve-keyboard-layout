@@ -243,8 +243,8 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             downwards = pos2[0] > pos1[0]
             if upwards and f1_is_short and f2_is_long or downwards and f1_is_long and f2_is_short:
                 num_rows -= 0.5
-            elif downwards and f1_is_short and f2_is_long or upwards and f1_is_long and f2_is_short: # moving upwards to short fingers is bad: add ¼
-                num_rows += 0.25
+            elif downwards and f1_is_short and f2_is_long or upwards and f1_is_long and f2_is_short: # moving upwards to short fingers or downwards to long fingers is bad: add ½
+                num_rows += 0.5
 
             # if it’s now not a row change anymore, save the time for processing the rest :)
             if not num_rows:
