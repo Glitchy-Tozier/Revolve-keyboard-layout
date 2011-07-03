@@ -98,6 +98,7 @@ keysym_map={
 	u',': [u'comma', u'endash', u'U03F1', u'U21D2', u'NoSymbol'],
 	u'.': [u'period', u'enfilledcircbullet', u'U03D1', u'U21A6', u'NoSymbol'],
 	u'j': [u'j', u'J', u'Greek_theta', u'Greek_THETA', u'Greek_THETA'],
+#	u'⇘': [u'ISO_Group_Shift', u'ISO_Group_Shift', u'ISO_First_Group', u' NoSymbol'],
 	u' ': u''
 }
 
