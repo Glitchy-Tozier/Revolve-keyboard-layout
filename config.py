@@ -227,8 +227,10 @@ WEIGHT_MANUAL_BIGRAM_PENALTY = 1000
 COST_MANUAL_BIGRAM_PENALTY = {
 #    ((1, 2, 0), (2, 3, 0)): 0.1, # vd on normal keyboards (lower row shifted to the right)
 #    ((1, 9, 0), (2, 8, 0)): 0.1, # ok on normal keyboards (lower row shifted to the right)
-    ((1, 2, 0), (3, 2, 0)): 1, # vü on normal keyboards (lower row shifted to the right)
-    ((3, 2, 0), (1, 2, 0)): 1 # üv on normal keyboards (lower row shifted to the right)
+    ((1, 2, 0), (3, 2, 0)): 1, # wz on normal keyboards (lower row shifted to the right)
+    ((3, 2, 0), (1, 2, 0)): 1, # zw on normal keyboards (lower row shifted to the right)
+    ((2, 2, 0), (3, 2, 0)): 0.3, # sz on normal keyboards (lower row shifted to the right)
+    ((3, 2, 0), (2, 2, 0)): 0.3 # zs on normal keyboards (lower row shifted to the right)
     }
 # all pinky repeats
 for finger in ("Klein_L", "Klein_R"): 
