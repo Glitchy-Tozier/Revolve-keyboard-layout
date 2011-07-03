@@ -202,7 +202,7 @@ keycode 47 = 	h		H		colon		Greek_psi		KP_Separator		comma		Greek_PSI		Greek_PSI
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
-keycode 52 = 	m		M		numbersign		Greek_mu		Escape		Escape		ifonlyif		NoSymbol
+keycode 52 = 	f		F		numbersign		Greek_phi		Escape		Escape		Greek_PHI		Greek_PHI
 keycode 53 = 	adiaeresis		Adiaeresis		dollar		Greek_eta		Tab		ISO_Left_Tab		U2135		NoSymbol
 keycode 54 = 	period		enfilledcircbullet		bar		U03D1		Insert		Insert		U21A6		NoSymbol
 keycode 55 = 	u		U		asciitilde		NoSymbol		Return		Return		includedin		NoSymbol
@@ -212,7 +212,7 @@ keycode 57 = 	g		G		plus		Greek_gamma		colon		NoSymbol	Greek_GAMMA		Greek_GAMMA
 keycode 58 = 	d		D		percent		Greek_delta		KP_1		KP_1	Greek_DELTA		Greek_DELTA
 keycode 59 =	p		P		quotedbl		Greek_pi		KP_2		KP_2		Greek_PI		Greek_PI
 keycode 60 =	x		X		apostrophe		Greek_xi		KP_3		KP_3		Greek_XI		Greek_XI
-keycode 61 = 	f		F		semicolon		Greek_phi		semicolon		NoSymbol		Greek_PHI		Greek_PHI
+keycode 61 = 	m		M		semicolon		Greek_mu		semicolon		NoSymbol		ifonlyif		NoSymbol
 
 
 
