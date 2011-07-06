@@ -753,13 +753,16 @@ class NGrams(object):
             raise ParseException("ngrams config has no version header. Please start it with # ngrams source v<version>")
         self.normalize_raw() # gets one, two and three
 
+    def finalize(self):
+        """Do ngrams adjustments for ngram-files which are going to be used directly, but which are not suitable for intermediate files (must be done only once)."""
         # increases the weight for ngrams which are shorts in steno: profit from 100 years of professional writing experience.
         self.weight_steno()
+        self.weight_punctuation()
 
     def diff(self, other):
         """Compare two ngram distributions.
 
-        >>> n = NGrams('ngrams_test.config')
+        >>> n = NGrams('ngrams_test_diff.config')
         >>> from copy import deepcopy
         >>> m = deepcopy(n)
         >>> m.one["a"] += 3
@@ -777,15 +780,14 @@ class NGrams(object):
 
         def _diffdict(d1, d2):
             """All different keys with the difference."""
-            diff = {key: d1[key] - d2[key] for key in d1 if key in d2}
+            diff = {key: d1[key] - d2[key] for key in d1 if key in d2 and abs(d1[key] - d2[key]) > 1.0e-15}
+            # python floats normally have binary precision 53. 
             for key in d1:
                 if key in d2: continue
                 diff[key] = d1[key]
             for key in d2:
                 if key in d1: continue
-                diff[key] = d2[key]
-            # kill almost zero values
-            diff = {key: diff[key] for key in diff if abs(diff[key]) <= 1.0e-9}
+                diff[key] = -d2[key]
             return diff
 
         # normalized
@@ -1038,6 +1040,23 @@ class NGrams(object):
                 self.three[three] *= 1+factor
             except KeyError: pass
 
+    def weight_punctuation(self, factor=0.5, punctuation=".,"):
+        """reduce the weight of punctuation marks by the factor."""
+        # one grams
+        for p in punctuation:
+            try: self.one[p] *= 1-factor
+            except KeyError: pass
+        # 2grams: every one containing them.
+        for key in self.two:
+            for p in punctuation:
+                if key and p in key:
+                    self.two[key] *= 1-factor
+        # 3grams: all that have punctuation as second or third letter.
+        for key in self.three:
+            for p in punctuation:
+                if key and p in key[1:]:
+                    self.three[key] *= 1-factor
+
     def save(self, one, two, three):
         """save the data to the files one, two and three (i.e. 1gramme.txt, 2gramm…).
 
@@ -1120,6 +1139,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read nGrams from files.")
     parser.add_argument("args")
     parser.add_argument("--conf", dest="config", help="The ngram config file to use.")
+    parser.add_argument("--final", dest="final", action="store_true", help="Do ngrams adjustments for ngram-files which are going to be used directly, but which are not suitable for intermediate files (must be done only once).")
     parser.add_argument("--test", dest="test", action="store_true", help="Run the self-test.")
     parser.add_argument("--save1", dest="one", help="File for the 1-grams. You need conf, save1, save2 AND save3 for saving.")
     parser.add_argument("--save2", dest="two", help="File for the 2-grams.")
@@ -1128,6 +1148,8 @@ if __name__ == "__main__":
     args = parser.parse_args(argv)
     if args.config:
         ngrams = NGrams(args.config)
+    if args.final:
+        ngrams.finalize()
     if args.config and args.one and args.two and args.three:
         ngrams.save(args.one, args.two, args.three)
     if args.test:
