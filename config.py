@@ -60,12 +60,12 @@ COST_PER_KEY  = [
     # Don’t put mutated keys there, otherwise the best keys will end up there!
     [80,    70,60,50,50,60,    60,50,50,50,50,60,70, 80], # Zahlenreihe (0)
     [24,    20,10, 5,10,15,    18,11, 5, 9,11,20,36,  0], # Reihe 1
-    [5,      5, 3, 3, 3, 6,     6, 3, 3, 3, 5, 9,30, 36], # Reihe 2
+    [9,      5, 3, 3, 3, 6,     6, 3, 3, 3, 5, 9,30, 6], # Reihe 2; enter low to make it preferred over the layer 4 enter.
     [18,14, 17,24,20,9,   30,  10, 8,22,22,15,       17],     # Reihe 3
     [0,0,0,                3           , 7, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
 
-COST_LAYER_ADDITION = [0, 15, 5, 10, 27, 22]
+COST_LAYER_ADDITION = [0, 15, 9, 10, 27, 22]
 
 #: The cost of any key which isn’t on the keyboard. Should be higher than max(COST_LAYER_ADDITION) + the most expensive key + 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment [local variable in split uppercase bigrams] to make sure that having a key on a bad position in layer 5 is better than not having it at all. Currently (eb0c9e8c8b02 + 1) that means, it must be higher than 27+50+16 = 93. Trial and error shows, it must be about 150 to make the addition of the neo layers to nordtast useful.
 COST_PER_KEY_NOT_FOUND = 150
