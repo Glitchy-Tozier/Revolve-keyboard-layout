@@ -36,7 +36,7 @@ RIGHT_HAND_LOWEST_INDEXES = [7, 6, 6, 7, 3]
 
 ## Basics
 
-WEIGHT_POSITION = 10 #: reference cost - gets multiplied with the COST_PER_KEY.
+WEIGHT_POSITION = 13 #: reference cost - gets multiplied with the COST_PER_KEY.
 
 WEIGHT_CRITICAL_FRACTION = 0.001 #: The bigram count with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not). 0.1% is about twice per DinA4-page (30 lines, 60 letters). There should be no bad combination which appears twice per DinA4 page, because that will stick to ones mind as a cludge.
 WEIGHT_CRITICAL_FRACTION_MULTIPLIER = 2 #: The amount of usage higher than the critical fraction is multiplied by this multiplier. Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
@@ -73,12 +73,12 @@ COST_PER_KEY_NOT_FOUND = 150
 
 ## Finger repeats
 
-WEIGHT_FINGER_REPEATS = 1800 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
+WEIGHT_FINGER_REPEATS = 2000 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.75 #: Cost of a finger repeat on rhe indexfinger (hurts less). Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.0005 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not). 0.05% is about once per DinA4-page (30 lines, 60 letters). There should be no single finger repetition which appears once per DinA4 page, because that will stick to ones mind as a cludge.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier. Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 2048 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 4000 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
 
 ## Line changes
