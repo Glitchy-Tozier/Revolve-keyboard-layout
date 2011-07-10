@@ -78,7 +78,7 @@ WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.75 #: Cost of a finger repeat o
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.0005 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not). 0.05% is about once per DinA4-page (30 lines, 60 letters). There should be no single finger repetition which appears once per DinA4 page, because that will stick to ones mind as a cludge.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier. Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 4000 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 10000 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
 
 ## Line changes
@@ -92,9 +92,9 @@ LONG_FINGERS = ["Ring_L", "Mittel_L", "Mittel_R", "Ring_R"]
 
 ## Finger and Hand disbalance in load
 
-WEIGHT_HAND_DISBALANCE = 60 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
+WEIGHT_HAND_DISBALANCE = 80 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
-WEIGHT_FINGER_DISBALANCE = 400 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 800 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1.0,
@@ -118,7 +118,7 @@ WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples with
 
 WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 66 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10; the absolute value is quite high → doublecheck.
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
-WEIGHT_NEIGHBORING_UNBALANCE = 120 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
+WEIGHT_NEIGHBORING_UNBALANCE = 240 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
