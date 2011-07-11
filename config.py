@@ -59,7 +59,7 @@ COST_PER_KEY  = [
     # The 0 values aren’t filled in at the moment.
     # Don’t put mutated keys there, otherwise the best keys will end up there!
     [80,    70,60,50,50,60,    60,50,50,50,50,60,70, 80], # Zahlenreihe (0)
-    [24,    20,10, 5,10,15,    18,11, 5, 9,11,20,36,  0], # Reihe 1
+    [24,    16,10, 5,10,15,    18,11, 5, 9,11,20,36,  0], # Reihe 1
     [9,      5, 3, 3, 3, 6,     6, 3, 3, 3, 5, 9,30, 6], # Reihe 2; enter low to make it preferred over the layer 4 enter.
     [18,14, 17,24,20,9,   30,  10, 8,22,22,15,       17],     # Reihe 3
     [0,0,0,                3           , 7, 0, 0, 0] # Reihe 4 mit Leertaste
@@ -165,7 +165,7 @@ WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.3 #: multiplier for the cost of secondary
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
 
-WEIGHT_FINGER_SWITCH = 120 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
+WEIGHT_FINGER_SWITCH = 80 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html - Also: Sehnenscheidenentzündung vermeiden: Nachbarfinger vermeiden. Ring- und Mittelfinger verbunden → Ring = ⅓ Nachbar von Zeige.
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
