@@ -73,7 +73,7 @@ COST_PER_KEY_NOT_FOUND = 150
 
 ## Finger repeats
 
-WEIGHT_FINGER_REPEATS = 2000 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
+WEIGHT_FINGER_REPEATS = 800 #: Cost of a finger repeat. Gets additional +1 from the row change on the same finger.
 WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.75 #: Cost of a finger repeat on rhe indexfinger (hurts less). Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.0005 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not). 0.05% is about once per DinA4-page (30 lines, 60 letters). There should be no single finger repetition which appears once per DinA4 page, because that will stick to ones mind as a cludge.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier. Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
@@ -83,7 +83,7 @@ WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 10000 #: Additional cost of a finger repetiti
 
 ## Line changes
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 15 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 10 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 SHORT_FINGERS = ["Zeige_L", "Zeige_R", "Klein_R", "Zeige_R"] #: Fingers from which switching upwards and to which switching downwards is cheaper. Not pinky left, because the default keyboard penalizes its lower key.
@@ -94,7 +94,7 @@ LONG_FINGERS = ["Ring_L", "Mittel_L", "Mittel_R", "Ring_R"]
 
 WEIGHT_HAND_DISBALANCE = 80 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
-WEIGHT_FINGER_DISBALANCE = 800 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 1000 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1.0,
@@ -111,7 +111,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 ## Handswitching
 
-WEIGHT_TOO_LITTLE_HANDSWITCHING = 300 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 800 #: how high should it be counted, if the hands aren’t switched in a triple?
 
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
 WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
@@ -165,7 +165,7 @@ WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.3 #: multiplier for the cost of secondary
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
 
-WEIGHT_FINGER_SWITCH = 30 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
+WEIGHT_FINGER_SWITCH = 50 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html - Also: Sehnenscheidenentzündung vermeiden: Nachbarfinger vermeiden. Ring- und Mittelfinger verbunden → Ring = ⅓ Nachbar von Zeige.
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
