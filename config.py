@@ -111,7 +111,7 @@ WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
 
 ## Handswitching
 
-WEIGHT_TOO_LITTLE_HANDSWITCHING = 800 #: how high should it be counted, if the hands aren’t switched in a triple?
+WEIGHT_TOO_LITTLE_HANDSWITCHING = 1200 #: how high should it be counted, if the hands aren’t switched in a triple?
 
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
 WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
@@ -165,7 +165,7 @@ WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.3 #: multiplier for the cost of secondary
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
 
-WEIGHT_FINGER_SWITCH = 50 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
+WEIGHT_FINGER_SWITCH = 80 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html - Also: Sehnenscheidenentzündung vermeiden: Nachbarfinger vermeiden. Ring- und Mittelfinger verbunden → Ring = ⅓ Nachbar von Zeige.
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
