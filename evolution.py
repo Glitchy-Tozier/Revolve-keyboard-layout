@@ -42,7 +42,7 @@ anneal_step = 1000
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
 STARTING_LAYOUT = """xvlcw khgfqyß
 uiaeo snrtd⇘
-üöäpz bm,.j"""
+zäüpö bm,.j"""
 
 
 ### Parse console arguments
