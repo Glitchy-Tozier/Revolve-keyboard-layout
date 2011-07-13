@@ -94,7 +94,7 @@ LONG_FINGERS = ["Ring_L", "Mittel_L", "Mittel_R", "Ring_R"]
 
 WEIGHT_HAND_DISBALANCE = 80 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
-WEIGHT_FINGER_DISBALANCE = 1000 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 1500 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1.0,
