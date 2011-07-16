@@ -53,7 +53,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     S.setAttribute("xmlns:inkscape", "http://www.inkscape.org/namespaces/inkscape")
     S.set_height("350")
     #max_cost = max(cost for number, cost, bigram in bigrams)
-    color_scale = 1
+    color_scale = 0.8
     max_linewidth = 25
     max_num = max(number for number, cost, bigram in bigrams)
     num_scale = max_linewidth/max_num
@@ -256,7 +256,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         pos1 = pos1[0] + dx1, pos1[1] + dy1
         
 
-        color = colorwheel(max(min(1020, cost*color_scale), 0))
+        color = colorwheel(max(min(800, cost*color_scale), 0))
         # invert the color
         color = tuple([255-c for c in color])
         width = num_scale * number
