@@ -149,6 +149,11 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
                 is_left1 = pos_is_left(pos1)
                 is_left2 = pos_is_left(pos2)
                 if is_left1 == is_left2:
+                    # check if one of the positions is a thumb
+                    fing1 = KEY_TO_FINGER[pos1[:2] + (0, )]
+                    fing2 = KEY_TO_FINGER[pos2[:2] + (0, )]
+                    if fing1.startswith("Daumen") or fing2.startswith("Daumen"):
+                        continue
                     # using .get here, because most positions aren’t unbalancing.
                     cost = UNBALANCING_POSITIONS.get(pos1, 0)*number
                     # if the second key is unbalancing, too, and on the other side of the hand: add it to the cost
