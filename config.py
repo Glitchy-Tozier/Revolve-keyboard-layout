@@ -83,7 +83,7 @@ WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 10000 #: Additional cost of a finger repetiti
 
 ## Line changes
 
-WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 10 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
+WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW = 13 #: When I have to switch the row in a bigram while on the same hand, that takes time => Penalty per (row to cross ² / horizontal distance)² if we’re on the same hand. 
 
 WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS = False #: Should we count a row change with a handswitch as row change? 
 SHORT_FINGERS = ["Zeige_L", "Zeige_R", "Klein_R", "Zeige_R"] #: Fingers from which switching upwards and to which switching downwards is cheaper. Not pinky left, because the default keyboard penalizes its lower key.
