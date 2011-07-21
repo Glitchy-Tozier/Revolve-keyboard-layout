@@ -196,7 +196,7 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
         # add the cost
         # using .get here, because most positions aren’t unbalancing.
         # divided by nesghboring == finger distance
-        neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/finger_distance
+        neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/(finger_distance**2)
     return neighboring_unbalance
 
 def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
