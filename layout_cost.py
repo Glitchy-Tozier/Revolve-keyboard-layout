@@ -173,8 +173,6 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
 def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
     """Check how often an unbalancing key follows a neighboring finger or vice versa.
 
-    TODO: Check if dividing by the number of fingers in between would be a better fit than just checking for neighboring fingers.
-
     >>> data = read_file("testfile")
     """
     neighboring_unbalance = 0
@@ -191,13 +189,14 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
             # tumbs and handswitches ignored
             if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
                 continue
-            neighboring = abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2)) == 1
+            finger_distance = abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2))
         except: continue
-        if not neighboring: continue
+        if not finger_distance: continue # same finger
 
         # add the cost
         # using .get here, because most positions aren’t unbalancing.
-        neighboring_unbalance += UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number
+        # divided by nesghboring == finger distance
+        neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/finger_distance
     return neighboring_unbalance
 
 def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
