@@ -159,8 +159,8 @@ UNBALANCING_POSITIONS = {
 
 ## Secondary / Indirect bigrams
 
-WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH = 0.6 #: multiplier for the cost of secondary bigrams in trigrams with handswitches. 
-WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.3 #: multiplier for the cost of secondary bigrams in trigrams without handswitching. 
+WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH = 0.8 #: multiplier for the cost of secondary bigrams in trigrams with handswitches. 
+WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.6 #: multiplier for the cost of secondary bigrams in trigrams without handswitching. 
 
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
