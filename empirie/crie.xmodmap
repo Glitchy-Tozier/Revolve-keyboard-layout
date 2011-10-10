@@ -173,7 +173,7 @@ keycode 27 = 	a		A		bracketright		Greek_alpha		Delete		Delete		U2200		NoSymbol
 keycode 28 = 	z		Z		asciicircum		Greek_zeta		Next		Next		U2124		NoSymbol
 
 keycode 29 = 	k		K		exclam		Greek_kappa		exclamdown		NoSymbol		multiply		NoSymbol
-keycode 30 = 	g		G		less		Greek_gamma		KP_7		KP_7		Greek_GAMMA		Greek_GAMMA
+keycode 30 = 	d		D		less		Greek_delta		KP_7		KP_7		Greek_DELTA		Greek_DELTA
 keycode 31 = 	f		F		greater		Greek_phi		KP_8		KP_8		Greek_PHI		Greek_PHI
 keycode 32 = 	l		L		equal		Greek_lambda		KP_9		KP_9		Greek_LAMBDA		Greek_LAMBDA
 keycode 33 = 	v		V		ampersand		NoSymbol		KP_Add		KP_Add		radical		NoSymbol
@@ -202,14 +202,14 @@ keycode 35 = 	ssharp		U1E9E		at		Greek_finalsmallsigma		period		KP_Decimal		jot	
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
-keycode 52 = 	x		X		numbersign		Greek_xi		Escape		Escape		Greek_XI		Greek_XI
-keycode 53 = 	adiaeresis		Adiaeresis		dollar		Greek_eta		Tab		ISO_Left_Tab		U2135		NoSymbol
+keycode 52 = 	x		X		numbersign	Greek_xi		Escape		Escape			Greek_XI		Greek_XI
+keycode 53 = 	adiaeresis	Adiaeresis	dollar		Greek_eta		Tab		ISO_Left_Tab		U2135		NoSymbol
 keycode 54 = 	udiaeresis		Udiaeresis		bar		NoSymbol		Insert		Insert		union		NoSymbol
 keycode 55 = 	o		O		asciitilde		Greek_omicron		Return		Return		elementof		NoSymbol
 keycode 56 = 	odiaeresis		Odiaeresis		grave		U03F5		Undo		Redo		intersection		NoSymbol
 
 keycode 57 = 	w		W		plus		Greek_omega		colon		NoSymbol	Greek_OMEGA		Greek_OMEGA
-keycode 58 = 	d		D		percent		Greek_delta		KP_1		KP_1	Greek_DELTA		Greek_DELTA
+keycode 58 = 	g		G		percent		Greek_gamma		KP_1		KP_1	Greek_GAMMA		Greek_GAMMA
 keycode 59 =	comma		endash		quotedbl		U03F1		KP_2		KP_2		U21D2		NoSymbol
 keycode 60 =	period		enfilledcircbullet		apostrophe		U03D1		KP_3		KP_3		U21A6		NoSymbol
 keycode 61 = 	q		Q		semicolon		U03D5		semicolon		NoSymbol		U211A		NoSymbol
