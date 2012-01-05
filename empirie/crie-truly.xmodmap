@@ -67,13 +67,15 @@ keycode 62 =  Shift_R Shift_Lock
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod3
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! i66=left 51=right
+! 66=left 51=right
 ! Make CapsLock an modifier called Mod3 (similar to AltGr) (Mode_switch or ISO_Group_Shift is for 3rd and 4th level)
 ! Make former CapsLock and qwertz-# to Mode_switch or ISO_Group_Shift
 ! Mod3(links) (=Qwertz-Caps) erlaubt nur 4 Ebenen
 ! Ohne einen Eintrag in der zweiten Gruppe (=Ebene 3) ergäbe Mod3+Mod3=Group_Shift+Group_Shift=Gruppe 3=Ebene 6. Das ist nicht gewünscht.
 keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+keycode 115 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+keycode 114 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod4
@@ -85,6 +87,8 @@ keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 ! Der Lock lässt sich durch ein weiteres Mod4 lösen.
 keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+keycode 110 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+keycode 113 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! window keys
@@ -113,11 +117,15 @@ keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   
 keycode 23 = Tab  ISO_Left_Tab  Multi_key  ISO_Level3_Lock
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Space and Return key
+! Space, Alt, Ctrl and Return Key
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
 keycode 103 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keycode 36 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+keycode 64 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+keycode 108 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+keycode 36 =  Meta_L Meta_L Alt_L Alt_L Alt_L Alt_L
+
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! dead keys
