@@ -61,8 +61,8 @@ clear Mod5
 ! Shift+Shift ergibt ein ShiftLock (wie Caps, wirkt aber auf alle Zeichen, nicht nur auf Großbuchstaben)
 ! Der Lock lässt sich durch ein weiteres Shift lösen.
 ! Eigentlich (siehe Referenz) sollte hier ein CapsLock stehen.
-keycode 50 =  Shift_L Shift_Lock
-keycode 62 =  Shift_R Shift_Lock
+keycode 37 =  Shift_L Shift_Lock
+keycode 105 =  Shift_R Shift_Lock
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod3
@@ -85,7 +85,7 @@ keycode 114 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 ! Mod4(rechts)+Mod4(links) lässt Mod4 einrasten (Mod4Lock)
 ! das funktioniert nur in dieser Reihenfolge, da Mod4(rechts) (=Qwertz-AltGr) nur 4 Ebenen hat
 ! Der Lock lässt sich durch ein weiteres Mod4 lösen.
-keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+!keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keycode 110 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keycode 113 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
@@ -122,8 +122,17 @@ keycode 23 = Tab  ISO_Left_Tab  Multi_key  ISO_Level3_Lock
 keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
 keycode 103 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
 keycode 64 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+keysym less = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
 keycode 108 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
 keycode 36 =  Alt_L
+keycode 50 = Control_L
+keycode 62 = Control_R
+clear Control
+add    Control = Control_L Control_R
+clear Shift
+add    Shift   = Shift_L Shift_R
+clear Mod1
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! dead keys
