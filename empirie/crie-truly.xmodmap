@@ -121,9 +121,7 @@ keycode 23 = Tab  ISO_Left_Tab  Multi_key  ISO_Level3_Lock
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
 keycode 103 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keycode 64 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
 keysym less = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
-keycode 108 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
 keycode 36 =  Alt_L
 keycode 50 = Control_L
 keycode 62 = Control_R
