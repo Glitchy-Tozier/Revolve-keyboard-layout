@@ -61,8 +61,8 @@ clear Mod5
 ! Shift+Shift ergibt ein ShiftLock (wie Caps, wirkt aber auf alle Zeichen, nicht nur auf Großbuchstaben)
 ! Der Lock lässt sich durch ein weiteres Shift lösen.
 ! Eigentlich (siehe Referenz) sollte hier ein CapsLock stehen.
-keycode 37 =  Shift_L Shift_Lock
-keycode 105 =  Shift_R Shift_Lock
+keycode 64 =  Shift_L Shift_Lock
+keycode 65 =  Shift_R Shift_Lock
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod3
@@ -72,10 +72,10 @@ keycode 105 =  Shift_R Shift_Lock
 ! Make former CapsLock and qwertz-# to Mode_switch or ISO_Group_Shift
 ! Mod3(links) (=Qwertz-Caps) erlaubt nur 4 Ebenen
 ! Ohne einen Eintrag in der zweiten Gruppe (=Ebene 3) ergäbe Mod3+Mod3=Group_Shift+Group_Shift=Gruppe 3=Ebene 6. Das ist nicht gewünscht.
-keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+!keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+!keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 keycode 115 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-keycode 114 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+!keycode 113 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod4
@@ -87,8 +87,9 @@ keycode 114 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 ! Der Lock lässt sich durch ein weiteres Mod4 lösen.
 !keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-keycode 110 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-keycode 113 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+!keycode 114 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+!keycode 115 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+keycode 36 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Arrows right and left on the left up and down
@@ -127,13 +128,16 @@ keycode 23 = Tab  ISO_Left_Tab  Multi_key  ISO_Level3_Lock
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Space, Alt, Ctrl and Return Key
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
+!keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
 keycode 103 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keysym less = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
-keycode 36 =  Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L
-keycode 64 =  Undo NoSymbol Undo NoSymbol Undo Undo
+keysym less =  BackSpace NoSymbol BackSpace NoSymbol BackSpace BackSpace
+keycode 22 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+!keycode 36 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
+keycode 37 =  Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L
+keycode 62 =  Alt_R Meta_R Alt_R Meta_R Alt_R Meta_R Alt_R Meta_R
+keycode 108 =  Undo NoSymbol Undo NoSymbol Undo Undo
 keycode 50 = Control_L
-keycode 62 = Control_R
+keycode 105 = Control_R
 clear Control
 add    Control = Control_L Control_R
 clear Shift
