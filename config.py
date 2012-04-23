@@ -116,9 +116,9 @@ WEIGHT_TOO_LITTLE_HANDSWITCHING = 1200 #: how high should it be counted, if the 
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
 WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 66 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10; the absolute value is quite high → doublecheck.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 33 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10; the absolute value is quite high → doublecheck.
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
-WEIGHT_NEIGHBORING_UNBALANCE = 600 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
+WEIGHT_NEIGHBORING_UNBALANCE = 300 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
@@ -159,13 +159,13 @@ UNBALANCING_POSITIONS = {
 
 ## Secondary / Indirect bigrams
 
-WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH = 0.9 #: multiplier for the cost of secondary bigrams in trigrams with handswitches. 
-WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.8 #: multiplier for the cost of secondary bigrams in trigrams without handswitching. 
+WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH = 0.8 #: multiplier for the cost of secondary bigrams in trigrams with handswitches. 
+WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.6 #: multiplier for the cost of secondary bigrams in trigrams without handswitching. 
 
 
 ## Movement patterns: Penalties for certain finger usages, like pinky → ringfinger
 
-WEIGHT_FINGER_SWITCH = 80 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
+WEIGHT_FINGER_SWITCH = 60 #: how much worse is it to switch from middle to indexfinger compared with middle to pinky (~30ms according to Rohmert). Movement pattern cost.
 
 #: The cost for moving from one finger to another one with middle-to-index as 1 (30ms). Currently only uses the neighbors. Can also be used to favor a certain direction. Adapted the Rohmert times as per my own experiences: http://lists.neo-layout.org/pipermail/diskussion/2010-May/017171.html and http://lists.neo-layout.org/pipermail/diskussion/2010-May/017321.html - Also: Sehnenscheidenentzündung vermeiden: Nachbarfinger vermeiden. Ring- und Mittelfinger verbunden → Ring = ⅓ Nachbar von Zeige.
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
