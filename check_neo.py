@@ -687,7 +687,7 @@ if __name__ == "__main__":
     # act
 
     if options.check:
-        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, data=options.data, fingerstats=options.fingerstats)
+        check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, datafile=options.file, fingerstats=options.fingerstats)
 
     elif options.check_string:
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats)
