@@ -22,7 +22,7 @@ prerandomize = 3000
 #: Should we always do the locally best step (very slow and *not* optimal)
 controlled = False
 
-#: Should we spout out information on the shell? (Windows users enable this. Your shell can’t take Unicode)
+#: Should we avoid giving information on the shell? (Windows users enable this. Your shell can’t take Unicode)
 quiet = True
 
 #: Should a progressmeter be displayed? (Windows users disable this. Your shell can’t handle control sequences)
