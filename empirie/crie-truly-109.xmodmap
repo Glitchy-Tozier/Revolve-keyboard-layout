@@ -155,6 +155,7 @@ add Mod1 = Alt_L Meta_L
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
 keycode 49 = dead_circumflex	dead_caron	U21BB		U02DE		dead_abovedot Pointer_EnableKeys dead_belowdot	NoSymbol
+keycode 133 = dead_circumflex	dead_caron	U21BB		U02DE		dead_abovedot Pointer_EnableKeys dead_belowdot	NoSymbol
 ! called T1	ˆ		ˇ		↻		˞		˙	     (keypad-mouse mode) .		
 keycode 21 = dead_grave		dead_cedilla	dead_abovering	dead_dasia	dead_diaeresis	NoSymbol	dead_macron	NoSymbol
 ! called T2	`		¸		˚		῾ dasia (asper)	¨				¯		
