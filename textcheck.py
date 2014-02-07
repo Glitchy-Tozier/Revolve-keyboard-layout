@@ -12,7 +12,7 @@ idea: allow selecting different 1gram, 2gram and 3gram files.
 """
 
 from sys import argv
-if "--help" in argv: 
+if __name__ == "__main__" and "--help" in argv: 
     print(__doc__)
     exit()
 
