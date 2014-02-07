@@ -97,6 +97,7 @@ def result(*args, **kwds):
 from layout_cost import *
 from layout_info import *
 from math import log10, log
+import pprint
 
 # TODO: Split the different ways of evolution into evolve.py. Requirement: Don’t give any output.
 
@@ -664,6 +665,9 @@ if __name__ == "__main__":
     parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False,
                       help="print more detailed layout statistics")
+    parser.add_option("--print-raw-layout",
+                      action="store_true", default=False,
+                      help="print the raw internal layout representation")
 
     (options, args) = parser.parse_args()
 
@@ -689,6 +693,11 @@ if __name__ == "__main__":
     if options.check:
         check_a_layout_from_shell(options.check, quiet=options.quiet, verbose=options.verbose, datafile=options.file, fingerstats=options.fingerstats)
 
+    elif options.print_raw_layout:
+        if not options.check_string:
+            print("please give the layout to print with --check-string")
+        pprint.pprint(string_to_layout(options.check_string, options.base)[:5])
+        
     elif options.check_string:
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats)
 
@@ -706,7 +715,7 @@ if __name__ == "__main__":
                                 datafile=options.file,
                                 layout=options.base,
                                 controlled=options.controlled_evolution)
-
+    
     else:
         check_the_neo_layout(quiet=options.quiet, verbose=options.verbose, datafile=options.file, layout=options.base, fingerstats=options.fingerstats)
 
