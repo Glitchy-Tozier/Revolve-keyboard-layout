@@ -3,6 +3,12 @@
 
 """Calculate the cost of a layout."""
 
+# TODO: Add cost when the direction of keystrokes is different for similar keys (direction inwards or outwards).
+# Example: au vs üä. I still mix these up after 2 years.
+# Lists of Keys which should flow into the same direction: auo äüö, gk bp dt wf, st fp
+# TODO: Add cost when the position of keys is inverted (g lower, k upper, but d upper and t lower).
+# Reason: Being easy to learn is essential.
+
 from layout_base import *
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
