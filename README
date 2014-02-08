@@ -59,8 +59,102 @@ The program has two main functions:
 
 For evaluation it gives any keyboard layout a penalty (signifying the strain and inconvenience it imposes on typing) based on the distribution of letters, bigrams and trigrams, either from the reference corpus of the university of Leipzig or from any given Textfile. 
 
+### 0.1 Results for the impatient
+
+The following lists analyses from the optimizer for common keyboard layouts. You can recreate them by simply calling `./check_neo.py -v`. 
+
+#### Neo
+
+xvlcw khgfqyß
+uiaeo snrtd⇘
+üöäpz bm,.j
+# 13.41630 x100 total penalty per letter
+# 49.10005 x10 billion total penalty compared to notime-noeffort
+# 7.359111 mean key position cost in file 1gramme.txt ( 53.86473966 )
+# 41.17544 % finger repeats in file 2gramme.txt ( 165.6421844101187 )
+
+
+#### Qwertz
+
+qwert zuiopü+
+asdfg hjklöä
+<yxcvb nm,.-
+# 29.52990 x100 total penalty per letter
+# 108.0715 x10 billion total penalty compared to notime-noeffort
+# 12.11769 mean key position cost in file 1gramme.txt ( 88.6950124 )
+# 61.32098 % finger repeats in file 2gramme.txt ( 246.68447929659453 )
+
+
+#### AdNW
+
+kuü.ä vgcljf´
+hieao dtrnsß
+xyö,q bpwmz
+# 8.785617 x100 total penalty per letter
+# 32.15299 x10 billion total penalty compared to notime-noeffort
+# 7.708996 mean key position cost in file 1gramme.txt ( 56.42570664 )
+# 11.17019 % finger repeats in file 2gramme.txt ( 44.93589397582505 )
+
+
+#### CRY
+
+bmuaz kdflvjß
+criey ptsnh⇘
+xäüoö wg,.q
+# 8.459790 x100 total penalty per letter
+# 30.96055 x10 billion total penalty compared to notime-noeffort
+# 7.596530 mean key position cost in file 1gramme.txt ( 55.60251188 )
+# 13.55902 % finger repeats in file 2gramme.txt ( 54.54576909689781 )
+
+
+#### Dvorak
+
+’,.py fgcrl/=
+aoeui dhtns-
+;qjkx bmwvz
+# 11.45381 x100 total penalty per letter
+# 41.91789 x10 billion total penalty compared to notime-noeffort
+# 11.55219 mean key position cost in file 1gramme.txt ( 84.55588602 )
+# 17.19619 % finger repeats in file 2gramme.txt ( 69.17751009644823 )
+
+
+#### Colemak
+
+qwfpg jluy;[]
+arstd hneio`
+zxcvb km,./
+# 12.01156 x100 total penalty per letter
+# 43.95908 x10 billion total penalty compared to notime-noeffort
+# 12.14284 mean key position cost in file 1gramme.txt ( 88.87909212 )
+# 21.47616 % finger repeats in file 2gramme.txt ( 86.39515579324566 )
+
+
+#### Workman
+
+qdrwq jfupüöß
+ashtg yneoiä
+zxhcv kl,.'
+# 10.38274 x100 total penalty per letter
+# 37.99805 x10 billion total penalty compared to notime-noeffort
+# 12.90420 mean key position cost in file 1gramme.txt ( 94.4518264 )
+# 18.30581 % finger repeats in file 2gramme.txt ( 73.64136282268564 )
+
+
+#### Capewell
+
+.mydg ;wh,'äü
+aresf ktnioö
+xczvj bpluq
+# 11.63464 x100 total penalty per letter
+# 42.57965 x10 billion total penalty compared to notime-noeffort
+# 9.281227 mean key position cost in file 1gramme.txt ( 67.9335876 )
+# 16.39290 % finger repeats in file 2gramme.txt ( 65.94603890759558 )
+
+
 1. Calculating the cost
 -----------------------
+
+(the rest of the text is not yet translated from German to English)
 
 ### 1.1. Buchstaben (1-Gramme)
 
