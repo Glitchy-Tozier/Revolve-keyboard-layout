@@ -9,11 +9,11 @@ Full Usage: ./convert_text_between_layouts.py [[--layout "<layout-string>"] || -
 
 Example: 
 
-./convert_text_between_layouts.py --layout "kuü.ä vgcljf
-hieao dtrnsß
-⇚xyö,q bpwmz" --base "xvlcw khgfqß
-uiaeo snrtdy
-⇚üöäpz bm,.j" --text "blubb"
+./convert_text_between_layouts.py --layout "bmuaz kdflvjß
+criey ptsnh⇘
+⇚xäüoö wg,.q" --base "qwert zuiopü+
+asdfg hjklöä
+<yxcvb nm,.-" --file beispieltext-reference-sentence-tech.txt
 
 """
 
