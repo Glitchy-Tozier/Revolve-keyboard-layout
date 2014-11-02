@@ -250,3 +250,6 @@ for finger in ("Klein_L", "Klein_R"):
         for pos1 in FINGER_POSITIONS[finger]:
             try: COST_MANUAL_BIGRAM_PENALTY[(pos0, pos1)] += 1
             except KeyError: COST_MANUAL_BIGRAM_PENALTY[(pos0, pos1)] = 1
+
+
+## TODO: Cost for similar keys in symmetric positions. That’s bad *except* if the symmetry is consistent. (hard consonants always on one side or always above)
