@@ -118,7 +118,7 @@ WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples with
 
 WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 33 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10; the absolute value is quite high → doublecheck.
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
-WEIGHT_NEIGHBORING_UNBALANCE = 300 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
+WEIGHT_NEIGHBORING_UNBALANCE = 400 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
 
 #: Positions which pull the hand from the base row, position and cost (the strength of the pulling from base row). 
 UNBALANCING_POSITIONS = {
