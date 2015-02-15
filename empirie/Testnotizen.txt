@@ -51,7 +51,60 @@ Allerdings mache ich immernoch gefühlt recht viele Tippfehler.
 
 4. Nach 2 Jahren: Inzwischen bin ich beim 10-Minuten-Test bei 400 Zeichen. Aber ich verwechsle immernoch oft ä und ü. In der Unteren Reihe eine andere Reihenfolge zu haben als in der oberen ist schrecklich, und es wird bei weitem nicht dadurch aufgewogen, dass damit das u und das ü auf dem gleichen Finger sind. j macht immernoch kleinere Probleme, ß nervt einfach etwas. Bei emacs ist C-x C-q in dired-mode unschön, aber das sollte kein Kriterium für den Optimierer selbst sein. Meine Fehlerquoten sind weiterhin hoch, aber ich habe auch das letzte Jahr fast nicht gezielt trainiert.
 
-5. Nach über 3 Jahren: Ich bin bei 470 Zeichen, was mich vor allem aufhält ist eine hohe Fehlerquote. Fehler mache ich bei äüö und bq. Ich sollte einen längeren Text schnell abschreiben und dann die Fehler katalogisieren.  
+5. Nach über 3 Jahren, letztes Fazit zu CRY: Ich bin bei 470 Zeichen, was mich vor allem aufhält ist eine hohe Fehlerquote. Fehler mache ich bei äüö und bq. Ich sollte einen längeren Text schnell abschreiben und dann die Fehler katalogisieren. J stört nicht mehr. Gezielt trainiert habe ich weiterhin nicht. Bei der nächsten und hoffentlich finalen Belegung dann wieder. 
+
+Was an cry am meisten stört ist meine hohe Fehlerquote (im Vergleich zu anderen Belegungen). Ich führe sie auf drei Effekte zurück:
+
+1. Einige Tasten sind ähnlich wie QWERTZ, und das ist halt immernoch teilweise in den Fingern.
+2. b ist disbalancing (zieht die Hand aus der Grundposition).
+3. Die Belegung hat heftige Symmetriebrüche, z.B. ü unter u, ö neben o, aber ä neben ü aber ö nicht neben ä oder ü und ä nicht unter a (unter a ist o). t ist unter d, aber p ist nicht unter b (b ist sehr weit weg). k ist nicht symmetrisch zu g, sondern im Vergleich zur symmetrischen Position gerade eine Taste verschoben.
+
+Ich habe darüber mit effchen diskutiert und wir haben gemerkt, dass bone im Vergleich zu cry sehr symmetrisch ist - was vielleicht erklären kann, warum sich bone für ihn angenehm anfühlt.
+
+Um den Eindruck zu überprüfen, habe ich beim 10-Minuten Test von Intersteno mitgeschrieben, welche Wörter mich ausgebremst haben:
+
+Wörter bei denen ich langsam wurde (im 10-Minuten intersteno-Test): 
+
+> bezeichnet Bedürfnissen jetzigen Nachhaltigkeit deutschsprachigen ökonomischen entsprechende hauptsächlichen diplomatischen gegebenen Zivilgesellschaft verschiedenen Umwelt wissenschaftliche Erdgipfels Prinzip insbesondere Neuausrichtung Armut zur kurzfristigen
+
+Fehler, die ich übersehen hatte (hatte ich nicht beim Tippen korrigiert):
+
+> künftiger Forstwirtschaft supranationaler stark Ausdruck Organisationen Wörter
+
+Sehr unschöne Zeichenketten (wenn Wörter nach mehrfachem Tippen harmlos werden, kommen sie hier nicht rein). 
+
+- Dem Optimierer bekannt (ich habe die Kosten etwas angepasst, aber grundlegend lässt sich hier wenig machen: Ein paar Wörter werden immer unangenehm sein, wir können nur ihre Anzahl verringern und den Grad an Unannehmlichkeit verringern):
+  - ezeic (fingerwiederholung + disbalancing)
+  - etzi (indirekte fingerwiederholung + disbalancing)
+  - ür (unten zur daneben liegenden Mittellinie)
+  - arm (Fingerwiederholung)
+  - pt (Fingerwiederholung)
+  - Zi (Disbalancing before neighboring)
+  - inzi (iz, zi, disbalancing, direkt + indirekt)
+  - eua (indirekte Fingerwiederholung)
+  - arm (Fingerwiederholung)
+  - zur (Nachbar nach unbalancing)
+  - Organisation (oraiaio: heftige Zeilenwechsel links)
+- Teils bekannt:
+  - auptsächlic (links: auäcic: Sprung über viele Zeilen + indirekte Fingerwiederholung)
+  - ersc (indirekter Übergang Ring-Klein, komplexe Bewegung)
+  - ör (kein Handwechsel nach unbalancing, bei ö stolper ich (Symmetrie?))
+  - öko (indirkte Fingerwiederholung + Asymmetrie: ö neben o?)
+  - oma (indirekte Fingerwiederholung + Asymmetrie: o unter a?)
+- Noch nicht bekannt, teils noch nicht verstanden:
+  - gegebe (symmetrie g und b? b disbalance)
+  - Erdgipf (Symmetrien? dg, eri ist ein Richtungswechsel, gibt aber keine Kosten: zwei Zeichen dazwischen, pf: neighboring nach unbalance)
+  - insbe (ib? be? bigramm mit zwei Zeichen dazwischen?)
+  - urz (unbalanciert nach zweitem Nachbarn)
+  - stark (Fingerwiederholung mit zwei Zeichen dazwischen)
+  - entsprechende (da verhedder ich mich obwohl es fast vollständig auf der Grundlinie läuft)
+  - umwe (?)
+  - deutsch (komplexe Bewegung?)
+  - wissenschaftliche (komplexe Bewegung?)
+  - supranationaler (komplex?)
+  - Forstwirtschaft (komplex?)
+  - Ausdruck (komplex?)
+
 
 
 # Mr. Tea von qwertfish
