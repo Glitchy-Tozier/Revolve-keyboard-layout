@@ -216,9 +216,9 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
 
 ## Common Shortcut keys to the left
 
-WEIGHT_XCVZ_ON_BAD_POSITION = 0.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
+WEIGHT_XCVZ_ON_BAD_POSITION = 10.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_ASYMMETRIC_SIMILAR = 1.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) are asymmetric, logarithmic in the number of asymmetric keys.
+WEIGHT_ASYMMETRIC_SIMILAR = 10.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) are asymmetric, logarithmic in the number of asymmetric keys.
 
 
 ## Symmetry of the movement
