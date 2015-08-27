@@ -453,7 +453,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
     2
-    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1]
+    >>> sorted(no_handswitching(trigs, layout=NEO_LAYOUT)[1].items())[0][0]
     'ie'
     """
     key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
