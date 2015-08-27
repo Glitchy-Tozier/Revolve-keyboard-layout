@@ -381,7 +381,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if show_asymmetric_bigrams and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(asymmetric_bigrams_w/1000000000), "asymmetrc bigrams (weighted)")
     if show_asymmetric_similar and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
-        res += c("#", sn(asymmetric_similar_w/1000000000), "asymmetric similar keys (weighted)")
+        res += c("#", sn(asymmetric_similar_w/1000000000), "inconsistent symmetries of similar keys (weighted)")
     if fingerstats:
         # also print statistics
         # Finger-load:
