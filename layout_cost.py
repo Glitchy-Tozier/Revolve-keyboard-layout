@@ -127,8 +127,29 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
     >>> asymmetry_cost(repeats_in_file(data))
     
     """
-    for number, pair in repeats:
-        print (number)
+    symmetry = [("auo", "äüö"), ("gk", "bp", "dt", "wf"), ("st", "fp")]
+    cost = 0
+    for matched in symmetry: # ("auo", "äüö")
+        m0 = matched[0] # "auo"
+        l = len(m0)
+        fing_dists = []
+        v_dists = []
+        for i in range(l):
+            positions = [find_key(m[i], layout=layout) for m in matched]
+            letters = [m[i] for m in matched]
+            for j in range(len(positions)):
+                for k in range(len(positions[j+1:])):
+                    pos0 = positions[j]
+                    pos1 = positions[j+k+1]
+                    fing_dists.append(finger_distance(pos0, pos1))
+                    v_dists.append(pos1[1] - pos0[1])
+                    print(letters[j], letters[j+k+1])
+            print (positions, letters)
+        print (fing_dists, v_dists)
+                    
+        # for number, pair in repeats:
+        #     pass
+                
 
 
 def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
@@ -187,6 +208,17 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
                     no_switch += cost
     return no_switch
 
+
+def finger_distance(pos1, pos2):
+    """distance in fingers."""
+    fing1 = KEY_TO_FINGER[pos1]
+    fing2 = KEY_TO_FINGER[pos2]
+    # tumbs and handswitches ignored
+    if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
+        return 0
+    return abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2))
+
+
 def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
     """Check how often an unbalancing key follows a neighboring finger or vice versa.
 
@@ -201,19 +233,14 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
         if not pos2 or not pos1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
-            fing1 = KEY_TO_FINGER[pos1]
-            fing2 = KEY_TO_FINGER[pos2]
-            # tumbs and handswitches ignored
-            if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
-                continue
-            finger_distance = abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2))
+            fing_dist = finger_distance(pos1, pos2)
         except: continue
-        if not finger_distance: continue # same finger
+        if not finger_dist: continue # same finger
 
         # add the cost
         # using .get here, because most positions aren’t unbalancing.
         # divided by nesghboring == finger distance
-        neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/(finger_distance**2)
+        neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/(finger_dist**2)
     return neighboring_unbalance
 
 def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
