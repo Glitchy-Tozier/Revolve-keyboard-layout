@@ -127,7 +127,7 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
     >>> asymmetry_cost(repeats_in_file(data))
     
     """
-    symmetry = [("auo", "äüö"), ("gk", "bp", "dt", "wf"), ("st", "fp")]
+    symmetry = [("auo", "äüö"), ("gbdw", "kptf"), ("sf", "tp")]
     cost = 0
     for matched in symmetry: # ("auo", "äüö")
         m0 = matched[0] # "auo"
@@ -143,9 +143,14 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
                     pos1 = positions[j+k+1]
                     fing_dists.append(finger_distance(pos0, pos1))
                     v_dists.append(pos1[1] - pos0[1])
-                    print(letters[j], letters[j+k+1])
-            print (positions, letters)
-        print (fing_dists, v_dists)
+                    # print(letters[j], letters[j+k+1])
+            # print (positions, letters)
+        # auo, äüö (NEO): fing_dists = [0, 0, 2], v_dists = [1, 1, -2]
+        fing_diffs = []
+        for i in range(len(fing_dists)):
+            for j in range(len(fing_dists[i+1:])):
+                fing_diffs.append(fing_dists[j+i+1] - fing_dists[i])
+        print (fing_diffs, fing_dists, v_dists)
                     
         # for number, pair in repeats:
         #     pass
