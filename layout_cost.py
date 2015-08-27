@@ -127,6 +127,7 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
     >>> asymmetry_cost(repeats_in_file(data))
     
     """
+    #: [(first-keys, second-keys), ...]
     symmetry = [("auo", "äüö"), ("gbdw", "kptf"), ("sf", "tp")]
     cost = 0
     for matched in symmetry: # ("auo", "äüö")
