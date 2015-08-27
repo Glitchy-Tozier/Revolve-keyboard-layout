@@ -132,6 +132,7 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
     for matched in symmetry: # ("auo", "äüö")
         m0 = matched[0] # "auo"
         l = len(m0)
+        hand_dists = []
         fing_dists = []
         v_dists = []
         for i in range(l):
@@ -141,6 +142,14 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
                 for k in range(len(positions[j+1:])):
                     pos0 = positions[j]
                     pos1 = positions[j+k+1]
+                    pos0l = pos_is_left(pos0)
+                    pos1l = pos_is_left(pos0)
+                    if pos0l == pos1l:
+                        hand_dists.append(0)
+                    elif pos0l and not pos1l:
+                        hand_dists.append(1)
+                    else:
+                        hand_dists.append(-1)
                     fing_dists.append(finger_distance(pos0, pos1))
                     v_dists.append(pos1[1] - pos0[1])
                     # print(letters[j], letters[j+k+1])
@@ -150,7 +159,9 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
         for i in range(len(fing_dists)):
             for j in range(len(fing_dists[i+1:])):
                 fing_diffs.append(fing_dists[j+i+1] - fing_dists[i])
-        print (fing_diffs, fing_dists, v_dists)
+        # if all diffs are 0, cost is 0.
+        # all diffs are the same, 
+        print (hand_dists, fing_dists, v_dists)
                     
         # for number, pair in repeats:
         #     pass
