@@ -22,20 +22,20 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
     """Count the total cost due to key positions.
 
     >>> data = read_file("testfile")
-    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     150
     >>> print(data[:3])
     uia
-    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     150
-    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
     11
     >>> from check_neo import switch_keys
     >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
-    >>> key_position_cost_from_file(data[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     20
     >>> data = "UIaĥK\\n"
-    >>> key_position_cost_from_file(data, cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY, layout=lay)
     240
     """
     letters = split_uppercase_letters(letters, layout=layout)
@@ -49,12 +49,12 @@ def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
     >>> data = read_file("testfile")
-    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
+    >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
     [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
-    >>> finger_repeats_from_file(data, count_same_key=True, layout=NEO_LAYOUT)
+    >>> finger_repeats_from_file(repeats_in_file(data), count_same_key=True, layout=NEO_LAYOUT)
     [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
     >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
-    >>> finger_repeats_from_file(data, layout=NEO_LAYOUT)
+    >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
     [(1, 'Klein_L', '⇧x'), (1, 'Klein_R', '⇗ß'), (1, 'Zeige_L', 'zo'), (1, 'Klein_L', 'xü'), (1, 'Zeige_L', 'wz'), (1, 'Ring_L', 'vö'), (1, 'Klein_R', 'qj'), (1, 'Zeige_L', 'pw'), (1, 'Mittel_L', 'lä'), (1, 'Zeige_R', 'hb'), (1, 'Mittel_R', 'g,'), (1, 'Ring_R', 'f.'), (1, 'Zeige_L', 'cp'), (1, 'Zeige_R', 'bm')]
     """
     number_of_keystrokes = sum((num for num, pair in repeats))
@@ -111,7 +111,7 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
     rg
     aa
     <BLANKLINE>
-    >>> neighboring_fingers(data, FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
+    >>> movement_pattern_cost(repeats_in_file(data), FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
     16
     """
     fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in repeats)
@@ -119,6 +119,17 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
     return sum((num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if num))
 
 neighboring_fingers = movement_pattern_cost
+
+def asymmetry_cost(repeats, layout=NEO_LAYOUT):
+    """Calculate the cost for asymmetric keys.
+
+    >>> data = read_file("testfile")
+    >>> asymmetry_cost(repeats_in_file(data))
+    
+    """
+    for number, pair in repeats:
+        print (number)
+
 
 def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances and with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
@@ -128,21 +139,21 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     If the second key is in another row than the first, multiply by the squared distance in rows + 1.
 
     >>> data = read_file("testfile")
-    >>> no_handswitch_after_unbalancing_key(data)
+    >>> no_handswitch_after_unbalancing_key(repeats_in_file(data))
     2
     >>> reps =  [(3, "Ab")]
-    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
+    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
     9
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     0
     >>> reps = [(3, "Ga")]
-    >>> reps = split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT)
+    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     3
     >>> reps =  [(3, "xo")]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    6
+    54
     """
     no_switch = 0
     for number, pair in repeats:
@@ -211,7 +222,7 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
     TODO: Don’t care about the hand (left index low and right high is still not nice).
 
     >>> data = read_file("testfile")
-    >>> line_changes(data)
+    >>> line_changes(repeats_in_file(data))
     16.0
     """
     line_changes = 0
@@ -442,7 +453,7 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
     >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
     2
-    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1][0][1]
+    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[1]
     'ie'
     """
     key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
