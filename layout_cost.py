@@ -9,6 +9,8 @@
 # TODO: Add cost when the position of keys is inverted (g lower, k upper, but d upper and t lower).
 # Reason: Being easy to learn is essential.
 
+import math
+
 from layout_base import *
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
@@ -120,22 +122,26 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
 
 neighboring_fingers = movement_pattern_cost
 
-def asymmetry_cost(repeats, layout=NEO_LAYOUT):
+def asymmetry_cost(layout=NEO_LAYOUT, symmetries=[("auo", "äüö"), ("gbdw", "kptf"), ("sf", "tp")]):
     """Calculate the cost for asymmetric keys.
 
-    >>> data = read_file("testfile")
-    >>> asymmetry_cost(repeats_in_file(data))
+    :param symmetries: [(first-keys, second-keys), ...]
     
+    >>> asymmetry_cost(layout=NEO_LAYOUT)
+    3.7072285927821325
+    >>> asymmetry_cost(layout=CRY_LAYOUT)
+    3.036554268074246
     """
-    #: [(first-keys, second-keys), ...]
-    symmetry = [("auo", "äüö"), ("gbdw", "kptf"), ("sf", "tp")]
     cost = 0
-    for matched in symmetry: # ("auo", "äüö")
+    for matched in symmetries: # ("auo", "äüö")
         m0 = matched[0] # "auo"
         l = len(m0)
+        # print (matched)
+        # we have 3 distances: distance in hand, distance in finger
+        # and vertical distance. All should be symmetric.
         hand_dists = []
         fing_dists = []
-        v_dists = []
+        v_directions = []
         for i in range(l):
             positions = [find_key(m[i], layout=layout) for m in matched]
             letters = [m[i] for m in matched]
@@ -143,8 +149,10 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
                 for k in range(len(positions[j+1:])):
                     pos0 = positions[j]
                     pos1 = positions[j+k+1]
+                    if pos0 is None or pos1 is None: # do not exist on keyboard
+                        continue
                     pos0l = pos_is_left(pos0)
-                    pos1l = pos_is_left(pos0)
+                    pos1l = pos_is_left(pos1)
                     if pos0l == pos1l:
                         hand_dists.append(0)
                     elif pos0l and not pos1l:
@@ -152,20 +160,43 @@ def asymmetry_cost(repeats, layout=NEO_LAYOUT):
                     else:
                         hand_dists.append(-1)
                     fing_dists.append(finger_distance(pos0, pos1))
-                    v_dists.append(pos1[1] - pos0[1])
+                    v_dist = pos1[0] - pos0[0]
+                    if v_dist > 0:
+                        v_directions.append(1)
+                    elif v_dist < 0:
+                        v_directions.append(-1)
+                    else:
+                        v_directions.append(0)
                     # print(letters[j], letters[j+k+1])
-            # print (positions, letters)
-        # auo, äüö (NEO): fing_dists = [0, 0, 2], v_dists = [1, 1, -2]
-        fing_diffs = []
-        for i in range(len(fing_dists)):
-            for j in range(len(fing_dists[i+1:])):
-                fing_diffs.append(fing_dists[j+i+1] - fing_dists[i])
+        # now we have distances for all three parameters.
+        # time to calculate the cost for asymmetry.
+        # auo, äüö (NEO): hand_dists = [0, 0, 0], fing_dists = [0, 0, 2], v_directions = [1, 1, 1]
+        diff_cost = 0
+        diffs = []
+        # If all are symmetric, cost is 0
+        # for the first asymmetric one, add the highest cost
+        # for further asymmetric ones, add lower cost.
+
+        # -> just use log(N+1) with N the number of asymmetric ones
+        #    divided by the number of possible ones.
+        for dists in (hand_dists, fing_dists, v_directions):
+            dcost = 0
+            ddiffs = []
+            for i in range(len(dists)):
+                for j in range(len(dists[i+1:])):
+                    diff = dists[j+i+1] - dists[i]
+                    ddiffs.append(diff)
+                    if not diff == 0:
+                        dcost += 1
+            if ddiffs:
+                dcost = math.log((dcost / len(ddiffs)) + 1)
+                diff_cost += dcost
+                diffs.extend(ddiffs)
+        # print (diff_cost, diffs)
+        cost += diff_cost
         # if all diffs are 0, cost is 0.
         # all diffs are the same, 
-        print (hand_dists, fing_dists, v_dists)
-                    
-        # for number, pair in repeats:
-        #     pass
+    return cost
                 
 
 
@@ -250,7 +281,7 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
         if not pos2 or not pos1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
-            fing_dist = finger_distance(pos1, pos2)
+            finger_dist = finger_distance(pos1, pos2)
         except: continue
         if not finger_dist: continue # same finger
 
@@ -626,6 +657,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
     badly_positioned = badly_positioned_shortcut_keys(layout=layout)
 
+    # the cost for having asymmetries in similar keys.
+    asymmetric_similar = asymmetry_cost(layout=layout)
+
     # the load distribution on the hands: [left keystrokes, right keystrokes]
     hand_load = load_per_hand(letters, layout=layout)
     # the disbalance between the hands. Keystrokes of the left / total strokes - 0.5. From 0 to 0.5, ignoring the direction.
@@ -645,6 +679,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_FINGER_DISBALANCE * disbalance # needs a minimum number of letters to be useful.
     total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
     total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
+    total += WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar
     total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
     total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
     total += WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
