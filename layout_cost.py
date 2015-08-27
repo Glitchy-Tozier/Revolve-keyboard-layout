@@ -122,7 +122,7 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
 
 neighboring_fingers = movement_pattern_cost
 
-def asymmetry_cost(layout=NEO_LAYOUT, symmetries=[("auo", "äüö"), ("gbdw", "kptf"), ("sf", "tp")]):
+def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
     """Calculate the cost for asymmetric keys.
 
     :param symmetries: [(first-keys, second-keys), ...]
