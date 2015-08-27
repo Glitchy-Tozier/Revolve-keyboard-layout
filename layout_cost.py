@@ -29,11 +29,11 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
     >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     150
     >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
-    11
+    81
     >>> from check_neo import switch_keys
     >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
     >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
-    20
+    126
     >>> data = "UIaĥK\\n"
     >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY, layout=lay)
     240
@@ -50,12 +50,12 @@ def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
 
     >>> data = read_file("testfile")
     >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
-    [(1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n')]
+    [(9.979, 'Mittel_L', 'Aa'), (4.979, 'Mittel_R', 'rg'), (4.479, 'Zeige_L', 'eo'), (4.979, 'Klein_R', 'd\\n'), (4.979, 'Mittel_L', 'aA')]
     >>> finger_repeats_from_file(repeats_in_file(data), count_same_key=True, layout=NEO_LAYOUT)
-    [(2, 'Mittel_L', 'aa'), (1, 'Mittel_R', 'rg'), (1, 'Zeige_L', 'eo'), (1, 'Klein_R', 'd\\n'), (1, 'Mittel_L', 'aa'), (1, 'Mittel_L', 'aa')]
+    [(9.979, 'Mittel_L', 'Aa'), (4.979, 'Mittel_R', 'rg'), (4.479, 'Zeige_L', 'eo'), (4.979, 'Klein_R', 'd\\n'), (4.979, 'Mittel_L', 'aa'), (4.979, 'Mittel_L', 'aA')]
     >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
-    >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
-    [(1, 'Klein_L', '⇧x'), (1, 'Klein_R', '⇗ß'), (1, 'Zeige_L', 'zo'), (1, 'Klein_L', 'xü'), (1, 'Zeige_L', 'wz'), (1, 'Ring_L', 'vö'), (1, 'Klein_R', 'qj'), (1, 'Zeige_L', 'pw'), (1, 'Mittel_L', 'lä'), (1, 'Zeige_R', 'hb'), (1, 'Mittel_R', 'g,'), (1, 'Ring_R', 'f.'), (1, 'Zeige_L', 'cp'), (1, 'Zeige_R', 'bm')]
+    >>> sorted(finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT))[:3]
+    [(4.470000000000001, 'Zeige_L', 'cp'), (4.470000000000001, 'Zeige_L', 'pw'), (4.470000000000001, 'Zeige_L', 'wz')]
     """
     number_of_keystrokes = sum((num for num, pair in repeats))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
@@ -112,7 +112,7 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
     aa
     <BLANKLINE>
     >>> movement_pattern_cost(repeats_in_file(data), FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
-    16
+    12
     """
     fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in repeats)
 
@@ -144,7 +144,7 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     >>> reps =  [(3, "Ab")]
     >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    9
+    30.0
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     0
     >>> reps = [(3, "Ga")]
@@ -223,7 +223,7 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
 
     >>> data = read_file("testfile")
     >>> line_changes(repeats_in_file(data))
-    16.0
+    4.7119140625
     """
     line_changes = 0
     for number, pair in repeats:
@@ -299,8 +299,8 @@ def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
 
     >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (4, "A"), (6, "Δ")]
-    >>> load_per_finger(letters)
-    {'': 10, 'Ring_L': 5, 'Klein_L': 7, 'Mittel_L': 4, 'Klein_R': 10, 'Daumen_L': 3}
+    >>> sorted(load_per_finger(letters).items())[1:]
+    [('Klein_L', 23), ('Klein_R', 10), ('Mittel_L', 4), ('Mittel_R', 10), ('Ring_L', 5)]
     """
     letters = split_uppercase_letters(letters, layout)
     fingers = {}
@@ -320,7 +320,7 @@ def load_per_hand(letters=None, finger_load=None, layout=NEO_LAYOUT):
 
     >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (2, "g")]
     >>> load_per_hand(letters)
-    [6, 2]
+    [16, 12]
     >>> finger_load = {'': 10, 'Klein_L': 1, 'Ring_L': 5, 'Daumen_L': 3, 'Mittel_R': 2}
     >>> load_per_hand(finger_load = finger_load)
     [6, 2]
@@ -403,8 +403,9 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     """Do the hard work for no_handswitching without any call to outer functions.
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
     >>> key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigs, layout=NEO_LAYOUT)
-    >>> _no_handswitching(trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH)
-    (2, [(1.5, 'ui'), (2.5, 'ie')])
+    >>> res = _no_handswitching(trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH)
+    >>> (res[0], [(j,i) for i,j in sorted(res[1].items())])
+    (2, [(4.0, 'ie'), (1.0, 'nr'), (0.5, 'nt'), (2.4000000000000004, 'ui')])
     """
     no_switch = 0
     secondary_bigrams = {} # {bigram: num, …}
