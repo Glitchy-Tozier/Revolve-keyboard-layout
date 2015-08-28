@@ -39,6 +39,9 @@ anneal = 5
 #: The number of iterations to spend in one anneal level. The first anneal * anneal_step iterations are spent in simulated annealing.
 anneal_step = 1000
 
+#: Should we limit the number of ngrams? A value of 3000 should still be safe to quickly see results without getting unreasonable layouts.
+limit_ngrams = False
+
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
 STARTING_LAYOUT = """xvlcw khgfqyß
 uiaeo snrtd⇘
@@ -120,7 +123,8 @@ for step in range(options.evolution_steps):
                            ngram_config=options.ngram_config,
                            anneal=options.anneal,
                            anneal_step = anneal_step,
-                           fingerstats = True)
+                           fingerstats = True,
+                           limit_ngrams = limit_ngrams)
     if not meter:
         print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
         t = time()

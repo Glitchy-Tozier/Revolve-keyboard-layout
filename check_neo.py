@@ -445,9 +445,14 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, ngram_config_path=ngram_config)
+    if limit_ngrams:
+        letters = letters[:limit_ngrams]
+        repeats = repeats[:limit_ngrams]
+        trigrams = trigrams[:limit_ngrams]
+        datalen1, datalen2, number_of_trigrams = [limit_ngrams]*3
 
     if prerandomize:
         if not quiet:
