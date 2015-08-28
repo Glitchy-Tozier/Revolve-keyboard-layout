@@ -30,7 +30,9 @@ _steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr
 
 ### Functions
 
-def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
+def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
+                            mods=MODIFIERS_PER_LAYER,
+                            find_key=find_key, get_key=get_key):
     """Split a single bigram.
 
     >>> _split_uppercase_repeat("AB", 5)
@@ -50,7 +52,6 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
         # in the layout. We don’t need to change anything for these.
         return {rep: num}
 
-    mods = MODIFIERS_PER_LAYER
     #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
     mods_on_same_hand_adjustment = 1/32
     repeats = {}
@@ -176,8 +177,14 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     #: The resulting bigrams after splitting.
     repeats = {}
     _sur = _split_uppercase_repeat
+    _mods = MODIFIERS_PER_LAYER
+    _fk = find_key
+    _gk = get_key
     for num, rep in reps:
-        for key, val in _sur(rep, num, layout=layout).items():
+        # this function gets called 100k times. Microoptimize the hell out of it.
+        for key, val in _sur(rep, num,
+                             layout=layout, mods=_mods,
+                             find_key=_fk, get_key=_gk).items():
             try:
                 repeats[key] += val
             except KeyError:
