@@ -30,8 +30,89 @@ _steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr
 
 ### Functions
 
+def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
+    """Split a single bigram."""
+    mods = MODIFIERS_PER_LAYER
+    #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
+    mods_on_same_hand_adjustment = 1/32
+    repeats = {}
+    try: 
+        pos1 = find_key(rep[0], layout=layout)
+        pos2 = find_key(rep[1], layout=layout)
+    except IndexError:
+        # this is no repeat but at most a single key.
+        return {}
+    # if any key isn’t found, the repeat doesn’t need splitting.
+    # same is true if all keys are layer 0. 
+    if pos1 is None or pos2 is None or (not pos1[2] and not pos2[2]):
+        # caught all lowercase repeats and all for which one key isn’t in the layout. We don’t need to change anything for these.
+        return {rep: num}
+
+    # now get the base keys.
+    base1 = get_key(pos1[:2] + (0, ), layout=layout)
+    base2 = get_key(pos2[:2] + (0, ), layout=layout)
+
+    # add the base keys as repeat
+    try: repeats[base1+base2] += num
+    except KeyError: repeats[base1+base2] = num
+
+    # now check for the mods which are needed to get the key
+    # if the pos is left, we need the modifiers on the right.
+    if pos_is_left(pos1):
+        mods1 = mods[pos1[2]][1]
+    else:
+        mods1 = mods[pos1[2]][0]
+    if pos_is_left(pos2): 
+        mods2 = mods[pos2[2]][1]
+    else:
+        mods2 = mods[pos2[2]][0]
+
+    # now we have the mods, so we do the splitting by mods.
+    for m1 in mods1:
+        # each of the mods with the key itself
+        try: repeats[m1+base1] += num
+        except KeyError: repeats[m1+base1] = num
+        # each mod of the first with each mod of the second
+        for m2 in mods2:
+            try: repeats[m1+m2] += num
+            except KeyError: repeats[m1+m2] = num
+        # each of the first mods with the second base key
+        ## TODO: counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
+        try: repeats[m1+base2] += num # TODO: ((int(0.5*num), m1+base2))
+        except KeyError: repeats[m1+base2] = num 
+
+    # the first base key with the second mods.
+    ## TODO: counted 2x as strong, because the mod is normally hit and released short before the key is.
+    for m2 in mods2:
+        try: repeats[base1+m2] += num # TODO: ((2*num, base1+m2))
+        except KeyError: repeats[base1+m2] = num
+        # also the second mod with the second base key
+        try: repeats[m2+base2] += num
+        except KeyError: repeats[m2+base2] = num
+
+    # the mods of the first with each other
+    # 0123 → 01 02 03 12 13 23
+    if mods1[1:]: 
+        for i in range(len(mods1)):
+            for m2 in mods1[i+1:]:
+                try: repeats[mods1[i]+m2] += num*mods_on_same_hand_adjustment
+                except KeyError: repeats[mods1[i]+m2] = num*mods_on_same_hand_adjustment
+
+    # the mods of the second with each other
+    # 0123 → 01 02 03 12 13 23
+    if mods2[1:]: 
+        for i in range(len(mods2)):
+            for m2 in mods2[i+1:]:
+                try: repeats[mods2[i]+m2] += num*mods_on_same_hand_adjustment
+                except KeyError: repeats[mods2[i]+m2] = num*mods_on_same_hand_adjustment
+
+    return repeats
+
+                    
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
+
+    Note: Using a collections.Counter() does not make this faster -- neither for pypy nor for cPython.
 
     TODO: aB should be counted about 2x, Ab only 0.5 times, because shift is pressed and released a short time before the key is. 
 
@@ -85,84 +166,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
-    mods = MODIFIERS_PER_LAYER
-    #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
-    mods_on_same_hand_adjustment = 1/32
     #: The resulting bigrams after splitting.
     repeats = {}
     
     for num, rep in reps:
-        try: 
-            pos1 = find_key(rep[0], layout=layout)
-            pos2 = find_key(rep[1], layout=layout)
-        except IndexError:
-            # this is no repeat but at most a single key.
-            continue
-        # if any key isn’t found, the repeat doesn’t need splitting.
-        # same is true if all keys are layer 0. 
-        if pos1 is None or pos2 is None or (not pos1[2] and not pos2[2]):
-            try: repeats[rep] += num
-            except KeyError: repeats[rep] = num
-            continue # caught all lowercase repeats and all for which one key isn’t in the layout. We don’t need to change anything for these.
-
-        # now get the base keys.
-        base1 = get_key(pos1[:2] + (0, ), layout=layout)
-        base2 = get_key(pos2[:2] + (0, ), layout=layout)
-
-        # add the base keys as repeat
-        try: repeats[base1+base2] += num
-        except KeyError: repeats[base1+base2] = num
-
-        # now check for the mods which are needed to get the key
-        # if the pos is left, we need the modifiers on the right.
-        if pos_is_left(pos1):
-            mods1 = mods[pos1[2]][1]
-        else:
-            mods1 = mods[pos1[2]][0]
-        if pos_is_left(pos2): 
-            mods2 = mods[pos2[2]][1]
-        else:
-            mods2 = mods[pos2[2]][0]
-
-        # now we have the mods, so we do the splitting by mods.
-        for m1 in mods1:
-            # each of the mods with the key itself
-            try: repeats[m1+base1] += num
-            except KeyError: repeats[m1+base1] = num
-            # each mod of the first with each mod of the second
-            for m2 in mods2:
-                try: repeats[m1+m2] += num
-                except KeyError: repeats[m1+m2] = num
-            # each of the first mods with the second base key
-            ## TODO: counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
-            try: repeats[m1+base2] += num # TODO: ((int(0.5*num), m1+base2))
-            except KeyError: repeats[m1+base2] = num 
-
-        # the first base key with the second mods.
-        ## TODO: counted 2x as strong, because the mod is normally hit and released short before the key is.
-        for m2 in mods2:
-            try: repeats[base1+m2] += num # TODO: ((2*num, base1+m2))
-            except KeyError: repeats[base1+m2] = num
-            # also the second mod with the second base key
-            try: repeats[m2+base2] += num
-            except KeyError: repeats[m2+base2] = num
-
-        # the mods of the first with each other
-        # 0123 → 01 02 03 12 13 23
-        if mods1[1:]: 
-            for i in range(len(mods1)):
-                for m2 in mods1[i+1:]:
-                    try: repeats[mods1[i]+m2] += num*mods_on_same_hand_adjustment
-                    except KeyError: repeats[mods1[i]+m2] = num*mods_on_same_hand_adjustment
-
-        # the mods of the second with each other
-        # 0123 → 01 02 03 12 13 23
-        if mods2[1:]: 
-            for i in range(len(mods2)):
-                for m2 in mods2[i+1:]:
-                    try: repeats[mods2[i]+m2] += num*mods_on_same_hand_adjustment
-                    except KeyError: repeats[mods2[i]+m2] = num*mods_on_same_hand_adjustment
-
+        repeats.update(_split_uppercase_repeat(rep, num, layout=layout))
+    
     return repeats
     #reps = [(num, rep) for rep, num in repeats.items()]
     #reps.sort()
