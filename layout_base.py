@@ -778,18 +778,17 @@ def find_key(key, layout):
     """
     # check, if the layout already has a cache. If not, create it.
     # this approach reduces the time to find a key by about 50%.
-    # TODO: find out why this change affects the costs of layouts!
-    # the cost is raised by a value between 1.2480213606 (NordTast)
-    # and 1.2964878374 (Colemak).
-    # a part of the change might be, that now uppercase keys
-    # are properly taken into account. 
-    #if key != key.lower():
-    #    raise ValueError("You shall not ask me for upperkey letters (yet)!")
 
+    # start with the absolute cheapest check we can do
+    try: return layout[5][key]
+    except (IndexError, KeyError):
+        pass # we need the more expensive checking here.
+    
     try: LETTER_TO_KEY_CACHE = layout[5]
     except IndexError:
         layout.append({})
         LETTER_TO_KEY_CACHE = layout[5]
+        # fill the cache for all keys
         update_letter_to_key_cache_multiple(None, layout=layout)
     # first check the caches
     try: return LETTER_TO_KEY_CACHE[key]
@@ -799,6 +798,8 @@ def find_key(key, layout):
             pos = LETTER_TO_KEY_CACHE[key.lower()]
             if not pos[2]: # == 0
                 pos = pos[:2] + (1,) # this is an uppercase key.
+            # update the cache!
+            LETTER_TO_KEY_CACHE[key] = pos
         except KeyError: 
             pos = None # all keys are in there. None means, we don’t need to check by hand.
     return pos
