@@ -48,12 +48,16 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     pos1 = find_key(r1, layout=layout)
     pos2 = find_key(r2, layout=layout)
     # if any key isn’t found, the repeat doesn’t need splitting.
+    if pos1 is None or pos2 is None:
+        # caught all repeats for which one key isn’t in the layout. We
+        # don’t need to change anything for these.
+        return {rep: num}
     # same is true if all keys are layer 0.
     layer1 = pos1[2]
     layer2 = pos2[2]
-    if pos1 is None or pos2 is None or (layer1 == 0 and layer2 == 0):
-        # caught all lowercase repeats and all for which one key isn’t
-        # in the layout. We don’t need to change anything for these.
+    if layer1 == 0 and layer2 == 0:
+        # caught all lowercase repeats. We don’t need to change
+        # anything for these.
         return {rep: num}
 
     #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
