@@ -35,8 +35,9 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
                             find_key=find_key, get_key=get_key):
     """Split a single bigram.
 
-    >>> _split_uppercase_repeat("AB", 5)
-    {'⇗b': 2.5, '⇗a': 5, '⇗⇧': 5, 'ab': 5, 'a⇧': 10, '⇧b': 5}
+    >>> reps = _split_uppercase_repeat("AB", 5)
+    >>> list(reversed(sorted([(j,i) for i, j in reps.items()])))
+    [(10, 'a⇧'), (5, '⇧b'), (5, '⇗⇧'), (5, '⇗a'), (5, 'ab'), (2.5, '⇗b')]
     """
     # first check whether we really have a bigram and whether we need to split it.
     try:
