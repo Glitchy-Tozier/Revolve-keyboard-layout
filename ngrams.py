@@ -75,12 +75,12 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
             'he'
     
     >>> reps = [(36, "ab"), (24, "Ab"), (16, "aB"), (10, "AB"), (6, "¾2"), (4, "(}"), (2, "Ψ∃"), (1, "q")]
-    >>> split_uppercase_repeats(reps)
-    [(36, 'ab'), (24, '⇗b'), (24, '⇗a'), (24, 'ab'), (16, '⇧b'), (16, 'a⇧'), (16, 'ab'), (10, '⇧b'), (10, '⇗⇧'), (10, '⇗b'), (10, '⇗a'), (10, 'a⇧'), (10, 'ab'), (6, '¾2'), (4, '⇩⇘'), (4, '⇩n'), (4, '⇩e'), (4, '⇘e'), (4, 'n⇘'), (4, 'ne'), (2, '⇩⇚'), (2, '⇩⇙'), (2, '⇩⇘'), (2, '⇩h'), (2, '⇩e'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇚e'), (2, '⇙e'), (2, '⇘⇙'), (2, '⇘e'), (2, 'h⇙'), (2, 'h⇘'), (2, 'he')]
+    >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps).items()])))
+    [(86, 'ab'), (34, '⇗b'), (34, '⇗a'), (26, '⇧b'), (26, 'a⇧'), (10, '⇗⇧'), (6, '⇩⇘'), (6, '⇩e'), (6, '⇘e'), (6, '¾2'), (4, '⇩n'), (4, 'n⇘'), (4, 'ne'), (2, '⇩⇙'), (2, '⇩h'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇚e'), (2, '⇙e'), (2, 'h⇙'), (2, 'h⇘'), (2, 'he'), (0.0625, '⇩⇚'), (0.0625, '⇘⇙')]
     >>> reps = [(1, ", ")]
     >>> from layout_base import string_to_layout
     >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
-    >>> split_uppercase_repeats(reps, layout=layout)
+    >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps, layout=layout).items()])))
     [(1, ', ')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
@@ -318,8 +318,7 @@ def split_uppercase_trigrams(trigs):
 
     >>> trigs = [(8, "abc"), (7, "Abc"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
     >>> split_uppercase_trigrams(trigs)
-    [(8, 'abc'), (7, 'abc'), (3, '⇧bc'), (3, '⇧ab'), (3, '⇗bc'), (3, '⇗ab'), (3, 'a⇧b'), (3, 'a⇗b'), (2, '⇧bc'), (2, '⇗bc'), (2, 'b⇧c'), (2, 'b⇗c'), (2, 'a⇧b'), (2, 'a⇗b'), (2, 'ab⇧'), (2, 'ab⇗'), (1, '⇧b⇧'), (1, '⇧b⇧'), (1, '⇧b⇗'), (1, '⇧b⇗'), (1, '⇧a⇧'), (1, '⇧a⇧'), (1, '⇧a⇗'), (1, '⇧a⇗'), (1, '⇧ab'), (1, '⇗b⇧'), (1, '⇗b⇧'), (1, '⇗b⇗'), (1, '⇗b⇗'), (1, '⇗a⇧'), (1, '⇗a⇧'), (1, '⇗a⇗'), (1, '⇗a⇗'), (1, '⇗ab'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇧c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'b⇗c'), (1, 'a⇧b'), (1, 'a⇧b'), (1, 'a⇗b'), (1, 'a⇗b'), (1, 'ab⇧'), (1, 'ab⇗')]
-    >>> #[(8, 'abc'), (7, '⇧ab'), (7, 'abc'), (6, '⇧bc'), (6, 'a⇧b'), (5, 'b⇧c'), (5, 'ab⇧'), (4, '⇧a⇧'), (4, 'a⇧b'), (4, '⇧bc'), (3, 'a⇧b'), (3, '⇧b⇧'), (3, 'b⇧c'), (2, '⇧ab'), (2, 'ab⇧'), (2, 'b⇧c'), (1, '⇧a⇧'), (1, 'a⇧b'), (1, '⇧b⇧'), (1, 'b⇧c')]
+    [(15, 'abc'), (7, 'a⇧b'), (7, 'a⇗b'), (5, '⇧bc'), (5, '⇗bc'), (5, 'b⇧c'), (5, 'b⇗c'), (4, '⇧ab'), (4, '⇗ab'), (3, 'ab⇧'), (3, 'ab⇗'), (2, '⇧b⇧'), (2, '⇧b⇗'), (2, '⇧a⇧'), (2, '⇧a⇗'), (2, '⇗b⇧'), (2, '⇗b⇗'), (2, '⇗a⇧'), (2, '⇗a⇗')]
     """
     # replace uppercase by ⇧ + char1 and char1 + char2
     upper = [(num, trig) for num, trig in trigs if not trig == trig.lower() and trig[2:]]
@@ -428,7 +427,7 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
         senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
     >>> trigs = [(8, "abc"), (7, "∀bC"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
+    >>> # split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
     """
     # kick out any who don’t have a position
     pos_trig = [(num, [find_key(k, layout=layout) for k in trig], trig) for num, trig in trigs]
@@ -544,8 +543,8 @@ def trigrams_in_file(data, only_existing=True):
     """Sort the trigrams in a file by the number of occurrances.
 
     >>> data = read_file("testfile")
-    >>> trigrams_in_file(data)[:12]
-    [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
+    >>> trigrams_in_file(data)[:4]
+    [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a')]
     """
     trigs = {}
     for i in range(len(data)-2):
@@ -573,8 +572,8 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     [(5, 'a'), (4, '\\n'), (2, 'r')]
     >>> big[:3]
     [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
-    >>> trig[:12]
-    [(1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇧aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, '⇗aa'), (1, 'uia'), (1, 't⇧a'), (1, 't⇧a'), (1, 't⇗a')]
+    >>> trig[:10]
+    [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗')]
     """
     f = open(datapath, encoding="utf-8", errors="ignore")
     letters = {}
@@ -648,7 +647,7 @@ def trigrams_in_file_precalculated(data, only_existing=True):
 
     >>> data = read_file("3gramme.txt")
     >>> trigrams_in_file_precalculated(data)[:6]
-    [(5678513, 'en '), (4414826, 'er '), (2891228, ' de'), (2302691, 'der'), (2272020, 'ie '), (2039215, 'ich')]
+    [(5678553, 'en '), (4467769, 'er '), (2891228, ' de'), (2493088, 'der'), (2304026, 'sch'), (2272028, 'ie ')]
     """
     trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
 
@@ -736,6 +735,9 @@ class NGrams(object):
             …
 
         >>> ngrams = NGrams('ngrams_test.config')
+        Reading text testfile
+        Reading bla errortest
+        unrecognized filetype bla errortest
         >>> ngrams.raw
         [(1.0, ([(5, 'a'), (4, '\\n'), (2, 'r'), (2, 'e'), (2, 'A'), (1, 'u'), (1, 't'), (1, 'o'), (1, 'n'), (1, 'i'), (1, 'g'), (1, 'd')], [(2, 'a\\n'), (2, 'Aa'), (1, 'ui'), (1, 'tA'), (1, 'rt'), (1, 'rg'), (1, 'od'), (1, 'nr'), (1, 'ia'), (1, 'g\\n'), (1, 'eo'), (1, 'en'), (1, 'd\\n'), (1, 'ae'), (1, 'aa'), (1, 'aA'), (1, '\\nr'), (1, '\\ne'), (1, '\\na')], [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗'), (1, 'rg\\n'), (1, 'od\\n'), (1, 'nrt'), (1, 'iae'), (1, 'g\\na'), (1, 'eod'), (1, 'enr'), (1, 'd\\nr'), (1, 'aen'), (1, 'aa⇧'), (1, 'aa⇗'), (1, 'a\\ne'), (1, '\\nrg'), (1, '\\neo'), (1, '\\naa')]))]
         """
@@ -763,10 +765,17 @@ class NGrams(object):
         """Compare two ngram distributions.
 
         >>> n = NGrams('ngrams_test_diff.config')
+        Reading pregenerated 1-gramme.arne.txt;2-gramme.arne.txt;3-gramme.arne.txt
         >>> from copy import deepcopy
         >>> m = deepcopy(n)
-        >>> m.one["a"] += 3
+        >>> m.one["a"] += 0
         >>> n.diff(m)
+        [{}, {}, {}]
+        >>> m.one["a"] += 3
+        >>> n.diff(m)[1:]
+        [{}, {}]
+        >>> str(n.diff(m)[0]["a"])[:7]
+        '-2.8652'
 
         @return the differences of the normalized 1-, 2- and 3grams as dicts.
         """
@@ -780,8 +789,10 @@ class NGrams(object):
 
         def _diffdict(d1, d2):
             """All different keys with the difference."""
-            diff = {key: d1[key] - d2[key] for key in d1 if key in d2 and abs(d1[key] - d2[key]) > 1.0e-15}
-            # python floats normally have binary precision 53. 
+            diff = {key: d1[key] - d2[key] for key in d1 if key in d2 and abs(d1[key] - d2[key]) > 1.0e-14}
+            # python floats normally should have binary precision 53,
+            # but with 1.0e-15 I still get stray results when diffing
+            # the same dictionary.
             for key in d1:
                 if key in d2: continue
                 diff[key] = d1[key]
