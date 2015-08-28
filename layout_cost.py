@@ -492,6 +492,8 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
         hand1 = key_hand_table[trig[1]]
         hand2 = key_hand_table[trig[2]]
         if hand0 is hand2:
+            # add secondary bigrams
+            bi = trig[0]+trig[2]
             if hand0 is hand1: # no handswitch
                 pos0 = key_pos_horizontal_table[trig[0]]
                 pos1 = key_pos_horizontal_table[trig[1]]
@@ -500,14 +502,11 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
                     no_switch += num * WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE
                 else: 
                     no_switch += num * WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE
-                # secondary bigrams
-                bi = trig[0]+trig[2]
                 try:
                     secondary_bigrams[bi] += num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM
                 except KeyError: secondary_bigrams[bi] = num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM
                 # Add bigram cost key 1 and key 3 if there are two handswitches; reduce via a multiplier < 1.0 ; Faktor könnte vom Tippaufwand der mittleren Taste abhängen: Je besser oder schneller die mittlere Taste getippt werden kann, desto grösser der Faktor. Das ist aber vermutlich nur eine unnötige Komplikation.
             else: # double handswitch
-                bi = trig[0]+trig[2]
                 try:
                     secondary_bigrams[bi] += num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH
                 except KeyError: secondary_bigrams[bi] = num * WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH
