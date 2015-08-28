@@ -39,8 +39,8 @@ anneal = 5
 #: The number of iterations to spend in one anneal level. The first anneal * anneal_step iterations are spent in simulated annealing.
 anneal_step = 1000
 
-#: Should we limit the number of ngrams? A value of 3000 should still be safe to quickly see results without getting unreasonable layouts.
-limit_ngrams = False
+#: Should we limit the number of ngrams? A value of 3000 should still be safe to quickly see results without getting unreasonable layouts. Use 0 for no-limit.
+limit_ngrams = 0
 
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
 STARTING_LAYOUT = """xvlcw khgfqyß
@@ -75,6 +75,8 @@ parser.add_option("--progress",
                       help="Show a progress meter. Does not work on Windows.")
 parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
                       help="use simulated annealing. Set to 0 for no anneal.")
+parser.add_option("--limit-ngrams", type="int", dest="limit_ngrams", default=limit_ngrams,
+                  help="Limit the number of ngrams to use. Speeds up the process but increases the danger of getting very bad outlier letters.")
 
 (options, args) = parser.parse_args()
 
@@ -124,7 +126,7 @@ for step in range(options.evolution_steps):
                            anneal=options.anneal,
                            anneal_step = anneal_step,
                            fingerstats = True,
-                           limit_ngrams = limit_ngrams)
+                           limit_ngrams = options.limit_ngrams)
     if not meter:
         print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
         t = time()
