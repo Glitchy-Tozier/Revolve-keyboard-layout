@@ -36,6 +36,7 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
     """Split a single bigram.
 
     >>> _split_uppercase_repeat("AB", 5)
+    {'a⇧': 5, '⇗⇧': 5, 'ab': 5, '⇗b': 5, '⇗a': 5, '⇧b': 5}
     """
     mods = MODIFIERS_PER_LAYER
     #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
