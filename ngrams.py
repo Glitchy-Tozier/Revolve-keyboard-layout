@@ -56,6 +56,7 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
     #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
     mods_on_same_hand_adjustment = 1/32
     repeats = {}
+    
     # now get the base keys.
     base1 = get_key(pos1[:2] + (0, ), layout=layout)
     base2 = get_key(pos2[:2] + (0, ), layout=layout)
