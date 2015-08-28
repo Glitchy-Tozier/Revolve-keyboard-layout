@@ -36,7 +36,7 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     """Split a single bigram.
 
     >>> _split_uppercase_repeat("AB", 5)
-    {'a⇧': 5, '⇗⇧': 5, 'ab': 5, '⇗b': 5, '⇗a': 5, '⇧b': 5}
+    {'⇗b': 2.5, '⇗a': 5, '⇗⇧': 5, 'ab': 5, 'a⇧': 10, '⇧b': 5}
     """
     # first check whether we really have a bigram and whether we need to split it.
     try:
@@ -177,7 +177,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     
     >>> reps = [(36, "ab"), (24, "Ab"), (16, "aB"), (10, "AB"), (6, "¾2"), (4, "(}"), (2, "Ψ∃"), (1, "q")]
     >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps).items()])))
-    [(86, 'ab'), (34, '⇗b'), (34, '⇗a'), (26, '⇧b'), (26, 'a⇧'), (10, '⇗⇧'), (6, '⇩⇘'), (6, '⇩e'), (6, '⇘e'), (6, '¾2'), (4, '⇩n'), (4, 'n⇘'), (4, 'ne'), (2, '⇩⇙'), (2, '⇩h'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇚e'), (2, '⇙e'), (2, 'h⇙'), (2, 'h⇘'), (2, 'he'), (0.0625, '⇩⇚'), (0.0625, '⇘⇙')]
+    [(86, 'ab'), (52, 'a⇧'), (34, '⇗a'), (26, '⇧b'), (17.0, '⇗b'), (10, '⇗⇧'), (8, 'n⇘'), (6, '⇩⇘'), (6, '⇘e'), (6, '¾2'), (4, '⇩n'), (4, 'ne'), (4, 'h⇙'), (4, 'h⇘'), (3.0, '⇩e'), (2, '⇩⇙'), (2, '⇩h'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇙e'), (2, 'he'), (1.0, '⇚e'), (0.0625, '⇩⇚'), (0.0625, '⇘⇙')]
     >>> reps = [(1, ", ")]
     >>> from layout_base import string_to_layout
     >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
