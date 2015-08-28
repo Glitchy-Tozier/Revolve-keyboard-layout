@@ -178,7 +178,8 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     repeats = collections.Counter()
     _sur = _split_uppercase_repeat
     for num, rep in reps:
-        repeats.update(_sur(rep, num, layout=layout))
+        for key, val in _sur(rep, num, layout=layout).items():
+            repeats[key] += val
     
     return repeats
     #reps = [(num, rep) for rep, num in repeats.items()]
