@@ -99,15 +99,15 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
             try: repeats[m1+m2] += num
             except KeyError: repeats[m1+m2] = num
         # each of the first mods with the second base key
-        ## TODO: counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
-        try: repeats[m1+base2] += num # TODO: ((int(0.5*num), m1+base2))
-        except KeyError: repeats[m1+base2] = num 
+        # counted only 0.5 as strong, because the mod is normally hit and released short before the key is.
+        try: repeats[m1+base2] += 0.5*num
+        except KeyError: repeats[m1+base2] = 0.5*num 
 
     # the first base key with the second mods.
-    ## TODO: counted 2x as strong, because the mod is normally hit and released short before the key is.
+    # counted 2x as strong, because the mod is normally hit and released short before the key is.
     for m2 in mods2:
-        try: repeats[base1+m2] += num # TODO: ((2*num, base1+m2))
-        except KeyError: repeats[base1+m2] = num
+        try: repeats[base1+m2] += 2*num 
+        except KeyError: repeats[base1+m2] = 2*num
         # also the second mod with the second base key
         try: repeats[m2+base2] += num
         except KeyError: repeats[m2+base2] = num
@@ -135,8 +135,6 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
 
     Note: Using a collections.Counter() does not make this faster -- neither for pypy nor for cPython.
-
-    TODO: aB should be counted about 2x, Ab only 0.5 times, because shift is pressed and released a short time before the key is. 
 
         Ab -> shift-a, shift-b, a-b.
         aB -> a-shift, shift-b, a-b.
