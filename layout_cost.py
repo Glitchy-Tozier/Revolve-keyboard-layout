@@ -485,12 +485,13 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     no_switch = 0
     secondary_bigrams = {} # {bigram: num, …}
     for num, trig in trigrams:
-        # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
-        if not trig[0] in key_hand_table or not trig[1] in key_hand_table or not trig[2] in key_hand_table:
+        try:
+            hand0 = key_hand_table[trig[0]]
+            hand1 = key_hand_table[trig[1]]
+            hand2 = key_hand_table[trig[2]]
+        except KeyError:
+            # if one of the trigs is not in the key_hand_table, we don’t count the trigram.
             continue
-        hand0 = key_hand_table[trig[0]]
-        hand1 = key_hand_table[trig[1]]
-        hand2 = key_hand_table[trig[2]]
         if hand0 is hand2:
             # add secondary bigrams
             bi = trig[0]+trig[2]
