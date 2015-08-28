@@ -38,22 +38,24 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
     >>> _split_uppercase_repeat("AB", 5)
     {'a⇧': 5, '⇗⇧': 5, 'ab': 5, '⇗b': 5, '⇗a': 5, '⇧b': 5}
     """
-    mods = MODIFIERS_PER_LAYER
-    #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
-    mods_on_same_hand_adjustment = 1/32
-    repeats = {}
+    # first check whether we really have a bigram and whether we need to split it.
     try: 
+        pos2 = find_key(rep[1], layout=layout) # second first to error out early.
         pos1 = find_key(rep[0], layout=layout)
-        pos2 = find_key(rep[1], layout=layout)
     except IndexError:
         # this is no repeat but at most a single key.
         return {}
     # if any key isn’t found, the repeat doesn’t need splitting.
-    # same is true if all keys are layer 0. 
-    if pos1 is None or pos2 is None or (not pos1[2] and not pos2[2]):
-        # caught all lowercase repeats and all for which one key isn’t in the layout. We don’t need to change anything for these.
+    # same is true if all keys are layer 0.
+    if pos1 is None or pos2 is None or (pos1[2] == 0 and pos2[2] == 0):
+        # caught all lowercase repeats and all for which one key isn’t
+        # in the layout. We don’t need to change anything for these.
         return {rep: num}
 
+    mods = MODIFIERS_PER_LAYER
+    #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
+    mods_on_same_hand_adjustment = 1/32
+    repeats = {}
     # now get the base keys.
     base1 = get_key(pos1[:2] + (0, ), layout=layout)
     base2 = get_key(pos2[:2] + (0, ), layout=layout)
@@ -174,9 +176,9 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # char1 and shift are pressed at the same time
     #: The resulting bigrams after splitting.
     repeats = collections.Counter()
-    
+    _sur = _split_uppercase_repeat
     for num, rep in reps:
-        repeats.update(_split_uppercase_repeat(rep, num, layout=layout))
+        repeats.update(_sur(rep, num, layout=layout))
     
     return repeats
     #reps = [(num, rep) for rep, num in repeats.items()]
