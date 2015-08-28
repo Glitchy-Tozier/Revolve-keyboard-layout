@@ -3,6 +3,8 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
+import collections
+
 from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 from textcheck import occurrence_dict_difference as diffdict
@@ -31,7 +33,10 @@ _steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr
 ### Functions
 
 def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT):
-    """Split a single bigram."""
+    """Split a single bigram.
+
+    >>> _split_uppercase_repeat("AB", 5)
+    """
     mods = MODIFIERS_PER_LAYER
     #: Adjustment of the weight of two modifiers on the same hand, because we can’t yet simulate moving the hand to use a different finger for M4/M3 when the pinky is needed on M3/shift. 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment should be lower than (COST_PER_KEY_NOT_FOUND - max(COST_LAYER_ADDITION) - the most expensive key), because a key with M3-shift brings 2 finger repeats: one as first part in a bigram and the second as second part. 
     mods_on_same_hand_adjustment = 1/32
@@ -167,7 +172,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     #: The resulting bigrams after splitting.
-    repeats = {}
+    repeats = collections.Counter()
     
     for num, rep in reps:
         repeats.update(_split_uppercase_repeat(rep, num, layout=layout))
