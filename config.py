@@ -222,7 +222,8 @@ WEIGHT_ASYMMETRIC_SIMILAR = 10.0 #: the penalty *per letter* in the text if simi
 #: [(first-letters, second-letters), ...]. 
 SIMILAR_LETTERS = [("auo", "äüö"), # umlauts to vowels
                    ("gbdw", "kptf"), # soft consonants to hard consonants
-                   ("sfd", "tpb")] # tongue consonants to lip-consonants
+                   ("sfd", "tpb"), # tongue consonants to lip-consonants
+                   ("mw", "nv")] # visual appearance
 
 ## Symmetry of the movement
 
