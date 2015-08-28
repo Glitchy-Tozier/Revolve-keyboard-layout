@@ -39,15 +39,19 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     {'a⇧': 5, '⇗⇧': 5, 'ab': 5, '⇗b': 5, '⇗a': 5, '⇧b': 5}
     """
     # first check whether we really have a bigram and whether we need to split it.
-    try: 
-        pos2 = find_key(rep[1], layout=layout) # second first to error out early.
-        pos1 = find_key(rep[0], layout=layout)
+    try:
+        r2 = rep[1] # second first to error out early.
+        r1 = rep[0]
     except IndexError:
         # this is no repeat but at most a single key.
         return {}
+    pos1 = find_key(r1, layout=layout)
+    pos2 = find_key(r2, layout=layout)
     # if any key isn’t found, the repeat doesn’t need splitting.
     # same is true if all keys are layer 0.
-    if pos1 is None or pos2 is None or (pos1[2] == 0 and pos2[2] == 0):
+    layer1 = pos1[2]
+    layer2 = pos2[2]
+    if pos1 is None or pos2 is None or (layer1 == 0 and layer2 == 0):
         # caught all lowercase repeats and all for which one key isn’t
         # in the layout. We don’t need to change anything for these.
         return {rep: num}
@@ -57,8 +61,14 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     repeats = {}
     
     # now get the base keys.
-    base1 = get_key(pos1[:2] + (0, ), layout=layout)
-    base2 = get_key(pos2[:2] + (0, ), layout=layout)
+    if layer1 == 0:
+        base1 = r1
+    else:
+        base1 = get_key(pos1[:2] + (0, ), layout=layout)
+    if layer2 == 0:
+        base2 = r2
+    else:
+        base2 = get_key(pos2[:2] + (0, ), layout=layout)
 
     # add the base keys as repeat
     try: repeats[base1+base2] += num
@@ -67,13 +77,13 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     # now check for the mods which are needed to get the key
     # if the pos is left, we need the modifiers on the right.
     if pos_is_left(pos1):
-        mods1 = mods[pos1[2]][1]
+        mods1 = mods[layer1][1]
     else:
-        mods1 = mods[pos1[2]][0]
+        mods1 = mods[layer1][0]
     if pos_is_left(pos2): 
-        mods2 = mods[pos2[2]][1]
+        mods2 = mods[layer2][1]
     else:
-        mods2 = mods[pos2[2]][0]
+        mods2 = mods[layer2][0]
 
     # now we have the mods, so we do the splitting by mods.
     for m1 in mods1:
