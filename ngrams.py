@@ -3,8 +3,6 @@
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-import collections
-
 from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 from textcheck import occurrence_dict_difference as diffdict
@@ -176,12 +174,15 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     #: The resulting bigrams after splitting.
-    repeats = collections.Counter()
+    repeats = {}
     _sur = _split_uppercase_repeat
     for num, rep in reps:
         for key, val in _sur(rep, num, layout=layout).items():
-            repeats[key] += val
-    
+            try:
+                repeats[key] += val
+            except KeyError:
+                repeats[key] = val
+
     return repeats
     #reps = [(num, rep) for rep, num in repeats.items()]
     #reps.sort()
