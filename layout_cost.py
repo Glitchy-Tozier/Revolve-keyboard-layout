@@ -128,9 +128,11 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
     :param symmetries: [(first-keys, second-keys), ...]
     
     >>> asymmetry_cost(layout=NEO_LAYOUT)
-    3.7072285927821325
+    3.2271746276828956
     >>> asymmetry_cost(layout=CRY_LAYOUT)
-    3.036554268074246
+    4.623519324656288
+    >>> asymmetry_cost(layout=BONE_LAYOUT)
+    3.1218141120250698
     """
     cost = 0
     for matched in symmetries: # ("auo", "äüö")
@@ -212,8 +214,10 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     2
     >>> reps =  [(3, "Ab")]
     >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
+    >>> sorted(reps)
+    [(1.5, '⇗b'), (3, 'ab'), (3, '⇗a')]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
-    30.0
+    15.0
     >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
     0
     >>> reps = [(3, "Ga")]
