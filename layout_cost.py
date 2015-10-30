@@ -140,7 +140,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
         # we have 3 distances: distance in hand, distance in finger
         # and vertical distance. All should be symmetric.
         hand_dists = []
-        fing_dists = []
+        col_dists = []
         v_directions = []
         for i in range(l):
             positions = [find_key(m[i], layout=layout) for m in matched]
@@ -159,7 +159,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                         hand_dists.append(1)
                     else:
                         hand_dists.append(-1)
-                    fing_dists.append(finger_distance(pos0, pos1))
+                    col_dists.append(abs(column_distance(pos0, pos1)))
                     v_dist = pos1[0] - pos0[0]
                     if v_dist > 0:
                         v_directions.append(1)
@@ -170,7 +170,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                     # print(letters[j], letters[j+k+1])
         # now we have distances for all three parameters.
         # time to calculate the cost for asymmetry.
-        # auo, äüö (NEO): hand_dists = [0, 0, 0], fing_dists = [0, 0, 2], v_directions = [1, 1, 1]
+        # auo, äüö (NEO): hand_dists = [0, 0, 0], col_dists = [0, 0, 2], v_directions = [1, 1, 1]
         diff_cost = 0
         diffs = []
         # If all are symmetric, cost is 0
@@ -179,7 +179,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
 
         # -> just use log(N+1) with N the number of asymmetric ones
         #    divided by the number of possible ones.
-        for dists in (hand_dists, fing_dists, v_directions):
+        for dists in (hand_dists, col_dists, v_directions):
             dcost = 0
             ddiffs = []
             for i in range(len(dists)):
@@ -255,6 +255,19 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
                     #     print(row_multiplier, pos1[0] - pos2[0], pair)
                     no_switch += cost
     return no_switch
+
+
+def column_distance(pos1, pos2):
+    """Horizontal distance between the keys."""
+    column1 = pos1[1]
+    column2 = pos2[1]
+    # adapt the column, because our data model follows the broken
+    # default layout of keyboards
+    if pos1[0] in [1,2]:
+        column1 += 1
+    if pos2[0] in [1,2]:
+        column2 += 1
+    return column2 - column1
 
 
 def finger_distance(pos1, pos2):
