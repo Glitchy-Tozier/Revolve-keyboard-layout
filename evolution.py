@@ -76,7 +76,7 @@ parser.add_option("--progress",
 parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
                       help="use simulated annealing. Set to 0 for no anneal.")
 parser.add_option("--limit-ngrams", type="int", dest="limit_ngrams", default=limit_ngrams,
-                  help="Limit the number of ngrams to use. Speeds up the process but increases the danger of getting very bad outlier letters.")
+                  help="Limit the number of ngrams to use. Speeds up the process but increases the danger of getting very bad outlier letters. Values of 3000 and higher still give plausible layouts.")
 
 (options, args) = parser.parse_args()
 
