@@ -83,7 +83,7 @@ if __name__ == "__main__":
                       action="store_true", dest="families", default=False,
                       help="Sort the layouts into families and print only the best layout in each familiy. ")
     parser.add_option("--family-threshold", dest="family_threshold", type="float", default=0.8,
-                      help="Treat layouts with at most the given difference as belonging to the same family", metavar="max_difference")
+                      help="Treat layouts with at most the given difference as belonging to the same family. Default: 0.8", metavar="max_difference")
 
     (options, args) = parser.parse_args()
 
