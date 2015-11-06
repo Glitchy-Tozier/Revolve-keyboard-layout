@@ -18,7 +18,7 @@ if [ $# -eq 2 ]; then
     export NUMBER=$2
 fi
 
-for i in $(grep "total penalty per letter" $1  | sort -r | cut -d " " -f 2 | uniq | tail -n $NUMBER | xargs)
- do grep -m 1 $i $1 -A 11 -B 17
+for i in $(grep "billion total penalty" $1  | sort -r | cut -d " " -f 2 | uniq | tail -n $NUMBER | xargs)
+ do grep -m 1 $i $1 -A 11 -B 18
 done
 
