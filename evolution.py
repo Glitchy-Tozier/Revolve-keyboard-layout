@@ -43,9 +43,9 @@ anneal_step = 1000
 limit_ngrams = 0
 
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
-STARTING_LAYOUT = """xvlcw khgfqyß
-uiaeo snrtd⇘
-zäüpö bm,.j"""
+STARTING_LAYOUT = """bmuaz kdflvjß
+criey ptsnh⇘
+xäüoö wg,.q"""
 
 
 ### Parse console arguments
