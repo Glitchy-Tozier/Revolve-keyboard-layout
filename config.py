@@ -250,6 +250,10 @@ COST_MANUAL_BIGRAM_PENALTY = {
     ((3, 3, 0), (1, 1, 0)): 0.2, # xq on normal keyboards (lower row shifted to the right)
     ((1, 1, 0), (3, 4, 0)): 0.1, # qc on normal keyboards (lower row shifted to the right)
     ((3, 4, 0), (1, 1, 0)): 0.1, # cq on normal keyboards (lower row shifted to the right)
+    ((3, 11, 0), (1, 6, 0)): 0.1, # -y on normal keyboards (lower row shifted to the right)
+    ((1, 6, 0), (3, 11, 0)): 0.1, # y- on normal keyboards (lower row shifted to the right)
+    ((3, 2, 0), (1, 5, 0)): 0.1, # zt on normal keyboards (lower row shifted to the right)
+    ((1, 5, 0), (3, 2, 0)): 0.1, # tz on normal keyboards (lower row shifted to the right)
     ## positive movements: pinky down and index down. This is the only bigramm where pinky down does not hurt.
     ((3, 2, 0), (3, 5, 0)): -0.01, # zv on normal keyboards (lower row shifted to the right)
     ((3, 5, 0), (3, 2, 0)): -0.01, # vz on normal keyboards (lower row shifted to the right)
