@@ -250,6 +250,7 @@ COST_MANUAL_BIGRAM_PENALTY = {
     ((3, 3, 0), (1, 1, 0)): 0.2, # xq on normal keyboards (lower row shifted to the right)
     ((1, 1, 0), (3, 4, 0)): 0.1, # qc on normal keyboards (lower row shifted to the right)
     ((3, 4, 0), (1, 1, 0)): 0.1, # cq on normal keyboards (lower row shifted to the right)
+    ## pinky lower to index upper and index upper to pinky lower (heavy stretch and screw of the hand)
     ((3, 11, 0), (1, 6, 0)): 0.1, # -y on normal keyboards (lower row shifted to the right)
     ((1, 6, 0), (3, 11, 0)): 0.1, # y- on normal keyboards (lower row shifted to the right)
     ((3, 2, 0), (1, 5, 0)): 0.1, # zt on normal keyboards (lower row shifted to the right)
