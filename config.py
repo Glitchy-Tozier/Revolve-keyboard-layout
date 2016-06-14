@@ -6,7 +6,7 @@
 ### definitions
 
 #: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß,." # äöüß,." # ⇧⇗"
+abc = "abcdefghijklmnopqrstuvwxyzäöüß" # ,." # äöüß,." # ⇧⇗"
 
 #The letters which are used to calculate the costs - do not change anything or results will become incomparable.
 abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
