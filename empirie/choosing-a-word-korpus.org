@@ -1,0 +1,59 @@
+#+title: Choosing a Korpus of words
+#+options: ^:nil
+
+For the regularity check I need a korpus of words. 
+
+Goal: Having a less than 5% chance to have an outlier which wasn’t known to the model in a days worth of typing of a professional typist.
+
+Typing speed: According to Wikipedia long-term typing (50 minute) record is about 150 words per minute (about 750 characters per minute). For stenotyping machines it notes a world record of 360 words per minute (about 1650 characters per minute). German handwritten stenography on professional level (for political debates) requires at least 360 syllables per minute going up to 500 syllables per minute (about 280 words per minute, assuming 1.8 syllables per german word[fn:1], 1583 characters per minute with 5.7 characters per word[fn:2]). That’s about 134400 words in an 8 hour workday as upper limit of what can be written in a day.
+
+Distribution of words: Using the Google Books ngrams (1grams)[fn:3], we get a distribution of words.
+
+Now we just need to open all the 1gram files (around 1GiB) and get the distribution of wordlengths to find the number of words we need to use. To have a less than 5% chance that an unknown word appears in the text of a wordlist, the fraction of unknown words must be at most 0.05 / words_per_day, which gives 3.7×10\(^{-7}\) for 134400 words.
+
+#+BEGIN_SRC python
+  import glob
+  import gzip
+  import csv
+  import collections
+  matchcounts = collections.Counter()
+  for ngramfile in glob.glob("googlebooks-ger*.gz"):
+      print(ngramfile)
+      with gzip.open(ngramfile, "rt") as f:
+          for line in csv.reader(f, delimiter="\t"):
+              ngram, year, match_count = line[:3]
+              if "_" in ngram:
+                  ngram = ngram.split("_")[0]
+              matchcounts[ngram] += int(match_count)
+
+
+  nmatches = sum(matchcounts.values())
+  required = nmatches * (1 - 3.7e-7)
+  words = []
+  matches = 0
+  for word, count in matchcounts.items():
+      words.append(word)
+      matches += count
+      if matches > required:
+          break
+
+
+  print("required words in corpus:", len(words))
+  with open("corpus_googlewords_de.txt", "w") as f:
+      f.writelines("%s\n" % word for word in words)
+
+#+END_SRC
+
+* Footnotes
+
+[fn:1] George Kingsley Zipf: The Psycho-Biology of Language. An Introduction to Dynamic Philology. The M.I.T. Press, Cambridge, Massachusetts 1968, Seite 23. Erstdruck 1935. Zipf erwähnt noch, dass Kaeding die Summe der Wörter auf 10,910,777 korrigiert habe, ohne die Verteilung auf die verschiedenen Wortlängen mitzuteilen. Die angeführte Berechnung ist geringfügig korrigiert und etwas ergänzt. Die gleichen Daten wie bei Zipf finden sich in: David Crystal: Die Cambridge Enzyklopädie der Sprache. Campus, Frankfurt/ New York 1993, Seite 87. ISBN 3-593-34824-1.
+
+[fn:2] Errechnet man den Durchschnitt aller im Dudenkorpus vorkommenden Wörter, also der 1, 4 Milliarden Wortformen, ergibt sich ein Durchschnitt von 5,7 Buchstaben. — http://www.duden.de/sprachwissen/sprachratgeber/durchschnittliche-laenge-eines-deutschen-wortes
+
+[fn:3]  http://storage.googleapis.com/books/ngrams/books/datasetsv2.html
+
+
+
+
+
+
