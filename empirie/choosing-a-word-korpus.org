@@ -11,6 +11,8 @@ Distribution of words: Using the Google Books ngrams (1grams)[fn:3], we get a di
 
 Now we just need to open all the 1gram files (around 1GiB) and get the distribution of wordlengths to find the number of words we need to use. To have a less than 5% chance that an unknown word appears in the text of a wordlist, the fraction of unknown words must be at most 0.05 / words_per_day, which gives 3.7×10\(^{-7}\) for 134400 words or 2×10\(^{-6}\) for 24000 words. We’ll target the latter.
 
+For 1 page it would be around 0.05 / 360, or 1.4×10\(^{-4}\). Note that the tail here is cut, because Google ngrams starts at 40 matches per year.
+
 #+BEGIN_SRC python
   import glob
   import gzip
@@ -28,7 +30,7 @@ Now we just need to open all the 1gram files (around 1GiB) and get the distribut
 
 
   nmatches = sum(matchcounts.values())
-  required = nmatches * (1 - 2e-6)
+  required = int(nmatches * (1 - 1.4e-4))
   words = []
   matches = 0
   for word, count in matchcounts.most_common():
@@ -41,6 +43,11 @@ Now we just need to open all the 1gram files (around 1GiB) and get the distribut
   print("required words in corpus:", len(words), " of a total of ", len(matchcounts.keys()))
   with open("corpus_googlewords_de.txt", "w") as f:
       f.writelines("%s\n" % word for word in words)
+
+  # plot the distribution
+  import pylab
+  pylab.plot(pylab.cumsum([j for i,j in matchcounts.most_common()]))
+  pylab.show()
 
 #+END_SRC
 
