@@ -38,7 +38,7 @@ Now we just need to open all the 1gram files (around 1GiB) and get the distribut
           break
 
 
-  print("required words in corpus:", len(words))
+  print("required words in corpus:", len(words), " of a total of ", len(matchcounts.keys()))
   with open("corpus_googlewords_de.txt", "w") as f:
       f.writelines("%s\n" % word for word in words)
 
