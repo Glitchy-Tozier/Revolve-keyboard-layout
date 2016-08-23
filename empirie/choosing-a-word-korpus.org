@@ -31,7 +31,7 @@ Now we just need to open all the 1gram files (around 1GiB) and get the distribut
   required = nmatches * (1 - 2e-6)
   words = []
   matches = 0
-  for word, count in matchcounts.items():
+  for word, count in matchcounts.most_common():
       words.append(word)
       matches += count
       if matches > required:
