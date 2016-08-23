@@ -5,7 +5,7 @@ For the regularity check I need a korpus of words.
 
 Goal: Having a less than 5% chance to have an outlier which wasn’t known to the model in a days worth of typing of a professional typist.
 
-Typing speed: According to Wikipedia long-term typing (50 minute) record is about 150 words per minute (about 750 characters per minute). For stenotyping machines it notes a world record of 360 words per minute (about 1650 characters per minute). German handwritten stenography on professional level (for political debates) requires at least 360 syllables per minute going up to 500 syllables per minute (about 280 words per minute, assuming 1.8 syllables per german word[fn:1], 1583 characters per minute with 5.7 characters per word[fn:2]). That’s about 134400 words in an 8 hour workday as upper limit of what can be written in a day. For a fast typist (100 words per minute) with 4 hours of typing, it’s 24000 words.
+Typing speed: According to Wikipedia long-term typing (50 minute) record is about 150 words per minute (about 750 characters per minute). For stenotyping machines it notes a world record of 360 words per minute (about 1650 characters per minute). German handwritten stenography on professional level (for political debates) requires at least 360 syllables per minute going up to 500 syllables per minute (about 280 words per minute, assuming 1.8 syllables per german word[fn:1], 1583 characters per minute with 5.7 characters per word[fn:2]). That’s about 134400 words in an 8 hour workday as upper limit of what can be written in a day. For a fast typist (100 words per minute) with 4 hours of typing, it’s 24000 words, about half a novel.
 
 Distribution of words: Using the Google Books ngrams (1grams)[fn:3], we get a distribution of words.
 
