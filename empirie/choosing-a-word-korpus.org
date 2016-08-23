@@ -46,7 +46,7 @@ For 1 page it would be around 0.05 / 360, or 1.4×10\(^{-4}\). Note that the tai
 
   # plot the distribution
   import pylab
-  pylab.plot(pylab.cumsum([j for i,j in matchcounts.most_common()]))
+  pylab.plot(pylab.cumsum([j for i,j in matchcounts.most_common(len(words))]))
   pylab.show()
 
 #+END_SRC
