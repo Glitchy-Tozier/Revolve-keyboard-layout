@@ -10,6 +10,7 @@
 # Reason: Being easy to learn is essential.
 
 import math
+import random
 
 from layout_base import *
 
@@ -592,13 +593,43 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False):
+def irregularity(words, layout=NEO_LAYOUT, **opts):
+    """Irregularity of the cost per word: The std of the total_cost for
+each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
+
+    def std(numbers):
+        """Calculate the standard deviation from a set of numbers.
+    
+        This simple calculation is only valid for more than 100 numbers or so. That means I use it in the invalid area. But since it’s just an arbitrary metric, that doesn’t hurt.
+    
+        >>> std([1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]*10)
+        1.607945243653783
+        """
+        length = float(len(numbers))
+        mean = sum(numbers)/max(1, length)
+        var = 0
+        for i in numbers:
+            var += (i - mean)**2
+        var /= max(1, (length - 1))
+        from math import sqrt
+        return sqrt(var)
+    data = []
+    if IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION < 1.0:
+        words = random.sample(words, max(2, int(len(words) * IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION)))
+    for word in words:
+        data.append(total_cost(data=word, layout=layout, check_irregularity=False, **opts)[0] / len(word))
+    return std(data)
+
+
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True):
     """Compute a total cost from all costs we have available, wheighted.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
 
     @param return_weighted: Set to true to get the weighted values instead of the real values. 
     
+    @param check_irregularity: Check the irregularity. This calles total_cost again for every word in a reference sentence and might be very expensive.
+
     >>> data = read_file("testfile")
     >>> #total_cost(data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
     
@@ -689,6 +720,18 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # asymmetric bigrams
     asymmetric_bigrams = asymmetric_bigram_penalty(reps, layout=layout)
 
+    # irregularity
+    if WEIGHT_IRREGULARITY_PER_LETTER == 0:
+        # avoid very costly checks if not necessary
+        check_irregularity = False
+    if check_irregularity:
+        with open(IRREGULARITY_REFERENCE_TEXT) as f:
+            words = f.read().split()
+        irregularity_penalty = irregularity(words, layout=layout)
+    else:
+        irregularity_penalty = 0
+    
+
     # add all together and weight them
     total = WEIGHT_POSITION * position_cost
     total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
@@ -704,11 +747,12 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
     total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
     total += WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
+    total += WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty * number_of_letters
 
-    if not return_weighted: 
-        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar
+    if not return_weighted:
+        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity_penalty
     else:
-        return total, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams, WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar
+        return total, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams, WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar, WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty * number_of_letters
 
 
 def _test():

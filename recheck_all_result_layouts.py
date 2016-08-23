@@ -7,9 +7,12 @@ Depends on the layouts info starting with OA'Evolved Layout'
 """
 
 from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data, find_layout_families, total_cost, split_uppercase_trigrams, format_layer_1_string
+import layout_cost
+import regularity_check
 from os import listdir, mkdir
 from os.path import join, isdir
 from subprocess import call
+import sys
 
 def get_all_layouts_in_textfile(textfile):
     """Get all layouts in the given textfile.
@@ -51,7 +54,7 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     for i in listdir(folder):
         if not i.endswith(".txt") or not namepart in i:
             continue
-        print("# reading", join(folder, i))
+        print("# reading", join(folder, i), file=sys.stderr)
         all_layouts.extend(get_all_layouts_in_textfile(join(folder, i))) 
 
     return all_layouts
@@ -87,8 +90,12 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
 
+    # ensure that irregularity is using all words, regardless of the cost
+    # FIXME: Add a clean option for this
+    layout_cost.IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 1.0
+    
     if options.print_csv: 
-        print("total penalty per word;key position cost;finger repeats;disbalance of fingers;top to bottom or vice versa;handswitching in trigram;(rows²/dist)²;shortcut keys;handswitching after unbalancing;movement pattern")
+        print("layoutstring,total penalty per letter,key position cost,finger repeats,disbalance of fingers,top to bottom or vice versa,handswitching in trigram,(rows²/dist)²,shortcut keys,handswitching after unbalancing,movement pattern,regularity segments mean,regularity segments std,regularity words mean,regularity words std")
 
     all_layouts = get_all_layouts_in_text_files_in(folder=options.folder, namepart = options.namepart)
 
@@ -105,24 +112,37 @@ if __name__ == "__main__":
             print()
         lays.sort()
         # remove the cost information again.
-        lays = [lay for cost, lay in lays]
-        layout_families =  find_layout_families(lays, letters, max_diff=options.family_threshold)
+        lays = [lay for co, lay in lays]
+        layout_families = find_layout_families(lays, letters, max_diff=options.family_threshold)
         # all layouts should contain only the best from each family.
         all_layouts = [fam[0] for fam in layout_families]
         # make sure the best is shown last
         all_layouts.reverse()
 
+    textfile = options.data
+    if textfile is None:
+        textfile = "beispieltext-prosa.txt"
     for lay in all_layouts:
+        if options.regularity:
+            segment_costs, word_costs = regularity_check.regularity(lay, textfile)
+            cost_segments_mean = sum(segment_costs) / len(segment_costs)
+            cost_segments_std = regularity_check.std(segment_costs)
+            cost_words_mean = sum(word_costs) / len(word_costs)
+            cost_words_std = regularity_check.std(word_costs)
+            regularity = "%s,%s,%s,%s" % (cost_segments_mean, cost_segments_std, cost_words_mean, cost_words_std)
+        else:
+            regularity = "N/A,N/A,N/A,N/A"
         if options.print_csv:
             csv = [str(i) for i in
                    csv_data(lay, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)]
-            print(";".join(csv))
+            name_lines = format_layer_1_string(lay).splitlines()
+            layoutstring = "-".join((name_lines[1], name_lines[0], name_lines[2]))
+            layoutstring = layoutstring.replace('"', '\"').replace(" ", "_")
+            layoutstring = '"' + layoutstring + '"'
+            print(layoutstring + "," + ",".join(csv) + "," + regularity)
         else: 
             print_layout_with_statistics(lay, verbose=True, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
             if options.regularity:
-                textfile = options.data
-                if textfile is None:
-                    textfile = "beispieltext-prosa.txt"
                 call(["./regularity_check.py", "-t", textfile, "-l", format_layer_1_string(lay)])
             print()
 
