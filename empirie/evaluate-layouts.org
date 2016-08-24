@@ -1,0 +1,27 @@
+#+title: evaluate layout results
+
+Create a csv of the relevant values via 
+
+#+BEGIN_SRC sh
+./recheck_all_result_layouts.py --folder results-2016/ --csv --regularity  > /tmp/evo.txt
+#+END_SRC
+
+Then check for correlations via
+
+#+BEGIN_SRC python
+import pylab as pl
+import numpy as np
+import csv
+import matplotlib.cm as cm
+a = [i for i in csv.reader(open("/tmp/foo.csv"))]
+b = sorted(a[1:], key=lambda x: float(x[-2]))
+c = pl.array([[float(i) for i in j] for j in b[1:]])
+colors = cm.rainbow(np.linspace(0, 1, len(a[0])))
+n = np.zeros(c.shape)
+for i in range(c.shape[1]):
+  n[:,i] = (c[:,i] - min(c[:,i])) / (np.max(c[:,i]) - np.min(c[:,i]))
+for i in range(len(a[0])):
+  pl.scatter(c[:,0], n[:,i], color=colors[i], alpha=0.7, label=a[0][i])
+pl.legend()
+pl.show()
+#+END_SRC
