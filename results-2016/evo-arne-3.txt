@@ -1,0 +1,595 @@
+
+# Evolved Layout
+ßblvj qdouyx,
+snrtc fmeia⇘
+kpzg. whäöü
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ b │ l │ v │ j │ q │ d │ o │ u │ y │ x │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ s │ n │ r │ t │ c │ f │ m │ e │ i │ a │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ k │ p │ z │ g │ . │ w │ h │ ä │ ö │ ü │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.607041109459088 x100 total penalty per letter
+# 31.49945469151505 x10 billion total penalty compared to notime-noeffort
+# 7.378303396405167 mean key position cost in file 1gramme.txt ( 54.00521052 )
+# 10.07238448504721 % finger repeats in file 2gramme.txt ( 48.6234992208097 )
+# 12.330827086073102 million keystrokes disbalance of the fingers ( 18.496240629109653 )
+# 0.3218148256554468 % finger repeats top to bottom or vice versa ( 6.47304640546811 )
+# 3.0930596705300557 % of trigrams have no handswitching (after direction change counted x 1 ) ( 13.681575886879834 )
+# 8.039904741938301 billion (rows²/dist)² to cross ( 104.51876164519791 )
+# 0.03351714225247632 hand disbalance. Left: 0.4664828577475237 %, Right: 0.5335171422524763 % ( 0.9813097814631379 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 7.1594851895531795 no handswitching after unbalancing key (weighted).
+# 25.390118497859657 movement pattern cost (weighted).
+# 0.8725438582752735 asymmetric bigram cost (weighted).
+# 20.323180571185787 manually assigned bigram penalty (weighted)
+# 12.401464824086395 unbalancing key after neighboring finger (weighted)
+# 0.8725438582752735 asymmetrc bigrams (weighted)
+# 1.3361636963005326 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.4 9.0 8.5 10.5 - 11.9 14.5 9.0 9.8
+ 
+
+# Evolved Layout
+öuo.j qwmpyzß
+aierc gtsnh⇘
+üxäl, bdfvk
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ö │ u │ o │ . │ j │ q │ w │ m │ p │ y │ z │ ß │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ a │ i │ e │ r │ c │ g │ t │ s │ n │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ ü │ x │ ä │ l │ , │ b │ d │ f │ v │ k │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.135887377875145 x100 total penalty per letter
+# 29.77515880027592 x10 billion total penalty compared to notime-noeffort
+# 7.265754942376206 mean key position cost in file 1gramme.txt ( 53.1814164 )
+# 9.986933975761662 % finger repeats in file 2gramme.txt ( 48.21099483539513 )
+# 11.341573279358283 million keystrokes disbalance of the fingers ( 17.012359919037426 )
+# 0.30450515180399934 % finger repeats top to bottom or vice versa ( 6.124876236875877 )
+# 2.746243598607551 % of trigrams have no handswitching (after direction change counted x 1 ) ( 12.147499305038728 )
+# 7.741314479483557 billion (rows²/dist)² to cross ( 100.63708823328624 )
+# 0.02603570237192443 hand disbalance. Left: 0.5260357023719244 %, Right: 0.47396429762807557 % ( 0.762269325122575 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 7.278112122069592 no handswitching after unbalancing key (weighted).
+# 21.510893769076453 movement pattern cost (weighted).
+# 0.8645928265254449 asymmetric bigram cost (weighted).
+# 16.003210245772845 manually assigned bigram penalty (weighted)
+# 11.9188885454379 unbalancing key after neighboring finger (weighted)
+# 0.8645928265254449 asymmetrc bigrams (weighted)
+# 1.0014669556788418 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 10.9 8.4 13.8 11.3 - 13.7 8.7 9.0 8.6
+ 
+
+# Evolved Layout
+ßlckq jfuyüö,
+rnthg bsiea⇘
+zxvdp wm.äo
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ l │ c │ k │ q │ j │ f │ u │ y │ ü │ ö │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ r │ n │ t │ h │ g │ b │ s │ i │ e │ a │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ z │ x │ v │ d │ p │ w │ m │ . │ ä │ o │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.511804728935786 x100 total penalty per letter
+# 31.15091516264249 x10 billion total penalty compared to notime-noeffort
+# 7.504686392033926 mean key position cost in file 1gramme.txt ( 54.93026604 )
+# 9.045185789684785 % finger repeats in file 2gramme.txt ( 43.66479306362139 )
+# 14.03583199385557 million keystrokes disbalance of the fingers ( 21.053747990783357 )
+# 0.3093668875829188 % finger repeats top to bottom or vice versa ( 6.222666142123325 )
+# 3.258514584999833 % of trigrams have no handswitching (after direction change counted x 1 ) ( 14.413435019680703 )
+# 8.091360196229683 billion (rows²/dist)² to cross ( 105.18768255098588 )
+# 0.030593157680975425 hand disbalance. Left: 0.4694068423190246 %, Right: 0.5305931576809755 % ( 0.895701806915453 )
+# 0.0 badly positioned shortcut keys (weighted).
+# 8.123699709251383 no handswitching after unbalancing key (weighted).
+# 24.862601152570235 movement pattern cost (weighted).
+# 0.8795135749812505 asymmetric bigram cost (weighted).
+# 18.690726674451884 manually assigned bigram penalty (weighted)
+# 11.216310381867535 unbalancing key after neighboring finger (weighted)
+# 0.8795135749812505 asymmetrc bigrams (weighted)
+# 1.3680075191924557 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.8 9.5 7.7 10.6 - 11.6 9.2 12.3 11.7
+ 
+
+# Evolved Layout
+ßoyvö qmdlkz,
+raei. bstnh⇘
+cäüuj fgwxp
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ o │ y │ v │ ö │ q │ m │ d │ l │ k │ z │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ r │ a │ e │ i │ . │ b │ s │ t │ n │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ c │ ä │ ü │ u │ j │ f │ g │ w │ x │ p │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.43192755974405 x100 total penalty per letter
+# 30.8585862147679 x10 billion total penalty compared to notime-noeffort
+# 7.534737961851114 mean key position cost in file 1gramme.txt ( 55.15022736 )
+# 9.118746669601386 % finger repeats in file 2gramme.txt ( 44.01990136916877 )
+# 14.156019079126963 million keystrokes disbalance of the fingers ( 21.234028618690445 )
+# 0.33167368235957956 % finger repeats top to bottom or vice versa ( 6.671349379300143 )
+# 2.267773691786446 % of trigrams have no handswitching (after direction change counted x 1 ) ( 10.03107639793088 )
+# 7.663041164112343 billion (rows²/dist)² to cross ( 99.61953513346045 )
+# 0.0025574466785802663 hand disbalance. Left: 0.5025574466785803 %, Right: 0.49744255332141973 % ( 0.0748765339943566 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 6.902503586408267 no handswitching after unbalancing key (weighted).
+# 31.888345106561136 movement pattern cost (weighted).
+# 0.8809128587753647 asymmetric bigram cost (weighted).
+# 20.905464796262052 manually assigned bigram penalty (weighted)
+# 9.115911759571274 unbalancing key after neighboring finger (weighted)
+# 0.8809128587753647 asymmetrc bigrams (weighted)
+# 1.3597830585944588 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 13.8 7.6 11.5 9.6 - 12.3 10.0 10.3 9.5
+ 
+
+# Evolved Layout
+öäuvj qwmlzß,
+aeinp gtsrh⇘
+oü.cy bdfxk
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ö │ ä │ u │ v │ j │ q │ w │ m │ l │ z │ ß │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ a │ e │ i │ n │ p │ g │ t │ s │ r │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ o │ ü │ . │ c │ y │ b │ d │ f │ x │ k │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.085136857735073 x100 total penalty per letter
+# 29.589425551254237 x10 billion total penalty compared to notime-noeffort
+# 7.495262122731031 mean key position cost in file 1gramme.txt ( 54.86128546 )
+# 8.298677783258848 % finger repeats in file 2gramme.txt ( 40.06109509888771 )
+# 13.92153518188302 million keystrokes disbalance of the fingers ( 20.882302772824527 )
+# 0.2921835513893031 % finger repeats top to bottom or vice versa ( 5.877037153914056 )
+# 2.9258279009427 % of trigrams have no handswitching (after direction change counted x 1 ) ( 12.941857164959893 )
+# 7.598033287699857 billion (rows²/dist)² to cross ( 98.77443274009815 )
+# 0.027451169008162246 hand disbalance. Left: 0.5274511690081622 %, Right: 0.47254883099183775 % ( 0.8037111415224284 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 6.881397240629634 no handswitching after unbalancing key (weighted).
+# 23.538057892674647 movement pattern cost (weighted).
+# 0.8749243270618406 asymmetric bigram cost (weighted).
+# 17.922648818932775 manually assigned bigram penalty (weighted)
+# 9.815915173072902 unbalancing key after neighboring finger (weighted)
+# 0.8749243270618406 asymmetrc bigrams (weighted)
+# 1.5616712445215946 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 13.6 11.5 8.5 11.0 - 13.6 8.7 8.9 8.7
+ 
+
+# Evolved Layout
+jbpmz öüudfß,
+gtnrl äeihs⇘
+cvxkq oa.yw
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ j │ b │ p │ m │ z │ ö │ ü │ u │ d │ f │ ß │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ g │ t │ n │ r │ l │ ä │ e │ i │ h │ s │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ c │ v │ x │ k │ q │ o │ a │ . │ y │ w │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.629492761298769 x100 total penalty per letter
+# 31.581621696514777 x10 billion total penalty compared to notime-noeffort
+# 7.5483165939280195 mean key position cost in file 1gramme.txt ( 55.24961564 )
+# 11.505989290283418 % finger repeats in file 2gramme.txt ( 55.5440930716336 )
+# 13.934121910492845 million keystrokes disbalance of the fingers ( 20.901182865739266 )
+# 0.33338531200111315 % finger repeats top to bottom or vice versa ( 6.7057774329985875 )
+# 3.211922687081815 % of trigrams have no handswitching (after direction change counted x 1 ) ( 14.207344399072058 )
+# 7.799358396904885 billion (rows²/dist)² to cross ( 101.39165915976349 )
+# 0.06834601902914123 hand disbalance. Left: 0.4316539809708588 %, Right: 0.5683460190291412 % ( 2.0010243263626353 )
+# 0.36597309448071924 badly positioned shortcut keys (weighted).
+# 7.428654494311289 no handswitching after unbalancing key (weighted).
+# 20.464738467449074 movement pattern cost (weighted).
+# 0.8834191830036212 asymmetric bigram cost (weighted).
+# 20.40175265827765 manually assigned bigram penalty (weighted)
+# 8.754585332545037 unbalancing key after neighboring finger (weighted)
+# 0.8834191830036212 asymmetrc bigrams (weighted)
+# 1.51639683951076 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 10.2 7.1 7.6 11.5 - 19.5 9.2 7.8 11.6
+ 
+
+# Evolved Layout
+öäc.j qwumfzß
+aenrk gtish⇘
+oüyl, pdxvb
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ö │ ä │ c │ . │ j │ q │ w │ u │ m │ f │ z │ ß │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ a │ e │ n │ r │ k │ g │ t │ i │ s │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ o │ ü │ y │ l │ , │ p │ d │ x │ v │ b │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.376485261630897 x100 total penalty per letter
+# 30.655682320711968 x10 billion total penalty compared to notime-noeffort
+# 7.45679715846918 mean key position cost in file 1gramme.txt ( 54.57974262 )
+# 8.40901363250457 % finger repeats in file 2gramme.txt ( 40.59373114825527 )
+# 14.112421930981984 million keystrokes disbalance of the fingers ( 21.168632896472978 )
+# 0.3163641262256931 % finger repeats top to bottom or vice versa ( 6.363409970045369 )
+# 4.577952417895961 % of trigrams have no handswitching (after direction change counted x 1 ) ( 20.249723601754873 )
+# 7.282805917926189 billion (rows²/dist)² to cross ( 94.67647693304046 )
+# 0.02199324700925076 hand disbalance. Left: 0.5219932470092508 %, Right: 0.4780067529907492 % ( 0.6439149332523461 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 6.418516354126675 no handswitching after unbalancing key (weighted).
+# 27.905506192097093 movement pattern cost (weighted).
+# 0.873798356000535 asymmetric bigram cost (weighted).
+# 18.591720382883086 manually assigned bigram penalty (weighted)
+# 11.591816654745971 unbalancing key after neighboring finger (weighted)
+# 0.873798356000535 asymmetrc bigrams (weighted)
+# 1.8019138810027922 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 13.3 11.6 9.0 10.1 - 13.3 8.9 8.1 10.0
+ 
+
+# Evolved Layout
+ßuovö wbdczj,
+hlei. gstnr⇘
+kxäaü fmpqy
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ u │ o │ v │ ö │ w │ b │ d │ c │ z │ j │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ h │ l │ e │ i │ . │ g │ s │ t │ n │ r │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ k │ x │ ä │ a │ ü │ f │ m │ p │ q │ y │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.231002143067947 x100 total penalty per letter
+# 30.123253249760083 x10 billion total penalty compared to notime-noeffort
+# 7.3605498344685465 mean key position cost in file 1gramme.txt ( 53.875264 )
+# 11.630975474042275 % finger repeats in file 2gramme.txt ( 56.147452248165514 )
+# 12.13797913056459 million keystrokes disbalance of the fingers ( 18.206968695846882 )
+# 0.3547636568906497 % finger repeats top to bottom or vice versa ( 7.135785647381577 )
+# 2.122309132271281 % of trigrams have no handswitching (after direction change counted x 1 ) ( 9.387640893333185 )
+# 7.474271825310887 billion (rows²/dist)² to cross ( 97.16553372904153 )
+# 0.006846407003770705 hand disbalance. Left: 0.4931535929962293 %, Right: 0.5068464070037707 % ( 0.20044806057955475 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 7.52216917141771 no handswitching after unbalancing key (weighted).
+# 22.355017970527495 movement pattern cost (weighted).
+# 0.8959621494810427 asymmetric bigram cost (weighted).
+# 17.426881810915763 manually assigned bigram penalty (weighted)
+# 9.035283808464852 unbalancing key after neighboring finger (weighted)
+# 0.8959621494810427 asymmetrc bigrams (weighted)
+# 1.1461781234842698 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 10.6 5.7 13.7 11.6 - 13.4 9.8 9.5 10.1
+ 
+
+# Evolved Layout
+jbpüö qzlmkß,
+gtney iarsd⇘
+cvwuä .oxfh
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ j │ b │ p │ ü │ ö │ q │ z │ l │ m │ k │ ß │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ g │ t │ n │ e │ y │ i │ a │ r │ s │ d │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ c │ v │ w │ u │ ä │ . │ o │ x │ f │ h │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.88514664363829 x100 total penalty per letter
+# 32.51724612087281 x10 billion total penalty compared to notime-noeffort
+# 7.811116699866044 mean key position cost in file 1gramme.txt ( 57.173171 )
+# 10.246198108056785 % finger repeats in file 2gramme.txt ( 49.46256831865029 )
+# 13.236812182731851 million keystrokes disbalance of the fingers ( 19.85521827409778 )
+# 0.2996598980486823 % finger repeats top to bottom or vice versa ( 6.027417854277882 )
+# 4.970218175446796 % of trigrams have no handswitching (after direction change counted x 1 ) ( 21.984838439948874 )
+# 8.030883997853602 billion (rows²/dist)² to cross ( 104.40149197209682 )
+# 0.01904085298083308 hand disbalance. Left: 0.4809591470191669 %, Right: 0.5190408529808331 % ( 0.5574751909558328 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 8.646395591218196 no handswitching after unbalancing key (weighted).
+# 21.57762129897367 movement pattern cost (weighted).
+# 0.9068279315547588 asymmetric bigram cost (weighted).
+# 17.037346760747198 manually assigned bigram penalty (weighted)
+# 15.106797113464939 unbalancing key after neighboring finger (weighted)
+# 0.9068279315547588 asymmetrc bigrams (weighted)
+# 1.703345273780443 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 10.4 7.1 8.5 14.5 - 14.7 8.8 8.8 11.6
+ 
+
+# Evolved Layout
+ßzo.ö qjbdkv,
+haeiy mrnts⇘
+gxäuü clpwf
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ z │ o │ . │ ö │ q │ j │ b │ d │ k │ v │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ h │ a │ e │ i │ y │ m │ r │ n │ t │ s │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ g │ x │ ä │ u │ ü │ c │ l │ p │ w │ f │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.364470182973454 x100 total penalty per letter
+# 30.611710365545033 x10 billion total penalty compared to notime-noeffort
+# 7.538842553206748 mean key position cost in file 1gramme.txt ( 55.18027076 )
+# 9.803114645283744 % finger repeats in file 2gramme.txt ( 47.323624115429915 )
+# 13.900134350918902 million keystrokes disbalance of the fingers ( 20.850201526378353 )
+# 0.27103674511719794 % finger repeats top to bottom or vice versa ( 5.451686152610789 )
+# 1.7473914659914611 % of trigrams have no handswitching (after direction change counted x 1 ) ( 7.7292621199097145 )
+# 7.797302774114276 billion (rows²/dist)² to cross ( 101.36493606348559 )
+# 0.021930554986136774 hand disbalance. Left: 0.4780694450138632 %, Right: 0.5219305549861367 % ( 0.6420794457564835 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 7.383737626375701 no handswitching after unbalancing key (weighted).
+# 26.455655358448837 movement pattern cost (weighted).
+# 0.8872258432496604 asymmetric bigram cost (weighted).
+# 21.089958637747706 manually assigned bigram penalty (weighted)
+# 9.87362640255246 unbalancing key after neighboring finger (weighted)
+# 0.8872258432496604 asymmetrc bigrams (weighted)
+# 1.1528934145437257 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.8 5.4 13.7 9.5 - 13.0 9.6 10.1 11.4
+ 
+
+# Evolved Layout
+ßyuäö vwdmqj,
+gtieo bnhsr⇘
+cx.aü pfkzl
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ y │ u │ ä │ ö │ v │ w │ d │ m │ q │ j │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ g │ t │ i │ e │ o │ b │ n │ h │ s │ r │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ c │ x │ . │ a │ ü │ p │ f │ k │ z │ l │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.508195022259212 x100 total penalty per letter
+# 31.13770460741656 x10 billion total penalty compared to notime-noeffort
+# 7.673633035742067 mean key position cost in file 1gramme.txt ( 56.16686456 )
+# 11.300963181749252 % finger repeats in file 2gramme.txt ( 54.55434860314591 )
+# 14.38260896350293 million keystrokes disbalance of the fingers ( 21.573913445254394 )
+# 0.29201970703444324 % finger repeats top to bottom or vice versa ( 5.873741556484319 )
+# 2.200207133323182 % of trigrams have no handswitching (after direction change counted x 1 ) ( 9.732208255864927 )
+# 7.779057341401622 billion (rows²/dist)² to cross ( 101.1277454382211 )
+# 0.015298224103487135 hand disbalance. Left: 0.5152982241034871 %, Right: 0.48470177589651287 % ( 0.4478990732170171 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 8.240784171184911 no handswitching after unbalancing key (weighted).
+# 21.67410385687583 movement pattern cost (weighted).
+# 0.8871940572663051 asymmetric bigram cost (weighted).
+# 20.605335522628433 manually assigned bigram penalty (weighted)
+# 8.351357573370626 unbalancing key after neighboring finger (weighted)
+# 0.8871940572663051 asymmetrc bigrams (weighted)
+# 1.409603771690414 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 10.7 5.6 8.5 18.7 - 12.9 8.2 8.1 11.7
+ 
+
+# Evolved Layout
+juopö qwmivzß
+rlen. gtsah⇘
+x,äcü bdfyk
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ j │ u │ o │ p │ ö │ q │ w │ m │ i │ v │ z │ ß │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ r │ l │ e │ n │ . │ g │ t │ s │ a │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ x │ , │ ä │ c │ ü │ b │ d │ f │ y │ k │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.640940284699262 x100 total penalty per letter
+# 31.623516552144963 x10 billion total penalty compared to notime-noeffort
+# 7.4936817551883825 mean key position cost in file 1gramme.txt ( 54.84971802 )
+# 10.75017666501602 % finger repeats in file 2gramme.txt ( 51.89547792490997 )
+# 12.30503282327462 million keystrokes disbalance of the fingers ( 18.45754923491193 )
+# 0.33324504731796395 % finger repeats top to bottom or vice versa ( 6.702956121701869 )
+# 4.724172293402144 % of trigrams have no handswitching (after direction change counted x 1 ) ( 20.896500106575786 )
+# 7.210723301486007 billion (rows²/dist)² to cross ( 93.73940291931808 )
+# 0.0011222682817093599 hand disbalance. Left: 0.49887773171829064 %, Right: 0.5011222682817094 % ( 0.032857599671578724 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 6.9943025793532145 no handswitching after unbalancing key (weighted).
+# 32.96381123865701 movement pattern cost (weighted).
+# 0.8870467746079176 asymmetric bigram cost (weighted).
+# 16.002367215978527 manually assigned bigram penalty (weighted)
+# 9.902949177746505 unbalancing key after neighboring finger (weighted)
+# 0.8870467746079176 asymmetrc bigrams (weighted)
+# 1.8123073245751242 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.6 6.0 13.8 10.7 - 13.7 8.7 11.2 8.7
+ 
+
+# Evolved Layout
+ßlcgq övowkj,
+hrntb pieas⇘
+mxzdy üuä.f
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ l │ c │ g │ q │ ö │ v │ o │ w │ k │ j │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ h │ r │ n │ t │ b │ p │ i │ e │ a │ s │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ m │ x │ z │ d │ y │ ü │ u │ ä │ . │ f │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.684048490996469 x100 total penalty per letter
+# 31.78128098870598 x10 billion total penalty compared to notime-noeffort
+# 7.378029340739566 mean key position cost in file 1gramme.txt ( 54.00320458 )
+# 10.468349443194668 % finger repeats in file 2gramme.txt ( 50.53498322566802 )
+# 13.244711803947826 million keystrokes disbalance of the fingers ( 19.86706770592174 )
+# 0.2709686485812491 % finger repeats top to bottom or vice versa ( 5.450316445555339 )
+# 2.6808865819526573 % of trigrams have no handswitching (after direction change counted x 1 ) ( 11.858404661432724 )
+# 8.316553463364704 billion (rows²/dist)² to cross ( 108.11519502374114 )
+# 0.018788382433593598 hand disbalance. Left: 0.4812116175664064 %, Right: 0.5187883824335936 % ( 0.5500833967607548 )
+# 0.36597309448071924 badly positioned shortcut keys (weighted).
+# 6.913332839428911 no handswitching after unbalancing key (weighted).
+# 26.38128408092945 movement pattern cost (weighted).
+# 0.8770286798711977 asymmetric bigram cost (weighted).
+# 21.09505586246714 manually assigned bigram penalty (weighted)
+# 10.172484261950647 unbalancing key after neighboring finger (weighted)
+# 0.8770286798711977 asymmetrc bigrams (weighted)
+# 1.6283960288520205 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.1 8.2 9.2 12.1 - 11.0 14.5 6.9 11.4
+ 
+
+# Evolved Layout
+jurkß qwodvz,
+ainhl fsetc⇘
+äüxg. bmöyp
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ j │ u │ r │ k │ ß │ q │ w │ o │ d │ v │ z │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ a │ i │ n │ h │ l │ f │ s │ e │ t │ c │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ ä │ ü │ x │ g │ . │ b │ m │ ö │ y │ p │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.81781851711088 x100 total penalty per letter
+# 32.27084329276456 x10 billion total penalty compared to notime-noeffort
+# 7.15793241499618 mean key position cost in file 1gramme.txt ( 52.39221352 )
+# 11.963334091826763 % finger repeats in file 2gramme.txt ( 57.75188256125216 )
+# 11.279442103066833 million keystrokes disbalance of the fingers ( 16.919163154600252 )
+# 0.29411210825560924 % finger repeats top to bottom or vice versa ( 5.915828524279789 )
+# 4.411661390867863 % of trigrams have no handswitching (after direction change counted x 1 ) ( 19.514166080097933 )
+# 7.716508752241923 billion (rows²/dist)² to cross ( 100.314613779145 )
+# 0.015950846051049683 hand disbalance. Left: 0.4840491539489503 %, Right: 0.5159508460510497 % ( 0.4670064391110571 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 7.355136969003238 no handswitching after unbalancing key (weighted).
+# 29.74491512057858 movement pattern cost (weighted).
+# 0.8807015111866101 asymmetric bigram cost (weighted).
+# 16.45306128349488 manually assigned bigram penalty (weighted)
+# 12.939557873692756 unbalancing key after neighboring finger (weighted)
+# 0.8807015111866101 asymmetrc bigrams (weighted)
+# 0.962266827761166 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 11.1 8.5 11.6 9.7 - 11.5 14.3 9.4 8.4
+ 
+
+# Evolved Layout
+ßfakö qpluxj,
+mseho wtnir⇘
+czäg. bdvüy
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ f │ a │ k │ ö │ q │ p │ l │ u │ x │ j │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ m │ s │ e │ h │ o │ w │ t │ n │ i │ r │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ c │ z │ ä │ g │ . │ b │ d │ v │ ü │ y │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.97491577660076 x100 total penalty per letter
+# 32.84577699466408 x10 billion total penalty compared to notime-noeffort
+# 7.352024653117642 mean key position cost in file 1gramme.txt ( 53.81286426 )
+# 11.852502008257378 % finger repeats in file 2gramme.txt ( 57.21685098684422 )
+# 11.728547518085707 million keystrokes disbalance of the fingers ( 17.59282127712856 )
+# 0.32973377892163747 % finger repeats top to bottom or vice versa ( 6.632329781771187 )
+# 3.884541692511709 % of trigrams have no handswitching (after direction change counted x 1 ) ( 17.18254984157479 )
+# 8.104858053104252 billion (rows²/dist)² to cross ( 105.36315469035527 )
+# 0.0040253474181699556 hand disbalance. Left: 0.49597465258183004 %, Right: 0.50402534741817 % ( 0.1178535080790106 )
+# 0.7319461889614385 badly positioned shortcut keys (weighted).
+# 7.4376643337360155 no handswitching after unbalancing key (weighted).
+# 32.20201487361341 movement pattern cost (weighted).
+# 0.8790072873471356 asymmetric bigram cost (weighted).
+# 18.829398687849253 manually assigned bigram penalty (weighted)
+# 9.458488287667922 unbalancing key after neighboring finger (weighted)
+# 0.8790072873471356 asymmetrc bigrams (weighted)
+# 1.000825941712545 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 9.9 6.9 15.4 9.7 - 12.6 10.6 9.2 10.2
+ 
+
+# Evolved Layout
+öüfbz qxudvß,
+aesnp mrith⇘
+oäkcj .lywg
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ö │ ü │ f │ b │ z │ q │ x │ u │ d │ v │ ß │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ a │ e │ s │ n │ p │ m │ r │ i │ t │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ o │ ä │ k │ c │ j │ . │ l │ y │ w │ g │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.598549413584276 x100 total penalty per letter
+# 31.468377369348115 x10 billion total penalty compared to notime-noeffort
+# 7.607880139250743 mean key position cost in file 1gramme.txt ( 55.68558874 )
+# 7.5025426131029365 % finger repeats in file 2gramme.txt ( 36.21782661730792 )
+# 14.15634771841966 million keystrokes disbalance of the fingers ( 21.23452157762949 )
+# 0.3285623063344351 % finger repeats top to bottom or vice versa ( 6.608766552811023 )
+# 4.096240050524004 % of trigrams have no handswitching (after direction change counted x 1 ) ( 18.118958271670394 )
+# 8.223584838708245 billion (rows²/dist)² to cross ( 106.90660290320719 )
+# 0.01460615371721341 hand disbalance. Left: 0.5146061537172134 %, Right: 0.48539384628278653 % ( 0.4276367419479722 )
+# 1.463892377922877 badly positioned shortcut keys (weighted).
+# 6.432495699595628 no handswitching after unbalancing key (weighted).
+# 29.51919145859176 movement pattern cost (weighted).
+# 0.905043197672656 asymmetric bigram cost (weighted).
+# 17.91912383726853 manually assigned bigram penalty (weighted)
+# 11.295331686073055 unbalancing key after neighboring finger (weighted)
+# 0.905043197672656 asymmetrc bigrams (weighted)
+# 1.9487940317825554 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 13.0 11.5 7.0 11.9 - 11.4 9.1 10.1 10.4
+ 
+
+# Evolved Layout
+öfokß vdamzj,
+cnelu btisr⇘
+pyüh. wgäqx
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ö │ f │ o │ k │ ß │ v │ d │ a │ m │ z │ j │ , │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ c │ n │ e │ l │ u │ b │ t │ i │ s │ r │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ p │ y │ ü │ h │ . │ w │ g │ ä │ q │ x │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 8.704243141194228 x100 total penalty per letter
+# 31.85518797495428 x10 billion total penalty compared to notime-noeffort
+# 7.293397553684434 mean key position cost in file 1gramme.txt ( 53.38374544 )
+# 10.90186870414863 % finger repeats in file 2gramme.txt ( 52.627757134219046 )
+# 11.167876695061022 million keystrokes disbalance of the fingers ( 16.751815042591534 )
+# 0.29527370873792264 % finger repeats top to bottom or vice versa ( 5.939193183789538 )
+# 5.031219282466137 % of trigrams have no handswitching (after direction change counted x 1 ) ( 22.25466552502602 )
+# 7.362178430006354 billion (rows²/dist)² to cross ( 95.70831959008261 )
+# 0.0015174982806448467 hand disbalance. Left: 0.49848250171935515 %, Right: 0.5015174982806448 % ( 0.04442908333094125 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 7.872100924597712 no handswitching after unbalancing key (weighted).
+# 30.408763577128212 movement pattern cost (weighted).
+# 0.9048827371420373 asymmetric bigram cost (weighted).
+# 17.088169732083575 manually assigned bigram penalty (weighted)
+# 12.91516254264725 unbalancing key after neighboring finger (weighted)
+# 0.9048827371420373 asymmetrc bigrams (weighted)
+# 1.5549559534621389 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 9.7 8.4 13.8 10.2 - 14.2 10.9 7.5 9.8
+ 
