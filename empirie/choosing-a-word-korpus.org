@@ -14,7 +14,12 @@ Now we just need to open all the 1gram files (around 1GiB) and get the distribut
 To get a 10% chance for a single page (360 words) to include an unknown word, the fraction of untracked matches must be around 0.1 / 360, or 2.8×10\(^{-4}\). Note that the tail here is cut, because Google ngrams starts at 40 matches per year.
 
 #+BEGIN_SRC sh
-for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o other p pos punctuation q r s t u v w x y z; do wget http://storage.googleapis.com/books/ngrams/books/googlebooks-eng-all-1gram-20120701-$i.gz; done
+  for l in ger eng; do
+      wget http://storage.googleapis.com/books/ngrams/books/googlebooks-$l-all-totalcounts-20120701.txt
+      for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o other p pos punctuation q r s t u v w x y z; do
+          wget http://storage.googleapis.com/books/ngrams/books/googlebooks-$l-all-1gram-20120701-$i.gz;
+      done
+  done
 #+END_SRC
 
 #+BEGIN_SRC python
