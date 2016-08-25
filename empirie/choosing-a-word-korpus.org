@@ -9,17 +9,32 @@ Typing speed: According to Wikipedia long-term typing (50 minute) record is abou
 
 Distribution of words: Using the Google Books ngrams (1grams)[fn:3], we get a distribution of words.
 
-Now we just need to open all the 1gram files (around 1GiB) and get the distribution of wordlengths to find the number of words we need to use. To have a less than 5% chance that an unknown word appears in the text of a wordlist, the fraction of unknown words must be at most 0.05 / words_per_day, which gives 3.7×10\(^{-7}\) for 134400 words or 2×10\(^{-6}\) for 24000 words. We’ll target the latter.
+Now we just need to open all the 1gram files (around 1GiB) and get the distribution of wordlengths to find the number of words we need to use. To have a less than 5% chance that an unknown word appears in the text of a wordlist, the fraction of unknown words must be at most 0.05 / words_per_day, which gives 3.7×10\(^{-7}\) for 134400 words or 2×10\(^{-6}\) for 24000 words. Both of these are unreachable with the Google words corpus. So we need to reduce the target a bit.
 
-For 1 page it would be around 0.05 / 360, or 1.4×10\(^{-4}\). Note that the tail here is cut, because Google ngrams starts at 40 matches per year.
+To get a 10% chance for a single page (360 words) to include an unknown word, the fraction of untracked matches must be around 0.1 / 360, or 2.8×10\(^{-4}\). Note that the tail here is cut, because Google ngrams starts at 40 matches per year.
+
+#+BEGIN_SRC sh
+for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o other p pos punctuation q r s t u v w x y z; do wget http://storage.googleapis.com/books/ngrams/books/googlebooks-eng-all-1gram-20120701-$i.gz; done
+#+END_SRC
 
 #+BEGIN_SRC python
   import glob
   import gzip
   import csv
   import collections
+
+  LANG="ger"
+
+  nmatches = 0
+  with open("googlebooks-%s-all-totalcounts-20120701.txt" % LANG) as f:
+      for line in csv.reader(f, delimiter=",", lineterminator="\t"):
+          year, match_count = line[:2]
+          nmatches += int(match_count)
+
+  required = int(nmatches * (1 - 2.8e-4))
+
   matchcounts = collections.Counter()
-  for ngramfile in glob.glob("googlebooks-ger*.gz"):
+  for ngramfile in glob.glob("googlebooks-%s*.gz" % LANG):
       print(ngramfile)
       with gzip.open(ngramfile, "rt") as f:
           for line in csv.reader(f, delimiter="\t"):
@@ -29,8 +44,6 @@ For 1 page it would be around 0.05 / 360, or 1.4×10\(^{-4}\). Note that the tai
               matchcounts[ngram] += int(match_count)
 
 
-  nmatches = sum(matchcounts.values())
-  required = int(nmatches * (1 - 1.4e-4))
   words = []
   matches = 0
   for word, count in matchcounts.most_common():
@@ -41,7 +54,7 @@ For 1 page it would be around 0.05 / 360, or 1.4×10\(^{-4}\). Note that the tai
 
 
   print("required words in corpus:", len(words), " of a total of ", len(matchcounts.keys()))
-  with open("corpus_googlewords_de.txt", "w") as f:
+  with open("corpus_googlewords_%s.txt" % LANG, "w") as f:
       f.writelines("%s\n" % word for word in words)
 
   # plot the distribution
