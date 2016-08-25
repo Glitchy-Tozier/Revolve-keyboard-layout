@@ -218,7 +218,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 1.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_ASYMMETRIC_SIMILAR = 1.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
+WEIGHT_ASYMMETRIC_SIMILAR = 10.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
 #: [(first-letters, second-letters), ...]. 
 SIMILAR_LETTERS = [("auo", "äüö"), # umlauts to vowels
                    ("gbdw", "kptf"), # soft consonants to hard consonants
