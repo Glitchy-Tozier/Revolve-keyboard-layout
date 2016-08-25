@@ -43,7 +43,7 @@ To get a 10% chance for a single page (360 words) to include an unknown word, th
   for ngramfile in glob.glob("googlebooks-%s*.gz" % LANG):
       print(ngramfile)
       with gzip.open(ngramfile, "rt") as f:
-          for line in csv.reader(f, delimiter="\t"):
+          for line in csv.reader(f, delimiter="\t", quoting=csv.QUOTE_NONE):
               ngram, year, match_count = line[:3]
               if "_" in ngram:
                   ngram = ngram.split("_")[0]
