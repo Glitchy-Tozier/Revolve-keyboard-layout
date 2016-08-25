@@ -27,9 +27,10 @@ for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o other p pos punctuati
 
   nmatches = 0
   with open("googlebooks-%s-all-totalcounts-20120701.txt" % LANG) as f:
-      for line in csv.reader(f, delimiter=",", lineterminator="\t"):
-          year, match_count = line[:2]
-          nmatches += int(match_count)
+      for line in f.read().split("\t"):
+          if line.strip():
+              year, match_count = line.split(",")[:2]
+              nmatches += int(match_count)
 
   required = int(nmatches * (1 - 2.8e-4))
 
