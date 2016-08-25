@@ -65,7 +65,7 @@ def short_number(s, letters=8):
 def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, data=None):
     """Return a list with data for a csv-line for the layout.
 
-    @return cost/word, position_cost, fingerrepeat, finger_disbalance, frep_top_bottom, handswitching, rows², shortcut_keys, unbalancing, patterns"""
+    @return cost/letter/100, position_cost, fingerrepeat, finger_disbalance, frep_top_bottom, handswitching, rows², shortcut_keys, unbalancing, patterns"""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(
         data=data, 
         letters=letters, number_of_letters=number_of_letters,

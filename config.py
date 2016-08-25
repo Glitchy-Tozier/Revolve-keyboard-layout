@@ -6,7 +6,7 @@
 ### definitions
 
 #: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß,." # äöüß,." # ⇧⇗"
+abc = "abcdefghijklmnopqrstuvwxyzäöüß" # ,." # äöüß,." # ⇧⇗"
 
 #The letters which are used to calculate the costs - do not change anything or results will become incomparable.
 abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
@@ -175,11 +175,11 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }, 
     "Ring_L": {
         "Klein_L": 12, # slow + dangerous + outwards
-        "Mittel_L": 3, # dangerous
+        "Mittel_L": 4, # dangerous
         "Zeige_L": 0.1 # a tiny bit dangerous
         }, 
     "Mittel_L": {
-        "Ring_L": 4, # dangerous + outwards
+        "Ring_L": 6, # dangerous + outwards
         "Klein_L": 2, # a bit dangerous + outwards
         "Zeige_L": 0.6 # it’s fast but dangerous (Sehnenscheidenentzündung)
         }, 
@@ -200,11 +200,11 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Mittel_R": {
         "Zeige_L": 0.6,
         "Klein_R": 2,
-        "Ring_R": 4
+        "Ring_R": 6
         },
     "Ring_R": {
         "Zeige_L": 0.1,
-        "Mittel_R": 3,
+        "Mittel_R": 4,
         "Klein_R": 12
         }, 
     "Klein_R": {
@@ -218,7 +218,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 1.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_ASYMMETRIC_SIMILAR = 1.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
+WEIGHT_ASYMMETRIC_SIMILAR = 10.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
 #: [(first-letters, second-letters), ...]. 
 SIMILAR_LETTERS = [("auo", "äüö"), # umlauts to vowels
                    ("gbdw", "kptf"), # soft consonants to hard consonants
@@ -250,6 +250,11 @@ COST_MANUAL_BIGRAM_PENALTY = {
     ((3, 3, 0), (1, 1, 0)): 0.2, # xq on normal keyboards (lower row shifted to the right)
     ((1, 1, 0), (3, 4, 0)): 0.1, # qc on normal keyboards (lower row shifted to the right)
     ((3, 4, 0), (1, 1, 0)): 0.1, # cq on normal keyboards (lower row shifted to the right)
+    ## pinky lower to index upper and index upper to pinky lower (heavy stretch and screw of the hand)
+    ((3, 11, 0), (1, 6, 0)): 0.1, # -y on normal keyboards (lower row shifted to the right)
+    ((1, 6, 0), (3, 11, 0)): 0.1, # y- on normal keyboards (lower row shifted to the right)
+    ((3, 2, 0), (1, 5, 0)): 0.1, # zt on normal keyboards (lower row shifted to the right)
+    ((1, 5, 0), (3, 2, 0)): 0.1, # tz on normal keyboards (lower row shifted to the right)
     ## positive movements: pinky down and index down. This is the only bigramm where pinky down does not hurt.
     ((3, 2, 0), (3, 5, 0)): -0.01, # zv on normal keyboards (lower row shifted to the right)
     ((3, 5, 0), (3, 2, 0)): -0.01, # vz on normal keyboards (lower row shifted to the right)
@@ -265,4 +270,10 @@ for finger in ("Klein_L", "Klein_R"):
             except KeyError: COST_MANUAL_BIGRAM_PENALTY[(pos0, pos1)] = 1
 
 
-## TODO: Cost for similar keys in symmetric positions. That’s bad *except* if the symmetry is consistent. (hard consonants always on one side or always above)
+# Irregularity. This counteracts tendencies of the optimizer to only cater to common bigrams.
+IRREGULARITY_REFERENCE_TEXT = "corpus_irregularity_words.txt"
+# use only a randomly selected fraction of the words at each step. Random sampling ensures that there is no consistent bias due to the word selection. Using all words makes the optimization very slow. 0.01 still increases the cost by factor 2. Currently 0.004 are about 400 words.
+IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 0.004 # the fraction of words to use, re-sampled at every run. Set to 1.0 to use all words.
+WEIGHT_IRREGULARITY_PER_LETTER = 0.0 # 0.01 is be around 1.0% of the total cost.
+
+# TODO: Cost for similar keys in symmetric positions. That’s bad *except* if the symmetry is consistent. (hard consonants always on one side or always above)

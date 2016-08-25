@@ -351,9 +351,9 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         #pprint(layout[:5])
 
     # unweighted
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:13]
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:14]
     # weighted
-    total, frep_num_w, cost_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:15]
+    total, frep_num_w, cost_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:16]
 
     if shorten_numbers:
         sn = short_number
@@ -374,6 +374,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
         res += c("#", sn(asymmetric_bigrams_w/1000000000), "asymmetric bigram cost (weighted).")
+        res += c("#", sn(irregularity_w/1000000000), "irregularity cost (weighted).")
     if show_manual_penalty and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(manual_penalty_w/1000000000), "manually assigned bigram penalty (weighted)")
     if show_neighboring_unbalance and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
@@ -382,6 +383,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(asymmetric_bigrams_w/1000000000), "asymmetrc bigrams (weighted)")
     if show_asymmetric_similar and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(asymmetric_similar_w/1000000000), "inconsistent symmetries of similar keys (weighted)")
+    if verbose:
+        res += c("#", sn(irregularity_w/1000000000), "irregularity cost for randomly sampled words (weighted).")
     if fingerstats:
         # also print statistics
         # Finger-load:

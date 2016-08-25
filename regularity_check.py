@@ -4,6 +4,7 @@
 """Check the regularity of a keyboard layout for a reference textfile."""
 
 from optparse import OptionParser
+from check_neo import string_to_layout, total_cost, get_all_data, read_file
 
 ### config
 
@@ -62,36 +63,26 @@ hieao dtrnsß
 
 ### Parse console arguments
 
-parser = OptionParser(usage = "script to check the regularity of the layout for a reference textfile", version = "0.1")
-parser.add_option("-l", "--layout", type="string", dest="layout", default=LAYOUT, help="the layout to use")
-parser.add_option("-n", "--layout_name", type="string", dest="layout_name", default=None, help="the predefined layout to use, given by name (Neo, Qwertz, …)")
-parser.add_option("-o", "--output", type="string", dest="output", default=output, help="the file to use for the output")
-parser.add_option("-w", "--words-output", type="string", dest="output_words", default=output_words, help="the file to use for the output of the word statistics")
-parser.add_option("-t", "--textfile", type="string", dest="textfile", default=textfile, help="the file with the reference text")
-parser.add_option("-v", "--verbose", action="store_true", default=False, help="echo the results on the console")
+def parse_args():
+    parser = OptionParser(usage = "script to check the regularity of the layout for a reference textfile", version = "0.1")
+    parser.add_option("-l", "--layout", type="string", dest="layout", default=LAYOUT, help="the layout to use")
+    parser.add_option("-n", "--layout_name", type="string", dest="layout_name", default=None, help="the predefined layout to use, given by name (Neo, Qwertz, …)")
+    parser.add_option("-o", "--output", type="string", dest="output", default=output, help="the file to use for the output")
+    parser.add_option("-w", "--words-output", type="string", dest="output_words", default=output_words, help="the file to use for the output of the word statistics")
+    parser.add_option("-t", "--textfile", type="string", dest="textfile", default=textfile, help="the file with the reference text")
+    parser.add_option("-v", "--verbose", action="store_true", default=False, help="echo the results on the console")
+    
+    return parser.parse_args()
 
-(options, args) = parser.parse_args()
 
-if options.layout_name is not None:
-    try: 
-        options.layout = eval(options.layout_name)
-    except NameError:
-        print("the layout", options.layout_name, "is not predefined. Please use --layout to give it as string.")
-        exit()
-
-### run
-
-from check_neo import string_to_layout, total_cost, get_all_data, read_file
-
-layout = string_to_layout(options.layout)
-
-def check(layout=layout, verbose=False, data=None):
+def check(layout=Neo2, verbose=False, data=None):
     """Get the value for a layout using a given string as reference text."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=data)
 
     total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
     # total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
     return total / number_of_letters
+
 
 def std(numbers):
     """Calculate the standard deviation from a set of numbers.
@@ -111,56 +102,73 @@ def std(numbers):
     return sqrt(var)
 
 
-# processing and output (interleaved to be able to read really big files incrementally)
-f = open(options.textfile, "r")
-# clear the output file
-fout = open(options.output, "w")
-fout.write("")
-fout.close()
-
-res = []
-d = f.read(segment_length)
-while d:
-    cost = check(layout=layout, data=d)
+def regularity(layout, textfile, output="res.txt", output_words="res-words.txt", verbose=False):
+    # processing and output (interleaved to be able to read really big files incrementally)
+    f = open(textfile, "r")
+    # clear the output file
+    fout = open(output, "w")
+    fout.write("")
+    fout.close()
+    
+    res = []
     d = f.read(segment_length)
-    if options.verbose:
-        print(cost)
-    with open(options.output, "a") as fout: 
-        fout.write(str(cost) + "\n")
-    res.append(cost)
-
-f.close()
-fout.close()
-
-# same for words
-with open(options.textfile, "r") as f: 
-    data = f.read()
-
-f = open(options.textfile, "r")
-# clear the output file
-fout = open(options.output_words, "w")
-fout.write("")
-fout.close()
-
-res_words = []
-d = f.read(100*segment_length)
-while d:
-    res_tmp = []
-    for word in d.split():
-        if word:
-            cost = check(layout=layout, data=word)
-            res_tmp.append(cost)
-            if options.verbose:
-                print(cost)
-    with open(options.output_words, "a") as fout: 
-        fout.writelines([str(cost) + "\n" for cost in res_tmp])
-    res_words.extend(res_tmp)
+    while d:
+        cost = check(layout=layout, data=d)
+        d = f.read(segment_length)
+        if verbose:
+            print(cost)
+        with open(output, "a") as fout: 
+            fout.write(str(cost) + "\n")
+        res.append(cost)
+    
+    f.close()
+    fout.close()
+    
+    f = open(textfile, "r")
+    # clear the output file
+    fout = open(output_words, "w")
+    fout.write("")
+    fout.close()
+    
+    res_words = []
     d = f.read(100*segment_length)
+    while d:
+        res_tmp = []
+        for word in d.split():
+            if word:
+                cost = check(layout=layout, data=word)
+                res_tmp.append(cost)
+                if verbose:
+                    print(cost)
+        with open(output_words, "a") as fout: 
+            fout.writelines([str(co) + "\n" for co in res_tmp])
+        res_words.extend(res_tmp)
+        d = f.read(100*segment_length)
+    
+            
+    f.close()
+    fout.close()
+    
+    return res, res_words
+    
 
-        
-f.close()
-fout.close()
+### run    
+def main():
+    (options, args) = parse_args()
+    if options.layout_name is not None:
+        try: 
+            options.layout = eval(options.layout_name)
+        except NameError:
+            print("the layout", options.layout_name, "is not predefined. Please use --layout to give it as string.")
+            exit()
+    
+    layout = string_to_layout(options.layout)    
 
-print("mean value and standard deviation of the layout cost:")
-print("snippets of", segment_length, "letters:", sum(res)/len(res), "±", std(res), "(" + str(100*std(res)/(sum(res)/len(res))) + "%)")
-print("words:", sum(res_words)/len(res_words), "±", std(res_words), "(" + str(100*std(res_words)/(sum(res_words)/len(res_words))) + "%)")
+    res, res_words = regularity(layout, options.textfile, options.output, options.output_words, options.verbose)
+    print("mean value and standard deviation of the layout cost:")
+    print("snippets of", segment_length, "letters:", sum(res)/len(res), "±", std(res), "(" + str(100*std(res)/(sum(res)/len(res))) + "%)")
+    print("words:", sum(res_words)/len(res_words), "±", std(res_words), "(" + str(100*std(res_words)/(sum(res_words)/len(res_words))) + "%)")
+
+
+if __name__ == "__main__":
+    main()

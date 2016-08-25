@@ -19,6 +19,6 @@ if [ $# -eq 2 ]; then
 fi
 
 for i in $(grep "billion total penalty" $1  | sort -r | cut -d " " -f 2 | uniq | tail -n $NUMBER | xargs)
- do grep -m 1 $i $1 -A 11 -B 18
+ do grep -m 1 $i $1 -A 18 -B 18
 done
 
