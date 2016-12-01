@@ -74,7 +74,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
         )
 
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:16]
 
     line = []
     
@@ -88,6 +88,12 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     line.append(badly_positioned_w/1000000000)
     line.append(no_switch_after_unbalancing_w/1000000000)
     line.append(neighboring_fings_w/1000000000)
+    line.append(hand_disbalance_w/1000000000)
+    line.append(manual_penalty_w/1000000000)
+    line.append(neighboring_unbalance_w/1000000000)
+    line.append(asymmetric_bigrams_w/1000000000)
+    line.append(asymmetric_similar_w/1000000000)
+    line.append(irregularity_w/1000000000)
     return line
 
 

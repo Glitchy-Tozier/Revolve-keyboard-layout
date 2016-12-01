@@ -10,7 +10,7 @@ with open("/tmp/evo.txt") as f:
     c = csv.reader(f)            
     a = [i for i in c]
 b = pl.array([[float(j) for j in i[1:]] for i in a[1:]]).transpose()
-print(list(zip(range(len(a)), a[0][1:])))
+print(list(zip(range(len(a[0])), a[0][1:])))
 c = pl.corrcoef(b)
 c = pl.ma.array(c, mask=pl.isnan(c))
 pl.imshow(c, interpolation="nearest", vmin=min(c.min(), -c.max()), vmax=max(c.max(), -c.min()), cmap=pl.cm.RdYlBu_r)
