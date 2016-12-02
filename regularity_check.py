@@ -3,8 +3,8 @@
 
 """Check the regularity of a keyboard layout for a reference textfile."""
 
+import sys
 from optparse import OptionParser
-import copy
 from check_neo import string_to_layout, total_cost, get_all_data, read_file
 
 ### config
@@ -117,7 +117,7 @@ def regularity(layout, textfile, output="res.txt", output_words="res-words.txt",
     while d:
         cost = check(layout=layout, data=d)
         if verbose:
-            print(cost)
+            print(cost, file=sys.stderr)
         if output is not None:
             with open(output, "a") as fout: 
                 fout.write(str(cost) + "\n")
@@ -147,12 +147,14 @@ def regularity(layout, textfile, output="res.txt", output_words="res-words.txt",
                 cost = check(layout=layout, data=word)
                 res_tmp.append(cost)
                 if verbose:
-                    print(cost)
+                    print(cost, file=sys.stderr)
+                if maxwords is not None and res_tmp[maxwords - len(res_words):]:
+                    break
         if output_words is not None:
             with open(output_words, "a") as fout: 
                 fout.writelines([str(co) + "\n" for co in res_tmp])
         res_words.extend(res_tmp)
-        d = f.read(100*segment_length)
+        d = f.read(2*segment_length)
         # process at most maxwords to allow limiting the runtime
         if maxwords is not None and res_words[maxwords:]:
             break

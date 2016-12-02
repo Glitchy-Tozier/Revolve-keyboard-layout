@@ -63,17 +63,26 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
 
 
 def check_regularity(lay, textfile):
-    return regularity(
-        lay, textfile,
-        output=None, output_words=None,
-        verbose=True, # avoid writing unnecessary output files
-        maxsegments=20, maxwords=20) # limit the runtime of this check
+    segments, words = regularity(
+        l, textfile,
+        output=None, output_words=None, # avoid writing unnecessary output files
+        verbose=False,
+        maxsegments=320, maxwords=320) # limit the runtime of this check by only reading the beginning of the file
+    return segments, words
 
+# 320,320 should be enough, see:
+# import pylab as pl
+# pl.ion()
+# pl.plot([10, 20, 40, 80, 160, 320, 640], [250.78243431915746, 269.44446973415927, 272.38856521679264, 242.11454523066135, 206.93258984508503, 247.160678690749, 239.74251752409359], label="segments")
+# pl.plot([20, 40, 80, 160, 320, 640], [1307.0456755768544, 1033.2352400430161, 886.1693410012002, 995.1180056582663, 738.5571115676071, 572.0787321328082], label="words")
+# pl.legend()
 
 def main(options, args):
-    # ensure that irregularity is using all words, regardless of the cost
+    # ensure that irregularity is always using the same words, regardless of the cost
     # FIXME: Add a clean option for this
     layout_cost.IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 1.0
+    # reduce the cost by choosing an optimized reference text (only the lines which are closest to the ngram distribution in the corpus.
+    layout_cost.IRREGULARITY_REFERENCE_TEXT = "beispieltext-prosa-best-lines.txt"
     
     if options.print_csv: 
         print("layoutstring,total penalty per letter,key position cost,finger repeats,disbalance of fingers,top to bottom or vice versa,handswitching in trigram,(rows²/dist)²,shortcut keys,handswitching after unbalancing,movement pattern,hand disbalance, manual penalty, neighboring unbalance, asymmetric bigrams, asymmetric similar keys, irregularity, regularity segments mean,regularity segments std,regularity words mean,regularity words std")
