@@ -64,7 +64,7 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
 
 def check_regularity(lay, textfile):
     segments, words = regularity(
-        l, textfile,
+        lay, textfile,
         output=None, output_words=None, # avoid writing unnecessary output files
         verbose=False,
         maxsegments=320, maxwords=320) # limit the runtime of this check by only reading the beginning of the file
