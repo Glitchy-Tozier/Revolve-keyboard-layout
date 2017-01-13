@@ -5,8 +5,13 @@ created by ./recheck_all_result_layouts.py --csv --regularity"""
 
 import pylab as pl
 # pl.ion()
+import sys
+if sys.argv[1:]:
+   p = sys.argv[1]
+else:
+   p = "/tmp/evo.txt"
 import csv
-with open("/tmp/evo.txt") as f:
+with open(p) as f:
     c = csv.reader(f)            
     a = [i for i in c]
 b = pl.array([[float(j) for j in i[1:]] for i in a[1:]]).transpose()
