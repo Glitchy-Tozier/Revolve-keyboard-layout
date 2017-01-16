@@ -395,7 +395,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     result(res)
     return total/max(1, number_of_letters)/100
 
-def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
+def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=True, anneal=5, anneal_step=10):
     """Find a layout with values similar to qwertz."""
     info("# Qwertzing Layout")
     #data = read_file("/tmp/sskreszta")
@@ -435,15 +435,25 @@ def find_a_qwertzy_layout(steps, prerandomize, quiet, verbose):
 
     diff = compare_with_qwertz(lay)
 
+    if anneal:
+        anneal += 1.
+        anneal -= 1./anneal_step
+
     for i in range(steps):
         lay = deepcopy(lay)
-        l, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=lay)
+        if anneal > 0:
+                step = int(anneal + 1)
+                anneal -= 1/anneal_step
+        else:
+                step = 1
+        l, keypairs = randomize_keyboard(abc, num_switches=step, layout=lay)
         d = compare_with_qwertz(l)
         if d < diff:
             info("# qwertzer")
             info(format_layer_1_string(l))
             lay = deepcopy(l)
             diff = d
+
 
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 

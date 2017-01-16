@@ -68,7 +68,7 @@ mirea dstngz
 
 # A layout with similar values as Qwertz.
 # found in the python3 interpreter via 
-# >>> from check_neo import find_a_qwertzy_layout; find_a_qwertzy_layout(100, 100000, False, True)
+# >>> from check_neo import find_a_qwertzy_layout; find_a_qwertzy_layout()
 qwertzy = """
 rlnöv xd,fj.´
 qzhäi gpsbuw
@@ -85,6 +85,13 @@ qwertzy3 = """
 nßeiä wu.cqm´
 xvjt, agürly
 <ösdfb ophzk
+"""[1:]
+
+# qwertzy including irregularity
+qwertzy4 = """
+ahnep kmrsjßu
+döüfi ytägq⇘
+<wvxcb oz,.l
 """[1:]
 
 # has zero repeats top to bottom
