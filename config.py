@@ -171,7 +171,7 @@ WEIGHT_FINGER_SWITCH = 60 #: how much worse is it to switch from middle to index
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
         "Ring_L": 8, # slow + dangerous
-        "Mittel_L": 1 # a bit dangerous
+        "Mittel_L": 2 # a bit dangerous
         }, 
     "Ring_L": {
         "Klein_L": 12, # slow + dangerous + outwards
@@ -180,7 +180,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         }, 
     "Mittel_L": {
         "Ring_L": 6, # dangerous + outwards
-        "Klein_L": 2, # a bit dangerous + outwards
+        "Klein_L": 3, # a bit dangerous + outwards
         "Zeige_L": 0.6 # it’s fast but dangerous (Sehnenscheidenentzündung)
         }, 
     "Zeige_L": {
@@ -199,7 +199,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         },
     "Mittel_R": {
         "Zeige_L": 0.6,
-        "Klein_R": 2,
+        "Klein_R": 3,
         "Ring_R": 6
         },
     "Ring_R": {
@@ -208,7 +208,7 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_R": 12
         }, 
     "Klein_R": {
-        "Mittel_R": 1,
+        "Mittel_R": 2,
         "Ring_R": 8
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
