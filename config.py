@@ -221,6 +221,7 @@ WEIGHT_XCVZ_ON_BAD_POSITION = 1.0 #: the penalty *per letter* in the text if xvc
 WEIGHT_ASYMMETRIC_SIMILAR = 30.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
 #: [(first-letters, second-letters), ...]. 
 SIMILAR_LETTERS = [("auo", "äüö"), # umlauts to vowels
+                   ("auo", "äüö"), # umlauts to vowels, twice to double the cost
                    ("gbdw", "kptf"), # soft consonants to hard consonants
                    ("sfdn", "tpbm")] # tongue consonants to lip-consonants
                    # ("mw", "nv"), # visual appearance
