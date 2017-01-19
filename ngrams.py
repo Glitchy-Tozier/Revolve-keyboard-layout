@@ -190,7 +190,7 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     # replace uppercase by ⇧ + char1 and char1 + char2 and ⇧ + char2
     # char1 and shift are pressed at the same time
     #: The resulting bigrams after splitting.
-    repeats = {}
+    repeats = collections.Counter()
     _sur = _split_uppercase_repeat
     _mods = MODIFIERS_PER_LAYER
     _fk = find_key
@@ -218,7 +218,7 @@ def repeats_in_file(data):
     >>> repeats_in_file(data)[:3]
     [(2, 'a\\n'), (2, 'Aa'), (1, 'ui')]
     """
-    repeats = {}
+    repeats = collections.Counter()
     for i in range(len(data)-1):
         rep = data[i] + data[i+1]
         try:
@@ -278,7 +278,7 @@ def letters_in_file(data):
     >>> letters_in_file(data)[:3]
     [(5, 'a'), (4, '\\n'), (2, 'r')]
     """
-    letters = {}
+    letters = collections.Counter()
     for letter in data:
         if letter in letters:
             letters[letter] += 1
@@ -295,7 +295,7 @@ def unique_sort(liste):
     >>> unique_sort([1, 2, 1])
     [(1, 2), (2, 1)]
     """
-    counter = {}
+    counter = collections.Counter()
     for i in liste:
         if i in counter:
             counter[i] += 1
@@ -452,7 +452,7 @@ def split_uppercase_trigrams(trigs):
     
     trigs.extend(up)
     trigs = [(num, r) for num, r in trigs if r[1:]]
-    t = {}
+    t = collections.Counter()
     for num, r in trigs:
         try: t[r] += num
         except KeyError: t[r] = num
@@ -592,7 +592,7 @@ def trigrams_in_file(data, only_existing=True):
     >>> trigrams_in_file(data)[:4]
     [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a')]
     """
-    trigs = {}
+    trigs = collections.Counter()
     for i in range(len(data)-2):
         trig = data[i] + data[i+1] + data[i+2]
         if trig in trigs:
@@ -622,9 +622,9 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
     [(4, '⇧aa'), (4, '⇗aa'), (2, 't⇧a'), (2, 't⇗a'), (2, 'a⇧a'), (2, 'a⇗a'), (2, 'aa\\n'), (1, 'uia'), (1, 'rt⇧'), (1, 'rt⇗')]
     """
     f = open(datapath, encoding="utf-8", errors="ignore")
-    letters = {}
-    repeats = {}
-    trigs = {}
+    letters = collections.Counter()
+    repeats = collections.Counter()
+    trigs = collections.Counter()
     data = f.read(slicelength)
     step = 0
     while data[2:]:
@@ -1062,9 +1062,9 @@ class NGrams(object):
                                [_normalize(ngram) for ngram in ngrams]))
 
         # weight them.
-        self.one = {}
-        self.two = {}
-        self.three = {}
+        self.one = collections.Counter()
+        self.two = collections.Counter()
+        self.three = collections.Counter()
         for weight, ngrams in normalized:
             one = ngrams[0]
             two = ngrams[1]
