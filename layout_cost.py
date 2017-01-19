@@ -129,9 +129,9 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
     :param symmetries: [(first-keys, second-keys), ...]
     
     >>> asymmetry_cost(layout=NEO_LAYOUT)
-    3.2271746276828956
+    3.738000251448886
     >>> asymmetry_cost(layout=CRY_LAYOUT)
-    4.623519324656288
+    5.8274921289822235
     >>> asymmetry_cost(layout=BONE_LAYOUT)
     3.1218141120250698
     """

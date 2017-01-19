@@ -4,6 +4,7 @@
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
 import collections
+import hashlib
 
 from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
@@ -334,7 +335,11 @@ def repeats_in_file_precalculated(data, only_existing=True):
     >>> repeats_in_file_precalculated(data)[:3]
     [(10159250, 'en'), (10024681, 'er'), (9051717, 'n ')]
     """
-    if 'reps_repeats_in_file_precalculated' not in repeats_in_file_precalculated.__dict__:
+    md5 = hashlib.md5(data.encode("utf-8")).hexdigest()
+    if ( 'reps_repeats_in_file_precalculated' not in repeats_in_file_precalculated.__dict__ or
+         md5 not in repeats_in_file_precalculated.reps_repeats_in_file_precalculated):
+        if 'reps_repeats_in_file_precalculated' not in repeats_in_file_precalculated.__dict__:
+            repeats_in_file_precalculated.reps_repeats_in_file_precalculated = {}
         reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.lstrip().split(" ", 1)[1:]]
         if only_existing: 
             all_keys = get_all_keys_in_layout(NEO_LAYOUT)
@@ -350,10 +355,10 @@ def repeats_in_file_precalculated(data, only_existing=True):
     
         # cleanup
         _unescape_ngram_list(reps)
-        repeats_in_file_precalculated.reps_repeats_in_file_precalculated = reps
-        return repeats_in_file_precalculated.reps_repeats_in_file_precalculated
+        repeats_in_file_precalculated.reps_repeats_in_file_precalculated[md5] = reps
+        return repeats_in_file_precalculated.reps_repeats_in_file_precalculated[md5]
     else:
-        return repeats_in_file_precalculated.reps_repeats_in_file_precalculated
+        return repeats_in_file_precalculated.reps_repeats_in_file_precalculated[md5]
 
 
 
@@ -694,7 +699,11 @@ def trigrams_in_file_precalculated(data, only_existing=True):
     >>> trigrams_in_file_precalculated(data)[:6]
     [(5678553, 'en '), (4467769, 'er '), (2891228, ' de'), (2493088, 'der'), (2304026, 'sch'), (2272028, 'ie ')]
     """
-    if 'trigs_trigrams_in_file_precalculated' not in trigrams_in_file_precalculated.__dict__:
+    md5 = hashlib.md5(data.encode("utf-8")).hexdigest()
+    if ( 'trigs_trigrams_in_file_precalculated' not in trigrams_in_file_precalculated.__dict__ or
+         md5 not in trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated):
+        if 'trigs_trigrams_in_file_precalculated' not in trigrams_in_file_precalculated.__dict__:
+            trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated = {}
         trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     
         if only_existing: 
@@ -711,10 +720,10 @@ def trigrams_in_file_precalculated(data, only_existing=True):
         # cleanup
         _unescape_ngram_list(trigs)
         trigs = split_uppercase_trigrams(trigs)
-        trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated = trigs
+        trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated[md5] = trigs
         return trigs
     else:
-        return trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated
+        return trigrams_in_file_precalculated.trigs_trigrams_in_file_precalculated[md5]
 
 def letters_in_file_precalculated(data, only_existing=True):
     """Get the repeats from a precalculated file.
@@ -723,28 +732,32 @@ def letters_in_file_precalculated(data, only_existing=True):
     >>> letters_in_file_precalculated(data)[:3]
     [(46474641, ' '), (44021504, 'e'), (26999087, 'n')]
     """
-    if 'ret_letters_in_file_precalculated' not in letters_in_file_precalculated.__dict__:
+    md5 = hashlib.md5(data.encode("utf-8")).hexdigest()
+    if ( 'ret_letters_in_file_precalculated' not in letters_in_file_precalculated.__dict__ or
+         md5 not in letters_in_file_precalculated.__dict__['ret_letters_in_file_precalculated']):
+        if 'ret_letters_in_file_precalculated' not in letters_in_file_precalculated.__dict__:
+            letters_in_file_precalculated.ret_letters_in_file_precalculated = {}
         letters = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:] or line[-2:] == "  "]
         # cleanup
         _unescape_ngram_list(letters)
         try:
             if only_existing:
                 all_keys = get_all_keys_in_layout(NEO_LAYOUT)
-                letters_in_file_precalculated.ret_letters_in_file_precalculated = [(int(num), let) for num, let in letters if let in all_keys]
-                return letters_in_file_precalculated.ret_letters_in_file_precalculated
+                letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(int(num), let) for num, let in letters if let in all_keys]
+                return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:
-                letters_in_file_precalculated.ret_letters_in_file_precalculated = [(int(num), let) for num, let in letters if let]
-                return letters_in_file_precalculated.ret_letters_in_file_precalculated
+                letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(int(num), let) for num, let in letters if let]
+                return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
         except ValueError: # floats in there
             if only_existing:
                 all_keys = get_all_keys_in_layout(NEO_LAYOUT)
-                letters_in_file_precalculated.ret_letters_in_file_precalculated = [(float(num), let) for num, let in letters if let in all_keys]
-                return letters_in_file_precalculated.ret_letters_in_file_precalculated
+                letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(float(num), let) for num, let in letters if let in all_keys]
+                return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:
-                letters_in_file_precalculated.ret_letters_in_file_precalculated = [(float(num), let) for num, let in letters if let]
-                return letters_in_file_precalculated.ret_letters_in_file_precalculated
+                letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(float(num), let) for num, let in letters if let]
+                return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
     else:
-        return letters_in_file_precalculated.ret_letters_in_file_precalculated
+        return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
 
 def clean_data(data):
     """Remove cruft from loaded data"""
