@@ -11,7 +11,6 @@
 
 import math
 import random
-import array
 
 from layout_base import *
 
@@ -42,9 +41,9 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
     >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY, layout=lay)
     240
     """
-    letters = zip(*split_uppercase_letters(zip(*letters), layout=layout))
+    letters = split_uppercase_letters(letters, layout=layout)
     cost = 0
-    for num, letter in zip(*letters):
+    for num, letter in letters:
         pos = find_key(letter, layout=layout)
         cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
@@ -61,11 +60,11 @@ def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
     >>> sorted(finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT))[:3]
     [(4.470000000000001, 'Zeige_L', 'cp'), (4.470000000000001, 'Zeige_L', 'pw'), (4.470000000000001, 'Zeige_L', 'wz')]
     """
-    number_of_keystrokes = sum((num for num, pair in zip(*repeats)))
+    number_of_keystrokes = sum((num for num, pair in repeats))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     
     finger_repeats = []
-    for number, pair in zip(*repeats):
+    for number, pair in repeats:
         key1 = pair[0]
         key2 = pair[1]
         finger1 = key_to_finger(key1, layout=layout)
@@ -118,7 +117,7 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
     >>> movement_pattern_cost(repeats_in_file(data), FINGER_SWITCH_COST=TEST_FINGER_SWITCH_COST)
     12
     """
-    fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in zip(*repeats))
+    fingtups = (_rep_to_fingtuple(num, rep, layout, FINGER_SWITCH_COST) for num, rep in repeats)
 
     return sum((num*FINGER_SWITCH_COST[fings[0]][fings[1]] for num, fings in fingtups if num))
 
@@ -242,7 +241,7 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     54
     """
     no_switch = 0
-    for number, pair in zip(*repeats):
+    for number, pair in repeats:
         pos1 = find_key(pair[0], layout=layout)
         if not pos1 or not pos1 in UNBALANCING_POSITIONS:
             continue
@@ -303,7 +302,7 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
     >>> data = read_file("testfile")
     """
     neighboring_unbalance = 0
-    for number, pair in zip(*repeats):
+    for number, pair in repeats:
 
         # only take existing, neighboring positions.
         pos2 = find_key(pair[1], layout=layout)
@@ -327,11 +326,11 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
     TODO: Don’t care about the hand (left index low and right high is still not nice).
 
     >>> data = read_file("testfile")
-    >>> line_changes(zip(*repeats_in_file(data)))
+    >>> line_changes(repeats_in_file(data))
     4.7119140625
     """
     line_changes = 0
-    for number, pair in zip(*repeats):
+    for number, pair in repeats:
         # ignore pairs with spaces (" "): Space is hit with the thumb, so it is no real row jump.
         if " " in pair:
             continue
@@ -403,13 +402,13 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
 def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     """Calculate the number of times each finger is being used.
 
-    >>> letters = zip(*[(1, "u"), (5, "i"), (10, "2"), (3, " "), (4, "A"), (6, "Δ")])
+    >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (4, "A"), (6, "Δ")]
     >>> sorted(load_per_finger(letters).items())[1:]
     [('Klein_L', 23), ('Klein_R', 10), ('Mittel_L', 4), ('Mittel_R', 10), ('Ring_L', 5)]
     """
-    letters = zip(*split_uppercase_letters(zip(*letters), layout))
+    letters = split_uppercase_letters(letters, layout)
     fingers = {}
-    for num, key in zip(*letters):
+    for num, key in letters:
         finger = key_to_finger(key, layout=layout)
         if finger in fingers:
             fingers[finger] += num
@@ -514,7 +513,7 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     """
     no_switch = 0
     secondary_bigrams = {} # {bigram: num, …}
-    for num, trig in zip(*trigrams):
+    for num, trig in trigrams:
         t0, t1, t2 = trig[0], trig[1], trig[2]
         try:
             hand0 = key_hand_table[t0]
@@ -581,7 +580,7 @@ def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
 def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     """Add manual penalty for bad to type bigrams which are hard to catch algorithmically."""
     penalty = 0
-    for num, bi in zip(*bigrams):
+    for num, bi in bigrams:
         pos1 = find_key(bi[0], layout=layout)
         pos2 = find_key(bi[1], layout=layout)
         if pos1 is None or pos2 is None: continue
@@ -602,7 +601,7 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     2
 
     Idea: Use symmetric hand movement instead of symmetric keys."""
-    return sum((num for num, bi in zip(*bigrams) if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
+    return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
 def irregularity(words, layout=NEO_LAYOUT, **opts):
@@ -666,12 +665,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     #     except KeyError: tri[t] = num
     # trigrams = [(num, t) for t, num in tri.items()]
 
-    # switch trigrams to array and homogenous list which can be zipped
-    if trigrams: k, v = zip(*trigrams)
-    else: k, v = [], []
-    trigrams = (array.array("f", k), v)
-    trigrams = (array.array("f", k), v)
-    
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     for pair in secondary_bigrams:
         try: reps[pair] += secondary_bigrams[pair]
@@ -688,15 +681,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
             reps[pair] = number
 
     reps = [(num, pair) for pair, num in reps.items()]
-    # switch letters and dreps to array and homogenous list which can be zipped
-    if letters: k, v = zip(*letters)
-    else: k, v = [], []
-    letters = (array.array("f", k), v)
-    letters = (array.array("f", k), v)
-    if reps: k, v = zip(*reps)
-    else: k, v = [], []
-    reps = (array.array("f", k), v)
-    reps = (array.array("f", k), v)
 
     # print(len(reps) /len(reps_uncleaned))
     # check repeat cleanup
@@ -728,7 +712,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
 
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
-    number_of_letters = sum(letters[0])
+    number_of_letters = sum([i for i, s in letters])
 
     # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
     badly_positioned = badly_positioned_shortcut_keys(layout=layout)
