@@ -975,14 +975,14 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     """
     lay = deepcopy(layout)
     from pprint import pprint
-    #pprint(lay)
+    # pprint(lay)
     for pair in keypairs:
             pos0 = find_key(pair[0], layout=lay)
             pos1 = find_key(pair[1], layout=lay)
 
             # both positions MUST be on the base layer. 
             if pos0[2] or pos1[2]:
-                #info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
+                # info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
                 continue
 
             pos0_keys = lay[pos0[0]][pos0[1]]
