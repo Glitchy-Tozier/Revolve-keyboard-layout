@@ -126,7 +126,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
         if not rep[1:]:
             continue
         tmp = [(num, rep) for rep, num in split_uppercase_repeats([(1, rep)], layout=layout).items()]
-        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True)
+        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True, check_irregularity=False)
         # critical point for finger repeats, doing it here instead of layout_cost because it needs the total number of keystrokes.
         if num > critical_point:
             fing_reps = finger_repeats_from_file(repeats=tmp, layout=layout)
