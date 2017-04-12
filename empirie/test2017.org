@@ -1,0 +1,245 @@
+#+title: Tipptests 2017
+
+Belegungen prüfen:
+
+#+BEGIN_SRC sh
+for i in lire2.svg lire.svg neo2.svg cry.svg qwertz.svg qwertzy4 adnw.svg bone.svg; do inkscape $i & done
+#+END_SRC
+
+Tipptests: 
+- Belegungen: lire, neo2, qwertzy, adnw, bone
+- Sätze: typischer Satz, untypischer Satz
+- Mails sowohl für Qwertzer als auch für Neolinge (ohne neo2) und adnwler (ohne adnw)
+
+#+BEGIN_SRC sh
+./convert_text_between_layouts.py --name qwertzy4 --base-name adnw
+#+END_SRC
+
+#+BEGIN_SRC sh
+./bigramm_statistik.py --svg --svg-output qwertz.svg -l "qwert zuiopü+
+asdfg hjklöä
+yxcvb nm,.-"
+
+./bigramm_statistik.py --svg --svg-output qwertzy4.svg -l "ahnep kmrsjßu
+döüfi ytägq⇘
+wvxcb oz,.l"
+
+./bigramm_statistik.py --svg --svg-output cry.svg -l "bmuaz kdflvjß
+criey ptsnh⇘
+xäüoö wg,.'q"
+
+./bigramm_statistik.py --svg --svg-output neo2.svg -l "xvlcw khgfqß´
+uiaeo snrtdy
+üöäpz bm,.j"
+
+./bigramm_statistik.py --svg --svg-output adnw.svg -l "kuü.ä vgcljf
+hieao dtrnsß
+xyö,q bpwmz"
+
+./bigramm_statistik.py --svg --svg-output lire.svg -l "ßücäö wbdgzvj
+lireo mntsh⇘
+xuyaq pf,.k"
+
+./bigramm_statistik.py --svg --svg-output lire2.svg -l "ßucaq wbdgzvj
+lireo mntsh⇘
+xüyäö pf,.k"
+#+END_SRC
+
+#+BEGIN_SRC sh :results verbatim
+  for base in cry qwertz neo2 adnw; do 
+      echo === Für $base ===
+      for file in beispieltext-reference-sentence-tech.txt beispieltext-prosa-best.txt beispieltext-prosa-worst.txt; do 
+          echo ... $file ...
+          for other in lire neo2 qwertzy4 adnw bone; do
+              if test x"$base" == x"$other"; then
+                  continue
+              fi
+              echo --- Testbelegung $other ---
+              ../convert_text_between_layouts.py --name "$other" --base-name "$base" --file ../"$file"
+          done
+      done
+  done
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+=== Für cry ===
+... beispieltext-reference-sentence-tech.txt ...
+--- Testbelegung lire ---
+Äp Ces-Ie'äinryt vä denuhierdet, keife ruh frene Gät'sryt ßesvs vä ertei Nuhcerge rt Wüshyt siotngyipreiet ätf pruh vä rppei ecelotseiet Gyipäcreiätlet jyisonset, drn ruh krefei der fep leiofe leverlset Uyfe drt
+
+--- Testbelegung neo2 ---
+Cg Uen-Sekcspryt öc wepadserwet, zeshe rad hrepe Lctknryt 'enön öc ertes Paduerle rt O⇘ndyt nsitplysgreset cth grad öc rgges euefitneset Lysgcuresctfet mysnipnet, wrp rad zrehes wer heg fesihe feöerfnet Ayhe wrt
+
+--- Testbelegung qwertzy4 ---
+SSd 'at-Fakßflywu gß öalomfayöau, xafca yom cyala Eßuktywu vatgt gß ayuaf Lom'ayea yu Zptmwu tfqulewfdyafau ßuc dyom gß yddaf a'anqutafau Ewfdß'yafßunau äwftqltau, öyl yom xyacaf öay cad nafqca nagayntau Owca öyu
+
+--- Testbelegung adnw ---
+M. Lit-Siqmshryn 'm wihfcsirwino ,ispi rfc prihi Jmnqtryn vit't 'm irnis Hfclirji rn Gätcyn tsenhjys.risin mnp .rfc 'm r..is ilidentisin Jys.mlrismndin kystehtino wrh rfc ,ripis wir pi. disepi di'irdtin Fypi wrn
+
+--- Testbelegung bone ---
+Ul Fer-Se'usniyt gu pencdseipet, vesme icd miene Xut'riyt qergr gu eites Ncdfeixe it Kwrdyt rsatnxyslieset utm licd gu illes efehatreset Xyslufiesuthet äysranret, pin icd viemes pei mel hesame hegeihret Cyme pit
+
+... beispieltext-prosa-best.txt ...
+--- Testbelegung lire ---
+Fon cerne ätf rppei coäsei ätf haägrlei keifetfe 'tou'et jyt Wotveilcon keife ruh kyhc cotle truhs jeilennet.
+
+--- Testbelegung neo2 ---
+Hip uerpe cth rgges uicnes cth düclrfes zeshethe Ktiaket myt Oitöesfuip zeshe rad zydu uitfe tradn mesfeppet.
+
+--- Testbelegung qwertzy4 ---
+Cql 'ayla ßuc yddaf 'qßtaf ßuc msßeynaf xafcauca Kuqokau äwu Zqugafn'ql xafca yom xwm' 'quna uyomt äafnallau.
+
+--- Testbelegung adnw ---
+Peh lirhi mnp r..is lemtis mnp czmjrdis ,ispinpi Qnefqin kyn Gen'isdleh ,ispi rfc ,ycl lendi nrfct kisdihhina
+
+--- Testbelegung bone ---
+Man feine utm illes faures utm douxihes vesmetme 'tac'et äyt Katgeshfan vesme icd vydf fathe ticdr äeshennet.
+
+... beispieltext-prosa-worst.txt ...
+--- Testbelegung lire ---
+Kri nrtf prs fet Liadeit touh ätset, äp vä wimget, yd fre Wrioset fyis koiet.
+
+--- Testbelegung neo2 ---
+Zrs prth grn het Fsüwest tiad ctnet, cg öc osxlet, yw hre Orsinet hysn ziset.
+
+--- Testbelegung qwertzy4 ---
+Xyf lyuc dyt cau Nfsöafu uqom ßutau, ßd gß zfieau, wö cya Zyfqtau cwft xqfau.
+
+--- Testbelegung adnw ---
+,rs hrnp .rt pin Dszwisn nefc mntino m. 'm gsujino yw pri Grsetin pyst ,esina
+
+--- Testbelegung bone ---
+Vis nitm lir met Hsopest tacd utret, ul gu ksüxet, yp mie Kisaret mysr vaset.
+
+=== Für qwertz ===
+... beispieltext-reference-sentence-tech.txt ...
+--- Testbelegung lire ---
+Xh Afk-Df-xdlsgj px ufleödfsufj, zfdif seö isflf Mxj-ksgj +fkpk px fsjfd Leöafsmf sj Nckögj kdvjlmgdhsfdfj xji hseö px shhfd fafovjkfdfj Mgdhxasfdxjofj ügdkvlkfj, usl seö zsfifd ufs ifh ofdvif ofpfsokfj Egif usj
+
+--- Testbelegung neo2 ---
+Am Efl-Kfzakhsgj ba nfhrukfsnfj, tfköf sru ösfhf Oajzlsgj -flbl ba fsjfk Hruefsof sj Välugj lkdjhogkmsfkfj ajö msru ba smmfk fefidjlfkfj Ogkmaesfkajifj wgkldhlfj, nsh sru tsföfk nfs öfm ifkdöf ifbfsilfj Rgöf nsj
+
+--- Testbelegung qwertzy4 ---
++u -rj-Irz+iogne m+ brovwirgbre, yriar gvw agror F+ezjgne prjmj m+ rgeri Ovw-rgfr ge Thjwne jiqeofniugrire +ea ugvw m+ guuri r-rlqejrire Fniu+-gri+elre xnijqojre, bgo gvw ygrari brg aru lriqar lrmrgljre Vnar bge
+
+--- Testbelegung adnw ---
+W. Odj-Kdqwkösgl -w ndöiakdsndlv ,dkhd sia hsdöd Üwlqjsgl pdj-j -w dsldk Öiaodsüd sl Mxjagl jkflöügk.sdkdl wlh .sia -w s..dk dodufljdkdl Ügk.wosdkwludl zgkjföjdlv nsö sia ,sdhdk nds hd. udkfhd ud-dsujdl Ighd nsl
+
+--- Testbelegung bone ---
+Eo Ifs-Kf-ekldgj me hflaukfdhfj, pfkwf dau wdflf Yej-sdgj qfsms me fdjfk Lauifdyf dj Znsugj skrjlygkodfkfj ejw odau me doofk fiförjsfkfj Ygkoeidfkejöfj xgksrlsfj, hdl dau pdfwfk hfd wfo öfkrwf öfmfdösfj Agwf hdj
+
+... beispieltext-prosa-best.txt ...
+--- Testbelegung lire ---
+Ivl afslf xji shhfd avxkfd xji örxmsofd zfdifjif -jve-fj ügj Nvjpfdoavl zfdif seö zgöa avjof jseök üfdofllfj.
+
+--- Testbelegung neo2 ---
+Ödh efshf ajö smmfk edalfk ajö ucaosifk tfköfjöf Zjdrzfj wgj Vdjbfkiedh tfköf sru tgue edjif jsrul wfkifhhfj.
+
+--- Testbelegung qwertzy4 ---
+Aqo -rgor +ea guuri -q+jri +ea wk+fglri yriarear Zeqvzre xne Tqemril-qo yriar gvw ynw- -qelr egvwj xrilroore.
+
+--- Testbelegung adnw ---
+Hfö odsöd wlh s..dk ofwjdk wlh atwüsudk ,dkhdlhd Qlfiqdl zgl Mfl-dkuofö ,dkhd sia ,gao oflud lsiaj zdkudöödlr
+
+--- Testbelegung bone ---
+Wrl ifdlf ejw doofk iresfk ejw uveydöfk pfkwfjwf -jra-fj xgj Zrjmfköirl pfkwf dau pgui irjöf jdaus xfköfllfj.
+
+... beispieltext-prosa-worst.txt ...
+--- Testbelegung lire ---
+Zsd lsji hsk ifj Odrufdj jveö xjkfj, xh px ndwmfj, gu isf Nsdvkfj igdk zvdfj.
+
+--- Testbelegung neo2 ---
+Tsk hsjö msl öfj Ikcnfkj jdru ajlfj, am ba vkyofj, gn ösf Vskdlfj ögkl tdkfj.
+
+--- Testbelegung qwertzy4 ---
+Ygi ogea ugj are Likbrie eqvw +ejre, +u m+ tidfre, nb agr Tgiqjre anij yqire.
+
+--- Testbelegung adnw ---
+,sk öslh .sj hdl Uktndkl lfia wljdlv w. -w mkeüdlv gn hsd Mskfjdl hgkj ,fkdlr
+
+--- Testbelegung bone ---
+Pdk ldjw ods wfj Ökvhfkj jrau ejsfj, eo me zkcyfj, gh wdf Zdkrsfj wgks prkfj.
+
+=== Für neo2 ===
+... beispieltext-reference-sentence-tech.txt ...
+--- Testbelegung lire ---
+Ös Uer-Aejöation qö hetldaeihen, keage ild giete Mönjrion ´erqr qö einea Tldueime in Bärdon rapntmoasieaen öng sild qö issea euefpnreaen Moasöuieaönfen ßoarptren, hit ild kiegea hei ges feapge feqeifren Loge hin
+
+--- Testbelegung qwertzy4 ---
+´h Jcn-Gck´gfobl m´ zcfpvgcozcl, ücguc opv uocfc E´lknobl qcnmn m´ colcg Fpvjcoec ol Wsnvbl ngxlfebghocgcl ´lu hopv m´ ohhcg cjctxlncgcl Ebgh´jocg´ltcl öbgnxfncl, zof opv üocucg zco uch tcgxuc tcmcotncl Pbuc zol
+
+--- Testbelegung adnw ---
+V. Fan-Raxvrdiot jv badguraibatp ,arsa igu siada SSvtxniot qanjn jv aitar Dgufaißa it Mönuot nretdßor.iarat vts .igu jv i..ar afahetnarat SSor.vfiarvthat kornednatp bid igu ,iasar bai sa. haresa hajaihnat Gosa bit
+
+--- Testbelegung bone ---
+Lf Gei-Rejlrtaon ml setuhreasen, qerve auh vaete Ülnjiaon xeimi ml eaner Tuhgeaüe an Kbihon ircntüorfaeren lnv fauh ml affer egedcnieren Üorflgaerlnden öorictien, sat auh qaever sea vef dercve demeadien Uove san
+
+... beispieltext-prosa-best.txt ...
+--- Testbelegung lire ---
+Gpt ueite öng issea upörea öng dcömifea keagenge Jnpljen ßon Bpnqeafupt keage ild kodu upnfe nildr ßeafetten.
+
+--- Testbelegung qwertzy4 ---
+Uxf jcofc ´lu ohhcg jx´ncg ´lu vr´eotcg ücgucluc Klxpkcl öbl Wxlmcgtjxf ücguc opv übvj jxltc lopvn öcgtcffcl.
+
+--- Testbelegung adnw ---
+Sed faida vts i..ar fevnar vts uwvßihar ,arsatsa Xtegxat kot Metjarhfed ,arsa igu ,ouf fetha tigun karhaddatc
+
+--- Testbelegung bone ---
+Vct geate lnv affer gclier lnv hplüader qervenve Jncujen öon Kcnmerdgct qerve auh qohg gcnde nauhi öerdetten.
+
+... beispieltext-prosa-worst.txt ...
+--- Testbelegung lire ---
+Kia ting sir gen Fachean npld önren, ös qö bavmen, oh gie Biapren goar kpaen.
+
+--- Testbelegung qwertzy4 ---
+Üog folu hon ucl Tgrzcgl lxpv ´lncl, ´h m´ wgaecl, bz uoc Wogxncl ubgn üxgcl.
+
+--- Testbelegung adnw ---
+,ir dits .in sat Hrwbart tegu vtnatp v. jv mrlßatp ob sia Mirenat sorn ,eratc
+
+--- Testbelegung bone ---
+Qar tanv fai ven Drpsern ncuh lnien, lf ml kräüen, os vae Karcien vori qcren.
+
+=== Für adnw ===
+... beispieltext-reference-sentence-tech.txt ...
+--- Testbelegung lire ---
+Yd Har-Eazyeniot jy ganüseaigatw vaeca iüs ciana Pytzriot ´arjr jy aitae Nüshaipa it Börsot re,tnpoediaeat ytc diüs jy iddae ahal,traeat Poedyhiaeytlat foer,nratw gin iüs viacae gai cad lae,ca lajailrat Üoca git
+
+--- Testbelegung neo2 ---
+Hp Üan-Ravhrdiot qh bad.graibatw äarsa i.g siada Lhtvniot zanqn qh aitar D.güaila it ,ßngot nretdlorpiarat hts pi.g qh ippar aüacetnarat Lorphüiarhtcat uornednatw bid i.g äiasar bai sap caresa caqaicnat .osa bit
+
+--- Testbelegung qwertzy4 ---
+´g Z.t-C.v´clobü p´ q.l,uc.oq.üw x.ch. o,u ho.l. A´üvtobü j.tpt p´ .oü.c L,uz.oa. oü Ädtubü tckülabcgo.c.ü ´üh go,u p´ ogg.c .z.nküt.c.ü Abcg´zo.c´ün.ü ybctklt.üw qol o,u xo.h.c q.o h.g n.ckh. n.p.ont.ü ,bh. qoü
+
+--- Testbelegung bone ---
+Ül Cai-Razürneot pü danhgraedatw jarua ehg ueana Xützieot kaipi pü aetar Nhgcaexa et Vbigot ir.tnxorlearat ütu lehg pü ellar acas.tiarat Xorlücearütsat yori.niatw den ehg jeauar dae ual sar.ua sapaesiat Houa det
+
+... beispieltext-prosa-best.txt ...
+--- Testbelegung lire ---
+C,n haina ytc iddae h,yrae ytc s.ypilae vaecatca Zt,üzat fot B,tjaelh,n vaeca iüs vosh h,tla tiüsr faelannatm
+
+--- Testbelegung neo2 ---
+Sed üaida hts ippar üehnar hts göhlicar äarsatsa Vte.vat uot ,etqarcüed äarsa i.g äogü üetca ti.gn uarcaddatm
+
+--- Testbelegung qwertzy4 ---
+Hkl z.ol. ´üh ogg.c zk´t.c ´üh ur´aon.c x.ch.üh. Vük,v.ü ybü Äküp.cnzkl x.ch. o,u xbuz zkün. üo,ut y.cn.ll.üm
+
+--- Testbelegung bone ---
+U.n caena ütu ellar c.üiar ütu g,üxesar jaruatua Zt.hzat yot V.tparsc.n jarua ehg jogc c.tsa tehgi yarsannatm
+
+... beispieltext-prosa-worst.txt ...
+--- Testbelegung lire ---
+Vie nitc dir cat Le.gaet t,üs ytratw yd jy beupatw og cia Bie,rat coer v,eatm
+
+--- Testbelegung neo2 ---
+Äir dits pin sat Cröbart te.g htnatw hp qh ,rxlatw ob sia ,irenat sorn äeratm
+
+--- Testbelegung qwertzy4 ---
+Xoc loüh got h.ü Ncrq.cü ük,u ´üt.üw ´g p´ äcea.üw bq ho. Äockt.ü hbct xkc.üm
+
+--- Testbelegung bone ---
+Jer netu lei uat Sr,dart t.hg ütiatw ül pü vröxatw od uea Ver.iat uori j.ratm
+
+#+end_example
+

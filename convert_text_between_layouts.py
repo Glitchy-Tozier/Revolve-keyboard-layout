@@ -191,6 +191,24 @@ criey ptsnh⇘
 ⇚xäüoö wg,.'
 """[1:]
 
+adnw = """
+kuü.ä vgcljf´
+hieao dtrnsß
+⇚xyö,q bpwmz
+"""[1:]
+
+bone = """
+jduax phlmwqß
+ctieo bnrsg⇘
+⇚fvüäö yz,.k
+"""[1:]
+
+lire = """
+ßücäö wbdgzvj
+lireo mntsh⇘
+⇚xuyaq pf,.k
+"""[1:]
+
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
 text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
 
@@ -256,6 +274,7 @@ elif argv[2:] and argv[1] == "--file":
    with open(text) as f:
       text = f.read()
 
+# FIXME: fails with stray char at beginning: ./convert_text_between_layouts.py --name qwertzy4 --base-name cry --file beispieltext-reference-sentence-tech.txt
 def konv(text, layout, base=neo2):
     """Convert a text to the given layout, to be typed with the base."""
     res = ""
