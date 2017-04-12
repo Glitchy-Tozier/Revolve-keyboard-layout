@@ -14,6 +14,8 @@ from os import listdir, mkdir
 from os.path import join, isdir
 from subprocess import call
 import sys
+import multiprocessing as mp
+# mp = _mp.get_context('spawn') # avoid copying the full memory for each process. Needs python3.4
 
 def get_all_layouts_in_textfile(textfile):
     """Get all layouts in the given textfile.
@@ -112,10 +114,22 @@ def main(options, args):
     textfile = options.data
     if textfile is None:
         textfile = "beispieltext-prosa.txt"
+    if options.regularity:
+        def f(lay):
+            return (lay,) + check_regularity(lay, textfile)
+        
+        def tuplit(t):
+            return tuple(map(tuplit, t)) if isinstance(t, (list, tuple)) else t
+        with mp.Pool(3) as p: # eats about 500 MiB per process
+            regularity_data = {}
+            for lay, seg, word in p.map(f, all_layouts):
+                regularity_data[tuplit(lay)] = seg, word
+            
     for lay in all_layouts:
         if options.regularity:
             print("# checking regularity for\n" + format_layer_1_string(lay), file=sys.stderr)
-            segment_costs, word_costs = check_regularity(lay, textfile)
+            # segment_costs, word_costs = check_regularity(lay, textfile)
+            segment_costs, word_costs = regularity_data[tuplit(lay)]
             cost_segments_mean = sum(segment_costs) / len(segment_costs)
             cost_segments_std = std(segment_costs)
             cost_words_mean = sum(word_costs) / len(word_costs)
