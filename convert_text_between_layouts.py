@@ -186,9 +186,9 @@ ghei. ctnrs⇘
 """[1:]
 
 cry = """
-qmuaz kdflvjß
+bmuaz kdflvjß
 criey ptsnh⇘
-⇚xäüoö wg,.'
+⇚xäüoö wg,.q
 """[1:]
 
 adnw = """
@@ -207,6 +207,18 @@ lire = """
 ßücäö wbdgzvj
 lireo mntsh⇘
 ⇚xuyaq pf,.k
+"""[1:]
+
+corn = """
+jmloq wpihkvß
+crneu btags⇘
+⇚zöüyx äd,.f
+"""[1:]
+
+morn = """
+jlpkq öäfwüxß
+mrntg yeish⇘
+⇚czbdv oa,.u
 """[1:]
 
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
