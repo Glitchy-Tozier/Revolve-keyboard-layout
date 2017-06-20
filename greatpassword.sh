@@ -8,7 +8,7 @@ function securepassword () {
 	if [ x"$1" == x"" ]; then
 		nletters=8
 	else
-		nletters=$1
+		nletters="$1"
 	fi
 	python <<EOF
 from random import choice
@@ -30,7 +30,7 @@ if [ x"${TMPDIR}" == x"" ]; then
     exit 1
 fi
 
-for i in {1..10}; do securepassword 8 >> ${TMPDIR}/pws.txt; done
+for i in {1..10}; do securepassword "$1" >> ${TMPDIR}/pws.txt; done
 
 for i in $(cat ${TMPDIR}/pws.txt); do
     echo "$i" > ${TMPDIR}/pwtest.txt
