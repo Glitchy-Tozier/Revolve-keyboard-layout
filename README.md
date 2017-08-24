@@ -272,12 +272,13 @@ check_neo.py hat das flexiblere Interface und wird von evolution.py mitverwendet
 Die grundlegenden Anwendungen von check_neo.py sind:
 
 * sich die Werte von Belegungen ausgeben lassen:
-  ./check_neo.py [-v] [--fingerstats]; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien (siehe http://wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien ).
-  ./check_neo.py --check-string "xzo., pcslvß´
-    haeiu dtrnmf
-    ⇚kyäüö bgjqw" [-v] ; Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen.
-  --file dateiname.txt ermöglichst es außerdem, die Belegung mit dem Text in der Datei zu prüfen, statt mit dem Standardkorpus (1gramme.txt, 2gramme.txt und 3gramme.txt).
-
+  
+        ./check_neo.py [-v] [--fingerstats]; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien (siehe http://wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien ).
+        ./check_neo.py --check-string "xzo., pcslvß´
+          haeiu dtrnmf
+          ⇚kyäüö bgjqw" [-v] ; Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen.
+        --file dateiname.txt ermöglichst es außerdem, die Belegung mit dem Text in der Datei zu prüfen, statt mit dem Standardkorpus (1gramme.txt, 2gramme.txt und 3gramme.txt).
+      
 * Eine Evolution starten:
   ./check_neo.py --evolve N [--controlled-tail] ; N Mutationsschritte machen, ausgehend von einer Zufallsbelegung.
 
