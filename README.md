@@ -20,28 +20,28 @@ Usage
 
 Do an evolution and store the results in output.txt:
 
-./evolution.py
+    ./evolution.py
 
 Check a layout string (only *nix systems, curse you, windows console!): 
 
-./check_neo.py -v --fingerstats --check-string "xvlcw khgfqß´
-uiaeo snrtdy
-üöäpz bm,.j"
+    ./check_neo.py -v --fingerstats --check-string "xvlcw khgfqß´
+    uiaeo snrtdy
+    üöäpz bm,.j"
 
 Create a layout SVG: 
 
-./bigramm_statistik.py --svg --svg-output layout.svg -l "xvlcw khgfqß´
-uiaeo snrtdy
-üöäpz bm,.j"
+    ./bigramm_statistik.py --svg --svg-output layout.svg -l "xvlcw khgfqß´
+    uiaeo snrtdy
+    üöäpz bm,.j"
 
 
 Additional options:
 
-./evolution.py --help # simple evolution
-./check_neo.py --help # various actions
-./convert_text_between_layouts.py --help # generate text for writing tests
-./regularity_check.py --help # check the deviations from the typing flow
-./textcheck.py --help # check the difference between a given text and an ngram korpus
+    ./evolution.py --help # simple evolution
+    ./check_neo.py --help # various actions
+    ./convert_text_between_layouts.py --help # generate text for writing tests
+    ./regularity_check.py --help # check the deviations from the typing flow
+    ./textcheck.py --help # check the difference between a given text and an ngram korpus
 
 
 Dokumentation
@@ -172,13 +172,13 @@ zxcfj kp,.'
 
 1. Für die Buchstaben nutzt es eine nach Erfahrung generierte Liste mit Tastenaufwänden (Kosten):
 
-COST_PER_KEY  = [
-    [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
-    [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
-    [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
-    [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
-    [0,0,0,               3            , 7, 0, 0, 0] # Reihe 4 mit Leertaste
-]
+    COST_PER_KEY  = [
+        [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
+        [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
+        [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+        [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
+        [0,0,0,               3            , 7, 0, 0, 0] # Reihe 4 mit Leertaste
+    ]
 
 Für jeden Buchstaben wird seine Häufigkeit mit den Kosten der Taste, auf der er liegt, multipliziert. Alle Buchstabenkosten werden addiert, um die Positionskosten zu erhalten.
 
@@ -235,16 +235,16 @@ Bei Bigrammen werden die Modifikatortaste für das modifizierte Zeichen und für
 
 Bei Neo2:
 
-• Ab wird zu ShiftR-a, ShiftR-b, ab.
-• aB wird zu a-ShiftL, ShiftL-b, ab.
+* Ab wird zu ShiftR-a, ShiftR-b, ab.
+* aB wird zu a-ShiftL, ShiftL-b, ab.
 
 Jeweils mit der Modifikatortaste auf der anderen Hand als der Buchstabe (logisch).
 
 Trigramme funktionieren in etwa genauso, nur gibt es mehr Optiomen. Für Großschreibung nimm alle Trigramme, die du aus dem folgenden Bild basteln kannst:
 
-a → b → c
-| × | × |
-sa→ sb→ sc
+    a → b → c
+    | × | × |
+    sa→ sb→ sc
 
 Senkrechte in beide Richtungen. Kreuze nur nach vorne. sa = das Shift, das zu a gehört (andere Hand).
 
@@ -264,32 +264,32 @@ Nach 4000 zufälligen Optimierungsschritten werden dann noch einmal alle möglic
 
 Für die Optimierung gibt es 2 Hauptskripte:
 
-• check_neo.py
-• evolution.py
+* check_neo.py
+* evolution.py
 
 check_neo.py hat das flexiblere Interface und wird von evolution.py mitverwendet. Es funktioniert aber nicht unbedingt auf Windows (Windows-Konsole sei verflucht für deine Unicode-Probleme!). evolution.py dagegen funktioniert unter Windows. Es liefert die Oberfläche zum gemeinsamen Optimieren (cloud optimizing ;)).
 
 Die grundlegenden Anwendungen von check_neo.py sind:
 
-• sich die Werte von Belegungen ausgeben lassen:
+* sich die Werte von Belegungen ausgeben lassen:
   ./check_neo.py [-v] [--fingerstats]; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien (siehe http://wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien ).
   ./check_neo.py --check-string "xzo., pcslvß´
     haeiu dtrnmf
     ⇚kyäüö bgjqw" [-v] ; Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen.
   --file dateiname.txt ermöglichst es außerdem, die Belegung mit dem Text in der Datei zu prüfen, statt mit dem Standardkorpus (1gramme.txt, 2gramme.txt und 3gramme.txt).
 
-• Eine Evolution starten:
+* Eine Evolution starten:
   ./check_neo.py --evolve N [--controlled-tail] ; N Mutationsschritte machen, ausgehend von einer Zufallsbelegung.
 
-• Viele weitere Möglichkeiten findet ihr via ./check_neo.py --help
+* Viele weitere Möglichkeiten findet ihr via ./check_neo.py --help
 
 
 Die grundlegende Anwendung von evolution.py ist es, mehrere Mutationsläufe hintereinander zu starten und die Ergebnisse in output.txt zu speichern.
 
-./evolution.py ; das sollte unter Windows laufen
-./evolution.py --not-quiet ; das tut nicht unter Windows, gibt aber zusätzliche Statusinfos aus
-./evolution.py --file dateiname.txt ; nutzt die Datei als Korpus.
-./evolution.py -o ausgabedatei.txt ; schreibt die Ergebnisse in eine andere Datei.
+    ./evolution.py ; das sollte unter Windows laufen
+    ./evolution.py --not-quiet ; das tut nicht unter Windows, gibt aber zusätzliche Statusinfos aus
+    ./evolution.py --file dateiname.txt ; nutzt die Datei als Korpus.
+    ./evolution.py -o ausgabedatei.txt ; schreibt die Ergebnisse in eine andere Datei.
 
 Die Parameter können alle kombiniert werden, und auch hier gibt ./evolution.py --help zusätzliche Optionen aus.
 
@@ -303,20 +303,20 @@ Zusätzlich zum Testen gibt es noch einige weitere Skripte. Auch hier zeigt ./sc
 
 bigramm_statistik.py nimmt alle Bigramme aus dem Korpus, rechnet für jedes einzelne Bigramm die Kosten und stellt sie auf verschiedene Art dar:
 
-• Als Zahlenwerte auf stdout:
-  ./bigramm_statistik.py -l "xvlcw khgfqß´
-uiaeo snrtdy
-⇚üöäpz bm,.j"
+* Als Zahlenwerte auf stdout:
+          ./bigramm_statistik.py -l "xvlcw khgfqß´
+        uiaeo snrtdy
+        ⇚üöäpz bm,.j"
 
-• Als Balkendiagramme aus stdout:
-  ./bigramm_statistik.py --bars -l "xvlcw khgfqß´
-uiaeo snrtdy
-⇚üöäpz bm,.j"
+* Als Balkendiagramme aus stdout:
+          ./bigramm_statistik.py --bars -l "xvlcw khgfqß´
+        uiaeo snrtdy
+        ⇚üöäpz bm,.j"
 
-• Als SVG Bild:
-  ./bigramm_statistik.py --svg --svg-output belegung.svg -l "xvlcw khgfqß´
-uiaeo snrtdy
-⇚üöäpz bm,.j"
+* Als SVG Bild:
+          ./bigramm_statistik.py --svg --svg-output belegung.svg -l "xvlcw khgfqß´
+        uiaeo snrtdy
+        ⇚üöäpz bm,.j"
 
 Für Windows-Nutzer gibt es die Option, eintach nur die erste Zeile der Belegung einzutragen. Das Programm fragt dann nach den weiteren Zeilen.
 
@@ -329,8 +329,10 @@ Für Windows-Nutzer gibt es die Option, eintach nur die erste Zeile der Belegung
 
 ./textcheck.py dateiname.txt [--best-lines] ; prüft, wie nah ein gegebener Text an der nGramm-Verteilung des Korpus ist (1gramme.txt, 2gramme.txt, 3gramme.txt). Mit --best-lines sucht es die Textzeilen, die dem Korpus am ählichsten sind.
 
-./convert_text_between_layouts.py --layout "kuü.ä vgcljf
-hieao dtrnsß
-⇚xyö,q bpwmz" --base "xvlcw khgfqß
-uiaeo snrtdy
-⇚üöäpz bm,.j" --file textdatei.txt ; konvertiert einen Text von der belegung --layout in die Belegung --base, so dass das herauskommende Buchstabengewirr mit der Belegung --base getippt werden kann und dabei die Tasten angeschlagen werden, die in der Belegung --layout genutzt würden.
+    ./convert_text_between_layouts.py --layout "kuü.ä vgcljf
+    hieao dtrnsß
+    ⇚xyö,q bpwmz" --base "xvlcw khgfqß
+    uiaeo snrtdy
+    ⇚üöäpz bm,.j" --file textdatei.txt
+
+konvertiert einen Text von der belegung --layout in die Belegung --base, so dass das herauskommende Buchstabengewirr mit der Belegung --base getippt werden kann und dabei die Tasten angeschlagen werden, die in der Belegung --layout genutzt würden.
