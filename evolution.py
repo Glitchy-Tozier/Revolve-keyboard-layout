@@ -85,6 +85,10 @@ meter = options.progress
 if meter:
     quiet = True
 
+# ensure that at most half the time is spent annealing
+if options.anneal * anneal_step > options.steps:
+    anneal_step = int(0.5 * options.steps / (1 + options.anneal))
+
 ### run
 
 # Hack to make the script output to a file instead of the shell (necessary for windows users).
