@@ -246,3 +246,6 @@ hieao dtrnsß
 ⇚xyö,q bpwmz" --base "xvlcw khgfqß
 uiaeo snrtdy
 ⇚üöäpz bm,.j" --file textdatei.txt ; konvertiert einen Text von der belegung --layout in die Belegung --base, so dass das herauskommende Buchstabengewirr mit der Belegung --base getippt werden kann und dabei die Tasten angeschlagen werden, die in der Belegung --layout genutzt würden.
+
+pypy3.3-5.5-alpha-20161013-linux_x86_64-portable/bin/pypy ./recheck_all_result_layouts.py --folder results-2016-regularity/ --csv --regularity > regularity.csv
+./plotcorrelation.py regularity.csv ; erzeugt eine Kovarianzmatrix der verschiedenen Kostenfaktoren. Mit total cost unkorrelierte Werte sind bei allen Layouts näherungsweise gleich, positiv korrellierte werden am Ende vom Optimierer zurechtgezurrt, negativ korrelierte werden zum Ende hin zu Gunsten anderer Faktoren verschlechtert.

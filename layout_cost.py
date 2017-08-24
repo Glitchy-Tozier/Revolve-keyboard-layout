@@ -129,9 +129,9 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
     :param symmetries: [(first-keys, second-keys), ...]
     
     >>> asymmetry_cost(layout=NEO_LAYOUT)
-    3.2271746276828956
+    3.738000251448886
     >>> asymmetry_cost(layout=CRY_LAYOUT)
-    4.623519324656288
+    5.8274921289822235
     >>> asymmetry_cost(layout=BONE_LAYOUT)
     3.1218141120250698
     """
@@ -143,11 +143,12 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
         # we have 3 distances: distance in hand, distance in finger
         # and vertical distance. All should be symmetric.
         hand_dists = []
+        fing_dists = []
         col_dists = []
         v_directions = []
         for i in range(l):
             positions = [find_key(m[i], layout=layout) for m in matched]
-            letters = [m[i] for m in matched]
+            # letters = [m[i] for m in matched]
             for j in range(len(positions)):
                 for k in range(len(positions[j+1:])):
                     pos0 = positions[j]
@@ -162,7 +163,17 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                         hand_dists.append(1)
                     else:
                         hand_dists.append(-1)
-                    col_dists.append(abs(column_distance(pos0, pos1)))
+                    # switch the fingers to the left hand so movements
+                    # between similar keys are mirrored
+                    fing1 = KEY_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
+                    fing2 = KEY_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
+                    if fing1 is not None and fing2 is not None:
+                        fingidx1 = FINGER_NAMES.index(fing1)
+                        fingidx2 = FINGER_NAMES.index(fing2)
+                        fing_dists.append(fingidx2 - fingidx1)
+                    else:
+                        fing_dists.append(0)
+                    col_dists.append(column_distance(pos0, pos1))
                     v_dist = pos1[0] - pos0[0]
                     if v_dist > 0:
                         v_directions.append(1)
@@ -182,7 +193,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
 
         # -> just use log(N+1) with N the number of asymmetric ones
         #    divided by the number of possible ones.
-        for dists in (hand_dists, col_dists, v_directions):
+        for dists in (hand_dists, fing_dists, col_dists, v_directions):
             dcost = 0
             ddiffs = []
             for i in range(len(dists)):

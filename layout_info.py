@@ -74,7 +74,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
         )
 
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:16]
 
     line = []
     
@@ -88,6 +88,12 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
     line.append(badly_positioned_w/1000000000)
     line.append(no_switch_after_unbalancing_w/1000000000)
     line.append(neighboring_fings_w/1000000000)
+    line.append(hand_disbalance_w/1000000000)
+    line.append(manual_penalty_w/1000000000)
+    line.append(neighboring_unbalance_w/1000000000)
+    line.append(asymmetric_bigrams_w/1000000000)
+    line.append(asymmetric_similar_w/1000000000)
+    line.append(irregularity_w/1000000000)
     return line
 
 
@@ -120,7 +126,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
         if not rep[1:]:
             continue
         tmp = [(num, rep) for rep, num in split_uppercase_repeats([(1, rep)], layout=layout).items()]
-        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True)
+        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True, check_irregularity=False)
         # critical point for finger repeats, doing it here instead of layout_cost because it needs the total number of keystrokes.
         if num > critical_point:
             fing_reps = finger_repeats_from_file(repeats=tmp, layout=layout)

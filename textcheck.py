@@ -3,9 +3,10 @@
 
 """Check how much a given text diverges from a 1gram, 2gram and 3gram frequency.
 
-usage: ./textcheck.py <textfile to check> [--best-lines]
+usage: ./textcheck.py <textfile to check> [--best-lines | --worst-lines]
 
 --best-lines: check each line and return the 10 most similar lines. 
+--worst-lines: check each line and return the 10 most different lines. 
 
 idea: allow selecting different 1gram, 2gram and 3gram files. 
 
@@ -193,7 +194,7 @@ def shorten(text, max_len=270):
     return text[:max_len]
         
 
-def run(textfile, best_lines=False, max_len=270):
+def run(textfile, lines=False, max_len=270):
     """test the file."""
     # reference data
     data = read_file("1-gramme.arne.txt")
@@ -203,7 +204,7 @@ def run(textfile, best_lines=False, max_len=270):
     data = read_file("3-gramme.arne.txt")
     reference3grams = trigrams_in_file_precalculated(data)
 
-    if best_lines: 
+    if lines in ["best", "worst"]: 
         data = read_file_lines(textfile)
         best_10 = [] # [(sum, (1, 2, 3), text), …]
         while data[1:]:
@@ -215,9 +216,12 @@ def run(textfile, best_lines=False, max_len=270):
             text2grams = repeats_in_file(l)
             text3grams = trigrams_in_file(l)
             diss = check_dissimilarity(text1grams, text2grams, text3grams, reference1grams, reference2grams, reference3grams)
-            if not best_10[9:] or cost(l, diss) < best_10[-1][0]:
+            if not best_10[9:] or (lines == "best" and cost(l, diss) < best_10[-1][0] or
+                                   lines == "worst" and cost(l, diss) > best_10[-1][0]):
                 best_10.append((cost(l, diss), diss, l))
                 best_10.sort()
+                if lines == "worst":
+                    best_10.reverse()
                 best_10 = best_10[:10]
                 print("\n### new top 10:", cost(l, diss), diss, l, "\n")
             print(cost(l, diss), diss, l)
@@ -248,11 +252,13 @@ if __name__ == "__main__":
         exit()
 
     if "--best-lines" in argv:
-        LINES = True
+        LINES = "best"
+    elif "--worst-lines" in argv:
+        LINES = "worst"
     else:
         LINES = False
 
     # text to check
     textfile = argv[1]
 
-    run(textfile, best_lines=LINES)
+    run(textfile, lines=LINES)

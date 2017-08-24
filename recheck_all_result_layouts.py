@@ -8,11 +8,14 @@ Depends on the layouts info starting with OA'Evolved Layout'
 
 from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data, find_layout_families, total_cost, split_uppercase_trigrams, format_layer_1_string
 import layout_cost
-import regularity_check
+import logging
+from regularity_check import regularity, std
 from os import listdir, mkdir
 from os.path import join, isdir
 from subprocess import call
 import sys
+import multiprocessing as mp
+# mp = _mp.get_context('spawn') # avoid copying the full memory for each process. Needs python3.4
 
 def get_all_layouts_in_textfile(textfile):
     """Get all layouts in the given textfile.
@@ -52,7 +55,8 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     """get all layouts from check_neo runs saved in the textfile."""
     all_layouts = []
     for i in listdir(folder):
-        if not i.endswith(".txt") or not namepart in i:
+        if ((not i.endswith(".txt") and not i.endswith(".out")) or
+            (namepart and not namepart in i)):
             continue
         print("# reading", join(folder, i), file=sys.stderr)
         all_layouts.extend(get_all_layouts_in_textfile(join(folder, i))) 
@@ -60,42 +64,30 @@ def get_all_layouts_in_text_files_in(folder="results", namepart=""):
     return all_layouts
 
 
-if __name__ == "__main__":
+def check_regularity(lay, textfile):
+    segments, words = regularity(
+        lay, textfile,
+        output=None, output_words=None, # avoid writing unnecessary output files
+        verbose=False,
+        maxsegments=320, maxwords=320) # limit the runtime of this check by only reading the beginning of the file
+    return segments, words
 
-    from optparse import OptionParser
+# 320,320 should be enough, see:
+# import pylab as pl
+# pl.ion()
+# pl.plot([10, 20, 40, 80, 160, 320, 640], [250.78243431915746, 269.44446973415927, 272.38856521679264, 242.11454523066135, 206.93258984508503, 247.160678690749, 239.74251752409359], label="segments")
+# pl.plot([20, 40, 80, 160, 320, 640], [1307.0456755768544, 1033.2352400430161, 886.1693410012002, 995.1180056582663, 738.5571115676071, 572.0787321328082], label="words")
+# pl.legend()
 
-    parser = OptionParser(description="recheck all result layouts with the current config.")
-    parser.add_option("--file", dest="data", type="string", default=None,
-                      help="use the given textfile as korpus", metavar="file")
-    parser.add_option("--namepart", dest="namepart", type="string", default="",
-                      help="read only files whose names contain the given string", metavar="string")
-    parser.add_option("--folder", dest="folder", type="string", default="results",
-                      help="search for result files in the given folder (no recursions, requires .txt suffix)", metavar="string")
-
-    parser.add_option("--csv",
-                      action="store_true", dest="print_csv", default=False,
-                      help="print a csv instead of the normal layout statistics")
-    parser.add_option("--regularity",
-                      action="store_true", dest="regularity", default=None,
-                      help="Check the regularity of each result layout against a text file. If --file is not given, it defaults to beispieltext-prosa.txt.")
-    parser.add_option("--svg",
-                      action="store_true", dest="svg", default=None,
-                      help="save an svg file in the folder svgs/ for every printed layout. Can take a long time. You might want to use --families, too.")
-
-    parser.add_option("--families",
-                      action="store_true", dest="families", default=False,
-                      help="Sort the layouts into families and print only the best layout in each familiy. ")
-    parser.add_option("--family-threshold", dest="family_threshold", type="float", default=0.6,
-                      help="Treat layouts with at most the given difference as belonging to the same family. Default: 0.6", metavar="max_difference")
-
-    (options, args) = parser.parse_args()
-
-    # ensure that irregularity is using all words, regardless of the cost
+def main(options, args):
+    # ensure that irregularity is always using the same words, regardless of the cost
     # FIXME: Add a clean option for this
     layout_cost.IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 1.0
+    # reduce the cost by choosing an optimized reference text (only the lines which are closest to the ngram distribution in the corpus.
+    layout_cost.IRREGULARITY_REFERENCE_TEXT = "beispieltext-prosa-best-lines.txt"
     
     if options.print_csv: 
-        print("layoutstring,total penalty per letter,key position cost,finger repeats,disbalance of fingers,top to bottom or vice versa,handswitching in trigram,(rows²/dist)²,shortcut keys,handswitching after unbalancing,movement pattern,regularity segments mean,regularity segments std,regularity words mean,regularity words std")
+        print("layoutstring,total penalty per letter,key position cost,finger repeats,disbalance of fingers,top to bottom or vice versa,handswitching in trigram,(rows²/dist)²,shortcut keys,handswitching after unbalancing,movement pattern,hand disbalance, manual penalty, neighboring unbalance, asymmetric bigrams, asymmetric similar keys, irregularity, regularity segments mean,regularity segments std,regularity words mean,regularity words std")
 
     all_layouts = get_all_layouts_in_text_files_in(folder=options.folder, namepart = options.namepart)
 
@@ -122,16 +114,29 @@ if __name__ == "__main__":
     textfile = options.data
     if textfile is None:
         textfile = "beispieltext-prosa.txt"
+    if options.regularity:
+        def f(lay):
+            return (lay,) + check_regularity(lay, textfile)
+        
+        def tuplit(t):
+            return tuple(map(tuplit, t)) if isinstance(t, (list, tuple)) else t
+        with mp.Pool(3) as p: # eats about 500 MiB per process
+            regularity_data = {}
+            for lay, seg, word in p.map(f, all_layouts):
+                regularity_data[tuplit(lay)] = seg, word
+            
     for lay in all_layouts:
         if options.regularity:
-            segment_costs, word_costs = regularity_check.regularity(lay, textfile)
+            print("# checking regularity for\n" + format_layer_1_string(lay), file=sys.stderr)
+            # segment_costs, word_costs = check_regularity(lay, textfile)
+            segment_costs, word_costs = regularity_data[tuplit(lay)]
             cost_segments_mean = sum(segment_costs) / len(segment_costs)
-            cost_segments_std = regularity_check.std(segment_costs)
+            cost_segments_std = std(segment_costs)
             cost_words_mean = sum(word_costs) / len(word_costs)
-            cost_words_std = regularity_check.std(word_costs)
+            cost_words_std = std(word_costs)
             regularity = "%s,%s,%s,%s" % (cost_segments_mean, cost_segments_std, cost_words_mean, cost_words_std)
         else:
-            regularity = "N/A,N/A,N/A,N/A"
+            regularity = "nan,nan,nan,nan"
         if options.print_csv:
             csv = [str(i) for i in
                    csv_data(lay, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)]
@@ -162,3 +167,36 @@ if __name__ == "__main__":
             from bigramm_statistik import print_bigram_info
             print_bigram_info(layout=lay, number=1000, svg=True, svg_output=name, filepath=options.data)
     
+
+
+if __name__ == "__main__":
+
+    from optparse import OptionParser
+
+    parser = OptionParser(description="recheck all result layouts with the current config.")
+    parser.add_option("--file", dest="data", type="string", default=None,
+                      help="use the given textfile as korpus instead of the pregenerated corpus", metavar="file")
+    parser.add_option("--namepart", dest="namepart", type="string", default="",
+                      help="read only files whose names contain the given string", metavar="string")
+    parser.add_option("--folder", dest="folder", type="string", default="results",
+                      help="search for result files in the given folder (no recursions, requires .txt suffix)", metavar="string")
+
+    parser.add_option("--csv",
+                      action="store_true", dest="print_csv", default=False,
+                      help="print a csv instead of the normal layout statistics")
+    parser.add_option("--regularity",
+                      action="store_true", dest="regularity", default=None,
+                      help="Check the regularity of each result layout against a text file. If --file is not given, it defaults to beispieltext-prosa.txt.")
+    parser.add_option("--svg",
+                      action="store_true", dest="svg", default=None,
+                      help="save an svg file in the folder svgs/ for every printed layout. Can take a long time. You might want to use --families, too.")
+
+    parser.add_option("--families",
+                      action="store_true", dest="families", default=False,
+                      help="Sort the layouts into families and print only the best layout in each familiy. ")
+    parser.add_option("--family-threshold", dest="family_threshold", type="float", default=0.6,
+                      help="Treat layouts with at most the given difference as belonging to the same family. Default: 0.6", metavar="max_difference")
+
+    (options, args) = parser.parse_args()
+
+    main(options, args)

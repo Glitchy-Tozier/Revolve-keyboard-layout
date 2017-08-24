@@ -3,6 +3,7 @@
 
 """Check the regularity of a keyboard layout for a reference textfile."""
 
+import sys
 from optparse import OptionParser
 from check_neo import string_to_layout, total_cost, get_all_data, read_file
 
@@ -102,52 +103,66 @@ def std(numbers):
     return sqrt(var)
 
 
-def regularity(layout, textfile, output="res.txt", output_words="res-words.txt", verbose=False):
+def regularity(layout, textfile, output="res.txt", output_words="res-words.txt", verbose=True, maxsegments=None, maxwords=None):
     # processing and output (interleaved to be able to read really big files incrementally)
     f = open(textfile, "r")
     # clear the output file
-    fout = open(output, "w")
-    fout.write("")
-    fout.close()
+    if output is not None:
+        fout = open(output, "w")
+        fout.write("")
+        fout.close()
     
     res = []
     d = f.read(segment_length)
     while d:
         cost = check(layout=layout, data=d)
-        d = f.read(segment_length)
         if verbose:
-            print(cost)
-        with open(output, "a") as fout: 
-            fout.write(str(cost) + "\n")
+            print(cost, file=sys.stderr)
+        if output is not None:
+            with open(output, "a") as fout: 
+                fout.write(str(cost) + "\n")
         res.append(cost)
+        # process at most maxsegments to allow limiting the runtime
+        if maxsegments is not None and res[maxsegments:]:
+            break
+        d = f.read(segment_length)
     
     f.close()
-    fout.close()
+    if output is not None:
+        fout.close()
     
     f = open(textfile, "r")
     # clear the output file
-    fout = open(output_words, "w")
-    fout.write("")
-    fout.close()
+    if output_words is not None:
+        fout = open(output_words, "w")
+        fout.write("")
+        fout.close()
     
     res_words = []
-    d = f.read(100*segment_length)
+    d = f.read(2*segment_length)
     while d:
         res_tmp = []
-        for word in d.split():
+        for word in d.split()[1:-1]: # avoid the first and last which might be only partial words
             if word:
                 cost = check(layout=layout, data=word)
                 res_tmp.append(cost)
                 if verbose:
-                    print(cost)
-        with open(output_words, "a") as fout: 
-            fout.writelines([str(co) + "\n" for co in res_tmp])
+                    print(cost, file=sys.stderr)
+                if maxwords is not None and res_tmp[maxwords - len(res_words):]:
+                    break
+        if output_words is not None:
+            with open(output_words, "a") as fout: 
+                fout.writelines([str(co) + "\n" for co in res_tmp])
         res_words.extend(res_tmp)
-        d = f.read(100*segment_length)
+        d = f.read(2*segment_length)
+        # process at most maxwords to allow limiting the runtime
+        if maxwords is not None and res_words[maxwords:]:
+            break
     
             
     f.close()
-    fout.close()
+    if output_words is not None:
+        fout.close()
     
     return res, res_words
     

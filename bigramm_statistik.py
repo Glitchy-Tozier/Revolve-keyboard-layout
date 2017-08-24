@@ -52,8 +52,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     S.addElement(d)
     S.setAttribute("xmlns:inkscape", "http://www.inkscape.org/namespaces/inkscape")
     S.set_height("350")
-    #max_cost = max(cost for number, cost, bigram in bigrams)
-    color_scale = 0.8
+    # upperfive_cost = sorted(cost for number, cost, bigram in bigrams)[int(len(bigrams)*0.95 - 1)]
+    color_scale = 0.4 # rough estimate: 800. / upperfive_cost
     max_linewidth = 25
     max_num = max(number for number, cost, bigram in bigrams)
     num_scale = max_linewidth/max_num

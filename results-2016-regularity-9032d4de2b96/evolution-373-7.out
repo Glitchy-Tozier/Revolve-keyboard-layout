@@ -1,0 +1,37 @@
+
+# Evolved Layout
+ßcaäj xwmlbzv
+urieü gtsnh⇘
+kqöoy fd,.p
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
+│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ ` │ ←    │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤
+│   ⇥ │ ß │ c │ a │ ä │ j │ x │ w │ m │ l │ b │ z │ v │ Ret│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │
+│    ⇩ │ u │ r │ i │ e │ ü │ g │ t │ s │ n │ h │ ⇘ │ ´ │   │
+├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤
+│  ⇧ │ ⇚ │ k │ q │ ö │ o │ y │ f │ d │ , │ . │ p │ ⇗       │
+├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
+│Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
+└────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
+# 9.65236761106009 x100 total penalty per letter
+# 35.32506843685129 x10 billion total penalty compared to notime-noeffort
+# 7.3968270012882495 mean key position cost in file 1gramme.txt ( 54.14079334 )
+# 11.753215247148477 % finger repeats in file 2gramme.txt ( 56.73755338272852 )
+# 11.789462011301245 million keystrokes disbalance of the fingers ( 23.57892402260249 )
+# 0.33955186117504227 % finger repeats top to bottom or vice versa ( 8.19577513238255 )
+# 2.4634920491718937 % of trigrams have no handswitching (after direction change counted x 1 ) ( 10.89680025852231 )
+# 8.297648705981443 billion (rows²/dist)² to cross ( 107.86943317775876 )
+# 0.0020570936896490144 hand disbalance. Left: 0.497942906310351 %, Right: 0.502057093689649 % ( 0.060227275459008814 )
+# 1.0979192834421578 badly positioned shortcut keys (weighted).
+# 12.13335386296278 no handswitching after unbalancing key (weighted).
+# 25.527931430161733 movement pattern cost (weighted).
+# 0.8739424937691795 asymmetric bigram cost (weighted).
+# 13.626290473251446 irregularity cost (weighted).
+# 17.331615870689312 manually assigned bigram penalty (weighted)
+# 10.03678135885918 unbalancing key after neighboring finger (weighted)
+# 0.8739424937691795 asymmetrc bigrams (weighted)
+# 11.143343005923468 inconsistent symmetries of similar keys (weighted)
+# 13.626290473251446 irregularity cost for randomly sampled words (weighted).
+# Finger load %: 9.7 7.5 10.0 14.8 - 13.8 7.8 10.6 10.2
+ 

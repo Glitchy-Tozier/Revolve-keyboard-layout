@@ -65,7 +65,7 @@ COST_PER_KEY  = [
     [0,0,0,                3           , 7, 0, 0, 0] # Reihe 4 mit Leertaste
 ]
 
-COST_LAYER_ADDITION = [0, 15, 9, 10, 27, 22]
+COST_LAYER_ADDITION = [0, 20, 9, 16, 29, 25]
 
 #: The cost of any key which isn’t on the keyboard. Should be higher than max(COST_LAYER_ADDITION) + the most expensive key + 2 * WEIGHT_FINGER_REPEATS * mods_on_same_hand_adjustment [local variable in split uppercase bigrams] to make sure that having a key on a bad position in layer 5 is better than not having it at all. Currently (eb0c9e8c8b02 + 1) that means, it must be higher than 27+50+16 = 93. Trial and error shows, it must be about 150 to make the addition of the neo layers to nordtast useful.
 COST_PER_KEY_NOT_FOUND = 150
@@ -78,7 +78,7 @@ WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER = 0.9 #: Cost of a finger repeat on
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION = 0.00025 #: The cost of finger repeats with a fraction of the bigrams higher than this is increased sharply, relative to the amount by which they exceed the fraction. Value guessed from experience from effchen (adnw ln disturbs writing, below that does not). 0.05% is about once per DinA4-page (30 lines, 60 letters). There should be no single finger repetition which appears once per DinA4 page, because that will stick to ones mind as a cludge.
 WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER = 5 #: The amount of usage higher than the critical fraction is multiplied by this multiplier. Warning: Any value different from 1 means that the percentage of finger repeats reported by check_neo.py will be incorrect.
 
-WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 5000 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
+WEIGHT_FINGER_REPEATS_TOP_BOTTOM = 6000 #: Additional cost of a finger repetition from the top to the bottom line. Gets added to the cost of the normal finger repetition. Additionally this gets costs as row repetition on the same hand (+4). 
 
 
 ## Line changes
@@ -94,7 +94,7 @@ LONG_FINGERS = ["Ring_L", "Mittel_L", "Mittel_R", "Ring_R"]
 
 WEIGHT_HAND_DISBALANCE = 80 #: Disbalance between the load on the hands. Calculated from the finger disbalance, but coarser. If both hands have slightly unequal load on the individual fingers, but overall both hands have the same load, the layout feels equal.
 
-WEIGHT_FINGER_DISBALANCE = 1500 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
+WEIGHT_FINGER_DISBALANCE = 2000 #: multiplied with the standard deviation of the finger usage - value guessed and only valid for the 1gramme.txt corpus. 
 
 WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY = [
     1.0,
@@ -116,7 +116,7 @@ WEIGHT_TOO_LITTLE_HANDSWITCHING = 1200 #: how high should it be counted, if the 
 WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE = 1 #: multiplier for triples without handswitch in which there also is a direction change? Also affects the “unweighted” result from total_cost!
 WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE = 0 #: multiplier for triples without handswitch in which the direction doesn’t change. Also affects the “unweighted” result from total_cost!
 
-WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 33 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10; the absolute value is quite high → doublecheck.
+WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY = 53 #: How much penalty we want if there’s no handswitching after an unbalancing key. Heavy unbalancing (wkßz, M3 right, return and the shifts) counts double (see UNBALANCING_POSITIONS). This also gives a penalty for handswitching after an uppercase letter. Wolfs Value: 10
 WEIGHT_UNBALANCING_AFTER_UNBALANCING = 4 #: If an unbalancing key follows another unbalancing one on the other side of the hand, the cost of that key gets multiplied with this weighting and added, too. Wolfs Value: 2
 WEIGHT_NEIGHBORING_UNBALANCE = 400 #: The penalty for an unbalancing key following after a neighboring finger or vice versa. Wolfs Value: 5
 
@@ -171,16 +171,16 @@ WEIGHT_FINGER_SWITCH = 60 #: how much worse is it to switch from middle to index
 FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
     "Klein_L": {
         "Ring_L": 8, # slow + dangerous
-        "Mittel_L": 1 # a bit dangerous
+        "Mittel_L": 2 # a bit dangerous
         }, 
     "Ring_L": {
         "Klein_L": 12, # slow + dangerous + outwards
-        "Mittel_L": 4, # dangerous
+        "Mittel_L": 6, # dangerous
         "Zeige_L": 0.1 # a tiny bit dangerous
         }, 
     "Mittel_L": {
-        "Ring_L": 6, # dangerous + outwards
-        "Klein_L": 2, # a bit dangerous + outwards
+        "Ring_L": 9, # dangerous + outwards
+        "Klein_L": 3, # a bit dangerous + outwards
         "Zeige_L": 0.6 # it’s fast but dangerous (Sehnenscheidenentzündung)
         }, 
     "Zeige_L": {
@@ -199,16 +199,16 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         },
     "Mittel_R": {
         "Zeige_L": 0.6,
-        "Klein_R": 2,
-        "Ring_R": 6
+        "Klein_R": 3,
+        "Ring_R": 9
         },
     "Ring_R": {
         "Zeige_L": 0.1,
-        "Mittel_R": 4,
+        "Mittel_R": 6,
         "Klein_R": 12
         }, 
     "Klein_R": {
-        "Mittel_R": 1,
+        "Mittel_R": 2,
         "Ring_R": 8
         }
 } # iutd, drua, uidt, rdau, airt, ndeu :)
@@ -218,9 +218,10 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
 
 WEIGHT_XCVZ_ON_BAD_POSITION = 1.0 #: the penalty *per letter* in the text if xvcz are on bad positions (cumulative; if all 4 are on bad positions (not in the first 5 keys, counted from the left side horizontally) we get 4 times the penalty). 
 
-WEIGHT_ASYMMETRIC_SIMILAR = 10.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
+WEIGHT_ASYMMETRIC_SIMILAR = 30.0 #: the penalty *per letter* in the text if similar keys (like aä or oö) have inconsistent symmetry, logarithmic in the number of inconsistent keys.
 #: [(first-letters, second-letters), ...]. 
 SIMILAR_LETTERS = [("auo", "äüö"), # umlauts to vowels
+                   ("auo", "äüö"), # umlauts to vowels, twice to double the cost
                    ("gbdw", "kptf"), # soft consonants to hard consonants
                    ("sfdn", "tpbm")] # tongue consonants to lip-consonants
                    # ("mw", "nv"), # visual appearance
@@ -274,6 +275,6 @@ for finger in ("Klein_L", "Klein_R"):
 IRREGULARITY_REFERENCE_TEXT = "corpus_irregularity_words.txt"
 # use only a randomly selected fraction of the words at each step. Random sampling ensures that there is no consistent bias due to the word selection. Using all words makes the optimization very slow. 0.01 still increases the cost by factor 2. Currently 0.004 are about 400 words.
 IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 0.004 # the fraction of words to use, re-sampled at every run. Set to 1.0 to use all words.
-WEIGHT_IRREGULARITY_PER_LETTER = 0.0 # 0.01 is be around 1.0% of the total cost.
+WEIGHT_IRREGULARITY_PER_LETTER = 0.01 # 0.01 is be around 1.0% of the total cost.
 
 # TODO: Cost for similar keys in symmetric positions. That’s bad *except* if the symmetry is consistent. (hard consonants always on one side or always above)
