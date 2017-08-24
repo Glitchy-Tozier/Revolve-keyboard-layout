@@ -322,14 +322,14 @@ bigramm_statistik.py nimmt alle Bigramme aus dem Korpus, rechnet für jedes einz
 Für Windows-Nutzer gibt es die Option, eintach nur die erste Zeile der Belegung einzutragen. Das Programm fragt dann nach den weiteren Zeilen.
 
 
-./recheck_all_result_layouts.py  [--folder <Ordner>] [--namepart <name>] [--families] [--csv  || --svg]; alle Ergebnisse in Textdateien (*.txt) im gegebenen Ordner,  in deren Name der --namepart vorkommt, neu berechnen. Mit --families  werden sie in ähnliche Belegungen sortiert und nur jeweils die besten  jeder Familie angezeigt. Mit --csv werden die Ergebnisse statt in einer  normalen Ausgabe als csv-Tabelle ausgegeben. Und mit --svg werden für alle Belegungen SVG-Bilder erstellt und im Ordner svgs/ gespeichert. Die Dateinamen sind dabei <Gesamtkosten>-<Grundlinie>-<Obere Zeile>-<Untere Zeile>.svg.
-
-./generate_xmodmap.py datei.txt > belegung.xmodmap; gibt eine xmodmap für die Belegung aus. datei.txt hat in der ersten Zeile den Namen der Belegung und in den nächsten drei Zeilen die erste Ebene der Belegung. Eine Beispieldatei ist in empirie/haeiu.txt.
-
-./regularity_check.py [-n layout-name || -l <layout-string 3 Zeilen>] -t textdatei.txt [-v]; prüft die Regelmäßigkeit der Belegung für die gegebene Textdatei. Dafür wird der Text in Worte und in Abschnitte zu 270 Zeichen zerlegt. Für jedes Wort und jeden Abschnitt werden dann die Kosten gerechnet. Von den Kosten werden für alle Worte und alle Abschnitte der Durchschnittzwert und die Standardabweichung ausgegeben, um zu testen, wie gleichmäßig das Tippen mit der Belegung sein dürfte. Der Hintergrund ist, dass so geprüft werden kann, ob es besonders unschöne Ausreißer gibt, also Wörter oder Textabschnitte, die sehr unangenehm zu tippen sind.
-
-./textcheck.py dateiname.txt [--best-lines] ; prüft, wie nah ein gegebener Text an der nGramm-Verteilung des Korpus ist (1gramme.txt, 2gramme.txt, 3gramme.txt). Mit --best-lines sucht es die Textzeilen, die dem Korpus am ählichsten sind.
-
+    ./recheck_all_result_layouts.py  [--folder <Ordner>] [--namepart <name>] [--families] [--csv  || --svg]; alle Ergebnisse in Textdateien (*.txt) im gegebenen Ordner,  in deren Name der --namepart vorkommt, neu berechnen. Mit --families  werden sie in ähnliche Belegungen sortiert und nur jeweils die besten  jeder Familie angezeigt. Mit --csv werden die Ergebnisse statt in einer  normalen Ausgabe als csv-Tabelle ausgegeben. Und mit --svg werden für alle Belegungen SVG-Bilder erstellt und im Ordner svgs/ gespeichert. Die Dateinamen sind dabei <Gesamtkosten>-<Grundlinie>-<Obere Zeile>-<Untere Zeile>.svg.
+    
+    ./generate_xmodmap.py datei.txt > belegung.xmodmap; gibt eine xmodmap für die Belegung aus. datei.txt hat in der ersten Zeile den Namen der Belegung und in den nächsten drei Zeilen die erste Ebene der Belegung. Eine Beispieldatei ist in empirie/haeiu.txt.
+    
+    ./regularity_check.py [-n layout-name || -l <layout-string 3 Zeilen>] -t textdatei.txt [-v]; prüft die Regelmäßigkeit der Belegung für die gegebene Textdatei. Dafür wird der Text in Worte und in Abschnitte zu 270 Zeichen zerlegt. Für jedes Wort und jeden Abschnitt werden dann die Kosten gerechnet. Von den Kosten werden für alle Worte und alle Abschnitte der Durchschnittzwert und die Standardabweichung ausgegeben, um zu testen, wie gleichmäßig das Tippen mit der Belegung sein dürfte. Der Hintergrund ist, dass so geprüft werden kann, ob es besonders unschöne Ausreißer gibt, also Wörter oder Textabschnitte, die sehr unangenehm zu tippen sind.
+    
+    ./textcheck.py dateiname.txt [--best-lines] ; prüft, wie nah ein gegebener Text an der nGramm-Verteilung des Korpus ist (1gramme.txt, 2gramme.txt, 3gramme.txt). Mit --best-lines sucht es die Textzeilen, die dem Korpus am ählichsten sind.
+    
     ./convert_text_between_layouts.py --layout "kuü.ä vgcljf
     hieao dtrnsß
     ⇚xyö,q bpwmz" --base "xvlcw khgfqß
