@@ -67,7 +67,8 @@ The following lists analyses from the optimizer for common keyboard layouts. You
 
 xvlcw khgfqyß  
 uiaeo snrtd⇘  
-üöäpz bm,.j  
+üöäpz bm,.j
+
     13.41630 x100 total penalty per letter
     49.10005 x10 billion total penalty compared to notime-noeffort
     7.359111 mean key position cost in file 1gramme.txt ( 53.86473966 )
@@ -77,7 +78,8 @@ uiaeo snrtd⇘
 
 qwert zuiopü+  
 asdfg hjklöä  
-<yxcvb nm,.-  
+<yxcvb nm,.-
+
     29.52990 x100 total penalty per letter
     108.0715 x10 billion total penalty compared to notime-noeffort
     12.11769 mean key position cost in file 1gramme.txt ( 88.6950124 )
@@ -87,7 +89,8 @@ asdfg hjklöä
 
 kuü.ä vgcljf´  
 hieao dtrnsß  
-xyö,q bpwmz  
+xyö,q bpwmz
+
     8.785617 x100 total penalty per letter
     32.15299 x10 billion total penalty compared to notime-noeffort
     7.708996 mean key position cost in file 1gramme.txt ( 56.42570664 )
@@ -96,8 +99,9 @@ xyö,q bpwmz
 #### CRY
 
 bmuaz kdflvjß  
-criey ptsnh⇘  
-xäüoö wg,.q  
+criey ptsnh⇘
+xäüoö wg,.q
+
     8.459790 x100 total penalty per letter
     30.96055 x10 billion total penalty compared to notime-noeffort
     7.596530 mean key position cost in file 1gramme.txt ( 55.60251188 )
@@ -107,7 +111,8 @@ xäüoö wg,.q
 
 ’,.py fgcrl/=  
 aoeui dhtns-  
-;qjkx bmwvz  
+;qjkx bmwvz
+
     11.45381 x100 total penalty per letter
     41.91789 x10 billion total penalty compared to notime-noeffort
     11.55219 mean key position cost in file 1gramme.txt ( 84.55588602 )
@@ -116,7 +121,7 @@ aoeui dhtns-
 #### Colemak
 
 qwfpg jluy;[]  
-arstd hneio`  
+arstd hneio`
 zxcvb km,./  
     12.01156 x100 total penalty per letter
     43.95908 x10 billion total penalty compared to notime-noeffort
@@ -127,7 +132,8 @@ zxcvb km,./
 
 qdrwq jfupüöß  
 ashtg yneoiä  
-zxhcv kl,.'  
+zxhcv kl,.'
+
     10.38274 x100 total penalty per letter
     37.99805 x10 billion total penalty compared to notime-noeffort
     12.90420 mean key position cost in file 1gramme.txt ( 94.4518264 )
@@ -136,8 +142,9 @@ zxhcv kl,.'
 #### Capewell
 
 .mydg ;wh,'äü  
-aresf ktnioö  
+aresf ktnioö
 xczvj bpluq  
+
     11.63464 x100 total penalty per letter
     42.57965 x10 billion total penalty compared to notime-noeffort
     9.281227 mean key position cost in file 1gramme.txt ( 67.9335876 )
@@ -147,7 +154,8 @@ xczvj bpluq
 
 qgmlw byv;äöß  
 dstnr iaeohü  
-zxcfj kp,.'  
+zxcfj kp,.'
+
     11.72387 x100 total penalty per letter
     42.90624 x10 billion total penalty compared to notime-noeffort
     12.18783 mean key position cost in file 1gramme.txt ( 89.2084158 )
