@@ -19,8 +19,8 @@ steps = 10000
 #: The number of random mutations to do before the evolution to get a random layout.
 prerandomize = 3000
 
-#: The number of random layouts from which to select the best as starting point.
-preselect_random = 100
+#: The number of random layouts from which to select the best as starting point. Does not help, therefore set to 0.
+preselect_random = 0
 
 #: Should we always do the locally best step? (very slow and *not* optimal)
 controlled = False
