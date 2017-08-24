@@ -172,19 +172,19 @@ zxcfj kp,.'
 
 1. Für die Buchstaben nutzt es eine nach Erfahrung generierte Liste mit Tastenaufwänden (Kosten):
 
-    COST_PER_KEY  = [
-        [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
-        [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
-        [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
-        [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
-        [0,0,0,               3            , 7, 0, 0, 0] # Reihe 4 mit Leertaste
-    ]
-
-Für jeden Buchstaben wird seine Häufigkeit mit den Kosten der Taste, auf der er liegt, multipliziert. Alle Buchstabenkosten werden addiert, um die Positionskosten zu erhalten.
-
-Dabei werden Buchstaben in höheren Ebenen (Großbuchstaben und z. B. δ oder ℝ) in Kleinbuchstaben und Modifikatoren aufgeteilt – bzw. in die Buchstaben auf Ebene 0 und alle für die Buchstaben nötigen Modifikatoren.
-
-10× im Text vorkommendes „(“ wird also zu 10×M3 und 10×n.
+        COST_PER_KEY  = [
+            [50,    40,35,30,30, 35,   40,35,30,30,30,35,40,50], # Zahlenreihe (0)
+            [24,    20, 6, 4, 6, 9,    10, 6, 4, 5, 8,24,36, 0], # Reihe 1
+            [5,      3, 3, 3, 3, 5,     5, 3, 3, 3, 3, 5,10,18], # Reihe 2
+            [15,10, 12,24,20, 5,    30, 6, 5,22,22,10,      15],     # Reihe 3
+            [0,0,0,               3            , 7, 0, 0, 0] # Reihe 4 mit Leertaste
+        ]
+    
+    Für jeden Buchstaben wird seine Häufigkeit mit den Kosten der Taste, auf der er liegt, multipliziert. Alle Buchstabenkosten werden addiert, um die Positionskosten zu erhalten.
+    
+    Dabei werden Buchstaben in höheren Ebenen (Großbuchstaben und z. B. δ oder ℝ) in Kleinbuchstaben und Modifikatoren aufgeteilt – bzw. in die Buchstaben auf Ebene 0 und alle für die Buchstaben nötigen Modifikatoren.
+    
+    10× im Text vorkommendes „(“ wird also zu 10×M3 und 10×n.
 
 
 2. Dazu kommen Kosten für ungleiche Belastung der Finger. Die Anzahl der Anschläge je Fingern soll im Verhältnis 1:1,6:2:2:2::2:2:2:1,6:1 (10 Finger: 4 je Hand + Spreizung nach innen) sein, vom linken kleinen Finger zum Zeigefinger, linken Daumen, rechten Daumen und dann vom rechten Zeigefinger zum kleinen Finger. Muss ein Finger mehr oder weniger anschlagen, wird die jeweilige Abweichung quadriert (das ist etwas vereinfacht; im Detail: Standardabweichung). Alles addiert ergibt die Kosten durch Fingerdisbalance. Die Kosten werden mit 300 multipliziert.
