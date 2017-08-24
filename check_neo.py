@@ -249,7 +249,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     else:
         return layout, cost, 0, keypairs, frep, pos_cost
 
-def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=abc, quiet=False, meter=False, controlled=False, controlled_tail=False, anneal=0, anneal_step=100):
+def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=abc, quiet=False, meter=False, controlled=False, controlled_tail=False, anneal=0, anneal_step=100, show_each_step=False):
     """Repeatedly switch a layout randomly and do the same with the new layout,
     if it provides a better total score. Can't be tested easily => Check the source.
 
@@ -278,6 +278,8 @@ def evolve(letters, repeats, trigrams, layout=NEO_LAYOUT, iterations=3000, abc=a
             step = int(consecutive_fails + 1)
             # only do the best possible step instead => damn expensive. For a single switch about 10 min per run.
             lay, cost, better, keypairs, frep, pos_cost = controlled_evolution_step(letters, repeats, trigrams, step, layout, abc, cost, quiet, meter)
+        if show_each_step:
+            info(" # ", step, cost)
         if better:
             consecutive_fails = 0
             # save the good mutation
@@ -458,7 +460,7 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False, preselect_random=100, show_each_step=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, ngram_config_path=ngram_config)
     if limit_ngrams:
@@ -467,13 +469,18 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose
         trigrams = trigrams[:limit_ngrams]
         datalen1, datalen2, number_of_trigrams = [limit_ngrams]*3
 
-    if prerandomize:
+    if preselect_random and prerandomize:
+        if not quiet:
+            info("creating", preselect_random, "randomized layouts and choosing the best.")
+        lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=preselect_random, num_switches=prerandomize, layout=starting_layout, abc=abc, quiet=quiet and not show_each_step)
+    elif prerandomize:
         if not quiet:
             info("doing", prerandomize, "prerandomization switches.")
         lay, keypairs = randomize_keyboard(abc, num_switches=prerandomize, layout=starting_layout)
     else: lay = starting_layout
 
-    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, meter=meter, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step)
+        
+    lay, cost = evolve(letters, repeats, trigrams, layout=lay, iterations=steps, quiet=quiet, meter=meter, controlled=controlled, controlled_tail = controlled_tail, anneal=anneal, anneal_step=anneal_step, show_each_step=show_each_step)
 
     return print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, fingerstats=fingerstats)
 

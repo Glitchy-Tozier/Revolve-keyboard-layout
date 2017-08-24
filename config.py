@@ -275,6 +275,6 @@ for finger in ("Klein_L", "Klein_R"):
 IRREGULARITY_REFERENCE_TEXT = "corpus_irregularity_words.txt"
 # use only a randomly selected fraction of the words at each step. Random sampling ensures that there is no consistent bias due to the word selection. Using all words makes the optimization very slow. 0.01 still increases the cost by factor 2. Currently 0.004 are about 400 words.
 IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 0.004 # the fraction of words to use, re-sampled at every run. Set to 1.0 to use all words.
-WEIGHT_IRREGULARITY_PER_LETTER = 0.01 # 0.01 is be around 1.0% of the total cost.
+WEIGHT_IRREGULARITY_PER_LETTER = 0.00 # 0.01 is be around 1.0% of the total cost. Set to 0 to disable irregularity checking.
 
 # TODO: Cost for similar keys in symmetric positions. That’s bad *except* if the symmetry is consistent. (hard consonants always on one side or always above)

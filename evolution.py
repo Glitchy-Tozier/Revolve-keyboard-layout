@@ -16,10 +16,13 @@ filename = "output.txt" # None for shell output
 #: The number of random evolution steps to take.
 steps = 10000
 
-#: The number of random mutations to do before the evolution to get a random layout
+#: The number of random mutations to do before the evolution to get a random layout.
 prerandomize = 3000
 
-#: Should we always do the locally best step (very slow and *not* optimal)
+#: The number of random layouts from which to select the best as starting point.
+preselect_random = 100
+
+#: Should we always do the locally best step? (very slow and *not* optimal)
 controlled = False
 
 #: Should we avoid giving information on the shell? (Windows users enable this. Your shell can’t take Unicode)
@@ -60,6 +63,7 @@ parser.add_option("--ngrams", dest="ngram_config",
 parser.add_option("--starting-layout-string", type="string", dest="starting_layout",
                   default=STARTING_LAYOUT, help="String version of the base layer of the starting layout.", metavar="layout")
 parser.add_option("--prerandomize", type="int", dest="prerandomize", default=prerandomize, help="the number of prerandomization steps to take")
+parser.add_option("--preselect-random", type="int", dest="preselect_random", default=preselect_random, help="the number of random layouts to create for selecting the best")
 parser.add_option("--steps", type="int", dest="steps", default=steps, help="the number of mutation steps to take.")
 parser.add_option("--not-quiet",
                       action="store_false", dest="quiet", default=quiet,
@@ -73,6 +77,9 @@ parser.add_option("--no-tail",
 parser.add_option("--progress",
                       action="store_true", dest="progress", default=meter,
                       help="Show a progress meter. Does not work on Windows.")
+parser.add_option("--debug",
+                      action="store_true", dest="debug", default=meter,
+                      help="Show lots of debug output.")
 parser.add_option("--anneal", dest="anneal", default=anneal, type="int",
                       help="use simulated annealing. Set to 0 for no anneal.")
 parser.add_option("--limit-ngrams", type="int", dest="limit_ngrams", default=limit_ngrams,
@@ -130,7 +137,9 @@ for step in range(options.evolution_steps):
                            anneal=options.anneal,
                            anneal_step = anneal_step,
                            fingerstats = True,
-                           limit_ngrams = options.limit_ngrams)
+                           limit_ngrams = options.limit_ngrams,
+                           preselect_random = options.preselect_random,
+                           show_each_step = options.debug)
     if not meter:
         print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
         t = time()
