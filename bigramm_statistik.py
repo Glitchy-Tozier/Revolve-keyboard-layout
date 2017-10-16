@@ -287,7 +287,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     if svg_output is None: 
         print(S.getXML())
     else:
-        S.save(svg_output, encoding="UTF-8")
+        S.save(svg_output.replace("/", "_").replace("svgs_", "svgs/"), encoding="UTF-8")
         # and try to cleanup the svg with inkscape.
         from subprocess import call
         # this just fails when there’s no inkscape there.

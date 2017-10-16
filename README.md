@@ -337,3 +337,9 @@ Für Windows-Nutzer gibt es die Option, eintach nur die erste Zeile der Belegung
     ⇚üöäpz bm,.j" --file textdatei.txt
 
 konvertiert einen Text von der belegung --layout in die Belegung --base, so dass das herauskommende Buchstabengewirr mit der Belegung --base getippt werden kann und dabei die Tasten angeschlagen werden, die in der Belegung --layout genutzt würden.
+
+Generieren des Korpus für regularity:
+
+$ for i in beispieltext-[np]* beispieltext-reference-sentence* Korpora/*utf8 Korpora/Gutenberg/*/*utf8 ; do pypy3.5-5.8-beta-linux_x86_64-portable/bin/pypy  ./textcheck.py $i --best-lines >> beispieltext-regularity-best-multiple.txt; pypy3.5-5.8-beta-linux_x86_64-portable/bin/pypy ./textcheck.py $i --worst-lines >> beispieltext-regularity-worst-multiple.txt; done
+$ grep -h "best 10" -A21 beispieltext-regularity-*-multiple.txt  | sed s/.*') '// | cut -c 1-270 | sed 's/ \w*$//' | sort -u | shuf > beispieltext-regularity-best-and-worst-uniq.txt
+
