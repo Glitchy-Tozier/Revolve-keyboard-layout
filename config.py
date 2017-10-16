@@ -272,6 +272,8 @@ for finger in ("Klein_L", "Klein_R"):
 
 
 # Irregularity. This counteracts tendencies of the optimizer to only cater to common bigrams.
+# generated via: for i in beispieltext-p* Korpora/*utf8 Korpora/Gutenberg/*/*utf8 ; do echo $i; head -n 5000 $i > /tmp/ref ; pypy3.5-5.8-beta-linux_x86_64-portable/bin/pypy  ./textcheck.py /tmp/ref --best-lines >> beispieltext-regularity-best-multiple.txt; pypy3.5-5.8-beta-linux_x86_64-portable/bin/pypy ./textcheck.py /tmp/ref --worst-lines >> beispieltext-regularity-worst-multiple.txt; done
+#                grep best: beispieltext-regularity-*-multiple.txt | sed 's/.*) //' | cut -c 1-270 | sed 's/ \w*$//' | sort -u > beispieltext-regularity-best-and-worst-uniq.txt
 IRREGULARITY_REFERENCE_TEXT = "beispieltext-regularity-best-and-worst-uniq.txt"
 # use only a randomly selected fraction of the words at each step. Random sampling ensures that there is no consistent bias due to the word selection. Using all words makes the optimization very slow. 0.01 still increases the cost by factor 2. Currently 0.004 are about 400 words.
 IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION = 1.0 # the fraction of words to use, re-sampled at every run. Set to 1.0 to use all words.
