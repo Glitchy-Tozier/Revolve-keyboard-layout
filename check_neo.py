@@ -162,7 +162,7 @@ def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_swi
 def random_evolution_step(letters, repeats, trigrams, num_switches, layout, abc, cost, quiet):
         """Do one random switch. Keep it, if it is beneficial."""
         lay, keypairs = randomize_keyboard(abc, num_switches, layout)
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams, max_cost=cost)[:3]
         if new_cost < cost:
             return lay, new_cost, cost - new_cost, keypairs, frep, pos_cost
         else:
@@ -227,7 +227,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     for keypairs in switches:
         i += 1
         lay = switch_keys(keypairs, layout=deepcopy(layout))
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, max_cost=cost)[:3]
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
             tppl = (new_cost - cost)/sum((num for num, l in letters))
@@ -244,7 +244,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     if min(step_results)[0] < cost:
         best = min(step_results)
         lay, new_cost, best_pairs = best[-1], best[0], best[-2]
-        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams)[:3]
+        new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, max_cost=cost)[:3]
         return lay, new_cost, cost - new_cost, best_pairs, frep, pos_cost
     else:
         return layout, cost, 0, keypairs, frep, pos_cost
