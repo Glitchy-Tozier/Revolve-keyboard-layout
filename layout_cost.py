@@ -632,7 +632,27 @@ each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
     return std(data)
 
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True):
+def aggregate_cost(number_of_letters=0, position_cost=0, frep_num=0, frep_num_top_bottom=0, neighboring_fings=0, disbalance=0, no_handswitches=0, badly_positioned=0, asymmetric_similar=0, line_change_same_hand=0, no_switch_after_unbalancing=0, hand_disbalance=0, manual_penalty=0, neighboring_unbalance=0, asymmetric_bigrams=0, irregularity_penalty=0):
+    total = WEIGHT_POSITION * position_cost
+    total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
+    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
+    total += WEIGHT_FINGER_SWITCH * neighboring_fings
+    total += WEIGHT_FINGER_DISBALANCE * disbalance # needs a minimum number of letters to be useful.
+    total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
+    total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
+    total += WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar
+    total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
+    total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
+    total += WEIGHT_HAND_DISBALANCE * number_of_letters * hand_disbalance
+    total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
+    total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
+    total += WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
+    total += WEIGHT_IRREGULARITY_PER_LETTER * number_of_letters * irregularity_penalty
+    return total
+
+
+
+def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True, max_cost=None):
     """Compute a total cost from all costs we have available, wheighted.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
@@ -658,13 +678,37 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
 
-    # trigram cleanup - takes more time than it saves
-    # tri = {}
-    # for num, t in trigrams:
-    #     try: tri[t] += num
-    #     except KeyError: tri[t] = num
-    # trigrams = [(num, t) for t, num in tri.items()]
+    number_of_letters = sum([i for i, s in letters])
 
+    ## first do cheap checks
+    # cost of letter positions on the keyboard
+    position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
+    
+    # the balance between fingers
+    disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
+
+    # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
+    badly_positioned = badly_positioned_shortcut_keys(layout=layout)
+
+    # the cost for having asymmetries in similar keys.
+    asymmetric_similar = asymmetry_cost(layout=layout)
+
+    # the load distribution on the hands: [left keystrokes, right keystrokes]
+    hand_load = load_per_hand(letters, layout=layout)
+    # the disbalance between the hands. Keystrokes of the left / total strokes - 0.5. From 0 to 0.5, ignoring the direction.
+    hand_disbalance = abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)
+
+    cheap_total = aggregate_cost(number_of_letters=number_of_letters,
+                                 position_cost=position_cost,
+                                 disbalance=disbalance,
+                                 badly_positioned=badly_positioned,
+                                 asymmetric_similar=asymmetric_similar,
+                                 hand_disbalance=hand_disbalance)
+    # bail out early if we’re already above the allowed max cost
+    if max_cost and max_cost < cheap_total:
+        return cheap_total
+
+    # add secondary bigrams from trigrams
     no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
     for pair in secondary_bigrams:
         try: reps[pair] += secondary_bigrams[pair]
@@ -692,7 +736,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         
 
     finger_repeats = finger_repeats_from_file(repeats=reps, layout=layout)
-    position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
 
     frep_num = sum([num for num, fing, rep in finger_repeats])
     finger_repeats_top_bottom = finger_repeats_top_and_bottom(finger_repeats, layout=layout)
@@ -710,20 +753,6 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # how often an unbalancing key follows on a neighboring finger. 
     neighboring_unbalance = unbalancing_after_neighboring(repeats=reps, layout=layout)
 
-    # the balance between fingers
-    disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
-    number_of_letters = sum([i for i, s in letters])
-
-    # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
-    badly_positioned = badly_positioned_shortcut_keys(layout=layout)
-
-    # the cost for having asymmetries in similar keys.
-    asymmetric_similar = asymmetry_cost(layout=layout)
-
-    # the load distribution on the hands: [left keystrokes, right keystrokes]
-    hand_load = load_per_hand(letters, layout=layout)
-    # the disbalance between the hands. Keystrokes of the left / total strokes - 0.5. From 0 to 0.5, ignoring the direction.
-    hand_disbalance = abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)
 
     # manually defined bad bigrams.
     manual_penalty = manual_bigram_penalty(reps, layout=layout)
@@ -731,7 +760,7 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     # asymmetric bigrams
     asymmetric_bigrams = asymmetric_bigram_penalty(reps, layout=layout)
 
-    # irregularity
+    # irregularity # TODO: replace by trigram-based cost of bigrams next to each other: sqrt (sum (bigram_i1 + bigram_i2)² for i in trigrams)
     if WEIGHT_IRREGULARITY_PER_LETTER == 0:
         # avoid very costly checks if not necessary
         check_irregularity = False
@@ -744,21 +773,22 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
     
 
     # add all together and weight them
-    total = WEIGHT_POSITION * position_cost
-    total += WEIGHT_FINGER_REPEATS * frep_num # not 0.5, since there may be 2 times as many 2-tuples as letters, but the repeats are calculated on the in-between, and these are single.
-    total += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom
-    total += WEIGHT_FINGER_SWITCH * neighboring_fings
-    total += WEIGHT_FINGER_DISBALANCE * disbalance # needs a minimum number of letters to be useful.
-    total += WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches
-    total += WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned
-    total += WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar
-    total += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand
-    total += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing
-    total += WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters
-    total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
-    total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
-    total += WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
-    total += WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty * number_of_letters
+    total = aggregate_cost(number_of_letters=number_of_letters,
+                           position_cost=position_cost,
+                           frep_num=frep_num,
+                           frep_num_top_bottom=frep_num_top_bottom,
+                           neighboring_fings=neighboring_fings,
+                           disbalance=disbalance,
+                           no_handswitches=no_handswitches,
+                           badly_positioned=badly_positioned,
+                           asymmetric_similar=asymmetric_similar,
+                           line_change_same_hand=line_change_same_hand,
+                           no_switch_after_unbalancing=no_switch_after_unbalancing,
+                           hand_disbalance=hand_disbalance,
+                           manual_penalty=manual_penalty,
+                           neighboring_unbalance=neighboring_unbalance,
+                           asymmetric_bigrams=asymmetric_bigrams,
+                           irregularity_penalty=irregularity_penalty)
 
     if not return_weighted:
         return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity_penalty
