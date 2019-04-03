@@ -95,6 +95,13 @@ keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   
 ! add Mod4 = Super_L
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Use Super_L as M3 and CapsLock as CTRL_L.
+! Otherwise using a normal keyboard is unbearable.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+keysym Super_L = ISO_Group_Shift ISO_Group_Shift
+keycode 66 = Control_L
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! general Lock
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Einrasten über linke Win-Taste+Modifier, Lösen über nochmaliges Betätigen des Modifiers
