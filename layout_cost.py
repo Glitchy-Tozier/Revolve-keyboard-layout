@@ -599,8 +599,10 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
-def irregularity_from_trigrams(trigrams, warped_keyboard, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Calculate the irregularity by splitting trigrams into bigrams and including all bigram-costs.
+
+    This is a proxy for bad to type words: it gives higher cost to trigrams in which both bigrams are bad.
 
     irregularity = sqrt(cost(a) * cost(b)
                         for a, b in split_trigrams)
@@ -694,7 +696,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard, layout=NEO_LAYOUT, cos
                 if fing1_1.startswith("Zeige") or fing1_2.startswith("Zeige"):
                     fing_repeat_count1 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
                 if fing_repeat_count1 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
-                    fing_repeat_count1 += (cost - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                    fing_repeat_count1 += (fing_repeat_count1 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
                 penalty1 += WEIGHT_FINGER_REPEATS * fing_repeat_count1
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
                 if abs(pos1_1[0] - pos1_2[0]) > 1:
@@ -705,7 +707,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard, layout=NEO_LAYOUT, cos
                 if fing2_1.startswith("Zeige") or fing2_2.startswith("Zeige"):
                     fing_repeat_count2 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
                 if fing_repeat_count2 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
-                    fing_repeat_count2 += (cost - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                    fing_repeat_count2 += (fing_repeat_count2 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
                 penalty2 += WEIGHT_FINGER_REPEATS * fing_repeat_count2
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
                 if abs(pos2_1[0] - pos2_2[0]) > 1:
@@ -760,7 +762,7 @@ def aggregate_cost(number_of_letters=0, position_cost=0, frep_num=0, frep_num_to
     total += WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty
     total += WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance
     total += WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams
-    total += WEIGHT_IRREGULARITY_PER_LETTER * number_of_letters * irregularity_penalty
+    total += WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty
     return total
 
 
