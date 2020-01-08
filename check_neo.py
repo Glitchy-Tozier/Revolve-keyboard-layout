@@ -371,7 +371,7 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(100 * frep_top_bottom / max(1, number_of_bigrams)), "% finger repeats top to bottom or vice versa", "(", str(frep_num_top_bottom_w/1000000000), ")")
         res += c("#", sn(100 * no_handswitches / max(1, number_of_trigrams)), "% of trigrams have no handswitching (after direction change counted x", WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, ")", "(", str(no_handswitches_w/1000000000), ")")
         res += c("#", sn(line_change_same_hand / 1000000000), "billion (rows²/dist)² to cross", "(", str(line_change_same_hand_w/1000000000), ")")
-        res += c("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance. Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "% (", str(hand_disbalance_w/1000000000), ")")
+        res += c("#", sn(abs(hand_load[0]/max(1, sum(hand_load)) - 0.5)), "hand disbalance (4% shift is too much). Left:", hand_load[0]/max(1, sum(hand_load)), "%, Right:", hand_load[1]/max(1, sum(hand_load)), "% (", str(hand_disbalance_w/1000000000), ")")
         res += c("#", sn(badly_positioned_w/1000000000), "badly positioned shortcut keys (weighted).")
         res += c("#", sn(no_switch_after_unbalancing_w/1000000000), "no handswitching after unbalancing key (weighted).")
         res += c("#", sn(neighboring_fings_w/1000000000), "movement pattern cost (weighted).")
@@ -385,8 +385,6 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
         res += c("#", sn(asymmetric_bigrams_w/1000000000), "asymmetrc bigrams (weighted)")
     if show_asymmetric_similar and verbose: # TODO: remove ‘and verbose’ once there’s a CLI parameter for this.
         res += c("#", sn(asymmetric_similar_w/1000000000), "inconsistent symmetries of similar keys (weighted)")
-    if verbose:
-        res += c("#", sn(irregularity_w/1000000000), "irregularity cost for randomly sampled words (weighted).")
     if fingerstats:
         # also print statistics
         # Finger-load:
