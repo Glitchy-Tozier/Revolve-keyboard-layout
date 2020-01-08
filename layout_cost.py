@@ -704,7 +704,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard, layout=NEO_LAYOUT, cos
                 # reduce the cost for finger repetitions of the index finger (it’s very flexible)
                 if fing2_1.startswith("Zeige") or fing2_2.startswith("Zeige"):
                     fing_repeat_count2 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
-                if fing_repeat_count1 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+                if fing_repeat_count2 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
                     fing_repeat_count2 += (cost - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
                 penalty2 += WEIGHT_FINGER_REPEATS * fing_repeat_count2
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
