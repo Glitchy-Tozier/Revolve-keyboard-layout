@@ -21,6 +21,8 @@ NGRAM_COST_CACHE = {}
 
 ### Cost Functions
 
+## TODO: add regularity, which uses cost functions from everywhere else
+
 def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Count the total cost due to key positions.
 
@@ -48,14 +50,12 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
         cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
-def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
+def finger_repeats_from_file(repeats, layout=NEO_LAYOUT):
     """Get a list of two char strings from the file, which repeat the same finger.
 
     >>> data = read_file("testfile")
     >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
     [(9.979, 'Mittel_L', 'Aa'), (4.979, 'Mittel_R', 'rg'), (4.479, 'Zeige_L', 'eo'), (4.979, 'Klein_R', 'd\\n'), (4.979, 'Mittel_L', 'aA')]
-    >>> finger_repeats_from_file(repeats_in_file(data), count_same_key=True, layout=NEO_LAYOUT)
-    [(9.979, 'Mittel_L', 'Aa'), (4.979, 'Mittel_R', 'rg'), (4.479, 'Zeige_L', 'eo'), (4.979, 'Klein_R', 'd\\n'), (4.979, 'Mittel_L', 'aa'), (4.979, 'Mittel_L', 'aA')]
     >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
     >>> sorted(finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT))[:3]
     [(4.470000000000001, 'Zeige_L', 'cp'), (4.470000000000001, 'Zeige_L', 'pw'), (4.470000000000001, 'Zeige_L', 'wz')]
@@ -79,8 +79,7 @@ def finger_repeats_from_file(repeats, count_same_key=False, layout=NEO_LAYOUT):
                 #print(pair, number, number/number_of_keystrokes, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, (number - critical_point)*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER)
                 number += (number - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
             finger_repeats.append((number, finger1, key1+key2))
-    if not count_same_key:
-        finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
+    finger_repeats = [r for r in finger_repeats if not r[2][0] == r[2][1]]
     return finger_repeats
 
 def finger_repeats_top_and_bottom(finger_repeats, layout):
@@ -320,6 +319,52 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
         neighboring_unbalance += (UNBALANCING_POSITIONS.get(pos2, 0)*number + UNBALANCING_POSITIONS.get(pos1, 0)*number)/(finger_dist**2)
     return neighboring_unbalance
 
+def line_change_positions_cost(pos1, pos2, layout, warped_keyboard):
+            num_rows = abs(pos1[0] - pos2[0])
+            # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
+            p1 = pos1[:2] + (0, )
+            p2 = pos2[:2] + (0, )
+            f1 = KEY_TO_FINGER.get(p1, None)
+            f2 = KEY_TO_FINGER.get(p2, None)
+            
+            # ignore line changes involving the thumb.
+            if not f1 or not f2 or (f1.startswith("Daumen") or f2.startswith("Daumen")):
+                return 0
+
+            f1_is_short = f1 in SHORT_FINGERS
+            f2_is_short = f2 in SHORT_FINGERS
+            f1_is_long = f1 in LONG_FINGERS
+            f2_is_long = f2 in LONG_FINGERS
+            upwards = pos2[0] < pos1[0]
+            downwards = pos2[0] > pos1[0]
+            if upwards and f1_is_short and f2_is_long or downwards and f1_is_long and f2_is_short:
+                num_rows -= 0.25
+            elif downwards and f1_is_short and f2_is_long or upwards and f1_is_long and f2_is_short: # moving upwards to short fingers or downwards to long fingers is bad: add ½
+                num_rows += 0.5
+
+            # if a key is disbalancing, multiply the cost
+            disbalance1 = UNBALANCING_POSITIONS.get((pos1[0], pos1[1], 0), 0)
+            disbalance2 = UNBALANCING_POSITIONS.get((pos2[0], pos2[1], 0), 0)
+            
+            # row 3 is shifted 1 key to the right → fix that.
+            if pos1[0] == 3:
+                pos1 = pos1[0], pos1[1] -1, pos1[2]
+            if pos2[0] == 3:
+                pos2 = pos2[0], pos2[1] -1, pos2[2]
+
+            # The standard keyboard has each key shifted by almost ⅓ compared to the key above it. Use ¼ because not every keyboard is that broken :)
+            if warped_keyboard: 
+                pos1 = pos1[0], pos1[1] +0.25*pos1[0], pos1[2]
+                pos2 = pos2[0], pos2[1] +0.25*pos2[0], pos2[2]
+
+            try:
+                finger_distance = abs(FINGER_NAMES.index(f1) - FINGER_NAMES.index(f2))
+            except ValueError: finger_distance = abs(pos1[1] - pos2[1]) # one key not on a finger.
+
+            cost = num_rows**2 / max(0.5, finger_distance)
+            cost *= (disbalance1+1) * (disbalance2+1)
+            return cost
+
 def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
@@ -345,57 +390,7 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
                 is_left2 = pos_is_left(pos2)
                 if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
-            num_rows = abs(pos1[0] - pos2[0])
-            # if the keys are in the same row, just switch to the next row.
-            if not num_rows:
-                continue
-
-            # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
-            p1 = pos1[:2] + (0, )
-            p2 = pos2[:2] + (0, )
-            f1 = KEY_TO_FINGER.get(p1, None)
-            f2 = KEY_TO_FINGER.get(p2, None)
-            
-            # ignore line changes involving the thumb.
-            if not f1 or not f2 or (f1.startswith("Daumen") or f2.startswith("Daumen")):
-                continue
-
-            f1_is_short = f1 in SHORT_FINGERS
-            f2_is_short = f2 in SHORT_FINGERS
-            f1_is_long = f1 in LONG_FINGERS
-            f2_is_long = f2 in LONG_FINGERS
-            upwards = pos2[0] < pos1[0]
-            downwards = pos2[0] > pos1[0]
-            if upwards and f1_is_short and f2_is_long or downwards and f1_is_long and f2_is_short:
-                num_rows -= 0.25
-            elif downwards and f1_is_short and f2_is_long or upwards and f1_is_long and f2_is_short: # moving upwards to short fingers or downwards to long fingers is bad: add ½
-                num_rows += 0.5
-
-            # if it’s now not a row change anymore, save the time for processing the rest :)
-            if not num_rows:
-                continue
-            
-            # if a key is disbalancing, multiply the cost
-            disbalance1 = UNBALANCING_POSITIONS.get((pos1[0], pos1[1], 0), 0)
-            disbalance2 = UNBALANCING_POSITIONS.get((pos2[0], pos2[1], 0), 0)
-            
-            # row 3 is shifted 1 key to the right → fix that.
-            if pos1[0] == 3:
-                pos1 = pos1[0], pos1[1] -1, pos1[2]
-            if pos2[0] == 3:
-                pos2 = pos2[0], pos2[1] -1, pos2[2]
-
-            # The standard keyboard has each key shifted by almost ⅓ compared to the key above it. Use ¼ because not every keyboard is that broken :)
-            if warped_keyboard: 
-                pos1 = pos1[0], pos1[1] +0.25*pos1[0], pos1[2]
-                pos2 = pos2[0], pos2[1] +0.25*pos2[0], pos2[2]
-
-            try:
-                finger_distance = abs(FINGER_NAMES.index(f1) - FINGER_NAMES.index(f2))
-            except ValueError: finger_distance = abs(pos1[1] - pos2[1]) # one key not on a finger.
-
-            cost = num_rows**2 / max(0.5, finger_distance)
-            cost *= (disbalance1+1) * (disbalance2+1)
+            cost = line_change_positions_cost(pos1, pos2, layout, warped_keyboard)
             line_changes += cost**2 * number
     return line_changes # to make it not rise linearly (don’t uncomment!): / sum((num for num, rep in repeats))
 
@@ -603,6 +598,124 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     Idea: Use symmetric hand movement instead of symmetric keys."""
     return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
+
+def irregularity_from_trigrams(trigrams, warped_keyboard, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+    """Calculate the irregularity by splitting trigrams into bigrams and including all bigram-costs.
+
+    irregularity = sqrt(cost(a) * cost(b)
+                        for a, b in split_trigrams)
+
+    >>> much = irregularity_from_trigrams([(1, "nnn"), (2, "nnn"), (2, "nkn"), (2, "nßn"), (1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")], True, layout=NEO_LAYOUT)
+    >>> nnn = irregularity_from_trigrams([(1, "nnn")], True, layout=NEO_LAYOUT)
+    >>> nxn = irregularity_from_trigrams([(1, "nxn")], True, layout=NEO_LAYOUT)
+    >>> nnnnxn = irregularity_from_trigrams([(1, "nnn"), (1, "nxn")], True, layout=NEO_LAYOUT)
+    >>> nxnnxn = irregularity_from_trigrams([(1, "nxn"), (1, "nxn")], True, layout=NEO_LAYOUT)
+    >>> [nxn > nnn, nxnnxn > nxn, nxnnxn > nnnnxn, nnnnxn > nxn, much > nxnnxn]
+    [True, True, True, True, True]
+    
+    """
+    number_of_keystrokes = sum((num for num, trig in trigrams))
+    critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
+    irregularity_cost_accumulator = 0
+
+    for num, trig in trigrams:
+        bi1 = trig[:2]
+        bi2 = trig[1:]
+        penalty1 = 0
+        penalty2 = 0
+        pos1_1 = find_key(bi1[0], layout=layout)
+        pos1_2 = find_key(bi1[1], layout=layout)
+        pos2_1 = find_key(bi2[0], layout=layout)
+        pos2_2 = find_key(bi2[1], layout=layout)
+        if pos1_1 and pos1_2 and pos2_1 and pos2_2:
+            ## first aggregate all the different costs in penalty1 and penalty2
+            # embed all cost functions in here
+            # def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
+            penalty1 += WEIGHT_MANUAL_BIGRAM_PENALTY * COST_MANUAL_BIGRAM_PENALTY.get((pos1_1, pos1_2), 0)
+            penalty2 += WEIGHT_MANUAL_BIGRAM_PENALTY * COST_MANUAL_BIGRAM_PENALTY.get((pos2_1, pos2_2), 0)
+            # def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
+            # check if we’re on the same hand
+            is_left1_1 = pos_is_left(pos1_1)
+            is_left1_2 = pos_is_left(pos1_2)
+            is_left2_1 = pos_is_left(pos2_1)
+            is_left2_2 = pos_is_left(pos2_2)
+            fing1_1 = KEY_TO_FINGER[pos1_1[:2] + (0, )]
+            fing1_2 = KEY_TO_FINGER[pos1_2[:2] + (0, )]
+            fing2_1 = KEY_TO_FINGER[pos2_1[:2] + (0, )]
+            fing2_2 = KEY_TO_FINGER[pos2_2[:2] + (0, )]
+            if WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS or (is_left1_1 == is_left1_2 and is_left2_1 == is_left2_2):
+                    penalty1 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos1_1, pos1_2, layout, warped_keyboard)**2
+                    penalty2 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos2_1, pos2_2, layout, warped_keyboard)**2
+            # def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
+            if pos1_1 in UNBALANCING_POSITIONS or pos1_2 in UNBALANCING_POSITIONS:
+                try: finger_dist1 = finger_distance(pos1_1, pos1_2)
+                except: finger_dist1 = None
+                if finger_dist1:
+                    penalty1 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos1_2, 0)*num + UNBALANCING_POSITIONS.get(pos1_1, 0)*num)/(finger_dist1**2)
+            if pos2_1 in UNBALANCING_POSITIONS or pos2_2 in UNBALANCING_POSITIONS:
+                try: finger_dist2 = finger_distance(pos1_1, pos1_2)
+                except: finger_dist2 = None
+                if finger_dist2:
+                    penalty2 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos2_2, 0)*num + UNBALANCING_POSITIONS.get(pos2_1, 0)*num)/(finger_dist2**2)
+            # def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
+            if pos1_1 in UNBALANCING_POSITIONS:
+                if is_left1_1 == is_left1_2:
+                    if not fing1_1.startswith("Daumen") and not fing1_2.startswith("Daumen"):
+                        cost = UNBALANCING_POSITIONS.get(pos1_1, 0) * num
+                        if cost and abs(pos1_1[1] - pos1_2[1]) >= 4:
+                            distance = abs(pos1_1[1] - pos1_2[1]) + abs(pos1_1[0] - pos1_2[0])
+                            unb1 = UNBALANCING_POSITIONS.get(pos1_1, 0)
+                            unb2 = UNBALANCING_POSITIONS.get(pos1_2, 0)
+                            cost += unb1 * unb2 * num * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
+                        row_multiplier = 1 + (abs(pos1_1[0] - pos1_2[0]))**2
+                        penalty1 += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * row_multiplier * cost
+            if pos2_1 in UNBALANCING_POSITIONS:
+                if is_left2_1 == is_left2_2:
+                    if not fing2_1.startswith("Daumen") and not fing2_2.startswith("Daumen"):
+                        cost = UNBALANCING_POSITIONS.get(pos2_1, 0) * num
+                        if cost and abs(pos2_1[1] - pos2_2[1]) >= 4:
+                            distance = abs(pos2_1[1] - pos2_2[1]) + abs(pos2_1[0] - pos2_2[0])
+                            unb1 = UNBALANCING_POSITIONS.get(pos2_1, 0)
+                            unb2 = UNBALANCING_POSITIONS.get(pos2_2, 0)
+                            cost += unb1 * unb2 * num * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
+                        row_multiplier = 1 + (abs(pos2_1[0] - pos2_2[0]))**2
+                        penalty2 += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * row_multiplier * cost
+            # def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
+            nums1, fings1 = _rep_to_fingtuple(num, bi1, layout, FINGER_SWITCH_COST)
+            if nums1:
+                penalty1 += WEIGHT_FINGER_SWITCH * nums1 * FINGER_SWITCH_COST[fings1[0]][fings1[1]]
+            nums2, fings2 = _rep_to_fingtuple(num, bi2, layout, FINGER_SWITCH_COST)
+            if nums2:
+                penalty2 += WEIGHT_FINGER_SWITCH * nums2 * FINGER_SWITCH_COST[fings2[0]][fings2[1]]
+            # def finger_repeats_from_file(repeats, layout=NEO_LAYOUT):
+            if fing1_1 and fing1_2 and fing1_1 == fing1_2 and bi1[0] != bi1[1]:
+                fing_repeat_count1 = num
+                # reduce the cost for finger repetitions of the index finger (it’s very flexible)
+                if fing1_1.startswith("Zeige") or fing1_2.startswith("Zeige"):
+                    fing_repeat_count1 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
+                if fing_repeat_count1 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+                    fing_repeat_count1 += (cost - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                penalty1 += WEIGHT_FINGER_REPEATS * fing_repeat_count1
+                # def finger_repeats_top_and_bottom(finger_repeats, layout):
+                if abs(pos1_1[0] - pos1_2[0]) > 1:
+                    penalty1 += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * fing_repeat_count1
+            if fing2_1 and fing2_2 and fing2_1 == fing2_2 and bi2[0] != bi2[1]:
+                fing_repeat_count2 = num
+                # reduce the cost for finger repetitions of the index finger (it’s very flexible)
+                if fing2_1.startswith("Zeige") or fing2_2.startswith("Zeige"):
+                    fing_repeat_count2 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
+                if fing_repeat_count1 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
+                    fing_repeat_count2 += (cost - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                penalty2 += WEIGHT_FINGER_REPEATS * fing_repeat_count2
+                # def finger_repeats_top_and_bottom(finger_repeats, layout):
+                if abs(pos2_1[0] - pos2_2[0]) > 1:
+                    penalty2 += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * fing_repeat_count2
+            # def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+            penalty1 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi1], layout=layout, cost_per_key=cost_per_key)
+            penalty2 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi2], layout=layout, cost_per_key=cost_per_key)
+            ## now actually do the calculation
+            irregularity_cost_accumulator += penalty1 * penalty2
+    return math.sqrt(irregularity_cost_accumulator)
 
 def irregularity(words, layout=NEO_LAYOUT, **opts):
     """Irregularity of the cost per word: The std of the total_cost for
