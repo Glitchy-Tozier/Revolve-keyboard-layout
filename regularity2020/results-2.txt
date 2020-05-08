@@ -5137,4 +5137,11 @@ uoxmy pt,.k
 # 0.031716888522885345 hand disbalance (4% shift is too much). Left: 0.5317168885228853 %, Right: 0.46828311147711466 % ( 0.9286022272016287 )
 # 0.7319461889614385 badly positioned shortcut keys (weighted).
 # 12.698909981751829 no handswitching after unbalancing key (weighted).
-# 29.633457066206773 movement pat
+# 25.042482811341394 movement pattern cost (weighted).
+# 0.8711346964097528 asymmetric bigram cost (weighted).
+# 43.86079085436431 irregularity cost (weighted).
+# 21.07228065146499 manually assigned bigram penalty (weighted)
+# 10.266182959653056 unbalancing key after neighboring finger (weighted)
+# 0.8711346964097528 asymmetrc bigrams (weighted)
+# 38.947367889463514 inconsistent symmetries of similar keys (weighted)
+# Finger load %: 12.9 7.9 9.0 13.2 - 17.6 7.7 6.4 9.7
