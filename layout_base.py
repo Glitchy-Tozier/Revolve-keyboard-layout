@@ -1112,8 +1112,12 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     # third row
     if lines[0][12:]:
         layout = set_key(layout[1][-2][0], lines[0][12], (1, -2), layout)
-    
-    left, right = lines[2].split()[:2]
+
+    try:
+        left, right = lines[2].split()[:2]
+    except ValueError:
+        print(lines)
+        raise
     for i in range(len(left)):
         layout = set_key(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
     for i in range(len(right)):
@@ -1123,7 +1127,7 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     update_letter_to_key_cache_multiple(None, layout)
 
     return deepcopy(layout)
-    
+
 
 def changed_keys(layout0, layout1):
     """Find the keys which are in different positions in the two layouts.
