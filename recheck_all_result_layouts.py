@@ -122,7 +122,7 @@ def main(options, args):
             return tuple(map(tuplit, t)) if isinstance(t, (list, tuple)) else t
         with mp.Pool(3) as p: # eats about 500 MiB per process
             regularity_data = {}
-            for lay, seg, word in p.map(f, all_layouts):
+            for lay, seg, word in map(f, all_layouts):
                 regularity_data[tuplit(lay)] = seg, word
             
     for lay in all_layouts:

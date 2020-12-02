@@ -10,7 +10,7 @@ function securepassword () {
 	else
 		nletters="$1"
 	fi
-	python <<EOF
+	python2 <<EOF
 from random import choice
 letters = "0123456789ABCDEFGHJKLMNPQRSTUVWXabcdefghijkmnopqrstuvwx"
 delimiters = ",.+-*/!"

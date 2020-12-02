@@ -221,6 +221,12 @@ mrntg yeish⇘
 ⇚czbdv oa,.u
 """[1:]
 
+geu = """
+ßlcöü xämpfkj
+hrgeu yisnt⇘
+⇚dzboq va,.w
+"""[1:]
+
 #: example text. Values by textcheck in rev 64358e0a2d00: 173.896062828 (0.21715925231699246, 0.43412613860259547, 0.7601613230513935)
 text = """Wir waren nur noch ein paar Kilometer von dem anderen Tempel entfernt, als die Schatten aus dem Himmel zu fallen begannen, sich als Protektoren herausstellten und damit meine schlimmsten Befürchtungen bestätigten."""
 
