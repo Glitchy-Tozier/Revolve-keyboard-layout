@@ -227,7 +227,7 @@ keycode 44 = 	n		N		parenleft		Greek_nu		KP_4		KP_4		U2115		NoSymbol
 keycode 45 = 	t		T		parenright		Greek_tau		KP_5		KP_5		partialderivative		NoSymbol
 keycode 46 = 	h		H		minus		Greek_psi		KP_6		KP_6		Greek_PSI		Greek_PSI
 keycode 47 = 	s		S		colon		Greek_sigma		KP_Separator		comma		Greek_SIGMA		Greek_SIGMA
-keycode 48 = 	ssharp		U1E9E		at		Greek_finalsmallsigma		period		KP_Decimal		jot		NoSymbol
+keycode 35 = 	ssharp		U1E9E		at		Greek_finalsmallsigma		period		KP_Decimal		jot		NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! The lower row
@@ -244,7 +244,8 @@ keycode 57 = 	p		P		plus		Greek_pi		colon		NoSymbol	Greek_PI		Greek_PI
 keycode 58 = 	f		F		percent		Greek_phi		KP_1		KP_1	Greek_PHI		Greek_PHI
 keycode 59 =	comma		endash		quotedbl		U03F1		KP_2		KP_2		U21D2		NoSymbol
 keycode 60 =	period		enfilledcircbullet		apostrophe		U03D1		KP_3		KP_3		U21A6		NoSymbol
-keycode 61 = 	k		K		semicolon		Greek_kappa		semicolon		NoSymbol		multiply		NoSymbol
+keycode 48 = 	k		K		semicolon		Greek_kappa		semicolon		NoSymbol		multiply		NoSymbol
+keycode 61 =	q		Q		U017F		U03D5		U2212		NoSymbol		U211A		NoSymbol
 
 
 
