@@ -73,7 +73,7 @@ keycode 65 =  Shift_R Shift_Lock
 ! Mod3(links) (=Qwertz-Caps) erlaubt nur 4 Ebenen
 ! Ohne einen Eintrag in der zweiten Gruppe (=Ebene 3) ergäbe Mod3+Mod3=Group_Shift+Group_Shift=Gruppe 3=Ebene 6. Das ist nicht gewünscht.
 !keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-!keycode 51 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+!keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 keycode 101 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 keycode 115 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 !keycode 113 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbo
@@ -159,7 +159,7 @@ keycode 133 = dead_circumflex	dead_caron	U21BB		U02DE		dead_abovedot Pointer_Ena
 ! called T1	ˆ		ˇ		↻		˞		˙	     (keypad-mouse mode) .		
 keycode 21 = dead_grave		dead_cedilla	dead_abovering	dead_dasia	dead_diaeresis	NoSymbol	dead_macron	NoSymbol
 ! called T2	`		¸		˚		῾ dasia (asper)	¨				¯		
-keycode 35 = dead_acute		dead_tilde	dead_stroke	dead_psili      dead_doubleacute	NoSymbol	dead_breve	NoSymbol
+keycode 51 = dead_acute		dead_tilde	dead_stroke	dead_psili      dead_doubleacute	NoSymbol	dead_breve	NoSymbol
 ! called T3	´		˜		/		᾿ psili (lenis)	˝				˘		
 
 
