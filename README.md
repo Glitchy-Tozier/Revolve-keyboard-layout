@@ -11,9 +11,9 @@ Install
 Prerequisites:
 
 * Python 3.x: http://python.org/download
-* Mercurial: http://mercurial.selenic.com/downloads/
+* Mercurial: http://mercurial-scm/
 
-hg clone https://bitbucket.org/ArneBab/evolve-keyboard-layout/
+hg clone https://hg.sr.ht/~arnebab/evolve-keyboard-layout
 
 Usage
 =====
