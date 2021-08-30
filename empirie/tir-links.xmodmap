@@ -1,5 +1,5 @@
 !! ~/.xmodmap
-!! Mine Bored
+!! Einr Links
 
 !!
 !! based upon the Modifiers and levels 3 – 7 of
@@ -61,8 +61,8 @@ clear Mod5
 ! Shift+Shift ergibt ein ShiftLock (wie Caps, wirkt aber auf alle Zeichen, nicht nur auf Großbuchstaben)
 ! Der Lock lässt sich durch ein weiteres Shift lösen.
 ! Eigentlich (siehe Referenz) sollte hier ein CapsLock stehen.
-keycode 64 =  Shift_L Shift_Lock
-keycode 65 =  Shift_R Shift_Lock
+keycode 50 =  Shift_L Shift_Lock
+keycode 62 =  Shift_R Shift_Lock
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod3
@@ -71,12 +71,9 @@ keycode 65 =  Shift_R Shift_Lock
 ! Make CapsLock an modifier called Mod3 (similar to AltGr) (Mode_switch or ISO_Group_Shift is for 3rd and 4th level)
 ! Make former CapsLock and qwertz-# to Mode_switch or ISO_Group_Shift
 ! Mod3(links) (=Qwertz-Caps) erlaubt nur 4 Ebenen
-! Ohne einen Eintrag in der zweiten Gruppe (=Ebene 3) ergäbe Mod3+Mod3=Group_Shift+Group_Shift=Gruppe 3=Ebene 6. Das ist nicht gewünscht.
-!keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-!keycode 48 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-keycode 101 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-keycode 115 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
-!keycode 113 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbo
+! Ohne einen Eintrag in der zweiten Gruppe (=Ebene 3) ergäbe Mod3+Mod3=Group_Shift+Group_Shift=Gruppe 3=Ebene 6. Das ist nicht gewünscht.
+keycode 66 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
+keycode 51 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Mod4
@@ -86,19 +83,8 @@ keycode 115 =  ISO_Group_Shift ISO_Group_Shift ISO_First_Group  NoSymbol
 ! Mod4(rechts)+Mod4(links) lässt Mod4 einrasten (Mod4Lock)
 ! das funktioniert nur in dieser Reihenfolge, da Mod4(rechts) (=Qwertz-AltGr) nur 4 Ebenen hat
 ! Der Lock lässt sich durch ein weiteres Mod4 lösen.
-!keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
+keysym less = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
 keysym ISO_Level3_Shift = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-!keycode 114 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-!keycode 115 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-keycode 36 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shift  ISO_Level3_Lock  NoSymbol
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Arrows right and left on the left up and down
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! 94=left 113=right
-!keycode 117 = Right NoSymbol Right NoSymbol Right Right
-!keycode 112 = Left NoSymbol Left NoSymbol Left Left
-
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! window keys
@@ -127,27 +113,10 @@ keycode 36 = ISO_Level3_Shift  ISO_Level3_Shift  ISO_Group_Shift   ISO_Group_Shi
 keycode 23 = Tab  ISO_Left_Tab  Multi_key  ISO_Level3_Lock
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Space, Alt, Ctrl and Return Key
+! Space and Return key
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keycode 103 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keycode 135 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
-keycode 100 =  BackSpace NoSymbol BackSpace NoSymbol BackSpace BackSpace
-keysym less =  BackSpace NoSymbol BackSpace NoSymbol BackSpace BackSpace
-keycode 22 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
-!keycode 36 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
-keycode 37 =  Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L
-keycode 62 =  Alt_R Meta_R Alt_R Meta_R Alt_R Meta_R Alt_R Meta_R
-keycode 108 =  Undo NoSymbol Undo NoSymbol Undo Undo
-keycode 97 =  Undo NoSymbol Undo NoSymbol Undo Undo
-keycode 50 = Control_L
-keycode 105 = Control_R
-clear Control
-add    Control = Control_L Control_R
-clear Shift
-add    Shift   = Shift_L Shift_R
-clear Mod1
-add Mod1 = Alt_L Meta_L
+keycode 65 = space		space		space		nobreakspace	KP_0		KP_0		U202F		NoSymbol
+keycode 36 = Return		Return		Return		Return		KP_Enter	KP_Enter	Return		Return
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! dead keys
@@ -155,11 +124,10 @@ add Mod1 = Alt_L Meta_L
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
 keycode 49 = dead_circumflex	dead_caron	U21BB		U02DE		dead_abovedot Pointer_EnableKeys dead_belowdot	NoSymbol
-keycode 133 = dead_circumflex	dead_caron	U21BB		U02DE		dead_abovedot Pointer_EnableKeys dead_belowdot	NoSymbol
 ! called T1	ˆ		ˇ		↻		˞		˙	     (keypad-mouse mode) .		
 keycode 21 = dead_grave		dead_cedilla	dead_abovering	dead_dasia	dead_diaeresis	NoSymbol	dead_macron	NoSymbol
 ! called T2	`		¸		˚		῾ dasia (asper)	¨				¯		
-keycode 51 = dead_acute		dead_tilde	dead_stroke	dead_psili      dead_doubleacute	NoSymbol	dead_breve	NoSymbol
+keycode 35 = dead_acute		dead_tilde	dead_stroke	dead_psili      dead_doubleacute	NoSymbol	dead_breve	NoSymbol
 ! called T3	´		˜		/		᾿ psili (lenis)	˝				˘		
 
 
@@ -198,54 +166,53 @@ keycode 20 = minus		emdash		NoSymbol	U2011		KP_Subtract	KP_Subtract	hyphen		NoSy
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
-keycode 24 = 	j		J		ellipsis		Greek_theta		Prior		Prior		Greek_THETA		Greek_THETA
-keycode 25 = 	l		L		underscore		Greek_lambda		BackSpace		BackSpace		Greek_LAMBDA		Greek_LAMBDA
-keycode 26 = 	u		U		bracketleft		NoSymbol		Up		Up		includedin		NoSymbol
-keycode 27 = 	a		A		bracketright		Greek_alpha		Delete		Delete		U2200		NoSymbol
-keycode 28 = 	q		Q		asciicircum		U03D5		Next		Next		U211A		NoSymbol
+keycode 24 = 	odiaeresis		Odiaeresis		ellipsis		U03F5		Prior		Prior		intersection		NoSymbol
+keycode 25 = 	d		D		underscore		Greek_delta		BackSpace		BackSpace		Greek_DELTA		Greek_DELTA
+keycode 26 = 	h		H		bracketleft		Greek_psi		Up		Up		Greek_PSI		Greek_PSI
+keycode 27 = 	k		K		bracketright		Greek_kappa		Delete		Delete		multiply		NoSymbol
+keycode 28 = 	z		Z		asciicircum		Greek_zeta		Next		Next		U2124		NoSymbol
 
-keycode 29 = 	w		W		exclam		Greek_omega		exclamdown		NoSymbol		Greek_OMEGA		Greek_OMEGA
-keycode 30 = 	b		B		less		Greek_beta		KP_7		KP_7		U21D0		NoSymbol
-keycode 31 = 	d		D		greater		Greek_delta		KP_8		KP_8		Greek_DELTA		Greek_DELTA
-keycode 32 = 	g		G		equal		Greek_gamma		KP_9		KP_9		Greek_GAMMA		Greek_GAMMA
-keycode 33 = 	y		Y		ampersand		Greek_upsilon		KP_Add		KP_Add		nabla		NoSymbol
-keycode 34 =	z		Z		U017F		Greek_zeta		U2212		NoSymbol		U2124		NoSymbol
+keycode 29 = 	v		V		exclam		NoSymbol		exclamdown		NoSymbol		radical		NoSymbol
+keycode 30 = 	udiaeresis		Udiaeresis		less		NoSymbol		KP_7		KP_7		union		NoSymbol
+keycode 31 = 	f		F		greater		Greek_phi		KP_8		KP_8		Greek_PHI		Greek_PHI
+keycode 32 = 	y		Y		equal		Greek_upsilon		KP_9		KP_9		nabla		NoSymbol
+keycode 33 = 	adiaeresis		Adiaeresis		ampersand		Greek_eta		KP_Add		KP_Add		U2135		NoSymbol
+keycode 34 =	q		Q		U017F		U03D5		U2212		NoSymbol		U211A		NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! The home row (middle row)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
-keycode 38 = 	c		C		backslash		Greek_chi		Home		Home		U2102		NoSymbol
-keycode 39 = 	r		R		slash		Greek_rho		Left		Left		U211D		NoSymbol
+keycode 38 = 	e		E		backslash		Greek_epsilon		Home		Home		U2203		NoSymbol
+keycode 39 = 	t		T		slash		Greek_tau		Left		Left		partialderivative		NoSymbol
 keycode 40 = 	i		I		braceleft		Greek_iota		Down		Down		integral		NoSymbol
-keycode 41 = 	e		E		braceright		Greek_epsilon		Right		Right		U2203		NoSymbol
-keycode 42 = 	o		O		asterisk		Greek_omicron		End		End		elementof		NoSymbol
+keycode 41 = 	n		N		braceright		Greek_nu		Right		Right		U2115		NoSymbol
+keycode 42 = 	r		R		asterisk		Greek_rho		End		End		U211D		NoSymbol
 
-keycode 43 = 	m		M		question		Greek_mu		questiondown		NoSymbol		ifonlyif		NoSymbol
-keycode 44 = 	n		N		parenleft		Greek_nu		KP_4		KP_4		U2115		NoSymbol
-keycode 45 = 	t		T		parenright		Greek_tau		KP_5		KP_5		partialderivative		NoSymbol
-keycode 46 = 	s		S		minus		Greek_sigma		KP_6		KP_6		Greek_SIGMA		Greek_SIGMA
-keycode 47 = 	h		H		colon		Greek_psi		KP_Separator		comma		Greek_PSI		Greek_PSI
-keycode 35 = 	ssharp		U1E9E		at		Greek_finalsmallsigma		period		KP_Decimal		jot		NoSymbol
+keycode 43 = 	c		C		question		Greek_chi		questiondown		NoSymbol		U2102		NoSymbol
+keycode 44 = 	p		P		parenleft		Greek_pi		KP_4		KP_4		Greek_PI		Greek_PI
+keycode 45 = 	i		I		parenright		Greek_iota		KP_5		KP_5		integral		NoSymbol
+keycode 46 = 	a		A		minus		Greek_alpha		KP_6		KP_6		U2200		NoSymbol
+keycode 47 = 	j		J		colon		Greek_theta		KP_Separator		comma		Greek_THETA		Greek_THETA
+keycode 48 = 	ssharp		U1E9E		at		Greek_finalsmallsigma		period		KP_Decimal		jot		NoSymbol
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! The lower row
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !            Ebene1		Ebene2		Ebene3		Ebene5		Ebene4		Ebene4+Sh	Ebene6		Ebene7
 
-keycode 52 = 	v		V		numbersign		NoSymbol		Escape		Escape		radical		NoSymbol
-keycode 53 = 	x		X		dollar		Greek_xi		Tab		ISO_Left_Tab		Greek_XI		Greek_XI
-keycode 54 = 	udiaeresis		Udiaeresis		bar		NoSymbol		Insert		Insert		union		NoSymbol
-keycode 55 = 	adiaeresis		Adiaeresis		asciitilde		Greek_eta		Return		Return		U2135		NoSymbol
-keycode 56 = 	odiaeresis		Odiaeresis		grave		U03F5		Undo		Redo		intersection		NoSymbol
+keycode 52 = 	o		O		numbersign		Greek_omicron		Escape		Escape		elementof		NoSymbol
+keycode 53 = 	g		G		dollar		Greek_gamma		Tab		ISO_Left_Tab		Greek_GAMMA		Greek_GAMMA
+keycode 54 = 	b		B		bar		Greek_beta		Insert		Insert		U21D0		NoSymbol
+keycode 55 = 	s		S		asciitilde		Greek_sigma		Return		Return		Greek_SIGMA		Greek_SIGMA
+keycode 56 = 	m		M		grave		Greek_mu		Undo		Redo		ifonlyif		NoSymbol
 
-keycode 57 = 	p		P		plus		Greek_pi		colon		NoSymbol	Greek_PI		Greek_PI
-keycode 58 = 	f		F		percent		Greek_phi		KP_1		KP_1	Greek_PHI		Greek_PHI
+keycode 57 = 	u		U		plus		NoSymbol		colon		NoSymbol	includedin		NoSymbol
+keycode 58 = 	w		W		percent		Greek_omega		KP_1		KP_1	Greek_OMEGA		Greek_OMEGA
 keycode 59 =	comma		endash		quotedbl		U03F1		KP_2		KP_2		U21D2		NoSymbol
 keycode 60 =	period		enfilledcircbullet		apostrophe		U03D1		KP_3		KP_3		U21A6		NoSymbol
-keycode 48 = 	k		K		semicolon		Greek_kappa		semicolon		NoSymbol		multiply		NoSymbol
-+keycode 61 =	q		Q		semicolon		U03D5		semicolon		NoSymbol		multiply		NoSymbol
+keycode 61 = 	x		X		semicolon		Greek_xi		semicolon		NoSymbol		Greek_XI		Greek_XI
 
 
 
@@ -325,13 +292,13 @@ add Mod5 = ISO_Level3_Shift
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Bemerkungen
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! 1.) Ebene 6 (hier: der 7. Eintrag) erreicht man über ISO_Group_Shift+ISO_Group_Shift
+! 1.) Ebene 6 (hier: der 7. Eintrag) erreicht man über ISO_Group_Shift+ISO_Group_Shift
 !     (bzw. mode_switch+mode_switch) und über keine andere mir bekannte Kombination. Insbesondere legt
-!     ISO_Level3_Shift Level3 (Ebene 4, hier: Eintrag 5) fest, verschiebt also nicht. Darum kann man
-!     ISO_Level3_Shift nur mit Shift sinnvoll kombinieren. Daraus resultiert, dass Ebene 6 nur über
+!     ISO_Level3_Shift Level3 (Ebene 4, hier: Eintrag 5) fest, verschiebt also nicht. Darum kann man
+!     ISO_Level3_Shift nur mit Shift sinnvoll kombinieren. Daraus resultiert, dass Ebene 6 nur über
 !     Mod3+Mod4 (in dieser Reihenfolge!) erreicht werden kann.
 !
 ! 2.) Die KP_-Einträge ermöglichen die Steuerung des Mauscursors mit der Tastatur.
 !     Hierzu wird mittels Shift+Mod4+T1 dieser Betriebsmodus ein- und später wieder ausgeschaltet.
-!     Die Steuerung des Cursors kann über den Ziffernblock (Ebene 4, eventuell mit
+!     Die Steuerung des Cursors kann über den Ziffernblock (Ebene 4, eventuell mit
 !     eingerastetem Mod4) erfolgen.
