@@ -1,6 +1,6 @@
 # Revolve keyboard layout
 
-This project originated from the excellent [script of Arne Babenhauserheide](https://hg.sr.ht/~arnebab/evolve-keyboard-layout). The purpose of **Revolve keyboard layout** is to improve upon that script in the following ways (ordered from most to least important):
+This project originated from the _excellent_ [script of Arne Babenhauserheide](https://hg.sr.ht/~arnebab/evolve-keyboard-layout). The purpose of **Revolve keyboard layout** is to improve upon that script in the following ways (ordered from most to least important):
 1. Make the optimizer run faster.
 2. Clean up unnecessary files and store them in places where they don't get into the way of development.
 3. Make the optimizer run faster.
