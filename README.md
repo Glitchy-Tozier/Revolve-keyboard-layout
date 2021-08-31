@@ -1,13 +1,13 @@
 # Revolve keyboard layout
 
-This project originated from the _excellent_ [script of Arne Babenhauserheide](https://hg.sr.ht/~arnebab/evolve-keyboard-layout). The purpose of **Revolve keyboard layout** is to improve upon that script in the following ways (ordered from most to least important):
+This project originated from the _excellent_ [script of Arne Babenhauserheide](https://hg.sr.ht/~arnebab/evolve-keyboard-layout "evolve-keyboard-layout"). The purpose of **Revolve keyboard layout** is to improve upon that script in the following ways (ordered from most to least important):
 1. Make the optimizer run faster.
 2. Clean up unnecessary files and store them in places where they don't get into the way of development.
 3. Make the optimizer run faster.
-4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/). (This was _one_ reason for the name _**R**evolve keyboard layout_).
-5. Using tools such as [RustPython](https://rustpython.github.io/), convert the optimizer to [Web Assembly](https://webassembly.org/) and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
+4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/ "The most amazing language the world has ever seen"). (This was _one_ reason for the name _**R**evolve keyboard layout_).
+5. Using tools such as [RustPython](https://rustpython.github.io/ "All things shall rust"), convert the optimizer to [Web Assembly](https://webassembly.org/ "Basically compiled JavaScript") and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
 
-Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by [removing redundant calculations](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/a6bbcea18b098f9e002108bdb8fca10ebc1bce8c), on various scales.
+Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by [removing redundant calculations](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/a6bbcea18b098f9e002108bdb8fca10ebc1bce8c "An example of optimizing code"), on various scales.
 
 ---
 
@@ -31,7 +31,7 @@ git clone https://github.com/Glitchy-Tozier/Revolve-keyboard-layout.git
 Usage
 =====
 
-**For performance-reasons, it is recommended to use a tool such as [`pypy`](https://www.pypy.org/) instead of `python3` to start an evolution.**
+**For performance-reasons, it is recommended to use a tool such as [`pypy3`](https://www.pypy.org/ "A JIT compiler for Python") instead of `python3` to start an evolution.**
 
 Do an evolution and store the results in output.txt:
 ```bash
@@ -288,7 +288,7 @@ Die grundlegenden Anwendungen von check_neo.py sind:
 
 * sich die Werte von Belegungen ausgeben lassen:
   
-`./check_neo.py [-v] [--fingerstats]` ; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien: [alter Link](https://web.archive.org/web/20160320002646/wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien).
+`./check_neo.py [-v] [--fingerstats]` ; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien: [alter Link](https://web.archive.org/web/20160320002646/wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien "Überholte Kriterien").
    
    
 Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen:
