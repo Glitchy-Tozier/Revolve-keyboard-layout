@@ -7,7 +7,7 @@ This project originated from the _excellent_ [script of Arne Babenhauserheide](h
 4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/). (This was _one_ reason for the name _**R**evolve keyboard layout_).
 5. Using tools such as [RustPython](https://rustpython.github.io/), convert the optimizer to [Web Assembly](https://webassembly.org/) and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
 
-Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by removing redundant calculations, on various scales.
+Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by [removing redundant calculations](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/a6bbcea18b098f9e002108bdb8fca10ebc1bce8c), on various scales.
 
 ---
 
