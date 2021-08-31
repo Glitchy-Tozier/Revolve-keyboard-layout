@@ -1,3 +1,16 @@
+# Revolve keyboard layout
+
+This project originated from the excellent [script of Arne Babenhauserheide](https://hg.sr.ht/~arnebab/evolve-keyboard-layout). The purpose of **Revolve keyboard layout** is to improve upon that script in the following ways (ordered from most to least important):
+1. Make the optimizer run faster.
+2. Clean up unnecessary files and store them in places where they don't get into the way of development.
+3. Make the optimizer run faster.
+4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/). (This was _one_ reason for the name _**R**evolve keyboard layout_).
+5. Using tools such as [rustpython](https://rustpython.github.io/), convert the optimizer to [Web Assembly](https://webassembly.org/) and make it run on a website. This would allow anyone to simply open a website and start optimizing.
+
+Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by removing redundant calculations, on various scales.
+
+---
+
 Intro
 =====
 
@@ -9,14 +22,16 @@ Install
 =======
 
 Prerequisites:
-
 * Python 3.x: http://python.org/download
-* Mercurial: http://mercurial-scm.org/
 
-hg clone https://hg.sr.ht/~arnebab/evolve-keyboard-layout
+```bash
+git clone https://github.com/Glitchy-Tozier/Revolve-keyboard-layout.git
+```
 
 Usage
 =====
+
+**For performance-reasons, it is recommended to use a tool such as [`pypy`](https://www.pypy.org/) instead of `python3` to start an evolution.**
 
 Do an evolution and store the results in output.txt:
 
