@@ -20,7 +20,7 @@ The two biggest most straight-forward things you can do are:
 Intro
 =====
 
-**Revolve keyboard layout**  is an evolutionary keyboard layout optimizer and a framework for evaluating the effect of the keyboard layout on typing.
+**Revolve keyboard layout** is an evolutionary keyboard layout optimizer and a framework for evaluating the effect of the keyboard layout on typing.
 
 The most common use is to optimize the keyboard layout based on several cost criteria by doing random mutations and keeping those which reduce the cost.
 
@@ -66,7 +66,7 @@ Additional options:
 * `./textcheck.py --help` ; check the difference between a given text and an ngram korpus
 
 
-Dokumentation
+Documentation
 =============
 
 A guide to the Optimizer. It intends to answer common questions. 
@@ -190,7 +190,7 @@ zxcfj kp,.'
 
 ## 1. Calculating the cost
 
-(the rest of the text is not yet translated from German to English)
+(The remaining text was not yet translated into English)
 
 ### 1.1. Buchstaben (1-Gramme)
 
@@ -205,7 +205,7 @@ COST_PER_KEY  = [
 ]
 ```
 Für jeden Buchstaben wird seine Häufigkeit mit den Kosten der Taste, auf der er liegt, multipliziert. Alle Buchstabenkosten werden addiert, um die Positionskosten zu erhalten.
-    
+
 Dabei werden Buchstaben in höheren Ebenen (Großbuchstaben und z. B. δ oder ℝ) in Kleinbuchstaben und Modifikatoren aufgeteilt – bzw. in die Buchstaben auf Ebene 0 und alle für die Buchstaben nötigen Modifikatoren.
 
 10× im Text vorkommendes „(“ wird also zu 10×M3 und 10×n.
@@ -238,8 +238,6 @@ Andererseits liegt „c“ auf der oberen Zeile und „ä“ auf der unteren. De
 
 4. Fingerspreizung: Wenn nach einem Anschlag auf eine Taste, die die Hand aus der Grundposition zieht, kein Handwechsel kommt, gibt das 20 Strafpunkte. Ist die Taste besonders weit draußen, werden die Kosten verdoppelt. In Neo2 sind die Buchstaben, die die Hand aus dem Gleichgewicht ziehen M3l, xqosyb. Besonders weit draußen sind Tab, M3r, Return, ShiftL, wkßz. (Definition: config.py, Zeile 90 und layout_cost.py, Zeile 175). Die Kosten werden mit 20 multipliziert.
 
-4. Fingerspreizung: Wenn nach einem Anschlag auf eine Taste, die die Hand aus der Grundposition zieht, kein Handwechsel kommt, gibt das 20 Strafpunkte. Ist die Taste besonders weit draußen, werden die Kosten verdoppelt. In Neo2 sind die Buchstaben, die die Hand aus dem Gleichgewicht ziehen M3l, xqosyb. Besonders weit draußen sind Tab, M3r, Return, ShiftL, wkßz. (Definition: config.py, Zeile 90 und layout_cost.py, zeile 175). Die Kosten werden mit 20 multipliziert.
-
 ### 1.3. Trigramme
 
 1. Indirekte Bigramme: Bei Trigrammen mit zwei Handwechseln werden der erste und der letzte Buchstabe als indirektes Bigramm gewertet und mit um 70% reduzierter Häufigkeit zu den Bigrammen hinzugefügt.
@@ -250,7 +248,7 @@ Andererseits liegt „c“ auf der oberen Zeile und „ä“ auf der unteren. De
 
 Großbuchstaben und auch alle Zeichen von Ebenen über der ersten werden in mehrere Tasten aufgeteilt.
 
-Bei Einzelbuchstaben kommen einfach die Modifikatortasten mit der gleichenhäufigkeit wie der Buchstabe hinzugefügt und der Buchstabe durch das Zeichen auf der ersten Ebene ersetzt.
+Bei Einzelbuchstaben werden einfach die Modifikatortasten mit der gleichen Häufigkeit wie der Buchstabe hinzugefügt und die Buchstaben durch das Zeichen auf der ersten Ebene ersetzt.
 
 A wird zu Shift+a und Γ wird zu M3+M4+g.
 
@@ -263,7 +261,7 @@ Bei Neo2:
 
 Jeweils mit der Modifikatortaste auf der anderen Hand als der Buchstabe (logisch).
 
-Trigramme funktionieren in etwa genauso, nur gibt es mehr Optiomen. Für Großschreibung nimm alle Trigramme, die du aus dem folgenden Bild basteln kannst:
+Trigramme funktionieren in etwa genauso, nur gibt es mehr Optionen. Für Großschreibung nimm alle Trigramme, die du aus dem folgenden Bild basteln kannst:
 
     a → b → c
     | × | × |
@@ -293,21 +291,17 @@ check_neo.py hat das flexiblere Interface und wird von evolution.py mitverwendet
 Die grundlegenden Anwendungen von check_neo.py sind:
 
 * sich die Werte von Belegungen ausgeben lassen:
-  
 `./check_neo.py [-v] [--fingerstats]` ; für ein paar Beispiele: Neo, Qwertz, Nordtast, Dvorak, … --fingferstats gibt die Lastverteilung auf die Finger mit aus. -v gibt für jede Belegung ausführlichere Informationen aus. Ohne -v gibt es nur die Gesamtkosten und die Fingerwiederholungen. Mit -v gibt es noch 8 weitere Kriterien: [alter Link](https://web.archive.org/web/20160320002646/wiki.neo-layout.org/wiki/Neo3/Optimierungskriterien "Überholte Kriterien").
-   
-   
-Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen:
+* Die Buchstaben auf Ebene 1, 2, 5 und 6 so anordnen, dass sie auf Ebene 1 den gegebenen Buchstaben entsprechen, dann die entstehende Belegung prüfen:
 ```bash
 ./check_neo.py --check-string "xzo., pcslvß´
 haeiu dtrnmf
-⇚kyäüö bgjqw" [-v]`
+⇚kyäüö bgjqw" [-v]
 ```
+* `--file dateiname.txt` ermöglichst es außerdem, die Belegung mit dem Text in der Datei zu prüfen, statt mit dem Standardkorpus (1gramme.txt, 2gramme.txt und 3gramme.txt).
 
-`--file dateiname.txt` ermöglichst es außerdem, die Belegung mit dem Text in der Datei zu prüfen, statt mit dem Standardkorpus (1gramme.txt, 2gramme.txt und 3gramme.txt).
-      
 * Eine Evolution starten:
-  `./check_neo.py --evolve N [--controlled-tail]` ; N Mutationsschritte machen, ausgehend von einer Zufallsbelegung.
+`./check_neo.py --evolve N [--controlled-tail]` ; N Mutationsschritte machen, ausgehend von einer Zufallsbelegung.
 
 * Viele weitere Möglichkeiten findet ihr via `./check_neo.py --help`
 
@@ -350,17 +344,17 @@ uiaeo snrtdy
 ⇚üöäpz bm,.j"
 ```
 
-Für Windows-Nutzer gibt es die Option, eintach nur die erste Zeile der Belegung einzutragen. Das Programm fragt dann nach den weiteren Zeilen.
+Für Windows-Nutzer gibt es die Option, einfach nur die erste Zeile der Belegung einzutragen. Das Programm fragt dann nach den weiteren Zeilen.
 
 
-`./recheck_all_result_layouts.py  [--folder <Ordner>] [--namepart <name>] [--families] [--csv  || --svg]` ; alle Ergebnisse in Textdateien (*.txt) im gegebenen Ordner,  in deren Name der --namepart vorkommt, neu berechnen. Mit --families  werden sie in ähnliche Belegungen sortiert und nur jeweils die besten  jeder Familie angezeigt. Mit --csv werden die Ergebnisse statt in einer  normalen Ausgabe als csv-Tabelle ausgegeben. Und mit --svg werden für alle Belegungen SVG-Bilder erstellt und im Ordner svgs/ gespeichert. Die Dateinamen sind dabei <Gesamtkosten>-<Grundlinie>-<Obere Zeile>-<Untere Zeile>.svg.
-    
+`./recheck_all_result_layouts.py  [--folder <Ordner>] [--namepart <name>] [--families] [--csv  || --svg]` ; alle Ergebnisse in Textdateien (*.txt) im gegebenen Ordner, in deren Name der --namepart vorkommt, neu berechnen. Mit --families werden sie in ähnliche Belegungen sortiert und nur jeweils die besten jeder Familie angezeigt. Mit --csv werden die Ergebnisse statt in einer normalen Ausgabe als csv-Tabelle ausgegeben. Und mit --svg werden für alle Belegungen SVG-Bilder erstellt und im Ordner svgs/ gespeichert. Die Dateinamen sind dabei <Gesamtkosten>-<Grundlinie>-<Obere Zeile>-<Untere Zeile>.svg.
+
 `./generate_xmodmap.py datei.txt > belegung.xmodmap` ; gibt eine xmodmap für die Belegung aus. datei.txt hat in der ersten Zeile den Namen der Belegung und in den nächsten drei Zeilen die erste Ebene der Belegung. Eine Beispieldatei ist in empirie/haeiu.txt.
-    
-`./regularity_check.py [-n layout-name || -l <layout-string 3 Zeilen>] -t textdatei.txt [-v]` ; prüft die Regelmäßigkeit der Belegung für die gegebene Textdatei. Dafür wird der Text in Worte und in Abschnitte zu 270 Zeichen zerlegt. Für jedes Wort und jeden Abschnitt werden dann die Kosten gerechnet. Von den Kosten werden für alle Worte und alle Abschnitte der Durchschnittzwert und die Standardabweichung ausgegeben, um zu testen, wie gleichmäßig das Tippen mit der Belegung sein dürfte. Der Hintergrund ist, dass so geprüft werden kann, ob es besonders unschöne Ausreißer gibt, also Wörter oder Textabschnitte, die sehr unangenehm zu tippen sind.
-    
-`./textcheck.py dateiname.txt [--best-lines]` ; prüft, wie nah ein gegebener Text an der nGramm-Verteilung des Korpus ist (1gramme.txt, 2gramme.txt, 3gramme.txt). Mit --best-lines sucht es die Textzeilen, die dem Korpus am ählichsten sind.
-    
+
+`./regularity_check.py [-n layout-name || -l <layout-string 3 Zeilen>] -t textdatei.txt [-v]` ; prüft die Regelmäßigkeit der Belegung für die gegebene Textdatei. Dafür wird der Text in Worte und in Abschnitte zu 270 Zeichen zerlegt. Für jedes Wort und jeden Abschnitt werden dann die Kosten gerechnet. Von den Kosten werden für alle Worte und alle Abschnitte der Durchschnittswert und die Standardabweichung ausgegeben, um zu testen, wie gleichmäßig das Tippen mit der Belegung sein dürfte. Der Hintergrund ist, dass so geprüft werden kann, ob es besonders unschöne Ausreißer gibt, also Wörter oder Textabschnitte, die sehr unangenehm zu tippen sind.
+
+`./textcheck.py dateiname.txt [--best-lines]` ; prüft, wie nah ein gegebener Text an der nGramm-Verteilung des Korpus ist (1gramme.txt, 2gramme.txt, 3gramme.txt). Mit --best-lines sucht es die Textzeilen, die dem Korpus am ähnlichsten sind.
+
 ```bash
 ./convert_text_between_layouts.py --layout "kuü.ä vgcljf
 hieao dtrnsß

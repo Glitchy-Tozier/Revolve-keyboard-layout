@@ -112,8 +112,6 @@ Komplexität: Wenn der Zeilenwechsel nach oben geht und ein langer Finger auf ei
 
 4. Fingerspreizung: Wenn nach einem Anschlag auf eine Taste, die die Hand aus der Grundposition zieht, kein Handwechsel kommt, gibt das 20 Strafpunkte. Ist die Taste besonders weit draußen, werden die Kosten verdoppelt. In Neo2 sind die Buchstaben, die die Hand aus dem Gleichgewicht ziehen M3l, xqosyb. Besonders weit draußen sind Tab, M3r, Return, ShiftL, wkßz. (Definition: config.py, Zeile 90 und layout_cost.py, Zeile 175). Die Kosten werden mit 20 multipliziert.
 
-4. Fingerspreizung: Wenn nach einem Anschlag auf eine Taste, die die Hand aus der Grundposition zieht, kein Handwechsel kommt, gibt das 20 Strafpunkte. Ist die Taste besonders weit draußen, werden die Kosten verdoppelt. In Neo2 sind die Buchstaben, die die Hand aus dem Gleichgewicht ziehen M3l, xqosyb. Besonders weit draußen sind Tab, M3r, Return, ShiftL, wkßz. (Definition: config.py, Zeile 90 und layout_cost.py, zeile 175). Die Kosten werden mit 20 multipliziert.
-
 ### 1.3. Trigramme
 
 1. Indirekte Bigramme: Bei Trigrammen mit zwei Handwechseln werden der erste und der letzte Buchstabe als indirektes Bigramm gewertet und mit um 70% reduzierter Häufigkeit zu den Bigrammen hinzugefügt.
