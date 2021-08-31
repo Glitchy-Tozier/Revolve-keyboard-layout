@@ -9,8 +9,8 @@
 # TODO: Add cost when the position of keys is inverted (g lower, k upper, but d upper and t lower).
 # Reason: Being easy to learn is essential.
 
-import math
-import random
+from math import log, sqrt
+from random import sample
 
 from layout_base import *
 
@@ -202,7 +202,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                     if not diff == 0:
                         dcost += 1
             if ddiffs:
-                dcost = math.log((dcost / len(ddiffs)) + 1)
+                dcost = log((dcost / len(ddiffs)) + 1)
                 diff_cost += dcost
                 diffs.extend(ddiffs)
         # print (diff_cost, diffs)
@@ -717,7 +717,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
             penalty2 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi2], layout=layout, cost_per_key=cost_per_key)
             ## now actually do the calculation
             irregularity_cost_accumulator += penalty1 * penalty2
-    return math.sqrt(irregularity_cost_accumulator)
+    return sqrt(irregularity_cost_accumulator)
 
 def irregularity(words, layout=NEO_LAYOUT, **opts):
     """Irregularity of the cost per word: The std of the total_cost for
@@ -741,7 +741,7 @@ each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
         return sqrt(var)
     data = []
     if IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION < 1.0:
-        words = random.sample(words, max(2, int(len(words) * IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION)))
+        words = sample(words, max(2, int(len(words) * IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION)))
     for word in words:
         data.append(total_cost(data=word, layout=layout, check_irregularity=False, **opts)[0] / len(word))
     return std(data)

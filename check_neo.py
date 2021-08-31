@@ -80,7 +80,7 @@ if "-o" in argv:
 else:
     FILE = None
 
-from termctrl import *
+from termctrl import erase, priorline, write
 
 def info(*args, **kwds):
     return print(*args, **kwds)
