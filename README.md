@@ -5,7 +5,7 @@ This project originated from the excellent [script of Arne Babenhauserheide](htt
 2. Clean up unnecessary files and store them in places where they don't get into the way of development.
 3. Make the optimizer run faster.
 4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/). (This was _one_ reason for the name _**R**evolve keyboard layout_).
-5. Using tools such as [rustpython](https://rustpython.github.io/), convert the optimizer to [Web Assembly](https://webassembly.org/) and make it run on a website. This would allow anyone to simply open a website and start optimizing.
+5. Using tools such as [RustPython](https://rustpython.github.io/), convert the optimizer to [Web Assembly](https://webassembly.org/) and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
 
 Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by removing redundant calculations, on various scales.
 
