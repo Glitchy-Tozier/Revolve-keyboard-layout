@@ -4,10 +4,16 @@ This project originated from the _excellent_ [script of Arne Babenhauserheide](h
 1. Make the optimizer run faster.
 2. Clean up unnecessary files and store them in places where they don't get into the way of development.
 3. Make the optimizer run faster.
-4. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/ "The most amazing language the world has ever seen"). (This was _one_ reason for the name _**R**evolve keyboard layout_).
-5. Using tools such as [RustPython](https://rustpython.github.io/ "All things shall rust"), convert the optimizer to [Web Assembly](https://webassembly.org/ "Basically compiled JavaScript") and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
+4. Introduce true [simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing): Replace `the current greedy algorithm that varies the size of changes` with `a probability-driven algorithm, that always switches the same number of letters`.
+6. Possibly re-write the most resource-intensive-tasks in [Rust](https://www.rust-lang.org/ "The most amazing language the world has ever seen"). (This was _one_ reason for the name _**R**evolve keyboard layout_).
+7. Using tools such as [RustPython](https://rustpython.github.io/ "All things shall rust"), convert the optimizer to [Web Assembly](https://webassembly.org/ "Basically compiled JavaScript") and make it run on a website. This would allow anyone to simply open a website and start optimizing immediately.
 
 Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by [removing redundant calculations](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/a6bbcea18b098f9e002108bdb8fca10ebc1bce8c "An example of optimizing code"), on various scales.
+
+## Contributing
+The two biggest most straight-forward things you can do are:
+* Translate this README.md or code&comments in Python-files to English
+* If you have some Python-knowledge, look into the code (especially [the most resource-intensive functions](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/blob/main/profilings/0_original.txt "The first profiling of a keyboard-evolution")) and find ways to make everything run faster.
 
 ---
 
