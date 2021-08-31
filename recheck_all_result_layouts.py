@@ -6,7 +6,10 @@
 Depends on the layouts info starting with OA'Evolved Layout'
 """
 
-from check_neo import string_to_layout, print_layout_with_statistics, csv_data, get_all_data, find_layout_families, total_cost, split_uppercase_trigrams, format_layer_1_string
+from check_neo import string_to_layout, print_layout_with_statistics, get_all_data, total_cost, format_layer_1_string
+from layout_base import find_layout_families
+from layout_info import csv_data
+from ngrams import split_uppercase_trigrams
 import layout_cost
 import logging
 from regularity_check import regularity, std
@@ -120,10 +123,10 @@ def main(options, args):
         
         def tuplit(t):
             return tuple(map(tuplit, t)) if isinstance(t, (list, tuple)) else t
-        with mp.Pool(3) as p: # eats about 500 MiB per process
-            regularity_data = {}
-            for lay, seg, word in map(f, all_layouts):
-                regularity_data[tuplit(lay)] = seg, word
+        #with mp.Pool(3) as p: # eats about 500 MiB per process
+        regularity_data = {}
+        for lay, seg, word in map(f, all_layouts):
+            regularity_data[tuplit(lay)] = seg, word
             
     for lay in all_layouts:
         if options.regularity:

@@ -2,7 +2,9 @@
 
 """Get information about keyboard layouts (frontend)."""
 
-from layout_info import *
+from layout_base import format_layer_1_string, NEO_LAYOUT, string_to_layout
+from layout_cost import total_cost
+from layout_info import get_all_data, bigram_info
 from check_neo import short_number
 sn = short_number
 
@@ -42,7 +44,8 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     @param bigrams: [(number, cost, bigram), …]
     """
     # only import here to avoid the import overhead for other actions.
-    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, ShapeBuilder, g, text, add_circle
+    from pysvg.builders import g, ShapeBuilder
+    from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, text, add_circle
     from layout_base import find_key, pos_is_left, get_key, get_all_positions_in_layout
     S = svg("Belegung")
     #oh = ShapeBuilder()
@@ -307,7 +310,7 @@ def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False,
     info = bigram_info(layout=layout, filepath=filepath, repeats=repeats, trigrams=trigrams, secondary=secondary, only_layer_0=only_layer_0)
     num_bigrams = sum([num for num, cost, rep in info])
     if number is None: number = len(info)
-    numlen = len(str(float(info[0][0])))
+    #numlen = len(str(float(info[0][0])))
     if svg: bigrams_with_cost = []
     for num, cost, rep in info[:number]:
         total, pos, finger_repeats, finger_repeats_top_bottom, movement_pattern, finger_disbalance, no_handswitch_despite_direction_change, shortcut_keys, rows, no_handswitch_after_unbalancing_key, hand_disbalance = cost[:11]

@@ -3,7 +3,9 @@
 
 """Generate information about keyboard layouts."""
 
-from layout_cost import *
+from config import WEIGHT_CRITICAL_FRACTION_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, COST_PER_KEY, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, WEIGHT_FINGER_REPEATS, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
+from layout_cost import get_all_data, total_cost, split_uppercase_repeats, no_handswitching, finger_repeats_from_file, split_uppercase_trigrams, split_uppercase_trigrams_correctly
+
 
 def format_keyboard_layout(layout):
     """Format a keyboard layout to look like a real keyboard."""
@@ -142,7 +144,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
 def trigram_info(layout, only_layer_0=False, filepath=None):
     """Get info about the cost of ngrams and the cost factors."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
-    if only_layer_0: trigrams = split_uppercase_trigrams(trigrams, layout=layout)
+    if only_layer_0: trigrams = split_uppercase_trigrams(trigrams)
     
     trigs = {}
     for num, trig in trigrams:

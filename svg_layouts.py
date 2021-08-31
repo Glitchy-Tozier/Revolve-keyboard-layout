@@ -4,17 +4,17 @@
 
 # all imports used in any test
 try: 
-    from pysvg.builders import *
-    from pysvg.core import *
-    from pysvg.filter import  *
-    from pysvg.filter import *
-    from pysvg.gradient import *
-    from pysvg.linking import *
-    from pysvg.script import *
-    from pysvg.shape import *
-    from pysvg.structure import *
-    from pysvg.style import *
-    from pysvg.text import *
+    from pysvg.builders import TransformBuilder, StyleBuilder
+    #from pysvg.core import 
+    #from pysvg.filter import 
+    #from pysvg.filter import 
+    from pysvg.gradient import linearGradient, stop
+    #from pysvg.linking import 
+    #from pysvg.script import 
+    from pysvg.shape import circle, path
+    from pysvg.structure import defs, svg
+    #from pysvg.style import 
+    from pysvg.text import text
 except ImportError:
     raise ImportError("""You need pySVG for python3 for this script to run. Either get it from http://code.google.com/p/pysvg/ and run `2to3 -w *; python3 setup.py install` or get a copy of the converted Mercurial repository from Arne Babenhauserheide (http://draketo.de).""")
 

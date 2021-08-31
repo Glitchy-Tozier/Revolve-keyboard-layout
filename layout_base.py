@@ -29,7 +29,7 @@ if "--config" in argv:
     argv = argv[:idx] + argv[idx+2:]
     exec("from " + cfg + " import *")
 else: 
-    from config import *
+    from config import FINGER_POSITIONS, COST_PER_KEY, COST_PER_KEY_NOT_FOUND, COST_LAYER_ADDITION, RIGHT_HAND_LOWEST_INDEXES, abc
 
 ### Constants
 
@@ -1098,8 +1098,8 @@ def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
     xpfüq bgvwj
 
     """
-    layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
-    to_replace_list = []
+    #layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
+    #to_replace_list = []
     def set_key(current_key, new_letter, pos_01, layout, base_layout=base_layout, changing_layers = [0,1,4,5]):
         """Set the new_letter into the pos_01 in the layout. Take the key from the position in the base_layout and from the position in the letter and merge them, using layer 3,4 from the position and the rest from the letter.
 

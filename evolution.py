@@ -105,10 +105,11 @@ if filename is not None:
     sys.argv.append("-o")
     sys.argv.append(options.filename)
 
-from check_neo import evolve_a_layout, string_to_layout
+from check_neo import evolve_a_layout
+from layout_base import string_to_layout
 from time import time
 from datetime import timedelta
-from termctrl import *
+from termctrl import hide, show, write, priorline, erase
 from atexit import register
 STARTING_LAYOUT = string_to_layout(options.starting_layout)
 
@@ -144,7 +145,7 @@ for step in range(options.evolution_steps):
         print(step+1, "/", options.evolution_steps, timedelta(seconds=time()-t))
         t = time()
     else:
-        priorline(); priorline();
+        priorline(); priorline()
         if tppl < best_tppl:
             best_tppl = tppl
             priorline()

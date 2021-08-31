@@ -6,7 +6,8 @@
 import collections
 import hashlib
 
-from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
+from config import MODIFIERS_PER_LAYER
+from layout_base import NEO_LAYOUT, read_file, find_key, get_key, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 from textcheck import occurrence_dict_difference as diffdict
 

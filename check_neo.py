@@ -94,8 +94,12 @@ def result(*args, **kwds):
     else:
         info(*args, **kwds)
 
-from layout_cost import *
-from layout_info import *
+from config import abc, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, COST_PER_KEY
+from layout_base import switch_keys, format_layer_1_string, combine_genetically, string_to_layout, FINGER_NAMES, NEO_LAYOUT, QWERTZ_LAYOUT, AdNW_LAYOUT, KOY_LAYOUT, CRY_LAYOUT, BONE_LAYOUT, DVORAK_LAYOUT, COLEMAK_LAYOUT, WORKMAN_LAYOUT, CAPEWELL_LAYOUT, QGMLWY_LAYOUT
+from layout_cost import get_all_data, letters_in_file_precalculated, load_per_finger, load_per_hand, read_file, repeats_in_file_precalculated, total_cost, trigrams_in_file_precalculated
+from layout_info import format_keyboard_layout, short_number
+
+from copy import deepcopy
 from math import log10, log
 import pprint
 
@@ -421,12 +425,12 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
 
     qvals = total_cost(letters=letters, repeats=repeats, layout=QWERTZ_LAYOUT, trigrams=trigrams, return_weighted=True)
 
-    qhand_load = load_per_hand(letters, layout=QWERTZ_LAYOUT)
+    #qhand_load = load_per_hand(letters, layout=QWERTZ_LAYOUT)
 
     def compare_with_qwertz(lay, base=QWERTZ_LAYOUT):
         """compare the layout with qwertz."""
         vals = total_cost(letters=letters, repeats=repeats, layout=lay, trigrams=trigrams, return_weighted=True)
-        hand_load = load_per_hand(letters, layout=lay)
+        #hand_load = load_per_hand(letters, layout=lay)
         diff = 0
         to_compare = zip(vals, qvals)
         for l,q in to_compare:
