@@ -619,7 +619,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
     number_of_keystrokes = sum((num for num, trig in trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
     irregularity_cost_accumulator = 0
-
+    
     for num, trig in trigrams:
         bi1 = trig[:2]
         bi2 = trig[1:]
@@ -627,10 +627,14 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
         penalty2 = 0
         pos1_1 = find_key(bi1[0], layout=layout)
         pos1_2 = find_key(bi1[1], layout=layout)
-        pos2_1 = find_key(bi2[0], layout=layout)
+        pos2_1 = pos1_2
         pos2_2 = find_key(bi2[1], layout=layout)
         if pos1_1 and pos1_2 and pos2_1 and pos2_2:
-            ## first aggregate all the different costs in penalty1 and penalty2
+            pos1_1_unbalances = pos1_1 in UNBALANCING_POSITIONS
+            pos1_2_unbalances = pos1_2 in UNBALANCING_POSITIONS
+            pos2_1_unbalances = pos1_2_unbalances
+            pos2_2_unbalances = pos2_2 in UNBALANCING_POSITIONS
+            # first aggregate all the different costs in penalty1 and penalty2
             # embed all cost functions in here
             # def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
             penalty1 += WEIGHT_MANUAL_BIGRAM_PENALTY * COST_MANUAL_BIGRAM_PENALTY.get((pos1_1, pos1_2), 0)
@@ -639,28 +643,28 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
             # check if we’re on the same hand
             is_left1_1 = pos_is_left(pos1_1)
             is_left1_2 = pos_is_left(pos1_2)
-            is_left2_1 = pos_is_left(pos2_1)
+            is_left2_1 = is_left1_2
             is_left2_2 = pos_is_left(pos2_2)
             fing1_1 = KEY_TO_FINGER[pos1_1[:2] + (0, )]
             fing1_2 = KEY_TO_FINGER[pos1_2[:2] + (0, )]
-            fing2_1 = KEY_TO_FINGER[pos2_1[:2] + (0, )]
+            fing2_1 = fing1_2
             fing2_2 = KEY_TO_FINGER[pos2_2[:2] + (0, )]
             if WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS or (is_left1_1 == is_left1_2 and is_left2_1 == is_left2_2):
-                    penalty1 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos1_1, pos1_2, layout, warped_keyboard)**2
-                    penalty2 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos2_1, pos2_2, layout, warped_keyboard)**2
+                penalty1 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos1_1, pos1_2, layout, warped_keyboard)**2
+                penalty2 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos2_1, pos2_2, layout, warped_keyboard)**2
             # def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
-            if pos1_1 in UNBALANCING_POSITIONS or pos1_2 in UNBALANCING_POSITIONS:
+            if pos1_1_unbalances or pos1_2_unbalances:
                 try: finger_dist1 = finger_distance(pos1_1, pos1_2)
                 except: finger_dist1 = None
                 if finger_dist1:
                     penalty1 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos1_2, 0)*num + UNBALANCING_POSITIONS.get(pos1_1, 0)*num)/(finger_dist1**2)
-            if pos2_1 in UNBALANCING_POSITIONS or pos2_2 in UNBALANCING_POSITIONS:
+            if pos2_1_unbalances or pos2_2_unbalances:
                 try: finger_dist2 = finger_distance(pos1_1, pos1_2)
                 except: finger_dist2 = None
                 if finger_dist2:
                     penalty2 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos2_2, 0)*num + UNBALANCING_POSITIONS.get(pos2_1, 0)*num)/(finger_dist2**2)
             # def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
-            if pos1_1 in UNBALANCING_POSITIONS:
+            if pos1_1_unbalances:
                 if is_left1_1 == is_left1_2:
                     if not fing1_1.startswith("Daumen") and not fing1_2.startswith("Daumen"):
                         cost = UNBALANCING_POSITIONS.get(pos1_1, 0) * num
@@ -671,7 +675,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
                             cost += unb1 * unb2 * num * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
                         row_multiplier = 1 + (abs(pos1_1[0] - pos1_2[0]))**2
                         penalty1 += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * row_multiplier * cost
-            if pos2_1 in UNBALANCING_POSITIONS:
+            if pos2_1_unbalances:
                 if is_left2_1 == is_left2_2:
                     if not fing2_1.startswith("Daumen") and not fing2_2.startswith("Daumen"):
                         cost = UNBALANCING_POSITIONS.get(pos2_1, 0) * num
@@ -696,7 +700,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
                 if fing1_1.startswith("Zeige") or fing1_2.startswith("Zeige"):
                     fing_repeat_count1 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
                 if fing_repeat_count1 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
-                    fing_repeat_count1 += (fing_repeat_count1 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                    fing_repeat_count1 += (fing_repeat_count1 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER - 1)
                 penalty1 += WEIGHT_FINGER_REPEATS * fing_repeat_count1
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
                 if abs(pos1_1[0] - pos1_2[0]) > 1:
@@ -707,7 +711,7 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
                 if fing2_1.startswith("Zeige") or fing2_2.startswith("Zeige"):
                     fing_repeat_count2 *= WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER
                 if fing_repeat_count2 > critical_point and number_of_keystrokes > 20: # >20 to avoid kicking in for single bigram checks.
-                    fing_repeat_count2 += (fing_repeat_count2 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER -1)
+                    fing_repeat_count2 += (fing_repeat_count2 - critical_point)*(WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER - 1)
                 penalty2 += WEIGHT_FINGER_REPEATS * fing_repeat_count2
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
                 if abs(pos2_1[0] - pos2_2[0]) > 1:
