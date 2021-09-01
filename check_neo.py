@@ -7,6 +7,7 @@
 
 # python 2.6 compatibility via 3to2
 from __future__ import print_function
+from random import choice, shuffle
 
 __usage__ = """Usage:
 
@@ -114,7 +115,6 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
         num_letters = len(abc)
         # for very high number of switches just do use shuffle.
         if num_switches >= 1000:
-            from random import shuffle
             abc_list = list(abc)
             abc_shuffled = list(abc)
             shuffle(abc_shuffled)
@@ -129,7 +129,6 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
             return lay, keypairs
 
         # incomplete shuffling (only find the given number of switches), slower because we need to avoid dupliates the hard way.
-        from random import choice
         max_unique_tries = 1000
         for i in range(num_switches):
             key1 = choice(abc)
@@ -202,7 +201,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     # checked switch ('oo',) 201.4
     worse ('oo',) ([['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '`', ()], [(), 'x', 'v', 'l', 'c', 'w', 'k', 'h', 'g', 'f', 'q', 'ß', '´', ()], ['⇩', 'u', 'i', 'a', 'e', 'o', 's', 'n', 'r', 't', 'd', 'y', '⇘', '\\n'], ['⇧', (), 'ü', 'ö', 'ä', 'p', 'z', 'b', 'm', ',', '.', 'j', '⇗'], [(), (), (), ' ', (), (), (), ()]], 25, 0)
     """
-    from random import choice
+
     # First create one long list of possible switches
     keypairs = []
     best_pairs = []
