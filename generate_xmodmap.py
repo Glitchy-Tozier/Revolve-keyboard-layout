@@ -471,7 +471,7 @@ def parseCommandLine(argv):
 		printUsage(1)
 	try:
 		return codecs.open(sys.argv[1],u'r',u'utf-8')
-	except:
+	except Exception:
 		raiseFileNotFound()
 
 
@@ -496,8 +496,8 @@ class key_symbol_map(list):
 				for char in line[:-1]:
 					if char not in keysym_map.keys():
 						handleCharNotFound(char)
-					elif char <> u' ':
-						self.extend(keysym_map[char])
+					#elif char <> u' ':
+					#	self.extend(keysym_map[char])
 
 		except KeyError:
 			raiseFileError()

@@ -312,7 +312,7 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
             continue
         try: 
             finger_dist = finger_distance(pos1, pos2)
-        except: continue
+        except Exception: continue
         if not finger_dist: continue # same finger
 
         # add the cost
@@ -680,12 +680,12 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
             # def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
             if pos1_1_unbalances or pos1_2_unbalances:
                 try: finger_dist1 = finger_distance(pos1_1, pos1_2)
-                except: finger_dist1 = None
+                except Exception: finger_dist1 = None
                 if finger_dist1:
                     penalty1 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos1_2, 0)*num + UNBALANCING_POSITIONS.get(pos1_1, 0)*num)/(finger_dist1**2)
             if pos2_1_unbalances or pos2_2_unbalances:
                 try: finger_dist2 = finger_distance(pos1_1, pos1_2)
-                except: finger_dist2 = None
+                except Exception: finger_dist2 = None
                 if finger_dist2:
                     penalty2 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos2_2, 0)*num + UNBALANCING_POSITIONS.get(pos2_1, 0)*num)/(finger_dist2**2)
             # def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):

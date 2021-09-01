@@ -707,7 +707,7 @@ def get_key(pos, layout=NEO_LAYOUT):
     """
     try: 
         return layout[pos[0]][pos[1]][pos[2]]
-    except: return None
+    except Exception: return None
 
 
 def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
@@ -1098,7 +1098,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             lay[pos1[0]][pos1[1]] = tmp1
             update_letter_to_key_cache_multiple(cache_update, layout=lay)
 
-        #except:
+        #except Exception:
         #    pprint(lay)
         #    print(prev, pair, pos0, pos1, tmp0, tmp1)
         #    exit()
