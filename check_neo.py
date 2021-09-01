@@ -125,7 +125,7 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
                     new_in_list = abc_list.index(new)
                     abc_list[new_in_list] = orig
                     keypairs.append(orig+new)
-            lay = switch_keys(keypairs, layout=deepcopy(layout))
+            lay = switch_keys(keypairs, layout=layout)
             return lay, keypairs
 
         # incomplete shuffling (only find the given number of switches), slower because we need to avoid dupliates the hard way.
@@ -141,7 +141,7 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
                 if num_switches > num_letters:
                     tries += log(len(keypairs)+1, 2) + 1
             keypairs.append(key1+key2)
-        lay = switch_keys(keypairs, layout=deepcopy(layout))
+        lay = switch_keys(keypairs, layout=layout)
         return lay, keypairs
 
 def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False):
@@ -229,7 +229,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     length = len(switches)
     for keypairs in switches:
         i += 1
-        lay = switch_keys(keypairs, layout=deepcopy(layout))
+        lay = switch_keys(keypairs, layout=layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, max_cost=cost)[:3]
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
