@@ -1042,7 +1042,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     lay = deepcopy(layout)
 
     switched_letters = []
-    # pprint(lay)
+    
     for pair in keypairs:
             pos0 = find_key(pair[0], layout=lay)
             pos1 = find_key(pair[1], layout=lay)
@@ -1060,7 +1060,10 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             for i in range(max(len(pos1_keys), len(pos0_keys))):
                 if i in switch_layers:
                     try: 
-                        tmp0.append(pos1_keys[i])
+                        letter = pos1_keys[i]
+                        tmp0.append(letter)
+                        if letter not in switched_letters and letter != "":
+                            switched_letters.append(letter)
                     except IndexError: # not there: Fill the layer.
                         tmp0.append("")
                 else:
@@ -1074,7 +1077,10 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             for i in range(max(len(pos1_keys), len(pos0_keys))):
                 if i in switch_layers:
                     try: 
-                        tmp1.append(pos0_keys[i])
+                        letter = pos0_keys[i]
+                        tmp1.append(letter)
+                        if letter not in switched_letters and letter != "":
+                            switched_letters.append(letter)
                     except IndexError: # not there: Fill the layer.
                         tmp1.append("")
                 else:
@@ -1087,8 +1093,6 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             cache_update = ""
             for letter in tmp0 + tmp1:
                 cache_update += letter
-                if letter not in switched_letters:
-                    switched_letters.append(letter)
 
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1

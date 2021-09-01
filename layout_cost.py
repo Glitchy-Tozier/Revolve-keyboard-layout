@@ -9,9 +9,10 @@
 # TODO: Add cost when the position of keys is inverted (g lower, k upper, but d upper and t lower).
 # Reason: Being easy to learn is essential.
 
+from copy import deepcopy
 from math import log, sqrt
-from random import sample
 from pprint import pprint
+from random import sample
 
 from config import WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER, FINGER_SWITCH_COST, SIMILAR_LETTERS, UNBALANCING_POSITIONS, WEIGHT_UNBALANCING_AFTER_UNBALANCING, SHORT_FINGERS, LONG_FINGERS, WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, abc_full, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH, COST_MANUAL_BIGRAM_PENALTY, WEIGHT_MANUAL_BIGRAM_PENALTY, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW, WEIGHT_NEIGHBORING_UNBALANCE, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY, WEIGHT_FINGER_SWITCH, WEIGHT_FINGER_REPEATS_TOP_BOTTOM, WEIGHT_FINGER_REPEATS, WEIGHT_POSITION, IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION, WEIGHT_FINGER_DISBALANCE, WEIGHT_TOO_LITTLE_HANDSWITCHING, WEIGHT_XCVZ_ON_BAD_POSITION, WEIGHT_ASYMMETRIC_SIMILAR, WEIGHT_HAND_DISBALANCE, WEIGHT_ASYMMETRIC_BIGRAMS, WEIGHT_IRREGULARITY_PER_LETTER, WEIGHT_CRITICAL_FRACTION, WEIGHT_CRITICAL_FRACTION_MULTIPLIER
 from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NEO_LAYOUT, COST_PER_KEY, find_key, single_key_position_cost, key_to_finger, pos_is_left, KEY_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
@@ -19,8 +20,6 @@ from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
 
-#: Cache for the cost functions: ngram: cost
-NGRAM_COST_CACHE = {}
 
 ### Cost Functions
 
@@ -600,7 +599,7 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
         
 
-def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost_dic=None, warped_keyboard=True, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
     """Calculate the irregularity by splitting trigrams into bigrams and including all bigram-costs.
 
     This is a proxy for bad to type words: it gives higher cost to trigrams in which both bigrams are bad.
@@ -617,20 +616,45 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
     [True, True, True, True, True]
     
     """
-    number_of_keystrokes = sum((num for num, trig in trigrams))
+
+    number_of_keystrokes = sum((num for num, trig in all_trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
-    irregularity_cost_accumulator = 0
+
+    trigrams_to_test = []
+    new_trigram_cost_dic = {}
+
+#    print()
+#    if switched_letters:
+#        print("len:", len(switched_letters))
+#    if trigram_cost_dic:
+#        print("yes dic")
+#    else:
+#        print("no dic")
     
-    for num, trig in trigrams:
+    # if this isn't the first loop and there's a reasonable amount of switched letters
+    if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 40:
+        new_trigram_cost_dic = deepcopy(trigram_cost_dic)
+
+        #print("switched letters:", switched_letters)
+        # select which trigrams actually need testing
+        for num, trig in all_trigrams:
+            for switched_letter in switched_letters:
+                if switched_letter in trig:
+                    trigrams_to_test.append((num, trig))
+                    continue
+    else:
+        trigrams_to_test = all_trigrams
+
+    for num, trig in trigrams_to_test:
         bi1 = trig[:2]
         bi2 = trig[1:]
-        penalty1 = 0
-        penalty2 = 0
         pos1_1 = find_key(bi1[0], layout=layout)
         pos1_2 = find_key(bi1[1], layout=layout)
         pos2_1 = pos1_2
         pos2_2 = find_key(bi2[1], layout=layout)
         if pos1_1 and pos1_2 and pos2_1 and pos2_2:
+            penalty1 = 0
+            penalty2 = 0
             pos1_1_unbalances = pos1_1 in UNBALANCING_POSITIONS
             pos1_2_unbalances = pos1_2 in UNBALANCING_POSITIONS
             pos2_1_unbalances = pos1_2_unbalances
@@ -721,8 +745,11 @@ def irregularity_from_trigrams(trigrams, warped_keyboard=True, layout=NEO_LAYOUT
             penalty1 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi1], layout=layout, cost_per_key=cost_per_key)
             penalty2 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi2], layout=layout, cost_per_key=cost_per_key)
             ## now actually do the calculation
-            irregularity_cost_accumulator += penalty1 * penalty2
-    return sqrt(irregularity_cost_accumulator)
+            new_trigram_cost_dic[trig] = penalty1 * penalty2
+
+    irregularity_penalty = sqrt(sum(new_trigram_cost_dic.values()))
+    return irregularity_penalty, new_trigram_cost_dic
+
 
 def irregularity(words, layout=NEO_LAYOUT, **opts):
     """Irregularity of the cost per word: The std of the total_cost for
@@ -771,7 +798,7 @@ def aggregate_cost(number_of_letters=0, position_cost=0, frep_num=0, frep_num_to
 
 
 
-def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True, max_cost=None):
+def total_cost(data=None, letters=None, switched_letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, trigram_cost_dic=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True, max_cost=None):
     """Compute a total cost from all costs we have available, wheighted.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
@@ -884,9 +911,10 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
         # avoid very costly checks if not necessary
         check_irregularity = False
     if check_irregularity:
-        irregularity_penalty = irregularity_from_trigrams(trigrams, layout=layout)
+        irregularity_penalty, new_trigram_cost_dic = irregularity_from_trigrams(trigrams, switched_letters=switched_letters, trigram_cost_dic=trigram_cost_dic, layout=layout)
     else:
         irregularity_penalty = 0
+        new_trigram_cost_dic = trigram_cost_dic
     
 
     # add all together and weight them
@@ -908,9 +936,9 @@ def total_cost(data=None, letters=None, repeats=None, layout=NEO_LAYOUT, cost_pe
                            irregularity_penalty=irregularity_penalty)
 
     if not return_weighted:
-        return total, frep_num, position_cost, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity_penalty
+        return total, frep_num, position_cost, new_trigram_cost_dic, frep_num_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity_penalty
     else:
-        return total, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_POSITION * position_cost, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams, WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar, WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty
+        return total, WEIGHT_FINGER_REPEATS * frep_num, WEIGHT_POSITION * position_cost, new_trigram_cost_dic, WEIGHT_FINGER_REPEATS_TOP_BOTTOM * frep_num_top_bottom, WEIGHT_FINGER_SWITCH * neighboring_fings, WEIGHT_FINGER_DISBALANCE * disbalance, WEIGHT_TOO_LITTLE_HANDSWITCHING * no_handswitches, WEIGHT_XCVZ_ON_BAD_POSITION * number_of_letters * badly_positioned, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * line_change_same_hand, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * no_switch_after_unbalancing, WEIGHT_HAND_DISBALANCE * hand_disbalance * number_of_letters, WEIGHT_MANUAL_BIGRAM_PENALTY * manual_penalty, WEIGHT_NEIGHBORING_UNBALANCE * neighboring_unbalance, WEIGHT_ASYMMETRIC_BIGRAMS * asymmetric_bigrams, WEIGHT_ASYMMETRIC_SIMILAR * number_of_letters * asymmetric_similar, WEIGHT_IRREGULARITY_PER_LETTER * irregularity_penalty, new_trigram_cost_dic
 
 
 def _test():
