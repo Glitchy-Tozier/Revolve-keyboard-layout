@@ -11,6 +11,7 @@
 
 from math import log, sqrt
 from random import sample
+from pprint import pprint
 
 from config import WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER, FINGER_SWITCH_COST, SIMILAR_LETTERS, UNBALANCING_POSITIONS, WEIGHT_UNBALANCING_AFTER_UNBALANCING, SHORT_FINGERS, LONG_FINGERS, WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, abc_full, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH, COST_MANUAL_BIGRAM_PENALTY, WEIGHT_MANUAL_BIGRAM_PENALTY, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW, WEIGHT_NEIGHBORING_UNBALANCE, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY, WEIGHT_FINGER_SWITCH, WEIGHT_FINGER_REPEATS_TOP_BOTTOM, WEIGHT_FINGER_REPEATS, WEIGHT_POSITION, IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION, WEIGHT_FINGER_DISBALANCE, WEIGHT_TOO_LITTLE_HANDSWITCHING, WEIGHT_XCVZ_ON_BAD_POSITION, WEIGHT_ASYMMETRIC_SIMILAR, WEIGHT_HAND_DISBALANCE, WEIGHT_ASYMMETRIC_BIGRAMS, WEIGHT_IRREGULARITY_PER_LETTER, WEIGHT_CRITICAL_FRACTION, WEIGHT_CRITICAL_FRACTION_MULTIPLIER
 from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NEO_LAYOUT, COST_PER_KEY, find_key, single_key_position_cost, key_to_finger, pos_is_left, KEY_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
@@ -38,7 +39,7 @@ def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PE
     >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
     81
     >>> from check_neo import switch_keys
-    >>> lay = switch_keys(["ax"], layout=NEO_LAYOUT)
+    >>> lay, switched_letters = switch_keys(["ax"], layout=NEO_LAYOUT)
     >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
     126
     >>> data = "UIaĥK\\n"
@@ -412,7 +413,6 @@ def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
         else: fingers[finger] = num
     # Debug: Print the load per finger
     if print_load_per_finger: 
-        from pprint import pprint
         pprint(fingers)
     return fingers
 
@@ -450,7 +450,6 @@ def std(numbers):
     for i in numbers:
         var += (i - mean)**2
     var /= max(1, (length - 1))
-    from math import sqrt
     return sqrt(var)
 
 def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
@@ -743,7 +742,6 @@ each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
         for i in numbers:
             var += (i - mean)**2
         var /= max(1, (length - 1))
-        from math import sqrt
         return sqrt(var)
     data = []
     if IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION < 1.0:

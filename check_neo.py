@@ -102,7 +102,8 @@ from layout_info import format_keyboard_layout, short_number
 
 from copy import deepcopy
 from math import log10, log
-import pprint
+from pprint import pprint
+
 
 # TODO: Split the different ways of evolution into evolve.py. Requirement: Don’t give any output.
 
@@ -125,7 +126,7 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
                     new_in_list = abc_list.index(new)
                     abc_list[new_in_list] = orig
                     keypairs.append(orig+new)
-            lay = switch_keys(keypairs, layout=layout)
+            lay, switched_letters = switch_keys(keypairs, layout=layout)
             return lay, keypairs
 
         # incomplete shuffling (only find the given number of switches), slower because we need to avoid dupliates the hard way.
@@ -141,8 +142,8 @@ def randomize_keyboard(abc, num_switches, layout=NEO_LAYOUT):
                 if num_switches > num_letters:
                     tries += log(len(keypairs)+1, 2) + 1
             keypairs.append(key1+key2)
-        lay = switch_keys(keypairs, layout=layout)
-        return lay, keypairs
+        lay, switched_letters = switch_keys(keypairs, layout=layout)
+        return lay, keypairs, switched_letters
 
 def find_the_best_random_keyboard(letters, repeats, trigrams, num_tries, num_switches=1000, layout=NEO_LAYOUT, abc=abc, quiet=False):
         """Create num_tries random keyboards (starting from the layout and doing num_switches random keyswitches), compare them and only keep the best (by total_cost)."""
@@ -229,7 +230,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
     length = len(switches)
     for keypairs in switches:
         i += 1
-        lay = switch_keys(keypairs, layout=layout)
+        lay, switched_letters = switch_keys(keypairs, layout=layout)
         new_cost, frep, pos_cost = total_cost(letters=letters, repeats=repeats, layout=lay, cost_per_key=cost_per_key, trigrams=trigrams, max_cost=cost)[:3]
         step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
         if not quiet:
@@ -491,8 +492,6 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
      # Data for evaluating layouts.
      letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
 
-     from pprint import pprint
-
      #: the maximum number of genetic combination tries to get a unique layout (no clone)
      max_unique_tries = 200
 
@@ -639,8 +638,6 @@ def check_a_layout_string_from_shell(layout_string, quiet, verbose, base_layout=
 ### Self-Test
 
 if __name__ == "__main__":
-    from sys import argv
-
     if "--test" in argv:
         from doctest import testmod
         testmod()
@@ -734,7 +731,7 @@ if __name__ == "__main__":
     elif options.print_raw_layout:
         if not options.check_string:
             print("please give the layout to print with --check-string")
-        pprint.pprint(string_to_layout(options.check_string, options.base)[:5])
+        pprint(string_to_layout(options.check_string, options.base)[:5])
         
     elif options.check_string:
         check_a_layout_string_from_shell(options.check_string, quiet=options.quiet, verbose=options.verbose, datafile=options.file, base_layout=options.base, fingerstats=options.fingerstats)

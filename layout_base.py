@@ -52,7 +52,7 @@ NEO_LAYOUT = [
 
     [("⇧"),("⇚"),("ü", "Ü", "#", "", "", "∪"),("ö", "Ö", "$", "", "ϵ", "∩"),("ä", "Ä", "|", "⎀", "η", "ℵ"),
      ("p", "P", "~", "\n", "π", "Π"),("z", "Z", "`", "↶", "ζ", "ℤ"),("b", "B", "+", ":", "β", "⇐"),("m", "M", "%", "1", "μ", "⇔"),
-     (",", "–", '"', "2", "ϱ", "⇒"),(".", "•", "'", "3", "ϑ", "↦"),("j", "J", ";", ";", "θ", "Θ"),("⇗")],        # Reihe 3
+     (",", "–", '"', "2", "ϱ", "⇒"),(".", "•", "'", "3", "ϑ", "↦"),("j", "J", ";", ";", "θ", "Θ"),("⇗")], # Reihe 3
 
     [("♕"), (), ("♔"), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ("♛")] # Reihe 4 mit Leertaste
 ]
@@ -677,6 +677,7 @@ TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.5 #: multiplier for the cost of seco
 ### Imports
 
 from copy import deepcopy
+from pprint import pprint
 
 
 ### Helper Functions
@@ -805,6 +806,13 @@ def update_letter_to_key_cache_multiple(keys, layout):
 
 def find_key(key, layout): 
     """Find the position of the key in the layout.
+
+    The result is structured as follows:
+    (
+        row_nr,  # top to botton, including the number-row
+        column_nr,  # left to right
+        layer_nr,
+    )
     
     >>> find_key("a", NEO_LAYOUT)
     (2, 3, 0)
@@ -976,10 +984,10 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
 
     @param keypairs: A list of keypairs to switch. The keys in these pairs MUST be the base layer keys.
 
-    >>> lay = switch_keys([], layout = NEO_LAYOUT)
+    >>> lay, switched_letters = switch_keys([], layout = NEO_LAYOUT)
     >>> lay == NEO_LAYOUT
     True
-    >>> lay = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
+    >>> lay, switched_letters = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
     >>> get_key((1, 1, 0), layout=lay)
     'l'
     >>> get_key((1, 3, 0), layout=lay)
@@ -1002,13 +1010,13 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     True
     >>> NEO_LAYOUT_lxwq == lay
     True
-    >>> lay = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
+    >>> lay, switched_letters = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
     >>> NEO_LAYOUT_lx == lay
     True
     >>> a = find_key("a", layout=lay)
     >>> A = find_key("A", layout=lay)
     >>> curly = find_key("{", layout=lay)
-    >>> lay = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
+    >>> lay, switched_letters = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
     >>> a == find_key("e", layout=lay)
     True
     >>> A == find_key("E", layout=lay)
@@ -1021,7 +1029,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     >>> d = find_key("d", layout=NEO_LAYOUT)
     >>> comma = find_key(",", layout=NEO_LAYOUT)
     >>> p = find_key("p", layout=NEO_LAYOUT)
-    >>> lay = switch_keys([".d", ",p"], layout=NEO_LAYOUT)
+    >>> lay, switched_letters = switch_keys([".d", ",p"], layout=NEO_LAYOUT)
     >>> d == find_key(".", layout=lay)
     True
     >>> dot == find_key("d", layout=lay)
@@ -1032,7 +1040,8 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     True
     """
     lay = deepcopy(layout)
-    from pprint import pprint
+
+    switched_letters = []
     # pprint(lay)
     for pair in keypairs:
             pos0 = find_key(pair[0], layout=lay)
@@ -1078,16 +1087,19 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             cache_update = ""
             for letter in tmp0 + tmp1:
                 cache_update += letter
+                if letter not in switched_letters:
+                    switched_letters.append(letter)
 
             lay[pos0[0]][pos0[1]] = tmp0
             lay[pos1[0]][pos1[1]] = tmp1
             update_letter_to_key_cache_multiple(cache_update, layout=lay)
+
         #except:
         #    pprint(lay)
         #    print(prev, pair, pos0, pos1, tmp0, tmp1)
         #    exit()
     
-    return lay
+    return lay, switched_letters
 
 
 def string_to_layout(layout_string, base_layout=NEO_LAYOUT):

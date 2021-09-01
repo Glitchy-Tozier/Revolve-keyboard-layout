@@ -101,9 +101,9 @@ if options.anneal * anneal_step > options.steps:
 # Hack to make the script output to a file instead of the shell (necessary for windows users).
 # MUST come before the imports from check_neo.
 if filename is not None:
-    import sys
-    sys.argv.append("-o")
-    sys.argv.append(options.filename)
+    from sys import argv
+    argv.append("-o")
+    argv.append(options.filename)
 
 from check_neo import evolve_a_layout
 from layout_base import string_to_layout
