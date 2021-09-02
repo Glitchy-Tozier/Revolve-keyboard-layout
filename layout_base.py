@@ -1041,7 +1041,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
     """
     lay = deepcopy(layout)
 
-    switched_letters = []
+    switched_letters = set()
     
     for pair in keypairs:
             pos0 = find_key(pair[0], layout=lay)
@@ -1063,7 +1063,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
                         letter = pos1_keys[i]
                         tmp0.append(letter)
                         if letter not in switched_letters and letter != "":
-                            switched_letters.append(letter)
+                            switched_letters.add(letter)
                     except IndexError: # not there: Fill the layer.
                         tmp0.append("")
                 else:
@@ -1080,7 +1080,7 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
                         letter = pos0_keys[i]
                         tmp1.append(letter)
                         if letter not in switched_letters and letter != "":
-                            switched_letters.append(letter)
+                            switched_letters.add(letter)
                     except IndexError: # not there: Fill the layer.
                         tmp1.append("")
                 else:

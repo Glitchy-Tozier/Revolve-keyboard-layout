@@ -792,16 +792,17 @@ def fix_impossible_ngrams(data, layout=None):
                     corrected_ngram = ngram.replace("⇥", "\t")
                     data[tuple_idx] = (num, corrected_ngram)
 
-        def can_be_typed(num_gram_tup):
+        def can_be_typed(ngram_tuple):
             """Check if a ngram can be typed"""
-            for letter in num_gram_tup[1]:
+            ngram = ngram_tuple[1]
+            for letter in ngram:
                 if letter not in keys:
                     #print("filtered trig:", num_gram_tup[1])
                     #print("crucial letter:", letter.encode("unicode_escape"))
                     return False
             return True
 
-        filtered_data = list(filter(lambda ngram: can_be_typed(ngram), data))
+        filtered_data = list(filter(can_be_typed, data))
         return filtered_data
     else:
         # Do nothing
@@ -1254,7 +1255,10 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
         trigrams = fix_impossible_ngrams(all_trigrams, layout=layout)
         number_of_trigrams = sum([i for i, s in trigrams])
 
-    return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
+    letters_set = set(letters)
+    bigrams_set = set(bigrams)
+    trigrams_set = set(trigrams)
+    return letters_set, number_of_letters, bigrams_set, number_of_bigrams, trigrams_set, number_of_trigrams
 
 
 ### Self test

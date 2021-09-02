@@ -616,27 +616,28 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     [True, True, True, True, True]
     
     """
-    print_output = False
+    print_output = True
     if print_output:
         print()
 
     number_of_keystrokes = sum((num for num, trig in all_trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
 
-    trigrams_to_test = []
+    trigrams_to_test = set()
     new_trigram_cost_dic = {}
     
     # if this isn't the first loop and there's a reasonable amount of switched letters
     if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 80: # 80 because it's the max. number of switched_letters when 10 keys are replaced.
-        new_trigram_cost_dic = deepcopy(trigram_cost_dic)
         if print_output:
             print(len(switched_letters), "moved letters:", switched_letters)
+        new_trigram_cost_dic = deepcopy(trigram_cost_dic)
         # select which trigrams actually need testing
-        for num, trig in all_trigrams:
+        for trigram_tuple in all_trigrams:
+            trig = trigram_tuple[1]
             for switched_letter in switched_letters:
                 if switched_letter in trig:
-                    trigrams_to_test.append((num, trig))
-                    continue
+                    trigrams_to_test.add(trigram_tuple)
+                    break
     else:
         trigrams_to_test = all_trigrams
 
