@@ -766,22 +766,45 @@ def clean_data(data):
         data = data[1:]
     return data
 
-def rm_impossible_ngrams(data, layout=None):
-    """Removes the ngrams that can't be typed using a specified layout.
-    If no layout was specified, the ngrams aren't changed
+def fix_impossible_ngrams(data, layout=None):
+    """Make sure that we get the best possible data:
+
+    1. Correct the representation of some symbols. (Tabs can be "⇥" or "\\t")
+    2. Remove the ngrams that can't be typed using a specified layout
+
+    If no layout is specified, the ngrams aren't changed.
     """
     if layout:
+        # The list of possible inputs in a given layout
         keys = list(filter(None,get_all_keys_in_layout(layout)))
+        
+        # Make sure the correct tab-syntax is shown in the ngrams
+        if ("⇥" in keys) and not ("\t" in keys):
+            # Replace all "\t" with "⇥"
+            for tuple_idx, (num, ngram) in enumerate(data):
+                if "\t" in ngram:
+                    corrected_ngram = ngram.replace("\t", "⇥")
+                    data[tuple_idx] = (num, corrected_ngram)
+        elif ("\t" in keys) and not ("⇥" in keys):
+            # Replace all "⇥" with "\t"
+            for tuple_idx, (num, ngram) in enumerate(data):
+                if "⇥" in ngram:
+                    corrected_ngram = ngram.replace("⇥", "\t")
+                    data[tuple_idx] = (num, corrected_ngram)
 
-        def can_be_typed(data):
-            for letter in data[1]:
+        def can_be_typed(num_gram_tup):
+            """Check if a ngram can be typed"""
+            for letter in num_gram_tup[1]:
                 if letter not in keys:
+                    #print("filtered trig:", num_gram_tup[1])
+                    #print("crucial letter:", letter.encode("unicode_escape"))
                     return False
             return True
 
         filtered_data = list(filter(lambda ngram: can_be_typed(ngram), data))
         return filtered_data
     else:
+        # Do nothing
         return data
 
 def ngrams_in_data(data):
@@ -1192,9 +1215,9 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     if datapath is not None:
         all_letters, all_repeats, all_trigrams = ngrams_in_filepath(datapath)
         # remove the ngrams that can't be typed, if the is the layout=layout parameter was used.
-        letters = rm_impossible_ngrams(all_letters, layout=layout)
-        bigrams = rm_impossible_ngrams(all_repeats, layout=layout)
-        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
+        letters = fix_impossible_ngrams(all_letters, layout=layout)
+        bigrams = fix_impossible_ngrams(all_repeats, layout=layout)
+        trigrams = fix_impossible_ngrams(all_trigrams, layout=layout)
         
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
@@ -1203,9 +1226,9 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     elif data is not None:
         all_letters, all_repeats, all_trigrams = ngrams_in_data(data)
         # remove the ngrams that can't be typed, if the is the layout=layout parameter was used.
-        letters = rm_impossible_ngrams(all_letters, layout=layout)
-        bigrams = rm_impossible_ngrams(all_repeats, layout=layout)
-        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
+        letters = fix_impossible_ngrams(all_letters, layout=layout)
+        bigrams = fix_impossible_ngrams(all_repeats, layout=layout)
+        trigrams = fix_impossible_ngrams(all_trigrams, layout=layout)
     
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
@@ -1215,20 +1238,20 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     if letters is None or number_of_letters is None: 
         letterdata = clean_data(read_file("1-gramme.arne.txt"))
         all_letters = letters_in_file_precalculated(letterdata)
-        letters = rm_impossible_ngrams(all_letters, layout=layout)
+        letters = fix_impossible_ngrams(all_letters, layout=layout)
         number_of_letters = sum([i for i, s in letters])
 
     if repeats is None or number_of_bigrams is None: 
         bigramdata = clean_data(read_file("2-gramme.arne.txt"))
         all_bigrams = repeats_in_file_precalculated(bigramdata)
-        bigrams = rm_impossible_ngrams(all_bigrams, layout=layout)
+        bigrams = fix_impossible_ngrams(all_bigrams, layout=layout)
         number_of_bigrams = sum([i for i, s in bigrams])
     else: bigrams = repeats
 
     if trigrams is None or number_of_trigrams is None:
         trigramdata = clean_data(read_file("3-gramme.arne.txt"))
         all_trigrams = trigrams_in_file_precalculated(trigramdata)
-        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
+        trigrams = fix_impossible_ngrams(all_trigrams, layout=layout)
         number_of_trigrams = sum([i for i, s in trigrams])
 
     return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
