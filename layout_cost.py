@@ -616,26 +616,20 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     [True, True, True, True, True]
     
     """
+    print_output = False
 
     number_of_keystrokes = sum((num for num, trig in all_trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
 
     trigrams_to_test = []
     new_trigram_cost_dic = {}
-
-#    print()
-#    if switched_letters:
-#        print("len:", len(switched_letters))
-#    if trigram_cost_dic:
-#        print("yes dic")
-#    else:
-#        print("no dic")
     
     # if this isn't the first loop and there's a reasonable amount of switched letters
-    if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 40:
+    if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 80: # 80 because it's the max. number of switched_letters when 10 keys are replaced.
         new_trigram_cost_dic = deepcopy(trigram_cost_dic)
-
-        #print("switched letters:", switched_letters)
+        if print_output:
+            print()
+            print(len(switched_letters), "switched letters:", switched_letters)
         # select which trigrams actually need testing
         for num, trig in all_trigrams:
             for switched_letter in switched_letters:
@@ -644,6 +638,11 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
                     continue
     else:
         trigrams_to_test = all_trigrams
+
+    if print_output:
+        test_trigs_count = len(trigrams_to_test)
+        all_trigs_count = len(all_trigrams)
+        print("Trigrams that need testing:", '{:_}'.format(test_trigs_count), "out of", '{:_}'.format(all_trigs_count))
 
     for num, trig in trigrams_to_test:
         bi1 = trig[:2]
