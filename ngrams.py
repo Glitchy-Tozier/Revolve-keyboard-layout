@@ -766,6 +766,24 @@ def clean_data(data):
         data = data[1:]
     return data
 
+def rm_impossible_ngrams(data, layout=None):
+    """Removes the ngrams that can't be typed using a specified layout.
+    If no layout was specified, the ngrams aren't changed
+    """
+    if layout:
+        keys = list(filter(None,get_all_keys_in_layout(layout)))
+
+        def can_be_typed(data):
+            for letter in data[1]:
+                if letter not in keys:
+                    return False
+            return True
+
+        filtered_data = list(filter(lambda ngram: can_be_typed(ngram), data))
+        return filtered_data
+    else:
+        return data
+
 def ngrams_in_data(data):
     """Get ngrams from a dataset."""
     letters = letters_in_file(data)
@@ -1159,29 +1177,36 @@ class NGrams(object):
 
 ### Get all data: the main interface to this module
 
-def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None, ngram_config_path=None): 
+def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, number_of_bigrams=None, trigrams=None, number_of_trigrams=None, datapath=None, ngram_config_path=None, layout=None): 
     """Get letters, bigrams and trigrams.
 
     @param data: a string of text.
     @param ngram_config_path: the path to an ngram config file. If this is specified, all other values are ignored.
     @return: letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams
     """
-    #data = read_file("/tmp/sskreszta")
-
     if ngram_config_path:
         ngrams = NGrams(ngram_config_path)
         return [(num, ngram) for ngram, num in ngrams.one.items()], len(ngrams.one), [(num, ngram) for ngram, num in ngrams.two.items()], len(ngrams.two), [(num, ngram) for ngram, num in ngrams.three.items()], len(ngrams.three)
 
     # if we get a datastring, we use it for everything.
     if datapath is not None:
-        letters, repeats, trigrams = ngrams_in_filepath(datapath)
-        bigrams = repeats
+        all_letters, all_repeats, all_trigrams = ngrams_in_filepath(datapath)
+        # remove the ngrams that can't be typed, if the is the layout=layout parameter was used.
+        letters = rm_impossible_ngrams(all_letters, layout=layout)
+        bigrams = rm_impossible_ngrams(all_repeats, layout=layout)
+        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
+        
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
         number_of_trigrams = sum([i for i, s in trigrams])
+    
     elif data is not None:
-        letters, repeats, trigrams = ngrams_in_data(data)
-        bigrams = repeats
+        all_letters, all_repeats, all_trigrams = ngrams_in_data(data)
+        # remove the ngrams that can't be typed, if the is the layout=layout parameter was used.
+        letters = rm_impossible_ngrams(all_letters, layout=layout)
+        bigrams = rm_impossible_ngrams(all_repeats, layout=layout)
+        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
+    
         number_of_letters = sum([i for i, s in letters])
         number_of_bigrams = sum([i for i, s in bigrams])
         number_of_trigrams = sum([i for i, s in trigrams])
@@ -1189,20 +1214,21 @@ def get_all_data(data=None, letters=None, repeats=None, number_of_letters=None, 
     # otherwise we get the missing values from the predefined files. 
     if letters is None or number_of_letters is None: 
         letterdata = clean_data(read_file("1-gramme.arne.txt"))
-        letters = letters_in_file_precalculated(letterdata)
-        #letters = letters_in_file(data)
+        all_letters = letters_in_file_precalculated(letterdata)
+        letters = rm_impossible_ngrams(all_letters, layout=layout)
         number_of_letters = sum([i for i, s in letters])
 
     if repeats is None or number_of_bigrams is None: 
         bigramdata = clean_data(read_file("2-gramme.arne.txt"))
-        bigrams = repeats_in_file_precalculated(bigramdata)
-        #repeats = repeats_in_file(data)
+        all_bigrams = repeats_in_file_precalculated(bigramdata)
+        bigrams = rm_impossible_ngrams(all_bigrams, layout=layout)
         number_of_bigrams = sum([i for i, s in bigrams])
     else: bigrams = repeats
 
     if trigrams is None or number_of_trigrams is None:
         trigramdata = clean_data(read_file("3-gramme.arne.txt"))
-        trigrams = trigrams_in_file_precalculated(trigramdata)
+        all_trigrams = trigrams_in_file_precalculated(trigramdata)
+        trigrams = rm_impossible_ngrams(all_trigrams, layout=layout)
         number_of_trigrams = sum([i for i, s in trigrams])
 
     return letters, number_of_letters, bigrams, number_of_bigrams, trigrams, number_of_trigrams

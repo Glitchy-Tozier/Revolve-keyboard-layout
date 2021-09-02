@@ -72,7 +72,8 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
         data=data, 
         letters=letters, number_of_letters=number_of_letters,
         repeats=repeats, number_of_bigrams=number_of_bigrams,
-        trigrams=trigrams, number_of_trigrams=number_of_trigrams
+        trigrams=trigrams, number_of_trigrams=number_of_trigrams,
+        layout=layout
         )
 
     # weighted
@@ -143,7 +144,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
 
 def trigram_info(layout, only_layer_0=False, filepath=None):
     """Get info about the cost of ngrams and the cost factors."""
-    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath, layout=layout) 
     if only_layer_0: trigrams = split_uppercase_trigrams(trigrams)
     
     trigs = {}

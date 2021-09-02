@@ -617,6 +617,8 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     
     """
     print_output = False
+    if print_output:
+        print()
 
     number_of_keystrokes = sum((num for num, trig in all_trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
@@ -628,8 +630,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 80: # 80 because it's the max. number of switched_letters when 10 keys are replaced.
         new_trigram_cost_dic = deepcopy(trigram_cost_dic)
         if print_output:
-            print()
-            print(len(switched_letters), "switched letters:", switched_letters)
+            print(len(switched_letters), "moved letters:", switched_letters)
         # select which trigrams actually need testing
         for num, trig in all_trigrams:
             for switched_letter in switched_letters:
@@ -642,7 +643,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     if print_output:
         test_trigs_count = len(trigrams_to_test)
         all_trigs_count = len(all_trigrams)
-        print("Trigrams that need testing:", '{:_}'.format(test_trigs_count), "out of", '{:_}'.format(all_trigs_count))
+        print("Trigrams that need testing:", '{:_}'.format(test_trigs_count), "/", '{:_}'.format(all_trigs_count))
 
     for num, trig in trigrams_to_test:
         bi1 = trig[:2]
@@ -745,7 +746,11 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
             penalty2 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi2], layout=layout, cost_per_key=cost_per_key)
             ## now actually do the calculation
             new_trigram_cost_dic[trig] = penalty1 * penalty2
-
+        else:
+            if print_output:
+                print("Trigram wasn't found:",'<trig>"%s"</trig>' % trig)
+                for idx, letter in enumerate(trig):
+                    print("Letter", idx, "of Trigram (unicode):", letter.encode("unicode_escape"))
     irregularity_penalty = sqrt(sum(new_trigram_cost_dic.values()))
     return irregularity_penalty, new_trigram_cost_dic
 
@@ -813,7 +818,7 @@ def total_cost(data=None, letters=None, switched_letters=None, repeats=None, lay
     """
     # the raw costs
     if data is not None:
-        letters, num_letters, repeats, num_repeats, trigrams, number_of_trigrams = get_all_data(data=data)
+        letters, num_letters, repeats, num_repeats, trigrams, number_of_trigrams = get_all_data(data=data, layout=layout)
         # first split uppercase repeats *here*, so we don’t have to do it in each function.
         reps = split_uppercase_repeats(repeats, layout=layout)
         

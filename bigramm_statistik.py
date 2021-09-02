@@ -101,7 +101,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
     ## letters and trigrams, yes, this is kinda not nice to get them here again…
     if lett is None or trigrams is None or repeats is None or number_of_letters is None: 
-        lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath)
+        lett, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath, layout=layout)
     # shape builder for rectangles
     first_letters = {}
     if with_keys: 
@@ -300,7 +300,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
 def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False, secondary=True, svg=False, svg_output=None):
     """Print bigram-statistics of the layout."""
-    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath) 
+    letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath, layout=layout) 
     if not svg: 
         print(format_layer_1_string(layout))
         print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")

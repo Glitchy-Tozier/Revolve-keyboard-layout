@@ -341,7 +341,8 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
             letters=letters, number_of_letters=number_of_letters,
             repeats=repeats, number_of_bigrams=number_of_bigrams,
             trigrams=trigrams, number_of_trigrams=number_of_trigrams,
-            datapath=datapath
+            datapath=datapath,
+            layout=layout
         )
 
     res = "\n# Evolved Layout\n"
@@ -462,9 +463,9 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False, preselect_random=100, show_each_step=False):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False, preselect_random=1, show_each_step=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, ngram_config_path=ngram_config)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, ngram_config_path=ngram_config, layout=starting_layout)
     if limit_ngrams:
         letters = letters[:limit_ngrams]
         repeats = repeats[:limit_ngrams]
@@ -490,7 +491,7 @@ def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose
 def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iterations=20, abc=abc, prerandomize=10000, quiet=False, controlled=False, datafile=None):
      """Run a challenge between many randomized layouts, then combine the best pseudo-genetically (random) and add them to the challenge."""
      # Data for evaluating layouts.
-     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
+     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, layout=layout)
 
      #: the maximum number of genetic combination tries to get a unique layout (no clone)
      max_unique_tries = 200
@@ -570,7 +571,7 @@ def evolution_challenge(layout=NEO_LAYOUT, challengers=100, rounds=10, iteration
 def best_random_layout(number, prerandomize, quiet=False, datafile=None, layout=NEO_LAYOUT):
     """Select the best of a number of randomly created layouts."""
     info("Selecting the best from", number, "random layouts.")
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, layout=layout)
 
     if prerandomize:
         lay, cost = find_the_best_random_keyboard(letters, repeats, trigrams, num_tries=number, num_switches=prerandomize, layout=layout, abc=abc, quiet=quiet)
@@ -585,7 +586,7 @@ def compare_a_layout(quiet, verbose, datafile=None, layout=NEO_LAYOUT, fingersta
     """Check the performance of the neo layout, optionally scoring it against Qwertz."""
     if layout == NEO_LAYOUT:
         info("Neo")
-    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile)
+    letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, layout=layout)
 
     print_layout_with_statistics(layout, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, print_layout=not quiet, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose, shorten_numbers=True, fingerstats=fingerstats)
 
