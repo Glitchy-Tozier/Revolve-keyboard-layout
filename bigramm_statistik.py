@@ -195,7 +195,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         layout_string.set_font_size(18)
         group_info.addElement(layout_string)
     # add statistics
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=lett, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
+    total, frep_num, cost, _, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=lett, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
     tppl = total/max(1, number_of_letters)
     cost_string = text("cost (tppl): " + str(tppl), 325, 300)
     cost_string.set_font_size(18)

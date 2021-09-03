@@ -354,13 +354,11 @@ def print_layout_with_statistics(layout, letters=None, repeats=None, number_of_l
     if print_layout:
         res += c(format_layer_1_string(layout))
         res += c(format_keyboard_layout(layout))
-        #from pprint import pprint
-        #pprint(layout[:5])
 
     # unweighted
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance, asymmetric_bigrams, asymmetric_similar, irregularity = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:14]
+    total, frep_num, cost, _, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:9]
     # weighted
-    total, frep_num_w, cost_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:16]
+    total, frep_num_w, cost_w, _, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:17]
 
     if shorten_numbers:
         sn = short_number
@@ -463,7 +461,7 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
     print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams, verbose=verbose)
 
 
-def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False, preselect_random=1, show_each_step=False):
+def evolve_a_layout(steps, prerandomize, controlled, quiet, meter=False, verbose=False, controlled_tail=False, starting_layout=NEO_LAYOUT, datafile=None, anneal=0, anneal_step=100, ngram_config=None, fingerstats=True, limit_ngrams=False, preselect_random=100, show_each_step=False):
     """Evolve a layout by selecting the fittest of random mutations step by step."""
     letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data(datapath=datafile, ngram_config_path=ngram_config, layout=starting_layout)
     if limit_ngrams:

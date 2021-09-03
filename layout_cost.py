@@ -616,7 +616,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     [True, True, True, True, True]
     
     """
-    print_output = True
+    print_output = False
     if print_output:
         print()
 
