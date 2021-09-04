@@ -954,10 +954,10 @@ FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
 # Optimized structure for accessing by position. key_to_finger gets 3 times faster than with a cache and doublechecking.
-KEY_TO_FINGER = {}
-for finger in FINGER_POSITIONS:
-    for pos in FINGER_POSITIONS[finger]:
-        KEY_TO_FINGER[pos] = finger
+POS_TO_FINGER = {}
+for finger, positions in FINGER_POSITIONS.items():
+    for pos in positions:
+        POS_TO_FINGER[pos] = finger
 
 ### Constants for testing
 
@@ -1287,7 +1287,7 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     try: pos = pos[:2] + (0, )
     except TypeError: return "" # pos is None
     # check the cache
-    try: return KEY_TO_FINGER[pos]
+    try: return POS_TO_FINGER[pos]
     except KeyError: return ""
 
 

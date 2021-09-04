@@ -15,7 +15,7 @@ from pprint import pprint
 from random import sample
 
 from config import WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER, FINGER_SWITCH_COST, SIMILAR_LETTERS, UNBALANCING_POSITIONS, WEIGHT_UNBALANCING_AFTER_UNBALANCING, SHORT_FINGERS, LONG_FINGERS, WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, abc_full, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH, COST_MANUAL_BIGRAM_PENALTY, WEIGHT_MANUAL_BIGRAM_PENALTY, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW, WEIGHT_NEIGHBORING_UNBALANCE, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY, WEIGHT_FINGER_SWITCH, WEIGHT_FINGER_REPEATS_TOP_BOTTOM, WEIGHT_FINGER_REPEATS, WEIGHT_POSITION, IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION, WEIGHT_FINGER_DISBALANCE, WEIGHT_TOO_LITTLE_HANDSWITCHING, WEIGHT_XCVZ_ON_BAD_POSITION, WEIGHT_ASYMMETRIC_SIMILAR, WEIGHT_HAND_DISBALANCE, WEIGHT_ASYMMETRIC_BIGRAMS, WEIGHT_IRREGULARITY_PER_LETTER, WEIGHT_CRITICAL_FRACTION, WEIGHT_CRITICAL_FRACTION_MULTIPLIER
-from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NEO_LAYOUT, COST_PER_KEY, find_key, single_key_position_cost, key_to_finger, pos_is_left, KEY_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
+from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NEO_LAYOUT, COST_PER_KEY, find_key, single_key_position_cost, key_to_finger, pos_is_left, POS_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
 
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
@@ -166,8 +166,8 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                         hand_dists.append(-1)
                     # switch the fingers to the left hand so movements
                     # between similar keys are mirrored
-                    fing1 = KEY_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
-                    fing2 = KEY_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
+                    fing1 = POS_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
+                    fing2 = POS_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
                     if fing1 is not None and fing2 is not None:
                         fingidx1 = FINGER_NAMES.index(fing1)
                         fingidx2 = FINGER_NAMES.index(fing2)
@@ -253,8 +253,8 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
                 is_left2 = pos_is_left(pos2)
                 if is_left1 == is_left2:
                     # check if one of the positions is a thumb
-                    fing1 = KEY_TO_FINGER[pos1[:2] + (0, )]
-                    fing2 = KEY_TO_FINGER[pos2[:2] + (0, )]
+                    fing1 = POS_TO_FINGER[pos1[:2] + (0, )]
+                    fing2 = POS_TO_FINGER[pos2[:2] + (0, )]
                     if fing1.startswith("Daumen") or fing2.startswith("Daumen"):
                         continue
                     # using .get here, because most positions aren’t unbalancing.
@@ -289,8 +289,8 @@ def column_distance(pos1, pos2):
 
 def finger_distance(pos1, pos2):
     """distance in fingers."""
-    fing1 = KEY_TO_FINGER[pos1]
-    fing2 = KEY_TO_FINGER[pos2]
+    fing1 = POS_TO_FINGER[pos1]
+    fing2 = POS_TO_FINGER[pos2]
     # tumbs and handswitches ignored
     if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
         return 0
@@ -326,8 +326,8 @@ def line_change_positions_cost(pos1, pos2, layout, warped_keyboard):
             # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
             p1 = pos1[:2] + (0, )
             p2 = pos2[:2] + (0, )
-            f1 = KEY_TO_FINGER.get(p1, None)
-            f2 = KEY_TO_FINGER.get(p2, None)
+            f1 = POS_TO_FINGER.get(p1, None)
+            f2 = POS_TO_FINGER.get(p2, None)
             
             # ignore line changes involving the thumb.
             if not f1 or not f2 or (f1.startswith("Daumen") or f2.startswith("Daumen")):
@@ -671,10 +671,10 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
             is_left1_2 = pos_is_left(pos1_2)
             is_left2_1 = is_left1_2
             is_left2_2 = pos_is_left(pos2_2)
-            fing1_1 = KEY_TO_FINGER[pos1_1[:2] + (0, )]
-            fing1_2 = KEY_TO_FINGER[pos1_2[:2] + (0, )]
+            fing1_1 = POS_TO_FINGER[pos1_1[:2] + (0, )]
+            fing1_2 = POS_TO_FINGER[pos1_2[:2] + (0, )]
             fing2_1 = fing1_2
-            fing2_2 = KEY_TO_FINGER[pos2_2[:2] + (0, )]
+            fing2_2 = POS_TO_FINGER[pos2_2[:2] + (0, )]
             if WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS or (is_left1_1 == is_left1_2 and is_left2_1 == is_left2_2):
                 penalty1 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos1_1, pos1_2, layout, warped_keyboard)**2
                 penalty2 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos2_1, pos2_2, layout, warped_keyboard)**2

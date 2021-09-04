@@ -2595,10 +2595,10 @@ FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
 # Optimized structure for accessing by position. key_to_finger gets 3 times faster than with a cache and doublechecking.
-KEY_TO_FINGER = {}
+POS_TO_FINGER = {}
 for finger in FINGER_POSITIONS:
     for pos in FINGER_POSITIONS[finger]:
-        KEY_TO_FINGER[pos] = finger
+        POS_TO_FINGER[pos] = finger
 
 ### Constants for testing
 
@@ -2917,7 +2917,7 @@ def key_to_finger(key, layout=NEO_LAYOUT):
     try: pos = pos[:2] + (0, )
     except TypeError: return "" # pos is None
     # check the cache
-    try: return KEY_TO_FINGER[pos]
+    try: return POS_TO_FINGER[pos]
     except KeyError: return ""
 
 
@@ -3531,8 +3531,8 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
         if not pos2 or not pos1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
-            fing1 = KEY_TO_FINGER[pos1]
-            fing2 = KEY_TO_FINGER[pos2]
+            fing1 = POS_TO_FINGER[pos1]
+            fing2 = POS_TO_FINGER[pos2]
             # tumbs and handswitches ignored
             if fing1.startswith("Daumen") or fing2.startswith("Daumen") or fing1[-1] != fing2[-1]:
                 continue
@@ -3582,8 +3582,8 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             # if a long finger follows a short finger and the long finger is higher, reduce the number of rows to cross by one. Same for short after long and downwards.
             p1 = pos1[:2] + (0, )
             p2 = pos2[:2] + (0, )
-            f1 = KEY_TO_FINGER.get(p1, None)
-            f2 = KEY_TO_FINGER.get(p2, None)
+            f1 = POS_TO_FINGER.get(p1, None)
+            f2 = POS_TO_FINGER.get(p2, None)
             f1_is_short = f1 in SHORT_FINGERS
             f2_is_short = f2 in SHORT_FINGERS
             f1_is_long = f1 in LONG_FINGERS
@@ -4107,7 +4107,7 @@ if __name__ == "__main__":
 
 """Calculating ngram distributions (letters, bigrams, trigrams) from text or getting them from precomputed files."""
 
-from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
+from layout_base import NEO_LAYOUT, read_file, find_key, get_key, MODIFIERS_PER_LAYER, POS_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 

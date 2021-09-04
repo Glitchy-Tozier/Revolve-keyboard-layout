@@ -7,7 +7,7 @@ import collections
 import hashlib
 
 from config import MODIFIERS_PER_LAYER
-from layout_base import NEO_LAYOUT, read_file, find_key, get_key, KEY_TO_FINGER, pos_is_left, get_all_keys_in_layout
+from layout_base import NEO_LAYOUT, read_file, find_key, get_key, POS_TO_FINGER, pos_is_left, get_all_keys_in_layout
 
 from textcheck import occurrence_dict_difference as diffdict
 
@@ -797,8 +797,9 @@ def fix_impossible_ngrams(data, layout=None):
             ngram = ngram_tuple[1]
             for letter in ngram:
                 if letter not in keys:
-                    #print("filtered trig:", num_gram_tup[1])
+                    #print("filtered trig:", ngram)
                     #print("crucial letter:", letter.encode("unicode_escape"))
+                    #print()
                     return False
             return True
 
