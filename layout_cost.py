@@ -10,12 +10,13 @@
 # Reason: Being easy to learn is essential.
 
 from copy import deepcopy
+from layout import Layout
 from math import log, sqrt
 from pprint import pprint
 from random import sample
 
-from config import WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER, FINGER_SWITCH_COST, SIMILAR_LETTERS, UNBALANCING_POSITIONS, WEIGHT_UNBALANCING_AFTER_UNBALANCING, SHORT_FINGERS, LONG_FINGERS, WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, abc_full, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH, COST_MANUAL_BIGRAM_PENALTY, WEIGHT_MANUAL_BIGRAM_PENALTY, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW, WEIGHT_NEIGHBORING_UNBALANCE, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY, WEIGHT_FINGER_SWITCH, WEIGHT_FINGER_REPEATS_TOP_BOTTOM, WEIGHT_FINGER_REPEATS, WEIGHT_POSITION, IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION, WEIGHT_FINGER_DISBALANCE, WEIGHT_TOO_LITTLE_HANDSWITCHING, WEIGHT_XCVZ_ON_BAD_POSITION, WEIGHT_ASYMMETRIC_SIMILAR, WEIGHT_HAND_DISBALANCE, WEIGHT_ASYMMETRIC_BIGRAMS, WEIGHT_IRREGULARITY_PER_LETTER, WEIGHT_CRITICAL_FRACTION, WEIGHT_CRITICAL_FRACTION_MULTIPLIER
-from layout_base import read_file, argv, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NEO_LAYOUT, COST_PER_KEY, find_key, single_key_position_cost, key_to_finger, pos_is_left, POS_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
+from config import WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, WEIGHT_FINGER_REPEATS_INDEXFINGER_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER, FINGER_SWITCH_COST, SIMILAR_LETTERS, UNBALANCING_POSITIONS, WEIGHT_UNBALANCING_AFTER_UNBALANCING, SHORT_FINGERS, LONG_FINGERS, WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, ABC_FULL, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH, COST_MANUAL_BIGRAM_PENALTY, WEIGHT_MANUAL_BIGRAM_PENALTY, WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW, WEIGHT_NEIGHBORING_UNBALANCE, WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY, WEIGHT_FINGER_SWITCH, WEIGHT_FINGER_REPEATS_TOP_BOTTOM, WEIGHT_FINGER_REPEATS, WEIGHT_POSITION, IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION, WEIGHT_FINGER_DISBALANCE, WEIGHT_TOO_LITTLE_HANDSWITCHING, WEIGHT_XCVZ_ON_BAD_POSITION, WEIGHT_ASYMMETRIC_SIMILAR, WEIGHT_HAND_DISBALANCE, WEIGHT_ASYMMETRIC_BIGRAMS, WEIGHT_IRREGULARITY_PER_LETTER, WEIGHT_CRITICAL_FRACTION, WEIGHT_CRITICAL_FRACTION_MULTIPLIER
+from layout_base import read_file, argv, NEO_BLUEPRINT_lx, NEO_BLUEPRINT_lxwq, QWERTZ_BLUEPRINT, NEO_BLUEPRINT, COST_PER_KEY, single_key_position_cost, POS_TO_FINGER, FINGER_NAMES, mirror_position_horizontally
 
 
 from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file_precalculated, trigrams_in_file, split_uppercase_trigrams, repeats_in_file_precalculated, repeats_in_file_sorted, unique_sort, letters_in_file, split_uppercase_letters, repeats_in_file, split_uppercase_repeats, split_uppercase_trigrams_correctly
@@ -25,41 +26,42 @@ from ngrams import get_all_data, letters_in_file_precalculated, trigrams_in_file
 
 ## TODO: add regularity, which uses cost functions from everywhere else
 
-def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def key_position_cost_from_file(layout, letters, cost_per_key=COST_PER_KEY):
     """Count the total cost due to key positions.
 
     >>> data = read_file("testfile")
-    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(Layout(NEO_BLUEPRINT), letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     150
     >>> print(data[:3])
     uia
-    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(Layout(NEO_BLUEPRINT), letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     150
-    >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
+    >>> key_position_cost_from_file(Layout(NEO_BLUEPRINT), letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
     81
     >>> from check_neo import switch_keys
-    >>> lay, switched_letters = switch_keys(["ax"], layout=NEO_LAYOUT)
-    >>> key_position_cost_from_file(letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    >>> lay, switched_letters = switch_keys(["ax"], Layout(NEO_BLUEPRINT))
+    >>> key_position_cost_from_file(lay, letters_in_file(data)[:3], cost_per_key=TEST_COST_PER_KEY)
     126
     >>> data = "UIaĥK\\n"
-    >>> key_position_cost_from_file(letters_in_file(data), cost_per_key=TEST_COST_PER_KEY, layout=lay)
+    >>> key_position_cost_from_file(lay, letters_in_file(data), cost_per_key=TEST_COST_PER_KEY)
     240
     """
-    letters = split_uppercase_letters(letters, layout=layout)
+    letters = split_uppercase_letters(letters, layout)
     cost = 0
     for num, letter in letters:
-        pos = find_key(letter, layout=layout)
+        pos = layout.char_to_pos(letter)
         cost += num * single_key_position_cost(pos, layout, cost_per_key=cost_per_key)
     return cost
 
-def finger_repeats_from_file(repeats, layout=NEO_LAYOUT):
+def finger_repeats_from_file(repeats, layout=Layout(NEO_BLUEPRINT)):
     """Get a list of two char strings from the file, which repeat the same finger.
 
+    >>> from layout import Layout
     >>> data = read_file("testfile")
-    >>> finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT)
+    >>> finger_repeats_from_file(repeats_in_file(data), layout=Layout(NEO_BLUEPRINT))
     [(9.979, 'Mittel_L', 'Aa'), (4.979, 'Mittel_R', 'rg'), (4.479, 'Zeige_L', 'eo'), (4.979, 'Klein_R', 'd\\n'), (4.979, 'Mittel_L', 'aA')]
     >>> data = "xülävöcpwzoxkjhbmg,qjf.ẞxXkKzZß"
-    >>> sorted(finger_repeats_from_file(repeats_in_file(data), layout=NEO_LAYOUT))[:3]
+    >>> sorted(finger_repeats_from_file(repeats_in_file(data), layout=Layout(NEO_BLUEPRINT)))[:3]
     [(4.470000000000001, 'Zeige_L', 'cp'), (4.470000000000001, 'Zeige_L', 'pw'), (4.470000000000001, 'Zeige_L', 'wz')]
     """
     number_of_keystrokes = sum((num for num, pair in repeats))
@@ -69,8 +71,8 @@ def finger_repeats_from_file(repeats, layout=NEO_LAYOUT):
     for number, pair in repeats:
         key1 = pair[0]
         key2 = pair[1]
-        finger1 = key_to_finger(key1, layout=layout)
-        finger2 = key_to_finger(key2, layout=layout)
+        finger1 = layout.char_to_finger(key1)
+        finger2 = layout.char_to_finger(key2)
         
         if finger1 and finger2 and finger1 == finger2:
             # reduce the cost for finger repetitions of the index finger (it’s very flexible)
@@ -88,8 +90,8 @@ def finger_repeats_top_and_bottom(finger_repeats, layout):
     """Check which of the finger repeats go from the top to the bottom row or vice versa."""
     top_down_repeats = []
     for number, finger, letters in finger_repeats:
-        pos0 = find_key(letters[0], layout)
-        pos1 = find_key(letters[1], layout)
+        pos0 = layout.char_to_pos(letters[0])
+        pos1 = layout.char_to_pos(letters[1])
         # count it as top down, if the finger has to move over more than one col.
         if pos0 and pos1 and abs(pos0[0] - pos1[0]) > 1: 
             top_down_repeats.append((number, finger, letters))
@@ -97,15 +99,17 @@ def finger_repeats_top_and_bottom(finger_repeats, layout):
 
 def _rep_to_fingtuple(num, rep, layout, finger_switch_cost):
     """Turn a repeat and occurance number into num and a fingtuple."""
-    finger1 = key_to_finger(rep[0], layout=layout)
+    finger1 = layout.char_to_finger(rep[0])
     if not finger1 or not finger1 in finger_switch_cost:
         return None, None
-    finger2 = key_to_finger(rep[1], layout=layout)
+    finger2 = layout.char_to_finger(rep[1])
     if not finger2 or not finger2 in finger_switch_cost[finger1]:
         return None, None
     return num, (finger1, finger2)
 
-def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
+
+
+def movement_pattern_cost(repeats, layout=Layout(NEO_BLUEPRINT), FINGER_SWITCH_COST=FINGER_SWITCH_COST):
     """Calculate a movement cost based on the FINGER_SWITCH_COST. 
 
     >>> data = read_file("testfile")
@@ -124,16 +128,17 @@ def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_
 
 neighboring_fingers = movement_pattern_cost
 
-def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
+
+def asymmetry_cost(layout, symmetries=SIMILAR_LETTERS):
     """Calculate the cost for asymmetric keys.
 
     :param symmetries: [(first-keys, second-keys), ...]
     
-    >>> asymmetry_cost(layout=NEO_LAYOUT)
+    >>> asymmetry_cost(layout=Layout(NEO_BLUEPRINT))
     3.738000251448886
-    >>> asymmetry_cost(layout=CRY_LAYOUT)
+    >>> asymmetry_cost(layout=Layout(CRY_BLUEPRINT))
     5.8274921289822235
-    >>> asymmetry_cost(layout=BONE_LAYOUT)
+    >>> asymmetry_cost(layout=Layout(BONE_BLUEPRINT))
     3.1218141120250698
     """
     cost = 0
@@ -148,7 +153,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
         col_dists = []
         v_directions = []
         for i in range(l):
-            positions = [find_key(m[i], layout=layout) for m in matched]
+            positions = [layout.char_to_pos(m[i]) for m in matched]
             # letters = [m[i] for m in matched]
             for j in range(len(positions)):
                 for k in range(len(positions[j+1:])):
@@ -156,8 +161,8 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                     pos1 = positions[j+k+1]
                     if pos0 is None or pos1 is None: # do not exist on keyboard
                         continue
-                    pos0l = pos_is_left(pos0)
-                    pos1l = pos_is_left(pos1)
+                    pos0l = layout.pos_is_left(pos0)
+                    pos1l = layout.pos_is_left(pos1)
                     if pos0l == pos1l:
                         hand_dists.append(0)
                     elif pos0l and not pos1l:
@@ -215,7 +220,7 @@ def asymmetry_cost(layout=NEO_LAYOUT, symmetries=SIMILAR_LETTERS):
                 
 
 
-def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
+def no_handswitch_after_unbalancing_key(repeats, layout=Layout(NEO_BLUEPRINT)):
     """Check how often we have no handswitching after an unbalancing key, weighted by the severity of the unbalancing. This also helps avoiding a handswitch directly after an uppercase key (because shift severly unbalances and with the handswitch we’d effectively have no handswitch after the shift (kind of a shift collision, too).
 
     If the second key is unbalancing, too, and on the other side of the hand: add it to the cost.
@@ -226,31 +231,31 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
     >>> no_handswitch_after_unbalancing_key(repeats_in_file(data))
     2
     >>> reps =  [(3, "Ab")]
-    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
+    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=Layout(QWERTZ_BLUEPRINT)).items()]
     >>> sorted(reps)
     [(1.5, '⇗b'), (3, 'ab'), (3, '⇗a')]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
     15.0
-    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=Layout(QWERTZ_BLUEPRINT))
     0
     >>> reps = [(3, "Ga")]
-    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=QWERTZ_LAYOUT).items()]
-    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=QWERTZ_LAYOUT)
+    >>> reps = [(j,i) for i,j in split_uppercase_repeats(reps, layout=Layout(QWERTZ_BLUEPRINT)).items()]
+    >>> no_handswitch_after_unbalancing_key(repeats=reps, layout=Layout(QWERTZ_BLUEPRINT))
     3
     >>> reps =  [(3, "xo")]
     >>> no_handswitch_after_unbalancing_key(repeats=reps)
     54
     """
-    no_switch = 0
+    no_switch_cost = 0
     for number, pair in repeats:
-        pos1 = find_key(pair[0], layout=layout)
+        pos1 = layout.char_to_pos(pair[0])
         if not pos1 or not pos1 in UNBALANCING_POSITIONS:
             continue
-        pos2 = find_key(pair[1], layout=layout)
+        pos2 = layout.char_to_pos(pair[1])
         if pos2:
                 # check if we”re on the same hand
-                is_left1 = pos_is_left(pos1)
-                is_left2 = pos_is_left(pos2)
+                is_left1 = layout.pos_is_left(pos1)
+                is_left2 = layout.pos_is_left(pos2)
                 if is_left1 == is_left2:
                     # check if one of the positions is a thumb
                     fing1 = POS_TO_FINGER[pos1[:2] + (0, )]
@@ -270,8 +275,8 @@ def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
                     cost *= row_multiplier
                     # if abs(pos1[0] - pos2[0]): 
                     #     print(row_multiplier, pos1[0] - pos2[0], pair)
-                    no_switch += cost
-    return no_switch
+                    no_switch_cost += cost
+    return no_switch_cost
 
 
 def column_distance(pos1, pos2):
@@ -297,7 +302,7 @@ def finger_distance(pos1, pos2):
     return abs(FINGER_NAMES.index(fing1) - FINGER_NAMES.index(fing2))
 
 
-def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
+def unbalancing_after_neighboring(repeats, layout=Layout(NEO_BLUEPRINT)):
     """Check how often an unbalancing key follows a neighboring finger or vice versa.
 
     >>> data = read_file("testfile")
@@ -306,8 +311,8 @@ def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
     for number, pair in repeats:
 
         # only take existing, neighboring positions.
-        pos2 = find_key(pair[1], layout=layout)
-        pos1 = find_key(pair[0], layout=layout)
+        pos2 = layout.char_to_pos(pair[1])
+        pos1 = layout.char_to_pos(pair[0])
         if not pos2 or not pos1 or not pos2 in UNBALANCING_POSITIONS and not pos1 in UNBALANCING_POSITIONS:
             continue
         try: 
@@ -367,7 +372,7 @@ def line_change_positions_cost(pos1, pos2, layout, warped_keyboard):
             cost *= (disbalance1+1) * (disbalance2+1)
             return cost
 
-def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
+def line_changes(repeats, layout=Layout(NEO_BLUEPRINT), warped_keyboard=True):
     """Get the number of (line changes divided by the horizontal distance) squared: (rows²/dist)².
 
     TODO: Don’t care about the hand (left index low and right high is still not nice).
@@ -383,20 +388,20 @@ def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
             continue
         key1 = pair[0]
         key2 = pair[1]
-        pos1 = find_key(key1, layout=layout)
-        pos2 = find_key(key2, layout=layout)
+        pos1 = layout.char_to_pos(key1)
+        pos2 = layout.char_to_pos(key2)
         if pos1 and pos2:
             if not WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS: 
                 # check if we’re on the same hand
-                is_left1 = pos_is_left(pos1)
-                is_left2 = pos_is_left(pos2)
+                is_left1 = layout.pos_is_left(pos1)
+                is_left2 = layout.pos_is_left(pos2)
                 if is_left1 != is_left2:
                     continue # the keys are on different hands, so we don’t count them as row change.
             cost = line_change_positions_cost(pos1, pos2, layout, warped_keyboard)
             line_changes += cost**2 * number
     return line_changes # to make it not rise linearly (don’t uncomment!): / sum((num for num, rep in repeats))
 
-def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
+def load_per_finger(letters, layout=Layout(NEO_BLUEPRINT), print_result=False):
     """Calculate the number of times each finger is being used.
 
     >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (4, "A"), (6, "Δ")]
@@ -406,16 +411,16 @@ def load_per_finger(letters, layout=NEO_LAYOUT, print_load_per_finger=False):
     letters = split_uppercase_letters(letters, layout)
     fingers = {}
     for num, key in letters:
-        finger = key_to_finger(key, layout=layout)
+        finger = layout.char_to_finger(key)
         if finger in fingers:
             fingers[finger] += num
         else: fingers[finger] = num
     # Debug: Print the load per finger
-    if print_load_per_finger: 
+    if print_result: 
         pprint(fingers)
     return fingers
 
-def load_per_hand(letters=None, finger_load=None, layout=NEO_LAYOUT):
+def load_per_hand(letters=None, finger_load=None, layout=Layout(NEO_BLUEPRINT)):
     """Calculate the load per hand.
 
     >>> letters = [(1, "u"), (5, "i"), (10, "2"), (3, " "), (2, "g")]
@@ -451,7 +456,7 @@ def std(numbers):
     var /= max(1, (length - 1))
     return sqrt(var)
 
-def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
+def finger_balance(letters, layout=Layout(NEO_BLUEPRINT), intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY):
     """Calculate a cost based on the balance between the fingers (using the standard deviation).
 
     Optimum: All fingers get used exactly the same number of times.
@@ -477,9 +482,9 @@ def finger_balance(letters, layout=NEO_LAYOUT, intended_balance=WEIGHT_INTENDED_
 def _trigram_key_tables(trigrams, layout): 
     """optimization: we precalculate the fingers for all relevent keys (the ones which are being mutated). Since we only need to know if the hands are the same, left hand is False and right hand is True."""
     key_hand_table = {}
-    for key in abc_full:
+    for key in ABC_FULL:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
-        finger = key_to_finger(key, layout=layout)
+        finger = layout.char_to_finger(key)
         if finger and not finger[:6] == "Daumen":
             if finger[-1] == "L": 
                 key_hand_table[key] = False
@@ -488,9 +493,9 @@ def _trigram_key_tables(trigrams, layout):
             # with this, not found is ignored.
 
     key_pos_horizontal_table = {}
-    for key in abc_full:
+    for key in ABC_FULL:
         #without "⇧⇗ " -> too many false positives when we include the shifts. This also gets rid of anything with uppercase letters in it.
-        pos = find_key(key, layout=layout)
+        pos = layout.char_to_pos(key)
         try: 
             key_pos_horizontal_table[key] = pos[1]
         except TypeError:
@@ -501,7 +506,7 @@ def _trigram_key_tables(trigrams, layout):
 def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH):
     """Do the hard work for no_handswitching without any call to outer functions.
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
-    >>> key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigs, layout=NEO_LAYOUT)
+    >>> key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigs, layout=Layout(NEO_BLUEPRINT))
     >>> res = _no_handswitching(trigs, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH)
     >>> (res[0], [(j,i) for i,j in sorted(res[1].items())])
     (2, [(4.0, 'ie'), (1.0, 'nr'), (0.5, 'nt'), (2.4000000000000004, 'ui')])
@@ -540,7 +545,7 @@ def _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT
     return no_switch, secondary_bigrams
     
 
-def no_handswitching(trigrams, layout=NEO_LAYOUT):
+def no_handswitching(trigrams, layout):
     """Add a penalty when the hands aren’t switched at least once in every three letters. Doesn’t take any uppercase trigrams into account.
 
     If there also is a direction change in the trigram, the number of times it occurs gets multiplied by WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE.
@@ -552,39 +557,39 @@ def no_handswitching(trigrams, layout=NEO_LAYOUT):
     TODO: Include the shifts again and split per keyboard. If we did it now, the layout would get optimized for switching after every uppercase letter (as any trigram with a shift and two letters on the same hand would be counted as half a trigram without handswitching). The effect is that it ignores about 7-9% of the trigrams. 
 
     >>> trigs = [(1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")]
-    >>> no_handswitching(trigs, layout=NEO_LAYOUT)[0]
+    >>> no_handswitching(trigs, Layout(NEO_BLUEPRINT))[0]
     2
-    >>> sorted(no_handswitching(trigs, layout=NEO_LAYOUT)[1].items())[0][0]
+    >>> sorted(no_handswitching(trigs, Layout(NEO_BLUEPRINT))[1].items())[0][0]
     'ie'
     """
     key_hand_table, key_pos_horizontal_table = _trigram_key_tables(trigrams, layout=layout)
     return _no_handswitching(trigrams, key_hand_table, key_pos_horizontal_table, WEIGHT_NO_HANDSWITCH_AFTER_DIRECTION_CHANGE, WEIGHT_NO_HANDSWITCH_WITHOUT_DIRECTION_CHANGE, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM, WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM_HANDSWITCH)
 
 
-def badly_positioned_shortcut_keys(layout=NEO_LAYOUT, keys="xcvz"):
+def badly_positioned_shortcut_keys(layout, keys="xcvz"):
     """Check, if x, c, v and z are on the left hand and well positioned (much used shortcuts)."""
     badly_positioned = []
     for key in keys: 
-        pos = find_key(key, layout=layout)
+        pos = layout.char_to_pos(key)
         # well means not yet left stretch, in row 3, col 5 is also OK.
         if not pos[1] < 5 or (pos[0] == 3 and pos[1] > 5):
             badly_positioned.append(1)
     return sum(badly_positioned)
 
 
-def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
+def manual_bigram_penalty(bigrams, layout):
     """Add manual penalty for bad to type bigrams which are hard to catch algorithmically."""
     penalty = 0
     for num, bi in bigrams:
-        pos1 = find_key(bi[0], layout=layout)
-        pos2 = find_key(bi[1], layout=layout)
+        pos1 = layout.char_to_pos(bi[0])
+        pos2 = layout.char_to_pos(bi[1])
         if pos1 is None or pos2 is None: continue
 
         penalty += COST_MANUAL_BIGRAM_PENALTY.get((pos1, pos2), 0)*num
     return penalty
         
 
-def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
+def asymmetric_bigram_penalty(bigrams, layout):
     """Penalty for asymmetric bigrams.
 
     If the second letter is not at the horizontally mirrored position of the first one, typing is harder than if it is.
@@ -596,10 +601,10 @@ def asymmetric_bigram_penalty(bigrams, layout=NEO_LAYOUT):
     2
 
     Idea: Use symmetric hand movement instead of symmetric keys."""
-    return sum((num for num, bi in bigrams if find_key(bi[0], layout=layout) != mirror_position_horizontally(find_key(bi[1], layout=layout))))
+    return sum((num for num, bi in bigrams if layout.char_to_pos(bi[0]) != mirror_position_horizontally(layout.char_to_pos(bi[1]))))
         
 
-def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost_dic=None, warped_keyboard=True, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
+def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost_dic=None, warped_keyboard=True, layout=Layout(NEO_BLUEPRINT), cost_per_key=COST_PER_KEY):
     """Calculate the irregularity by splitting trigrams into bigrams and including all bigram-costs.
 
     This is a proxy for bad to type words: it gives higher cost to trigrams in which both bigrams are bad.
@@ -607,11 +612,11 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     irregularity = sqrt(cost(a) * cost(b)
                         for a, b in split_trigrams)
 
-    >>> much = irregularity_from_trigrams([(1, "nnn"), (2, "nnn"), (2, "nkn"), (2, "nßn"), (1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")], True, layout=NEO_LAYOUT)
-    >>> nnn = irregularity_from_trigrams([(1, "nnn")], True, layout=NEO_LAYOUT)
-    >>> nxn = irregularity_from_trigrams([(1, "nxn")], True, layout=NEO_LAYOUT)
-    >>> nnnnxn = irregularity_from_trigrams([(1, "nnn"), (1, "nxn")], True, layout=NEO_LAYOUT)
-    >>> nxnnxn = irregularity_from_trigrams([(1, "nxn"), (1, "nxn")], True, layout=NEO_LAYOUT)
+    >>> much = irregularity_from_trigrams([(1, "nnn"), (2, "nnn"), (2, "nkn"), (2, "nßn"), (1, "nrt"), (5, "ige"), (3, "udi"), (2, "ntr")], True, layout=Layout(NEO_BLUEPRINT))
+    >>> nnn = irregularity_from_trigrams([(1, "nnn")], True, layout=Layout(NEO_BLUEPRINT))
+    >>> nxn = irregularity_from_trigrams([(1, "nxn")], True, layout=Layout(NEO_BLUEPRINT))
+    >>> nnnnxn = irregularity_from_trigrams([(1, "nnn"), (1, "nxn")], True, layout=Layout(NEO_BLUEPRINT))
+    >>> nxnnxn = irregularity_from_trigrams([(1, "nxn"), (1, "nxn")], True, layout=Layout(NEO_BLUEPRINT))
     >>> [nxn > nnn, nxnnxn > nxn, nxnnxn > nnnnxn, nnnnxn > nxn, much > nxnnxn]
     [True, True, True, True, True]
     
@@ -622,7 +627,6 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
 
     number_of_keystrokes = sum((num for num, trig in all_trigrams))
     critical_point = WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION * number_of_keystrokes
-
     trigrams_to_test = set()
     new_trigram_cost_dic = {}
     
@@ -649,10 +653,10 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     for num, trig in trigrams_to_test:
         bi1 = trig[:2]
         bi2 = trig[1:]
-        pos1_1 = find_key(bi1[0], layout=layout)
-        pos1_2 = find_key(bi1[1], layout=layout)
+        pos1_1 = layout.char_to_pos(bi1[0])
+        pos1_2 = layout.char_to_pos(bi1[1])
         pos2_1 = pos1_2
-        pos2_2 = find_key(bi2[1], layout=layout)
+        pos2_2 = layout.char_to_pos(bi2[1])
         if pos1_1 and pos1_2 and pos2_1 and pos2_2:
             penalty1 = 0
             penalty2 = 0
@@ -662,15 +666,15 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
             pos2_2_unbalances = pos2_2 in UNBALANCING_POSITIONS
             # first aggregate all the different costs in penalty1 and penalty2
             # embed all cost functions in here
-            # def manual_bigram_penalty(bigrams, layout=NEO_LAYOUT):
+            # def manual_bigram_penalty(bigrams, layout=NEO_BLUEPRINT):
             penalty1 += WEIGHT_MANUAL_BIGRAM_PENALTY * COST_MANUAL_BIGRAM_PENALTY.get((pos1_1, pos1_2), 0)
             penalty2 += WEIGHT_MANUAL_BIGRAM_PENALTY * COST_MANUAL_BIGRAM_PENALTY.get((pos2_1, pos2_2), 0)
-            # def line_changes(repeats, layout=NEO_LAYOUT, warped_keyboard=True):
+            # def line_changes(repeats, layout=NEO_BLUEPRINT, warped_keyboard=True):
             # check if we’re on the same hand
-            is_left1_1 = pos_is_left(pos1_1)
-            is_left1_2 = pos_is_left(pos1_2)
+            is_left1_1 = layout.pos_is_left(pos1_1)
+            is_left1_2 = layout.pos_is_left(pos1_2)
             is_left2_1 = is_left1_2
-            is_left2_2 = pos_is_left(pos2_2)
+            is_left2_2 = layout.pos_is_left(pos2_2)
             fing1_1 = POS_TO_FINGER[pos1_1[:2] + (0, )]
             fing1_2 = POS_TO_FINGER[pos1_2[:2] + (0, )]
             fing2_1 = fing1_2
@@ -678,7 +682,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
             if WEIGHT_COUNT_ROW_CHANGES_BETWEEN_HANDS or (is_left1_1 == is_left1_2 and is_left2_1 == is_left2_2):
                 penalty1 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos1_1, pos1_2, layout, warped_keyboard)**2
                 penalty2 += WEIGHT_BIGRAM_ROW_CHANGE_PER_ROW * num * line_change_positions_cost(pos2_1, pos2_2, layout, warped_keyboard)**2
-            # def unbalancing_after_neighboring(repeats, layout=NEO_LAYOUT):
+            # def unbalancing_after_neighboring(repeats, layout=NEO_BLUEPRINT):
             if pos1_1_unbalances or pos1_2_unbalances:
                 try: finger_dist1 = finger_distance(pos1_1, pos1_2)
                 except Exception: finger_dist1 = None
@@ -689,7 +693,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
                 except Exception: finger_dist2 = None
                 if finger_dist2:
                     penalty2 += WEIGHT_NEIGHBORING_UNBALANCE * (UNBALANCING_POSITIONS.get(pos2_2, 0)*num + UNBALANCING_POSITIONS.get(pos2_1, 0)*num)/(finger_dist2**2)
-            # def no_handswitch_after_unbalancing_key(repeats, layout=NEO_LAYOUT):
+            # def no_handswitch_after_unbalancing_key(repeats, layout=NEO_BLUEPRINT):
             if pos1_1_unbalances:
                 if is_left1_1 == is_left1_2:
                     if not fing1_1.startswith("Daumen") and not fing1_2.startswith("Daumen"):
@@ -712,14 +716,14 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
                             cost += unb1 * unb2 * num * WEIGHT_UNBALANCING_AFTER_UNBALANCING * (distance - 3)
                         row_multiplier = 1 + (abs(pos2_1[0] - pos2_2[0]))**2
                         penalty2 += WEIGHT_NO_HANDSWITCH_AFTER_UNBALANCING_KEY * row_multiplier * cost
-            # def movement_pattern_cost(repeats, layout=NEO_LAYOUT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
+            # def movement_pattern_cost(repeats, layout=NEO_BLUEPRINT, FINGER_SWITCH_COST=FINGER_SWITCH_COST):
             nums1, fings1 = _rep_to_fingtuple(num, bi1, layout, FINGER_SWITCH_COST)
             if nums1:
                 penalty1 += WEIGHT_FINGER_SWITCH * nums1 * FINGER_SWITCH_COST[fings1[0]][fings1[1]]
             nums2, fings2 = _rep_to_fingtuple(num, bi2, layout, FINGER_SWITCH_COST)
             if nums2:
                 penalty2 += WEIGHT_FINGER_SWITCH * nums2 * FINGER_SWITCH_COST[fings2[0]][fings2[1]]
-            # def finger_repeats_from_file(repeats, layout=NEO_LAYOUT):
+            # def finger_repeats_from_file(repeats, layout=NEO_BLUEPRINT):
             if fing1_1 and fing1_2 and fing1_1 == fing1_2 and bi1[0] != bi1[1]:
                 fing_repeat_count1 = num
                 # reduce the cost for finger repetitions of the index finger (it’s very flexible)
@@ -742,9 +746,9 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
                 # def finger_repeats_top_and_bottom(finger_repeats, layout):
                 if abs(pos2_1[0] - pos2_2[0]) > 1:
                     penalty2 += WEIGHT_FINGER_REPEATS_TOP_BOTTOM * fing_repeat_count2
-            # def key_position_cost_from_file(letters, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY):
-            penalty1 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi1], layout=layout, cost_per_key=cost_per_key)
-            penalty2 += WEIGHT_POSITION * key_position_cost_from_file([(num, letter) for letter in bi2], layout=layout, cost_per_key=cost_per_key)
+            # def key_position_cost_from_file(letters, layout=NEO_BLUEPRINT, cost_per_key=COST_PER_KEY):
+            penalty1 += WEIGHT_POSITION * key_position_cost_from_file(layout, [(num, letter) for letter in bi1], cost_per_key=cost_per_key)
+            penalty2 += WEIGHT_POSITION * key_position_cost_from_file(layout, [(num, letter) for letter in bi2], cost_per_key=cost_per_key)
             ## now actually do the calculation
             new_trigram_cost_dic[trig] = penalty1 * penalty2
         else:
@@ -756,9 +760,9 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     return irregularity_penalty, new_trigram_cost_dic
 
 
-def irregularity(words, layout=NEO_LAYOUT, **opts):
+def irregularity(words, layout=Layout(NEO_BLUEPRINT), **opts):
     """Irregularity of the cost per word: The std of the total_cost for
-each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
+    each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
 
     def std(numbers):
         """Calculate the standard deviation from a set of numbers.
@@ -775,11 +779,12 @@ each word in words (normally read from IRREGULARITY_REFERENCE_TEXT)."""
             var += (i - mean)**2
         var /= max(1, (length - 1))
         return sqrt(var)
+
     data = []
     if IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION < 1.0:
         words = sample(words, max(2, int(len(words) * IRREGULARITY_WORDS_RANDOMLY_SAMPLED_FRACTION)))
     for word in words:
-        data.append(total_cost(data=word, layout=layout, check_irregularity=False, **opts)[0] / len(word))
+        data.append(total_cost(layout, data=word, check_irregularity=False, **opts)[0] / len(word))
     return std(data)
 
 
@@ -803,7 +808,7 @@ def aggregate_cost(number_of_letters=0, position_cost=0, frep_num=0, frep_num_to
 
 
 
-def total_cost(data=None, letters=None, switched_letters=None, repeats=None, layout=NEO_LAYOUT, cost_per_key=COST_PER_KEY, trigrams=None, trigram_cost_dic=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True, max_cost=None):
+def total_cost(layout, data=None, letters=None, switched_letters=None, repeats=None, cost_per_key=COST_PER_KEY, trigrams=None, trigram_cost_dic=None, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=False, check_irregularity=True, max_cost=None):
     """Compute a total cost from all costs we have available, wheighted.
 
     TODO: reenable the doctests, after the parameters have settled, or pass ALL parameters through the functions.
@@ -813,7 +818,7 @@ def total_cost(data=None, letters=None, switched_letters=None, repeats=None, lay
     @param check_irregularity: Check the irregularity. This calles total_cost again for every word in a reference sentence and might be very expensive.
 
     >>> data = read_file("testfile")
-    >>> #total_cost(data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
+    >>> #total_cost(layout, data, cost_per_key=TEST_COST_PER_KEY, intended_balance=TEST_WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY)
     
     (209.4, 3, 150, 0, 3.3380918415851206, 3, 7)
     """
@@ -833,16 +838,16 @@ def total_cost(data=None, letters=None, switched_letters=None, repeats=None, lay
 
     ## first do cheap checks
     # cost of letter positions on the keyboard
-    position_cost = key_position_cost_from_file(letters=letters, layout=layout, cost_per_key=cost_per_key)
+    position_cost = key_position_cost_from_file(layout, letters=letters, cost_per_key=cost_per_key)
     
     # the balance between fingers
     disbalance = finger_balance(letters, layout=layout, intended_balance=intended_balance)
 
     # the position of the keys xcvz - penalty if they are not among the first 5 keys, counted from left, horizontally.
-    badly_positioned = badly_positioned_shortcut_keys(layout=layout)
+    badly_positioned = badly_positioned_shortcut_keys(layout)
 
     # the cost for having asymmetries in similar keys.
-    asymmetric_similar = asymmetry_cost(layout=layout)
+    asymmetric_similar = asymmetry_cost(layout)
 
     # the load distribution on the hands: [left keystrokes, right keystrokes]
     hand_load = load_per_hand(letters, layout=layout)
@@ -906,10 +911,10 @@ def total_cost(data=None, letters=None, switched_letters=None, repeats=None, lay
 
 
     # manually defined bad bigrams.
-    manual_penalty = manual_bigram_penalty(reps, layout=layout)
+    manual_penalty = manual_bigram_penalty(reps, layout)
 
     # asymmetric bigrams
-    asymmetric_bigrams = asymmetric_bigram_penalty(reps, layout=layout)
+    asymmetric_bigrams = asymmetric_bigram_penalty(reps, layout)
 
     # irregularity # TODO: replace by trigram-based cost of bigrams next to each other: sqrt (sum (bigram_i1 + bigram_i2)² for i in trigrams)
     if WEIGHT_IRREGULARITY_PER_LETTER == 0:

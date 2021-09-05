@@ -4,10 +4,11 @@
 """Generate information about keyboard layouts."""
 
 from config import WEIGHT_CRITICAL_FRACTION_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, COST_PER_KEY, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, WEIGHT_FINGER_REPEATS, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
+from layout import Layout
 from layout_cost import get_all_data, total_cost, split_uppercase_repeats, no_handswitching, finger_repeats_from_file, split_uppercase_trigrams, split_uppercase_trigrams_correctly
 
 
-def format_keyboard_layout(layout):
+def draw_keyboard_layout(layout):
     """Format a keyboard layout to look like a real keyboard."""
     neo = """
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐
@@ -23,29 +24,31 @@ def format_keyboard_layout(layout):
 └────┴────┴────┴───────────────────────┴────┴────┴────┴────┘
 
     """
+
+    blueprint = layout.blueprint
     lay = "┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬──────┐\n"
     lay +="│ "
-    lay += " │ ".join([l[0] for l in layout[0]])
+    lay += " │ ".join([l[0] for l in blueprint[0]])
     lay += "    │\n" 
     lay += "├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬────┤\n"
     lay += "│   " 
-    lay += " │ ".join([l[0] for l in layout[1][:-1]])
+    lay += " │ ".join([l[0] for l in blueprint[1][:-1]])
     lay += " │ Ret│\n"
     lay += "├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐   │\n"
     lay += "│    "
-    if layout[2][-2]: 
-        lay += " │ ".join([l[0] for l in layout[2][:-1]])
+    if blueprint[2][-2]: 
+        lay += " │ ".join([l[0] for l in blueprint[2][:-1]])
     else:
-        lay += " │ ".join([l[0] for l in layout[2][:-2]])
+        lay += " │ ".join([l[0] for l in blueprint[2][:-2]])
         lay += " │  "
     lay += " │   │\n"
     lay += "├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴───┤\n"
-    if layout[3][1]:
+    if blueprint[3][1]:
         lay += "│  "
-        lay += " │ ".join([l[0] for l in layout[3]])
+        lay += " │ ".join([l[0] for l in blueprint[3]])
     else:
         lay +="│  ⇧ │ M4│ "
-        lay += " │ ".join([l[0] for l in layout[3][2:]])
+        lay += " │ ".join([l[0] for l in blueprint[3][2:]])
     lay += "       │\n"
     lay += """├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴─┬─┴──┬┴───┼────┬────┤
 │Strg│ Fe │ Alt│      Leerzeichen      │ M4 │ Fe │ Me │Strg│
@@ -77,7 +80,7 @@ def csv_data(layout, letters=None, repeats=None, number_of_letters=None, number_
         )
 
     # weighted
-    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:16]
+    total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w, hand_disbalance_w, manual_penalty_w, neighboring_unbalance_w, asymmetric_bigrams_w, asymmetric_similar_w, irregularity_w = total_cost(layout, letters=letters, repeats=repeats, trigrams=trigrams, return_weighted=True)[:16]
 
     line = []
     
@@ -115,7 +118,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
         except ValueError: #already a dict
             pass
     if secondary: 
-        no_handswitches, secondary_bigrams = no_handswitching(trigrams, layout=layout)
+        secondary_bigrams = no_handswitching(trigrams, layout=layout)[1]
         for rep, num in secondary_bigrams.items():
             if rep in repeats: repeats[rep] += num
             else: repeats[rep] = num
@@ -129,7 +132,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
         if not rep[1:]:
             continue
         tmp = [(num, rep) for rep, num in split_uppercase_repeats([(1, rep)], layout=layout).items()]
-        cost = total_cost(data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, layout=layout, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True, check_irregularity=False)
+        cost = total_cost(layout, data=None, letters=[(1, rep[0]), (1, rep[1])], repeats=tmp, cost_per_key=COST_PER_KEY, trigrams=[], intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True, check_irregularity=False)
         # critical point for finger repeats, doing it here instead of layout_cost because it needs the total number of keystrokes.
         if num > critical_point:
             fing_reps = finger_repeats_from_file(repeats=tmp, layout=layout)
@@ -156,7 +159,7 @@ def trigram_info(layout, only_layer_0=False, filepath=None):
     trigs = []
     for trig, num in trigrams.items():
         tmp = split_uppercase_trigrams_correctly([(1, trig)], layout=layout)
-        trigs.append((num, total_cost(data=None, letters=[(1, trig[0]), (1, trig[1]), (1, trig[2])], repeats=[(1, trig[:2]), (1, trig[1:])], layout=layout, cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
+        trigs.append((num, total_cost(layout, data=None, letters=[(1, trig[0]), (1, trig[1]), (1, trig[2])], repeats=[(1, trig[:2]), (1, trig[1:])], cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
     trigs.sort()
     trigs.reverse()
     return trigs

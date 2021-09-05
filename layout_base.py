@@ -3,6 +3,8 @@
 
 """Basic functions and constants for working with keyboard layouts."""
 
+from layout import Layout
+
 def read_file(path):
     """Get the data from a file.
 
@@ -29,12 +31,12 @@ if "--config" in argv:
     argv = argv[:idx] + argv[idx+2:]
     exec("from " + cfg + " import *")
 else: 
-    from config import FINGER_POSITIONS, COST_PER_KEY, COST_PER_KEY_NOT_FOUND, COST_LAYER_ADDITION, RIGHT_HAND_LOWEST_INDEXES, abc
+    from config import FINGER_POSITIONS, COST_PER_KEY, COST_PER_KEY_NOT_FOUND, COST_LAYER_ADDITION, RIGHT_HAND_LOWEST_INDEXES, ABC
 
 ### Constants
 
 #: Die Layout-Datei für Neo = Tastenbelegung - Großbuchstaben integriert. 
-NEO_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", ""),
+NEO_BLUEPRINT = [[("^", "ˇ", "↻", "˙", "˞", ""),
                ("1", "°", "¹", "ª", "₁", "¬"),
                ("2", "§", "²", "º", "₂", "∨"),
                ("3", "ℓ", "³", "№", "₃", "∧"),
@@ -96,7 +98,7 @@ NEO_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", ""),
               [("♕"), (), ("♔"), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ("♛")] # Row 4, containing the spacebar
 ]
 # just switch layer 0 and 1
-NEO_LAYOUT_lx = [[("^", "ˇ", "↻", "˙", "˞", "",),
+NEO_BLUEPRINT_lx = [[("^", "ˇ", "↻", "˙", "˞", "",),
                   ("1", "°", "¹", "ª", "₁", "¬"),
                   ("2", "§", "²", "º", "₂", "∨"),
                   ("3", "ℓ", "³", "№", "₃", "∧"),
@@ -157,7 +159,7 @@ NEO_LAYOUT_lx = [[("^", "ˇ", "↻", "˙", "˞", "",),
 
                  [("♕"), (), ("♔"), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ("♛")] # Row 4, containing the spacebar
 ]
-NEO_LAYOUT_lxwq = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
+NEO_BLUEPRINT_lxwq = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
                     ("1", "°", "¹", "ª", "₁", "¬"),
                     ("2", "§", "²", "º", "₂", "∨"),
                     ("3", "ℓ", "³", "№", "₃", "∧"),
@@ -219,7 +221,7 @@ NEO_LAYOUT_lxwq = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
                    [("♕"), (), ("♔"), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ("♛")] # Row 4, containing the spacebar
 ]
 
-QWERTZ_LAYOUT = [[("^", "°", "′", "″"),
+QWERTZ_BLUEPRINT = [[("^", "°", "′", "″"),
                   ("1", "!", "¹", "¡"),
                   ("2", '"', "²", "⅛"),
                   ("3", "§", "³", "£"),
@@ -277,7 +279,7 @@ QWERTZ_LAYOUT = [[("^", "°", "′", "″"),
                  [("♕"), (), ("♔"), (" "), (), (), (), ("♛")] # Row 4, containing the spacebar
 ]
 
-CRY_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+CRY_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                ('1', '°', '¹', 'ª', '₁', '¬'),
                ('2', '§', '²', 'º', '₂', '∨'),
                ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -335,7 +337,7 @@ CRY_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
               ['♕', (), '♔', (' ', ' ', ' ', '0', '\xa0', '\u202f'), '⇙', (), (), '♛']] # Row 4, containing the spacebar
 
 
-BONE_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+BONE_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                 ('1', '°', '¹', 'ª', '₁', '¬'),
                 ('2', '§', '²', 'º', '₂', '∨'),
                 ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -392,7 +394,7 @@ BONE_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                 '⇗'], # Row 3
                ['♕', (), '♔', (' ', ' ', ' ', '0', '\xa0', '\u202f'), '⇙', (), (), '♛']] # Row 4, containing the spacebar
 
-#NORDTAST_LAYOUT = [
+#NORDTAST_BLUEPRINT = [
 #    [("^"),("1"),("2"),("3"),("4"),("5"),("6"),("7"),("8"),("9"),("0"),("ß"),("´"),("←")], # Zahlenreihe (0)
 #    [("⇥"),("ä"),("u"),("o"),("b"),("p"),("k"),("g"),("l"),("m"),("f"),("x"),("+"),()], # Reihe 1
 #    [("⇩"),("a"),("i"),("e"),("t"),("c"),("h"),("d"),("n"),("r"),("s"),("ß"),(),("\n")], # Reihe 2
@@ -404,8 +406,8 @@ BONE_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
 # Somewhat contradictory: https://web.archive.org/web/20110919045006/http://wiki.nordtast.org/w/Hauptseite
 
 #: from Ulf Bro, http://nordtast.org – with added Neo-layers to be fair in the comparisions.
-# TODO: Find out what the remaining symbols are and add them. Currently almost everything is wrong (it was copied from the [NEO_LAYOUT])
-NORDTAST_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
+# TODO: Find out what the remaining symbols are and add them. Currently almost everything is wrong (it was copied from the [NEO_BLUEPRINT])
+NORDTAST_BLUEPRINT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
                     ("1", "°", "¹", "ª", "₁", "¬"),
                     ("2", "§", "²", "º", "₂", "∨"),
                     ("3", "ℓ", "³", "№", "₃", "∧"),
@@ -466,7 +468,7 @@ NORDTAST_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
 
 
 # TODO: Add higher layers (shift for the numbers, …)
-DVORAK_LAYOUT = [[("^"),
+DVORAK_BLUEPRINT = [[("^"),
                   ("1"),
                   ("2"),
                   ("3"),
@@ -525,7 +527,7 @@ DVORAK_LAYOUT = [[("^"),
 ]
 
 # TODO: Add higher layers (shift for the numbers, …)
-COLEMAK_LAYOUT = [[("^"),
+COLEMAK_BLUEPRINT = [[("^"),
                    ("1"),
                    ("2"),
                    ("3"),
@@ -584,7 +586,7 @@ COLEMAK_LAYOUT = [[("^"),
 ]
 
 
-AdNW_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
+AdNW_BLUEPRINT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
                 ("1", "°", "¹", "ª", "₁", "¬"),
                 ("2", "§", "²", "º", "₂", "∨"),
                 ("3", "ℓ", "³", "№", "₃", "∧"),
@@ -642,7 +644,7 @@ AdNW_LAYOUT = [[("^", "ˇ", "↻", "˙", "˞", "̣"),
                [("♕"), (), ("♔"), (" ", " ", " ", "0", " ", " "), ("⇙"), (), (), ("♛")] # Row 4, containing the spacebar
 ]
 
-KOY_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+KOY_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                ('1', '°', '¹', 'ª', '₁', '¬'),
                ('2', '§', '²', 'º', '₂', '∨'),
                ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -700,7 +702,7 @@ KOY_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
               ['♕', (), '♔', (' ', ' ', ' ', '0', '\xa0', '\u202f'), '⇙', (), (), '♛']] # Row 4, containing the spacebar
 
 
-HAEIU_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+HAEIU_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                  ('1', '°', '¹', 'ª', '₁', '¬'),
                  ('2', '§', '²', 'º', '₂', '∨'),
                  ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -759,7 +761,7 @@ HAEIU_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
 
 ]
 
-WORKMAN_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+WORKMAN_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                    ('1', '°', '¹', 'ª', '₁', '¬'),
                    ('2', '§', '²', 'º', '₂', '∨'),
                    ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -816,7 +818,7 @@ WORKMAN_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                    '⇗'], # Row 3
                   ['♕', (), '♔', (' ', ' ', ' ', '0', '\xa0', '\u202f'), '⇙', (), (), '♛']] # Row 4, containing the spacebar
 
-CAPEWELL_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+CAPEWELL_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                     ('1', '°', '¹', 'ª', '₁', '¬'),
                     ('2', '§', '²', 'º', '₂', '∨'),
                     ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -873,7 +875,7 @@ CAPEWELL_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                     '⇗'], # Row 3
                    ['♕', (), '♔', (' ', ' ', ' ', '0', '\xa0', '\u202f'), '⇙', (), (), '♛']] # Row 4, containing the spacebar
 
-QGMLWY_LAYOUT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
+QGMLWY_BLUEPRINT = [[('^', 'ˇ', '↻', '˙', '˞', '̣'),
                   ('1', '°', '¹', 'ª', '₁', '¬'),
                   ('2', '§', '²', 'º', '₂', '∨'),
                   ('3', 'ℓ', '³', '№', '₃', '∧'),
@@ -953,7 +955,7 @@ COST_PER_KEY_OLD2  = [ # 0 heißt nicht beachtet
 FINGER_NAMES = ["Klein_L", "Ring_L", "Mittel_L", "Zeige_L", "Daumen_L",
                 "Daumen_R", "Zeige_R", "Mittel_R", "Ring_R", "Klein_R"]
 
-# Optimized structure for accessing by position. key_to_finger gets 3 times faster than with a cache and doublechecking.
+# Optimized structure for accessing by position. key_to_finger (DOESN'T EXIST ANYMORE!!!!) gets 3 times faster than with a cache and doublechecking.
 POS_TO_FINGER = {}
 for finger, positions in FINGER_POSITIONS.items():
     for pos in positions:
@@ -961,7 +963,7 @@ for finger, positions in FINGER_POSITIONS.items():
 
 ### Constants for testing
 
-TEST_LAYOUT = [
+TEST_BLUEPRINT = [
     [("^", "ˇ", "↻")], # Row 0 (number row)
 
     [("⇥"),], # Row 1
@@ -1043,10 +1045,6 @@ TEST_WEIGHT_SECONDARY_BIGRAM_IN_TRIGRAM = 0.5 #: multiplier for the cost of seco
 
 ### Caches
 
-# together with the more efficient datastructure for key_to_finger, these caches provide a performance boost by about factor 6.6
-
-#_LETTER_TO_KEY_CACHE = {}
-
 # TODO: Refresh directly when mutating. Then we don’t have to check anymore for the letter if it really is at the given position. 
 
 ### Imports
@@ -1056,33 +1054,6 @@ from pprint import pprint
 
 
 ### Helper Functions
-
-def format_layer_1_string(layout):
-    """Format a string looking like this:
-
-    öckäy zhmlß,´
-    atieo dsnru.
-    xpfüq bgvwj
-    """
-    l = ""
-    l += "".join((i[0] for i in layout[1][1:6])) + " " + "".join((i[0] for i in layout[1][6:-1])) + "\n"
-    l += "".join((i[0] for i in layout[2][1:6])) + " " + "".join((i[0] for i in layout[2][6:-2])) + "\n"
-    if layout[3][1] and layout[3][1][0] != "⇚": 
-        l += "".join((i[0] for i in layout[3][1:7])) + " " + "".join((i[0] for i in layout[3][7:-1]))
-    else:
-        l += "".join((i[0] for i in layout[3][2:7])) + " " + "".join((i[0] for i in layout[3][7:-1]))
-    return l
-
-
-def get_key(pos, layout=NEO_LAYOUT):
-    """Get the key at the given position.
-
-    >>> get_key((2, 3, 0))
-    'a'
-    """
-    try: 
-        return layout[pos[0]][pos[1]][pos[2]]
-    except Exception: return None
 
 
 def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
@@ -1102,7 +1073,7 @@ def single_key_position_cost(pos, layout, cost_per_key=COST_PER_KEY):
 
 def is_position_cost_lower(pos, new_pos, layout, doubled_layer=True):
     """
-    >>> is_position_cost_lower((2, 10, 2), (3, 7, 3), NEO_LAYOUT)
+    >>> is_position_cost_lower((2, 10, 2), (3, 7, 3), NEO_BLUEPRINT)
     False
     """
     # use tripled layer cost, because it ignores the additional bigrams.
@@ -1141,7 +1112,7 @@ def update_letter_to_key_cache(key, layout):
 def get_all_positions_in_layout(layout):
     """Get all positions for which there are keys in the layout. 
 
-    >>> get_all_positions_in_layout(TEST_LAYOUT)
+    >>> get_all_positions_in_layout(TEST_BLUEPRINT)
     [(0, 0, 0), (0, 0, 1), (0, 0, 2), (1, 0, 0), (2, 0, 0), (2, 0, 1), (2, 0, 2), (2, 0, 3), (2, 0, 5), (2, 1, 0), (4, 3, 0), (4, 4, 0)]
     """
     positions = []
@@ -1153,175 +1124,27 @@ def get_all_positions_in_layout(layout):
     return positions
 
 
-def get_all_keys_in_layout(layout):
-    """Get all keys which are in the layout. Sorted the same way as the positions from get_all_positions_in_layout(). 
-
-    >>> get_all_keys_in_layout(TEST_LAYOUT)
-    ['^', 'ˇ', '↻', '⇥', 'u', 'U', '\\\\', '⇱', '⊂', '\\n', ' ', '⇙']
-    """
-    keys = []
-    for line in layout[:5]:
-        for key in line:
-            for letter in key:
-                if letter: 
-                    keys.append(letter)
-    return keys
-
-
-def update_letter_to_key_cache_multiple(keys, layout):
-    """Update the cache entries for many keys.
-
-    @param keys: the keys to update. If it’s None, update ALL.
-    """
-    if keys is None:
-        keys = get_all_keys_in_layout(layout)
-    for key in keys:
-        update_letter_to_key_cache(key, layout=layout)
-    
-
-def find_key(key, layout): 
-    """Find the position of the key in the layout.
-
-    The result is structured as follows:
-    (
-        row_nr,  # top to botton, including the number-row
-        column_nr,  # left to right
-        layer_nr,
-    )
-    
-    >>> find_key("a", NEO_LAYOUT)
-    (2, 3, 0)
-    >>> find_key("A", NEO_LAYOUT)
-    (2, 3, 1)
-    >>> find_key("e", NEO_LAYOUT)
-    (2, 4, 0)
-    >>> find_key(",", NEO_LAYOUT)
-    (3, 9, 0)
-    >>> find_key(".", NEO_LAYOUT)
-    (3, 10, 0)
-    >>> find_key(":", NEO_LAYOUT)
-    (2, 10, 2)
-    >>> find_key('#', NEO_LAYOUT)
-    (3, 2, 2)
-    >>> find_key("⇧", layout=NEO_LAYOUT)
-    (3, 0, 0)
-    >>> find_key("A", layout=QWERTZ_LAYOUT)
-    (2, 1, 1)
-    >>> find_key("a", layout=QWERTZ_LAYOUT)
-    (2, 1, 0)
-    >>> find_key("£", layout=NEO_LAYOUT)
-    (0, 6, 3)
-    >>> find_key("»", layout=NEO_LAYOUT)
-    (0, 4, 1)
-    >>> find_key("«", layout=NEO_LAYOUT)
-    (0, 5, 1)
-    >>> find_key("¤", layout=NEO_LAYOUT)
-    (0, 7, 3)
-    """
-    # check, if the layout already has a cache. If not, create it.
-    # this approach reduces the time to find a key by about 50%.
-
-    # start with the absolute cheapest check we can do
-    try: return layout[5][key]
-    except (IndexError, KeyError):
-        pass # we need the more expensive checking here.
-    
-    try: LETTER_TO_KEY_CACHE = layout[5]
-    except IndexError:
-        layout.append({})
-        LETTER_TO_KEY_CACHE = layout[5]
-        # fill the cache for all keys
-        update_letter_to_key_cache_multiple(None, layout=layout)
-    # first check the caches
-    try: return LETTER_TO_KEY_CACHE[key]
-    except KeyError:
-        # maybe we didn’t add the uppercase key, should only happen for incomplete layouts.
-        try: 
-            pos = LETTER_TO_KEY_CACHE[key.lower()]
-            if not pos[2]: # == 0
-                pos = pos[:2] + (1,) # this is an uppercase key.
-            # update the cache!
-            LETTER_TO_KEY_CACHE[key] = pos
-        except KeyError: 
-            pos = None # all keys are in there. None means, we don’t need to check by hand.
-    return pos
-
-
-def finger_keys(finger_name, layout=NEO_LAYOUT):
-    """Get the keys corresponding to the given finger name.
-
-    >>> for name in FINGER_NAMES:
-    ...    name, finger_keys(name)
-    ('Klein_L', ['^', '1', '2', '⇥', 'x', '⇩', 'u', '⇧', '⇚', 'ü', '♕'])
-    ('Ring_L', ['3', 'v', 'i', 'ö'])
-    ('Mittel_L', ['4', 'l', 'a', 'ä'])
-    ('Zeige_L', ['5', '6', 'c', 'e', 'p', 'w', 'o', 'z'])
-    ('Daumen_L', ['♔', ' '])
-    ('Daumen_R', [' ', '⇙'])
-    ('Zeige_R', ['7', '8', 'k', 's', 'b', 'h', 'n', 'm'])
-    ('Mittel_R', ['9', 'g', 'r', ','])
-    ('Ring_R', ['0', 'f', 't', '.'])
-    ('Klein_R', ['-', '`', '←', 'q', 'd', 'j', 'y', '⇘', 'ß', '´', '\\n', '⇗', '♛'])
-    """
-    keys = [str(get_key(pos, layout=layout)) for pos in FINGER_POSITIONS[finger_name] if get_key(pos, layout=layout) is not None]
-    return keys
-
-
-def key_to_finger(key, layout=NEO_LAYOUT):
-    """Get the finger name used to hit the given key.
-
-    >>> key_to_finger("a")
-    'Mittel_L'
-    >>> key_to_finger("A")
-    'Mittel_L'
-    >>> key_to_finger("«")
-    'Zeige_L'
-    >>> key_to_finger("ĝ")
-    ''
-    >>> key_to_finger("⇩")
-    'Klein_L'
-    >>> key_to_finger("⇧")
-    'Klein_L'
-    """
-    pos = find_key(key, layout=layout)
-    try: pos = pos[:2] + (0, )
-    except TypeError: return "" # pos is None
-    # check the cache
-    try: return POS_TO_FINGER[pos]
-    except KeyError: return ""
-
-
-def pos_is_left(pos):
-    """check if the given position is on the left hand.
-
-    >>> clear_left_positions = [(0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0), (4, 0, 0)]
-    >>> False in [pos_is_left(pos) for pos in clear_left_positions]
-    False
-    
-    """
-    return RIGHT_HAND_LOWEST_INDEXES[pos[0]] > pos[1]
-
-
-def switch_positions(pos0, pos1, layout=NEO_LAYOUT):
+def switch_positions(pos0, pos1, layout):
     """Switch two positions in the layout.
 
-    >>> lay = switch_positions((1, 1, 0), (1, 3, 0), layout=NEO_LAYOUT)
-    >>> lay = switch_positions((1, 1, 1), (1, 3, 1), layout=lay)
+    >>> from layout import Layout
+    >>> lay = switch_positions((1, 1, 0), (1, 3, 0), Layout(NEO_LAYOUT))
+    >>> lay = switch_positions((1, 1, 1), (1, 3, 1), lay)
     >>> lay[:5] == NEO_LAYOUT_lx[:5]
     True
     >>> print(lay[1][1])
     ('l', 'L', '…', '⇞', 'ξ', 'Ξ')
     >>> print(lay[1][3])
     ('x', 'X', '[', '⇡', 'λ', 'Λ')
-    >>> lay = switch_positions((1, 1, 0), (1, 1, 1), layout=lay)
+    >>> lay = switch_positions((1, 1, 0), (1, 1, 1), lay)
     >>> print(lay[1][1])
     ('L', 'l', '…', '⇞', 'ξ', 'Ξ')
-    >>> find_key("l", lay)
+    >>> lay.char_to_pos("l")
     (1, 1, 1)
     """
-    lay = deepcopy(layout)
-    pos0_keys = lay[pos0[0]][pos0[1]]
-    pos1_keys = lay[pos1[0]][pos1[1]]
+    blueprint = deepcopy(layout.blueprint)
+    pos0_keys = blueprint[pos0[0]][pos0[1]]
+    pos1_keys = blueprint[pos1[0]][pos1[1]]
 
     # if they are on the same physical key, just exchange both positions on the single key
     if pos0[:2] == pos1[:2]:
@@ -1331,9 +1154,8 @@ def switch_positions(pos0, pos1, layout=NEO_LAYOUT):
         tmp = tuple(tmp)
 
         cache_update = "".join(tmp)
-        lay[pos0[0]][pos0[1]] = tmp
-        update_letter_to_key_cache_multiple(cache_update, layout=lay)
-        return lay
+        blueprint[pos0[0]][pos0[1]] = tmp
+        return Layout(blueprint)
 
     # generate new tuples for all layers, with tmp0 containing pos1 and tmp1 containing pos0
     tmp0 = list(pos0_keys)
@@ -1348,87 +1170,86 @@ def switch_positions(pos0, pos1, layout=NEO_LAYOUT):
     for letter in tmp0 + tmp1:
         cache_update += letter
 
-    lay[pos0[0]][pos0[1]] = tmp0
-    lay[pos1[0]][pos1[1]] = tmp1
-    update_letter_to_key_cache_multiple(cache_update, layout=lay)
-    return lay
-    
+    blueprint[pos0[0]][pos0[1]] = tmp0
+    blueprint[pos1[0]][pos1[1]] = tmp1
+    return Layout(blueprint)
 
-def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
+
+def switch_keys(keypairs, layout, switch_layers = [0, 1, 4, 5]):
     """Switch keys in the layout, so we don't have to fiddle with actual layout files.
 
     @param keypairs: A list of keypairs to switch. The keys in these pairs MUST be the base layer keys.
 
-    >>> lay, switched_letters = switch_keys([], layout = NEO_LAYOUT)
-    >>> lay == NEO_LAYOUT
+    >>> layout, switched_letters = switch_keys([], layout = Layout(NEO_BLUEPRINT))
+    >>> layout.blueprint == NEO_BLUEPRINT
     True
-    >>> lay, switched_letters = switch_keys(["lx", "wq"], layout = NEO_LAYOUT, switch_layers=[0,1])
-    >>> get_key((1, 1, 0), layout=lay)
+    >>> layout, switched_letters = switch_keys(["lx", "wq"], layout = Layout(NEO_BLUEPRINT), switch_layers=[0,1])
+    >>> layout.pos_to_char((1, 1, 0))
     'l'
-    >>> get_key((1, 3, 0), layout=lay)
+    >>> layout.pos_to_char((1, 3, 0))
     'x'
-    >>> get_key((1, 5, 0), layout=lay)
+    >>> layout.pos_to_char((1, 5, 0))
     'q'
-    >>> get_key((1, 10, 0), layout=lay)
+    >>> layout.pos_to_char((1, 10, 0))
     'w'
-    >>> get_key((1, 1, 1), layout=lay)
+    >>> layout.pos_to_char((1, 1, 1))
     'L'
-    >>> get_key((1, 3, 1), layout=lay)
+    >>> layout.pos_to_char((1, 3, 1))
     'X'
-    >>> get_key((1, 5, 1), layout=lay)
+    >>> layout.pos_to_char((1, 5, 1))
     'Q'
-    >>> get_key((1, 10, 1), layout=lay)
+    >>> layout.pos_to_char((1, 10, 1))
     'W'
-    >>> find_key("l", layout=lay) == (1, 1, 0)
+    >>> layout.char_to_pos("l") == (1, 1, 0)
     True
-    >>> find_key("L", layout=lay) == (1, 1, 1)
+    >>> layout.char_to_pos("L") == (1, 1, 1)
     True
-    >>> NEO_LAYOUT_lxwq == lay
+    >>> NEO_BLUEPRINT_lxwq == layout.blueprint
     True
-    >>> lay, switched_letters = switch_keys(["lx"], layout = NEO_LAYOUT, switch_layers=[0,1])
-    >>> NEO_LAYOUT_lx == lay
+    >>> layout, switched_letters = switch_keys(["lx"], layout = Layout(NEO_BLUEPRINT), switch_layers=[0,1])
+    >>> NEO_BLUEPRINT_lx == layout
     True
-    >>> a = find_key("a", layout=lay)
-    >>> A = find_key("A", layout=lay)
-    >>> curly = find_key("{", layout=lay)
-    >>> lay, switched_letters = switch_keys(["ae"], layout=lay, switch_layers = [0,1,2])
-    >>> a == find_key("e", layout=lay)
+    >>> a = layout.char_to_pos("a")
+    >>> A = layout.char_to_pos("A")
+    >>> curly = layout.char_to_pos("{")
+    >>> layout, switched_letters = switch_keys(["ae"], layout=layout, switch_layers = [0,1,2])
+    >>> a == layout.char_to_pos("e")
     True
-    >>> A == find_key("E", layout=lay)
+    >>> A == layout.char_to_pos("E")
     True
-    >>> curly == find_key("}", layout=lay)
+    >>> curly == layout.char_to_pos("}")
     True
-    >>> "}" == get_key(find_key("}", layout=lay), layout=lay)
+    >>> "}" == layout.pos_to_char(layout.char_to_pos("}"))
     True
-    >>> dot = find_key(".", layout=NEO_LAYOUT)
-    >>> d = find_key("d", layout=NEO_LAYOUT)
-    >>> comma = find_key(",", layout=NEO_LAYOUT)
-    >>> p = find_key("p", layout=NEO_LAYOUT)
-    >>> lay, switched_letters = switch_keys([".d", ",p"], layout=NEO_LAYOUT)
-    >>> d == find_key(".", layout=lay)
+    >>> dot = layout.char_to_pos(".")
+    >>> d = layout.char_to_pos("d")
+    >>> comma = layout.char_to_pos(",")
+    >>> p = layout.char_to_pos("p")
+    >>> layout, switched_letters = switch_keys([".d", ",p"], layout=Layout(NEO_BLUEPRINT))
+    >>> d == layout.char_to_pos(".")
     True
-    >>> dot == find_key("d", layout=lay)
+    >>> dot == layout.char_to_pos("d")
     True
-    >>> p == find_key(",", layout=lay)
+    >>> p == layout.char_to_pos(",")
     True
-    >>> comma == find_key("p", layout=lay)
+    >>> comma == layout.char_to_pos("p")
     True
     """
-    lay = deepcopy(layout)
+    blueprint = deepcopy(layout.blueprint)
 
     switched_letters = set()
     
     for pair in keypairs:
-            pos0 = find_key(pair[0], layout=lay)
-            pos1 = find_key(pair[1], layout=lay)
+            pos0 = layout.char_to_pos(pair[0])
+            pos1 = layout.char_to_pos(pair[1])
 
             # both positions MUST be on the base layer. 
             if pos0[2] or pos1[2]:
                 # info("one of the keys isn’t on the base layer. Ignoring the switch", pair)
                 continue
 
-            pos0_keys = lay[pos0[0]][pos0[1]]
-            pos1_keys = lay[pos1[0]][pos1[1]]
+            pos0_keys = blueprint[pos0[0]][pos0[1]]
+            pos1_keys = blueprint[pos1[0]][pos1[1]]
 
             # add the supported layers.
             tmp0 = []
@@ -1469,114 +1290,26 @@ def switch_keys(keypairs, layout=NEO_LAYOUT, switch_layers = [0, 1, 4, 5]):
             for letter in tmp0 + tmp1:
                 cache_update += letter
 
-            lay[pos0[0]][pos0[1]] = tmp0
-            lay[pos1[0]][pos1[1]] = tmp1
-            update_letter_to_key_cache_multiple(cache_update, layout=lay)
-
-        #except Exception:
-        #    pprint(lay)
-        #    print(prev, pair, pos0, pos1, tmp0, tmp1)
-        #    exit()
+            blueprint[pos0[0]][pos0[1]] = tmp0
+            blueprint[pos1[0]][pos1[1]] = tmp1
     
-    return lay, switched_letters
+    layout = Layout(blueprint)
+    return layout, switched_letters
 
 
-def string_to_layout(layout_string, base_layout=NEO_LAYOUT):
-    """Turn a layout_string into a layout.
-
-    öckäy zhmlß,´
-    atieo dsnru.
-    xpfüq bgvwj
-
-    """
-    #layer_0_keys = [get_key(pos, layout=base_layout) for pos in get_all_positions_in_layout(base_layout) if pos[2] == 0]
-    #to_replace_list = []
-    def set_key(current_key, new_letter, pos_01, layout, base_layout=base_layout, changing_layers = [0,1,4,5]):
-        """Set the new_letter into the pos_01 in the layout. Take the key from the position in the base_layout and from the position in the letter and merge them, using layer 3,4 from the position and the rest from the letter.
-
-        @param pos_01: the key which is currently in the given position. Not needed anymore, except for debugging.
-        @param current_key: The key which is currently in the position. Not needed anymore, except for debugging.
-        @param new_letter: The letter which should be in the position.
-        @param pos_01: The position where the key should be placed.
-        @param changing_layers: The layers in the base layout which change when the keys get changed."""
-        # first get the keys for all layers from position in the base_layout
-        base_keys = base_layout[pos_01[0]][pos_01[1]]
-        # then get the keys corresponding to the position of the new letter.
-        letter_pos = find_key(new_letter, layout=layout)
-        if letter_pos is None or letter_pos[2]:
-            # the new letter is not in the base_layout or not in the base layer, just set it on layer 0.
-            layout[pos_01[0]][pos_01[1]] = (new_letter, ) + tuple(base_keys[1:])
-            return layout
-            
-        letter_keys = base_layout[letter_pos[0]][letter_pos[1]]
-        # replace all changing_layers in the base_keys with the new_keys.
-        tmp = []
-        for i in range(6):
-            try: 
-                if i in changing_layers:
-                    tmp.append(letter_keys[i])
-                else:
-                    tmp.append(base_keys[i])
-            except IndexError: # key not found
-                tmp.append("")
-        layout[pos_01[0]][pos_01[1]] = tuple(tmp)
-        return layout
-        
-    layout = deepcopy(base_layout)
-    lines = layout_string.splitlines()
-    # first and second letter row
-    for i in range(1, 6):
-        layout = set_key(layout[1][i][0], lines[0][i-1], (1, i), layout)
-        layout = set_key(layout[1][i+5][0], lines[0][i+5], (1, i+5), layout)
-        layout = set_key(layout[2][i][0], lines[1][i-1], (2, i), layout)
-        layout = set_key(layout[2][i+5][0], lines[1][i+5], (2, i+5), layout)
-
-    layout = set_key(layout[1][-3][0], lines[0][11], (1, -3), layout)
-    layout = set_key(layout[2][-3][0], lines[1][11], (2, -3), layout)
-
-    # third row
-    if lines[0][12:]:
-        layout = set_key(layout[1][-2][0], lines[0][12], (1, -2), layout)
-
-    try:
-        left, right = lines[2].split()[:2]
-    except ValueError:
-        print(lines)
-        raise
-    for i in range(len(left)):
-        layout = set_key(layout[3][6-i][0], left[-i-1], (3, 6-i), layout)
-    for i in range(len(right)):
-        layout = set_key(layout[3][7+i][0], right[i], (3, 7+i), layout)
-
-    # finally update the cache
-    update_letter_to_key_cache_multiple(None, layout)
-
-    return deepcopy(layout)
-
-
-def changed_keys(layout0, layout1):
+def find_changed_keys(layout0, layout1):
     """Find the keys which are in different positions in the two layouts.
 
-    >>> changed_keys(NEO_LAYOUT, NEO_LAYOUT_lx)
+    >>> find_changed_keys(Layout(NEO_BLUEPRINT), Layout(NEO_BLUEPRINT_lx))
     ['L', 'X', 'l', 'x']
     >>> from check_neo import switch_keys
-    >>> t = switch_keys(["u\\n"], layout=TEST_LAYOUT, switch_layers=[0,1])
-    >>> changed_keys(TEST_LAYOUT, t)
+    >>> t = switch_keys(["u\\n"], layout=Layout(TEST_BLUEPRINT), switch_layers=[0,1])
+    >>> find_changed_keys(Layout(TEST_BLUEPRINT), t)
     ['\\n', 'U', 'u']
     """
-    # first make sure, we have the caches.
-    try: cache0 = layout0[5]
-    except IndexError:
-        layout0.append({})
-        cache0 = layout0[5]
-        update_letter_to_key_cache_multiple(None, layout=layout0)
-
-    try: cache1 = layout1[5]
-    except IndexError:
-        layout1.append({})
-        cache1 = layout1[5]
-        update_letter_to_key_cache_multiple(None, layout=layout1)
-
+    cache0 = layout0._char_pos_dict
+    cache1 = layout1.char_to_pos
+    # TODO: Rewrite this insane line in a more understandable way
     return sorted([l for l in cache0 if not l in cache1 or cache0[l] != cache1[l]] + [l for l in cache1 if not l in cache0])
 
 
@@ -1608,24 +1341,24 @@ def layout_difference_weighted(layout0, layout1, letters=None, letter_dict=None,
 
     >>> from ngrams import get_all_data
     >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
-    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, NEO_BLUEPRINT, letters=letters)
     0.0
     """
     # disabled tests
-    """>>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lx, letters=letters)
+    """>>> layout_difference_weighted(NEO_BLUEPRINT, NEO_BLUEPRINT_lx, letters=letters)
     0.036617925978240665
-    >>> layout_difference_weighted(NEO_LAYOUT, NEO_LAYOUT_lxwq, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, NEO_BLUEPRINT_lxwq, letters=letters)
     0.050589766759669606
-    >>> layout_difference_weighted(NEO_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, QWERTZ_BLUEPRINT, letters=letters)
     0.9486182821801175
-    >>> layout_difference_weighted(NEO_LAYOUT, NORDTAST_LAYOUT, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, NORDTAST_BLUEPRINT, letters=letters)
     0.8830111461330287
-    >>> layout_difference_weighted(NORDTAST_LAYOUT, QWERTZ_LAYOUT, letters=letters)
+    >>> layout_difference_weighted(NORDTAST_BLUEPRINT, QWERTZ_BLUEPRINT, letters=letters)
     0.8983918828764104
-    >>> layout_difference_weighted(NEO_LAYOUT, TEST_LAYOUT, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, TEST_BLUEPRINT, letters=letters)
     0.9999201678764246
     >>> empty = [[], [], [], [], []]
-    >>> layout_difference_weighted(NEO_LAYOUT, empty, letters=letters)
+    >>> layout_difference_weighted(NEO_BLUEPRINT, empty, letters=letters)
     0.9999202512375004
     """
     if letter_dict is None and letters is None:
@@ -1634,7 +1367,7 @@ def layout_difference_weighted(layout0, layout1, letters=None, letter_dict=None,
         letter_dict = {letter: num for num, letter in letters}
     if sum_keystrokes is None: 
         sum_keystrokes = sum(letter_dict.values())
-    return sum([letter_dict.get(c, 0) for c in changed_keys(layout0, layout1)])/sum_keystrokes
+    return sum([letter_dict.get(key, 0) for key in find_changed_keys(layout0, layout1)])/sum_keystrokes
 
 
 def find_layout_families(layouts, letters, max_diff=0.2):
@@ -1642,9 +1375,9 @@ def find_layout_families(layouts, letters, max_diff=0.2):
 
     >>> from ngrams import get_all_data
     >>> letters, datalen1, repeats, datalen2, trigrams, number_of_trigrams = get_all_data()
-    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.1))
+    >>> len(find_layout_families([NEO_BLUEPRINT, NEO_BLUEPRINT_lx, NEO_BLUEPRINT_lxwq, QWERTZ_BLUEPRINT, NORDTAST_BLUEPRINT], letters=letters, max_diff=0.1))
     3
-    >>> len(find_layout_families([NEO_LAYOUT, NEO_LAYOUT_lx, NEO_LAYOUT_lxwq, QWERTZ_LAYOUT, NORDTAST_LAYOUT], letters=letters, max_diff=0.9))
+    >>> len(find_layout_families([NEO_BLUEPRINT, NEO_BLUEPRINT_lx, NEO_BLUEPRINT_lxwq, QWERTZ_BLUEPRINT, NORDTAST_BLUEPRINT], letters=letters, max_diff=0.9))
     1
     """
     families = []
@@ -1666,12 +1399,12 @@ def combine_genetically(layout1, layout2):
     """Combine two layouts genetically (randomly)."""
     from random import randint
     switchlist = []
-    for letter in abc:
+    for letter in ABC:
         if randint(0, 1) == 1:
-            pos = find_key(letter, layout=layout1)
-            replacement = get_key(pos, layout=layout2)
+            pos = layout1.char_to_pos(letter)
+            replacement = layout2.pos_to_char(pos)
             switchlist.append(letter+replacement)
-    res = deepcopy(switch_keys(switchlist, layout=layout1))
+    res = switch_keys(switchlist, layout1)
     return res
 
 

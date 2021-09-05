@@ -6,8 +6,9 @@
 Depends on the layouts info starting with OA'Evolved Layout'
 """
 
-from check_neo import string_to_layout, print_layout_with_statistics, get_all_data, total_cost, format_layer_1_string
-from layout_base import find_layout_families
+from check_neo import print_layout_with_statistics, get_all_data, total_cost
+from layout import Layout
+from layout_base import find_layout_families, NEO_BLUEPRINT
 from layout_info import csv_data
 from ngrams import split_uppercase_trigrams
 import layout_cost
@@ -38,16 +39,11 @@ def get_all_layouts_in_textfile(textfile):
     layout_strings = []
     for i in e[1:]:
         layout_strings.append("\n".join(i.splitlines()[1:4]))
-
-    # all_layouts = []
-    # for i in layout_strings:
-    #     print(i, textfile)
-    #     all_layouts.append(string_to_layout(i))
     
     all_layouts = []
     for l in layout_strings:
         if l.strip(): 
-            try: all_layouts.append(string_to_layout(l))
+            try: all_layouts.append(Layout.from_string(l, NEO_BLUEPRINT))
             except IndexError:
                 print("parsing failed for the layout string:")
                 print(l)
@@ -101,9 +97,9 @@ def main(options, args):
         # sort the layouts by value, lowest total cost first.
         lays = []
         for lay in all_layouts:
-            cost = total_cost(layout=lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
+            cost = total_cost(lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
             lays.append((cost, lay))
-            print (format_layer_1_string(lay))
+            print (lay.to_layer_1_string())
             print()
         lays.sort()
         # remove the cost information again.
@@ -130,7 +126,7 @@ def main(options, args):
             
     for lay in all_layouts:
         if options.regularity:
-            print("# checking regularity for\n" + format_layer_1_string(lay), file=sys.stderr)
+            print("# checking regularity for\n" + lay.to_layer_1_string(), file=sys.stderr)
             # segment_costs, word_costs = check_regularity(lay, textfile)
             segment_costs, word_costs = regularity_data[tuplit(lay)]
             cost_segments_mean = sum(segment_costs) / len(segment_costs)
@@ -143,7 +139,7 @@ def main(options, args):
         if options.print_csv:
             csv = [str(i) for i in
                    csv_data(lay, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)]
-            name_lines = format_layer_1_string(lay).splitlines()
+            name_lines = lay.to_layer_1_string().splitlines()
             layoutstring = "-".join((name_lines[1], name_lines[0], name_lines[2]))
             layoutstring = layoutstring.replace('"', '\"').replace(" ", "_")
             layoutstring = '"' + layoutstring + '"'
@@ -151,7 +147,7 @@ def main(options, args):
         else: 
             print_layout_with_statistics(lay, verbose=True, letters=letters, repeats=repeats, number_of_letters=number_of_letters, number_of_bigrams=number_of_bigrams, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
             if options.regularity:
-                call(["./regularity_check.py", "-t", textfile, "-l", format_layer_1_string(lay)])
+                call(["./regularity_check.py", "-t", textfile, "-l", lay.to_layer_1_string()])
             print()
 
         if options.svg:
@@ -159,16 +155,16 @@ def main(options, args):
             if not isdir("svgs"):
                 mkdir("svgs")
             
-            cost = total_cost(layout=lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
+            cost = total_cost(lay, letters=letters, repeats=repeats, trigrams=trigrams)[0]
             cost = cost/max(1, number_of_letters)
             cost = "{:>7.4f}".format(cost)
-            name_lines = format_layer_1_string(lay).splitlines()
+            name_lines = lay.to_layer_1_string().splitlines()
             name = "-".join((name_lines[1], name_lines[0], name_lines[2])) + ".svg"
             name = name.replace(" ", "_")
             name = cost + "-" + name
             name = join("svgs", name)
             from bigramm_statistik import print_bigram_info
-            print_bigram_info(layout=lay, number=1000, svg=True, svg_output=name, filepath=options.data)
+            print_bigram_info(lay, number=1000, svg=True, svg_output=name, filepath=options.data)
     
 
 

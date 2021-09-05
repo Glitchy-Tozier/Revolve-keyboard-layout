@@ -2,7 +2,8 @@
 
 """Get information about keyboard layouts (frontend)."""
 
-from layout_base import format_layer_1_string, NEO_LAYOUT, string_to_layout
+from layout import Layout
+from layout_base import get_all_positions_in_layout, NEO_BLUEPRINT
 from layout_cost import total_cost
 from layout_info import get_all_data, bigram_info
 from check_neo import short_number
@@ -46,7 +47,6 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     # only import here to avoid the import overhead for other actions.
     from pysvg.builders import g, ShapeBuilder
     from svg_layouts import colorwheel, add_line, svg, defs, StyleBuilder, text, add_circle
-    from layout_base import find_key, pos_is_left, get_key, get_all_positions_in_layout
     S = svg("Belegung")
     #oh = ShapeBuilder()
     #S.addElement(oh.createRect(0,0,750,250, strokewidth=0, fill='black'))
@@ -118,7 +118,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
     else: positions = []
 
-    position_costs = {find_key(le, layout=layout): num for num, le in lett}
+    position_costs = {layout.char_to_pos(le): num for num, le in lett}
     p = {}
     for pos in position_costs:
         try: p[pos[:2] + (0 ,)] += position_costs[pos]
@@ -135,7 +135,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
         else: pos1 = pos
 
         # get the letter.
-        l = get_key(pos, layout=layout)
+        l = layout.pos_to_char(pos)
         # get the coords in the image
         coord = pos_to_svg_coord(pos1)
         
@@ -189,13 +189,13 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
                           stroke=None))
 
 
-    lay_strings = format_layer_1_string(layout).splitlines()
+    lay_strings = layout.to_layer_1_string().splitlines()
     for i in range(len(lay_strings)): 
         layout_string = text(lay_strings[i], 50, 300 + 20*i)
         layout_string.set_font_size(18)
         group_info.addElement(layout_string)
     # add statistics
-    total, frep_num, cost, _, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(letters=lett, repeats=repeats, layout=layout, trigrams=trigrams)[:11]
+    total, frep_num, cost, _, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand, hand_load, no_switch_after_unbalancing, manual_penalty, neighboring_unbalance = total_cost(layout, letters=lett, repeats=repeats, trigrams=trigrams)[:11]
     tppl = total/max(1, number_of_letters)
     cost_string = text("cost (tppl): " + str(tppl), 325, 300)
     cost_string.set_font_size(18)
@@ -205,13 +205,13 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     bigrams.sort()
     for number, cost, bigram in bigrams:
 
-        pos0 = find_key(bigram[0], layout)
-        pos1 = find_key(bigram[1], layout)
+        pos0 = layout.char_to_pos(bigram[0])
+        pos1 = layout.char_to_pos(bigram[1])
         if pos0 is None or pos1 is None:
             continue
 
-        is_left0 = pos_is_left(pos0)
-        is_left1 = pos_is_left(pos1)
+        is_left0 = layout.layout.pos_is_left(pos0)
+        is_left1 = layout.pos_is_left(pos1)
 
         # handswitches have far lower opacity
         if is_left0 != is_left1:
@@ -298,11 +298,11 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
 
     
 
-def print_bigram_info(layout=NEO_LAYOUT, number=None, filepath=None, bars=False, secondary=True, svg=False, svg_output=None):
+def print_bigram_info(layout, number=None, filepath=None, bars=False, secondary=True, svg=False, svg_output=None):
     """Print bigram-statistics of the layout."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(datapath=filepath, layout=layout) 
     if not svg: 
-        print(format_layer_1_string(layout))
+        print(layout.to_layer_1_string())
         print("Häufigkeit %, Bigram, Gesamt, Lage, Fingerwiederholung, Finger-oben-unten, Fingerübergang, rows², Kein Handwechsel nach Handverschiebung")
     # svg should have shifts and such.
     if svg: only_layer_0 = True
@@ -370,7 +370,7 @@ if __name__ == "__main__":
 
     if options.layout_string is not None:
         options.layout_string = ask_for_layout_string_completion(options.layout_string)
-        options.layout = string_to_layout(options.layout_string, base_layout=NEO_LAYOUT)
-    else: options.layout = NEO_LAYOUT
+        options.layout = Layout.from_string(options.layout_string, base_blueprint=NEO_BLUEPRINT)
+    else: options.layout = Layout(NEO_BLUEPRINT)
 
-    print_bigram_info(layout=options.layout, number=options.number, filepath=options.filepath, bars=options.bars, secondary=options.secondary, svg=options.svg, svg_output=options.svg_output)
+    print_bigram_info(options.layout, number=options.number, filepath=options.filepath, bars=options.bars, secondary=options.secondary, svg=options.svg, svg_output=options.svg_output)

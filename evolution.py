@@ -46,7 +46,7 @@ anneal_step = 1000
 limit_ngrams = 0
 
 #: The layout to use as base for mutations. If you want a given starting layout, also set prerandomize = 0.
-STARTING_LAYOUT = """bmuaz kdflvjß
+STARTING_LAYOUT_STR = """bmuaz kdflvjß
 criey ptsnh⇘
 xäüoö wg,.q"""
 
@@ -60,8 +60,8 @@ parser.add_option("-f", "--file", type="string", dest="data",
                   default=None, help="use the given textfile as korpus instead of the ngram files.", metavar="filepath")
 parser.add_option("--ngrams", dest="ngram_config",
                   help="take the ngram sources from the config file", metavar="ngram.config")
-parser.add_option("--starting-layout-string", type="string", dest="starting_layout",
-                  default=STARTING_LAYOUT, help="String version of the base layer of the starting layout.", metavar="layout")
+parser.add_option("--starting-layout-string", type="string", dest="starting_layout_str",
+                  default=STARTING_LAYOUT_STR, help="String version of the base layer of the starting layout.", metavar="layout")
 parser.add_option("--prerandomize", type="int", dest="prerandomize", default=prerandomize, help="the number of prerandomization steps to take")
 parser.add_option("--preselect-random", type="int", dest="preselect_random", default=preselect_random, help="the number of random layouts to create for selecting the best")
 parser.add_option("--steps", type="int", dest="steps", default=steps, help="the number of mutation steps to take.")
@@ -106,12 +106,13 @@ if filename is not None:
     argv.append(options.filename)
 
 from check_neo import evolve_a_layout
-from layout_base import string_to_layout
+from layout import Layout
+from layout_base import NEO_BLUEPRINT
 from time import time
 from datetime import timedelta
 from termctrl import hide, show, write, priorline, erase
 from atexit import register
-STARTING_LAYOUT = string_to_layout(options.starting_layout)
+STARTING_LAYOUT = Layout.from_string(options.starting_layout_str, NEO_BLUEPRINT)
 
 if not meter:
     print("# Starting the evolution.")
@@ -125,14 +126,14 @@ else:
 t = time()
 best_tppl = 10 # not safe
 for step in range(options.evolution_steps):
-    tppl = evolve_a_layout(options.steps,
+    tppl = evolve_a_layout(STARTING_LAYOUT,
+                           options.steps,
                            options.prerandomize,
                            controlled,
                            quiet,
                            meter,
                            verbose,
                            options.tail,
-                           starting_layout=STARTING_LAYOUT,
                            datafile=options.data,
                            ngram_config=options.ngram_config,
                            anneal=options.anneal,

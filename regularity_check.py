@@ -5,7 +5,9 @@
 
 import sys
 from optparse import OptionParser
-from check_neo import string_to_layout, total_cost, get_all_data, read_file
+from check_neo import total_cost, get_all_data, read_file
+from layout_base import NEO_BLUEPRINT
+from layout import Layout
 
 ### config
 
@@ -76,11 +78,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def check(layout=Neo2, verbose=False, data=None):
+def check(layout=Layout.from_string(Neo2, NEO_BLUEPRINT), verbose=False, data=None):
     """Get the value for a layout using a given string as reference text."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=data, layout=layout)
 
-    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams)[:7]
+    total, frep_num, cost, frep_top_bottom, disbalance, no_handswitches, line_change_same_hand = total_cost(layout, letters=letters, repeats=repeats, trigrams=trigrams)[:7]
     # total, cost_w, frep_num_w, frep_num_top_bottom_w, neighboring_fings_w, fing_disbalance_w, no_handswitches_w, badly_positioned_w, line_change_same_hand_w, no_switch_after_unbalancing_w = total_cost(letters=letters, repeats=repeats, layout=layout, trigrams=trigrams, return_weighted=True)[:10]
     return total / number_of_letters
 
@@ -177,7 +179,7 @@ def main():
             print("the layout", options.layout_name, "is not predefined. Please use --layout to give it as string.")
             exit()
     
-    layout = string_to_layout(options.layout)    
+    layout = Layout.from_string(options.layout, NEO_BLUEPRINT)    
 
     res, res_words = regularity(layout, options.textfile, options.output, options.output_words, options.verbose)
     print("mean value and standard deviation of the layout cost:")

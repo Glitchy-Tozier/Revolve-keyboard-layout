@@ -8,7 +8,7 @@ Design:
 - Der Code ist in die Abschnitte Constants, Imports, Helper functions, Cost functions und Evolution aufgeteilt.
 - Daten als Listen, die der Tastatur entsprechen: Reihen und Spalten. 
 - Für jede Taste ein Tuple mit den verschiedenen Bedeutungen. Mods: (None, Shift, Mod3, Mod4, Shift+Mod3, Mod3+Mod4)
-- find_key() -> (reihe, spalte, index)
+- layout.char_to_pos() -> (reihe, spalte, index)
 - two_char_repeats_from_file() -> [iste mit allen 2 char repeats, auch mehrfach.
 - two_chars_on_same_finger(keys) -> sind min 2 Buchstaben auf dem gleichen Finger? -> Finger
 - Einfache Funktionen zum Austauschen. 

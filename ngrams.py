@@ -7,7 +7,8 @@ import collections
 import hashlib
 
 from config import MODIFIERS_PER_LAYER
-from layout_base import NEO_LAYOUT, read_file, find_key, get_key, POS_TO_FINGER, pos_is_left, get_all_keys_in_layout
+from layout import Layout
+from layout_base import NEO_BLUEPRINT, read_file, POS_TO_FINGER
 
 from textcheck import occurrence_dict_difference as diffdict
 
@@ -34,9 +35,8 @@ _steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr
 
 ### Functions
 
-def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
-                            mods=MODIFIERS_PER_LAYER,
-                            find_key=find_key, get_key=get_key):
+def _split_uppercase_repeat(rep, num, layout=Layout(NEO_BLUEPRINT),
+                            mods=MODIFIERS_PER_LAYER):
     """Split a single bigram.
 
     >>> reps = _split_uppercase_repeat("AB", 5)
@@ -50,8 +50,8 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     except IndexError:
         # this is no repeat but at most a single key.
         return {}
-    pos1 = find_key(r1, layout=layout)
-    pos2 = find_key(r2, layout=layout)
+    pos1 = layout.char_to_pos(r1)
+    pos2 = layout.char_to_pos(r2)
     # if any key isn’t found, the repeat doesn’t need splitting.
     if pos1 is None or pos2 is None:
         # caught all repeats for which one key isn’t in the layout. We
@@ -73,11 +73,11 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     if layer1 == 0:
         base1 = r1
     else:
-        base1 = get_key(pos1[:2] + (0, ), layout=layout)
+        base1 = layout.pos_to_char(pos1[:2] + (0, ))
     if layer2 == 0:
         base2 = r2
     else:
-        base2 = get_key(pos2[:2] + (0, ), layout=layout)
+        base2 = layout.pos_to_char(pos2[:2] + (0, ))
 
     # add the base keys as repeat
     try: repeats[base1+base2] += num
@@ -85,11 +85,11 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
 
     # now check for the mods which are needed to get the key
     # if the pos is left, we need the modifiers on the right.
-    if pos_is_left(pos1):
+    if layout.pos_is_left(pos1):
         mods1 = mods[layer1][1]
     else:
         mods1 = mods[layer1][0]
-    if pos_is_left(pos2): 
+    if layout.pos_is_left(pos2): 
         mods2 = mods[layer2][1]
     else:
         mods2 = mods[layer2][0]
@@ -136,7 +136,7 @@ def _split_uppercase_repeat(rep, num, layout=NEO_LAYOUT,
     return repeats
 
                     
-def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
+def split_uppercase_repeats(reps, layout=Layout(NEO_BLUEPRINT)):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
 
     Note: Using a collections.Counter() does not make this faster -- neither for pypy nor for cPython.
@@ -184,8 +184,8 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps).items()])))
     [(86, 'ab'), (52, 'a⇧'), (34, '⇗a'), (26, '⇧b'), (17.0, '⇗b'), (10, '⇗⇧'), (8, 'n⇘'), (6, '⇩⇘'), (6, '⇘e'), (6, '¾2'), (4, '⇩n'), (4, 'ne'), (4, 'h⇙'), (4, 'h⇘'), (3.0, '⇩e'), (2, '⇩⇙'), (2, '⇩h'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇙e'), (2, 'he'), (1.0, '⇚e'), (0.0625, '⇩⇚'), (0.0625, '⇘⇙')]
     >>> reps = [(1, ", ")]
-    >>> from layout_base import string_to_layout
-    >>> layout = string_to_layout("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=NEO_LAYOUT)
+    >>> from layout import layout
+    >>> layout = Layout.from_string("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_blueprint=NEO_BLUEPRINT)
     >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps, layout=layout).items()])))
     [(1, ', ')]
     """
@@ -195,13 +195,9 @@ def split_uppercase_repeats(reps, layout=NEO_LAYOUT):
     repeats = collections.Counter()
     _sur = _split_uppercase_repeat
     _mods = MODIFIERS_PER_LAYER
-    _fk = find_key
-    _gk = get_key
     for num, rep in reps:
         # this function gets called 100k times. Microoptimize the hell out of it.
-        for key, val in _sur(rep, num,
-                             layout=layout, mods=_mods,
-                             find_key=_fk, get_key=_gk).items():
+        for key, val in _sur(rep, num, layout=layout, mods=_mods,).items():
             try:
                 repeats[key] += val
             except KeyError:
@@ -237,14 +233,14 @@ def split_uppercase_letters(reps, layout):
     """Split uppercase letters (or others with any mod) into two lowercase letters (with the mod).
 
     >>> letters = [(4, "a"), (3, "A")]
-    >>> split_uppercase_letters(letters, layout=NEO_LAYOUT)
+    >>> split_uppercase_letters(letters, layout=Layout(NEO_BLUEPRINT))
     [(4, 'a'), (3, '⇗'), (3, 'a')]
     """
     # replace uppercase by ⇧ and char1
     upper = []
     repeats = []
     for num, rep in reps:
-        pos = find_key(rep, layout=layout)
+        pos = layout.char_to_pos(rep)
         if pos and pos[2]:
             upper.append((num, rep, pos))
         else:
@@ -256,7 +252,7 @@ def split_uppercase_letters(reps, layout):
     for num, rep, pos in upper:
         layer_mods = MODIFIERS_PER_LAYER[pos[2]]
                                          
-        if pos_is_left(pos):
+        if layout.pos_is_left(pos):
             for m in layer_mods[1]: # left keys use the right mods
                 up.append((num, m)) 
         else:
@@ -264,13 +260,11 @@ def split_uppercase_letters(reps, layout):
                 up.append((num, m))
 
         # also append the base layer key.
-        up.append((num,
-                   get_key((pos[0], pos[1], 0), layout=layout)))
+        up.append((num, layout.pos_to_char((pos[0], pos[1], 0),)))
                 
     reps.extend(up)
     reps = [(int(num), r) for num, r in reps]
-    reps.sort()
-    reps.reverse()
+    reps.sort(reverse=True)
     return reps
 
 def letters_in_file(data):
@@ -343,7 +337,7 @@ def repeats_in_file_precalculated(data, only_existing=True):
             repeats_in_file_precalculated.reps_repeats_in_file_precalculated = {}
         reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.lstrip().split(" ", 1)[1:]]
         if only_existing: 
-            all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+            all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
             try: 
                 reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
             except ValueError: # we got floats
@@ -479,10 +473,10 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
         senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
     >>> trigs = [(8, "abc"), (7, "∀bC"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> # split_uppercase_trigrams_correctly(trigs, NEO_LAYOUT)
+    >>> # split_uppercase_trigrams_correctly(trigs, NEO_BLUEPRINT)
     """
     # kick out any who don’t have a position
-    pos_trig = [(num, [find_key(k, layout=layout) for k in trig], trig) for num, trig in trigs]
+    pos_trig = [(num, [layout.char_to_pos(char) for char in trig], trig) for num, trig in trigs]
     pos_trig = [(num, pos, trig) for num, pos, trig in pos_trig if not None in pos]
     
     # get all trigrams with non-baselayer-keys
@@ -497,9 +491,9 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
     for num, pos, trig in upper:
         print(trig)
         # lower letters
-        l0 = get_key((pos[0][0], pos[0][1], 0), layout=layout)
-        l1 = get_key((pos[1][0], pos[1][1], 0), layout=layout)
-        l2 = get_key((pos[2][0], pos[2][1], 0), layout=layout)
+        l0 = layout.pos_to_char((pos[0][0], pos[0][1], 0))
+        l1 = layout.pos_to_char((pos[1][0], pos[1][1], 0))
+        l2 = layout.pos_to_char((pos[2][0], pos[2][1], 0))
         # mods
         m0 = mod[pos[0][2]]
         m1 = mod[pos[1][2]]
@@ -518,7 +512,7 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
             mx = mod[p[2]] # liste mit bis zu 2 mods
             if just_record_the_mod_key:
                 mx = [i+c for i in mx[0]]
-            elif pos_is_left(p):
+            elif layout.pos_is_left(p):
                 mx = mx[1]
             else: mx = mx[0]
             col = [c]
@@ -607,7 +601,7 @@ def trigrams_in_file(data, only_existing=True):
             trigs[trig] = 1
 
     if only_existing: 
-        all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+        all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:] and i[0] in all_keys and i[1] in all_keys and i[2] in all_keys]
     else:
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:]]
@@ -708,7 +702,7 @@ def trigrams_in_file_precalculated(data, only_existing=True):
         trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     
         if only_existing: 
-            all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+            all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
             try: 
                 trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
             except ValueError: # we got floats
@@ -743,7 +737,7 @@ def letters_in_file_precalculated(data, only_existing=True):
         _unescape_ngram_list(letters)
         try:
             if only_existing:
-                all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+                all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
                 letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(int(num), let) for num, let in letters if let in all_keys]
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:
@@ -751,7 +745,7 @@ def letters_in_file_precalculated(data, only_existing=True):
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
         except ValueError: # floats in there
             if only_existing:
-                all_keys = get_all_keys_in_layout(NEO_LAYOUT)
+                all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
                 letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(float(num), let) for num, let in letters if let in all_keys]
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:
@@ -776,7 +770,7 @@ def fix_impossible_ngrams(data, layout=None):
     """
     if layout:
         # The list of possible inputs in a given layout
-        keys = list(filter(None,get_all_keys_in_layout(layout)))
+        keys = layout.get_all_chars()
         
         # Make sure the correct tab-syntax is shown in the ngrams
         if ("⇥" in keys) and not ("\t" in keys):
@@ -792,19 +786,19 @@ def fix_impossible_ngrams(data, layout=None):
                     corrected_ngram = ngram.replace("⇥", "\t")
                     data[tuple_idx] = (num, corrected_ngram)
 
-        def can_be_typed(ngram_tuple):
-            """Check if a ngram can be typed"""
-            ngram = ngram_tuple[1]
-            for letter in ngram:
-                if letter not in keys:
-                    #print("filtered trig:", ngram)
-                    #print("crucial letter:", letter.encode("unicode_escape"))
-                    #print()
-                    return False
-            return True
+        # def can_be_typed(ngram_tuple):
+        #     """Check if a ngram can be typed"""
+        #     ngram = ngram_tuple[1]
+        #     for letter in ngram:
+        #         if letter not in keys:
+        #             #print("filtered trig:", ngram)
+        #             #print("crucial letter:", letter.encode("unicode_escape"))
+        #             #print()
+        #             return False
+        #     return True
+        # data = list(filter(can_be_typed, data))
 
-        filtered_data = list(filter(can_be_typed, data))
-        return filtered_data
+        return data
     else:
         # Do nothing
         return data

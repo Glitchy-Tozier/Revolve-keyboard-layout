@@ -6,10 +6,10 @@
 ### definitions
 
 #: The mutated letters - only these get changed. You may change these to leave letters in their defined place.
-abc = "abcdefghijklmnopqrstuvwxyzäöüß" # ,." # äöüß,." # ⇧⇗"
+ABC = "abcdefghijklmnopqrstuvwxyzäöüß" # ,." # äöüß,." # ⇧⇗"
 
 #The letters which are used to calculate the costs - do not change anything or results will become incomparable.
-abc_full = "abcdefghijklmnopqrstuvwxyzäöüß,."
+ABC_FULL = "abcdefghijklmnopqrstuvwxyzäöüß,."
 
 #: The modifiers, sorted by layer, split into left and right, counting from 0.
 MODIFIERS_PER_LAYER = [("", ""), ("⇧", "⇗"), ("⇩", "⇘"), ("⇚", "⇙"), ("⇩⇧", "⇘⇗"), ("⇩⇚", "⇘⇙")]
