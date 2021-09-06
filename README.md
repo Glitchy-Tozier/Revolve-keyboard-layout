@@ -11,9 +11,14 @@ This project originated from the _excellent_ [script of Arne Babenhauserheide](h
 Additionally, I plan on making the optimizer run faster. This will be accomplished mainly by [removing redundant calculations](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/a6bbcea18b098f9e002108bdb8fca10ebc1bce8c "An example of optimizing code"), on various scales.
 
 ## Contributing
+
 The two biggest most straight-forward things you can do are:
 * Translate this README.md or code&comments in Python-files to English
 * If you have some Python-knowledge, look into the code (especially [the most resource-intensive functions](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/blob/main/profilings/0_original.txt "The first profiling of a keyboard-evolution-run")) and find ways to make everything run faster.
+
+## Achievements:
+
+At the current time, the Script runs about 8 times as fast as the original one. The main speedup resulted from [this commit](https://github.com/Glitchy-Tozier/Revolve-keyboard-layout/commit/82f456b970915a070ea15936806de5bfa71d04bf).
 
 ---
 
