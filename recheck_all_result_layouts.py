@@ -7,8 +7,7 @@ Depends on the layouts info starting with OA'Evolved Layout'
 """
 
 from check_neo import print_layout_with_statistics, get_all_data, total_cost
-from layout import Layout
-from layout_base import find_layout_families, NEO_BLUEPRINT
+from layout_base import find_layout_families, Layout, Layouts
 from layout_info import csv_data
 from ngrams import split_uppercase_trigrams
 import layout_cost
@@ -43,7 +42,7 @@ def get_all_layouts_in_textfile(textfile):
     all_layouts = []
     for l in layout_strings:
         if l.strip(): 
-            try: all_layouts.append(Layout.from_string(l, NEO_BLUEPRINT))
+            try: all_layouts.append(Layout.from_string(l, Layouts.NEO2))
             except IndexError:
                 print("parsing failed for the layout string:")
                 print(l)

@@ -5,9 +5,9 @@
 
 import sys
 from optparse import OptionParser
-from check_neo import total_cost, get_all_data, read_file
-from layout_base import NEO_BLUEPRINT
-from layout import Layout
+from check_neo import total_cost, get_all_data
+from layout_base import Layout, Layouts
+from ngrams import read_file
 
 ### config
 
@@ -78,7 +78,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def check(layout=Layout.from_string(Neo2, NEO_BLUEPRINT), verbose=False, data=None):
+def check(layout=Layout.from_string(Neo2, Layouts.NEO2), verbose=False, data=None):
     """Get the value for a layout using a given string as reference text."""
     letters, number_of_letters, repeats, number_of_bigrams, trigrams, number_of_trigrams = get_all_data(data=data, layout=layout)
 
@@ -179,7 +179,7 @@ def main():
             print("the layout", options.layout_name, "is not predefined. Please use --layout to give it as string.")
             exit()
     
-    layout = Layout.from_string(options.layout, NEO_BLUEPRINT)    
+    layout = Layout.from_string(options.layout, Layouts.NEO2)    
 
     res, res_words = regularity(layout, options.textfile, options.output, options.output_words, options.verbose)
     print("mean value and standard deviation of the layout cost:")

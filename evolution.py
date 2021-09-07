@@ -106,13 +106,12 @@ if filename is not None:
     argv.append(options.filename)
 
 from check_neo import evolve_a_layout
-from layout import Layout
-from layout_base import NEO_BLUEPRINT
+from layout_base import Layout, Layouts
 from time import time
 from datetime import timedelta
 from termctrl import hide, show, write, priorline, erase
 from atexit import register
-STARTING_LAYOUT = Layout.from_string(options.starting_layout_str, NEO_BLUEPRINT)
+STARTING_LAYOUT = Layout.from_string(options.starting_layout_str, Layouts.NEO2)
 
 if not meter:
     print("# Starting the evolution.")

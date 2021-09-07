@@ -7,8 +7,7 @@ import collections
 import hashlib
 
 from config import MODIFIERS_PER_LAYER
-from layout import Layout
-from layout_base import NEO_BLUEPRINT, read_file, POS_TO_FINGER
+from layout_base import POS_TO_FINGER, Layout, Layouts
 
 from textcheck import occurrence_dict_difference as diffdict
 
@@ -35,7 +34,19 @@ _steno_eil_short = "ismus ismen stadt statt nach richt bitt biet  trag jahr herr
 
 ### Functions
 
-def _split_uppercase_repeat(rep, num, layout=Layout(NEO_BLUEPRINT),
+def read_file(path):
+    """Get the data from a file.
+
+    >>> read_file("testfile")[:2]
+    'ui'
+    """
+
+    f = open(path, encoding="utf-8")
+    data = f.read()
+    f.close()
+    return data
+
+def _split_uppercase_repeat(rep, num, layout=Layouts.NEO2,
                             mods=MODIFIERS_PER_LAYER):
     """Split a single bigram.
 
@@ -136,7 +147,7 @@ def _split_uppercase_repeat(rep, num, layout=Layout(NEO_BLUEPRINT),
     return repeats
 
                     
-def split_uppercase_repeats(reps, layout=Layout(NEO_BLUEPRINT)):
+def split_uppercase_repeats(reps, layout=Layouts.NEO2):
     """Split bigrams with uppercase letters (or others with any mod) into several lowercase bigrams by adding bigrams with mods and the base key. 
 
     Note: Using a collections.Counter() does not make this faster -- neither for pypy nor for cPython.
@@ -184,8 +195,8 @@ def split_uppercase_repeats(reps, layout=Layout(NEO_BLUEPRINT)):
     >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps).items()])))
     [(86, 'ab'), (52, 'a⇧'), (34, '⇗a'), (26, '⇧b'), (17.0, '⇗b'), (10, '⇗⇧'), (8, 'n⇘'), (6, '⇩⇘'), (6, '⇘e'), (6, '¾2'), (4, '⇩n'), (4, 'ne'), (4, 'h⇙'), (4, 'h⇘'), (3.0, '⇩e'), (2, '⇩⇙'), (2, '⇩h'), (2, '⇚⇙'), (2, '⇚⇘'), (2, '⇚h'), (2, '⇙e'), (2, 'he'), (1.0, '⇚e'), (0.0625, '⇩⇚'), (0.0625, '⇘⇙')]
     >>> reps = [(1, ", ")]
-    >>> from layout import layout
-    >>> layout = Layout.from_string("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_blueprint=NEO_BLUEPRINT)
+    >>> from layout_base import Layout, Layouts
+    >>> layout = Layout.from_string("äuobp kglmfx+\\naietc hdnrsß\\n⇚.,üpö qyzwv", base_layout=Layouts.NEO2)
     >>> list(reversed(sorted([(j,i) for i, j in split_uppercase_repeats(reps, layout=layout).items()])))
     [(1, ', ')]
     """
@@ -233,7 +244,7 @@ def split_uppercase_letters(reps, layout):
     """Split uppercase letters (or others with any mod) into two lowercase letters (with the mod).
 
     >>> letters = [(4, "a"), (3, "A")]
-    >>> split_uppercase_letters(letters, layout=Layout(NEO_BLUEPRINT))
+    >>> split_uppercase_letters(letters, layout=Layouts.NEO2)
     [(4, 'a'), (3, '⇗'), (3, 'a')]
     """
     # replace uppercase by ⇧ and char1
@@ -337,7 +348,7 @@ def repeats_in_file_precalculated(data, only_existing=True):
             repeats_in_file_precalculated.reps_repeats_in_file_precalculated = {}
         reps = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.lstrip().split(" ", 1)[1:]]
         if only_existing: 
-            all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
+            all_keys = Layouts.NEO2.get_all_chars()
             try: 
                 reps = [(int(num), r) for num, r in reps if r[1:] and r[0] in all_keys and r[1] in all_keys]
             except ValueError: # we got floats
@@ -473,7 +484,7 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
         senkrechte nur nach oben. Kreuze und Pfeile nur nach vorne. Alle Trigramme, die du aus dem Bild basteln kannst.
 
     >>> trigs = [(8, "abc"), (7, "∀bC"), (6, "aBc"), (5, "abC"), (4, "ABc"), (3, "aBC"), (2, "AbC"), (1, "ABC")]
-    >>> # split_uppercase_trigrams_correctly(trigs, NEO_BLUEPRINT)
+    >>> # split_uppercase_trigrams_correctly(trigs, Layouts.NEO2)
     """
     # kick out any who don’t have a position
     pos_trig = [(num, [layout.char_to_pos(char) for char in trig], trig) for num, trig in trigs]
@@ -601,7 +612,7 @@ def trigrams_in_file(data, only_existing=True):
             trigs[trig] = 1
 
     if only_existing: 
-        all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
+        all_keys = Layouts.NEO2.get_all_chars()
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:] and i[0] in all_keys and i[1] in all_keys and i[2] in all_keys]
     else:
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:]]
@@ -702,7 +713,7 @@ def trigrams_in_file_precalculated(data, only_existing=True):
         trigs = [line.lstrip().split(" ", 1) for line in data.splitlines() if line.split()[1:]]
     
         if only_existing: 
-            all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
+            all_keys = Layouts.NEO2.get_all_chars()
             try: 
                 trigs = [(int(num), r) for num, r in trigs if r[2:] and r[0] in all_keys and r[1] in all_keys and r[2] in all_keys]
             except ValueError: # we got floats
@@ -737,7 +748,7 @@ def letters_in_file_precalculated(data, only_existing=True):
         _unescape_ngram_list(letters)
         try:
             if only_existing:
-                all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
+                all_keys = Layouts.NEO2.get_all_chars()
                 letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(int(num), let) for num, let in letters if let in all_keys]
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:
@@ -745,7 +756,7 @@ def letters_in_file_precalculated(data, only_existing=True):
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
         except ValueError: # floats in there
             if only_existing:
-                all_keys = Layout(NEO_BLUEPRINT).get_all_chars()
+                all_keys = Layouts.NEO2.get_all_chars()
                 letters_in_file_precalculated.ret_letters_in_file_precalculated[md5] = [(float(num), let) for num, let in letters if let in all_keys]
                 return letters_in_file_precalculated.ret_letters_in_file_precalculated[md5]
             else:

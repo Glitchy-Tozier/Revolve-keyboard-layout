@@ -4,7 +4,7 @@
 """Generate information about keyboard layouts."""
 
 from config import WEIGHT_CRITICAL_FRACTION_MULTIPLIER, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION, COST_PER_KEY, WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, WEIGHT_FINGER_REPEATS, WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
-from layout import Layout
+from layout_base import Layout
 from layout_cost import get_all_data, total_cost, split_uppercase_repeats, no_handswitching, finger_repeats_from_file, split_uppercase_trigrams, split_uppercase_trigrams_correctly
 
 

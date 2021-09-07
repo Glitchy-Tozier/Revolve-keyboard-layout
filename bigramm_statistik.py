@@ -2,8 +2,7 @@
 
 """Get information about keyboard layouts (frontend)."""
 
-from layout import Layout
-from layout_base import get_all_positions_in_layout, NEO_BLUEPRINT
+from layout_base import Layout, Layouts
 from layout_cost import total_cost
 from layout_info import get_all_data, bigram_info
 from check_neo import short_number
@@ -105,7 +104,7 @@ def print_svg(bigrams, layout, svg_output=None, filepath=None, with_keys=True, l
     # shape builder for rectangles
     first_letters = {}
     if with_keys: 
-        positions = get_all_positions_in_layout(layout)
+        positions = layout.get_all_positions()
         #: scale the color for the letters
         letter_scale = 128 / max(num for num, l in lett)
         # get first letters in words
@@ -370,7 +369,7 @@ if __name__ == "__main__":
 
     if options.layout_string is not None:
         options.layout_string = ask_for_layout_string_completion(options.layout_string)
-        options.layout = Layout.from_string(options.layout_string, base_blueprint=NEO_BLUEPRINT)
-    else: options.layout = Layout(NEO_BLUEPRINT)
+        options.layout = Layout.from_string(options.layout_string, base_layout=Layouts.NEO2)
+    else: options.layout = Layouts.NEO2
 
     print_bigram_info(options.layout, number=options.number, filepath=options.filepath, bars=options.bars, secondary=options.secondary, svg=options.svg, svg_output=options.svg_output)
