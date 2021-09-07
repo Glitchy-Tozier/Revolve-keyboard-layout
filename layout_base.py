@@ -402,7 +402,7 @@ class Layout():
             layout = set_key(
                 layout.blueprint[3][7+i][0], right[i], (3, 7+i), layout)
 
-        return deepcopy(layout)
+        return layout
 
     ### Methods ###
 
@@ -517,16 +517,12 @@ class Layout():
         xpfüq bgvwj
         """
         l = ""
-        l += "".join((i[0] for i in self.blueprint[1][1:6])) + " " + \
-            "".join((i[0] for i in self.blueprint[1][6:-1])) + "\n"
-        l += "".join((i[0] for i in self.blueprint[2][1:6])) + " " + \
-            "".join((i[0] for i in self.blueprint[2][6:-2])) + "\n"
+        l += "".join((i[0] for i in self.blueprint[1][1:6])) + " " + "".join((i[0] for i in self.blueprint[1][6:-1])) + "\n"
+        l += "".join((i[0] for i in self.blueprint[2][1:6])) + " " + "".join((i[0] for i in self.blueprint[2][6:-2])) + "\n"
         if self.blueprint[3][1] and self.blueprint[3][1][0] != "⇚":
-            l += "".join((i[0] for i in self.blueprint[3][1:7])) + \
-                " " + "".join((i[0] for i in self.blueprint[3][7:-1]))
+            l += "".join((i[0] for i in self.blueprint[3][1:7])) + " " + "".join((i[0] for i in self.blueprint[3][7:-1]))
         else:
-            l += "".join((i[0] for i in self.blueprint[3][2:7])) + \
-                " " + "".join((i[0] for i in self.blueprint[3][7:-1]))
+            l += "".join((i[0] for i in self.blueprint[3][2:7])) + " " + "".join((i[0] for i in self.blueprint[3][7:-1]))
         return l
 
     def get_all_positions(self):

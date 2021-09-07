@@ -233,7 +233,7 @@ def controlled_evolution_step(letters, repeats, trigrams, num_switches, layout, 
         i += 1
         lay, switched_letters = layout.switch_keys(keypairs)
         new_cost, frep, pos_cost = total_cost(lay, letters=letters, repeats=repeats, cost_per_key=cost_per_key, trigrams=trigrams, max_cost=cost)[:3]
-        step_results.append((new_cost, frep, pos_cost, deepcopy(keypairs), lay))
+        step_results.append((new_cost, frep, pos_cost, keypairs, lay))
         if not quiet:
             tppl = (new_cost - cost)/sum((num for num, l in letters))
             freedom = new_cost - cost < cost/100
@@ -285,7 +285,7 @@ def evolve(layout, letters, repeats, trigrams, iterations=3000, quiet=False, met
         if better:
             consecutive_fails = 0
             # save the good mutation
-            layout = deepcopy(lay)
+            layout = lay
             if not quiet:
                 info(cost / 1000000, keypairs, "finger repetition:", frep / 1000000, "position cost:", pos_cost / 1000000)
                 info(layout.to_layer_1_string())
@@ -443,7 +443,6 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
         anneal -= 1./anneal_step
 
     for i in range(steps):
-        lay = deepcopy(lay)
         if anneal > 0:
                 step = int(anneal + 1)
                 anneal -= 1/anneal_step
@@ -454,7 +453,7 @@ def find_a_qwertzy_layout(steps=100, prerandomize=100000, quiet=False, verbose=T
         if d < diff:
             info("# qwertzer")
             info(l.to_layer_1_string())
-            lay = deepcopy(l)
+            lay = l
             diff = d
 
 
@@ -514,7 +513,7 @@ def evolution_challenge(layout, challengers=100, rounds=10, iterations=20, prera
              for cost, lay in layouts:
                  print_layout_with_statistics(lay, letters=letters, repeats=repeats, number_of_letters=datalen1, number_of_bigrams=datalen2, trigrams=trigrams, number_of_trigrams=number_of_trigrams)
          info("\n# killing the worst", int(challengers * 3/4)-1, "layouts")
-         layouts = deepcopy(layouts[:int(challengers / 4)+1])
+         layouts = layouts[:int(challengers / 4)+1]
 
          # combine the best and worst to get new ones.
          info("\n# breeding new layouts")
@@ -522,12 +521,12 @@ def evolution_challenge(layout, challengers=100, rounds=10, iterations=20, prera
             info(i, "of", int(challengers/4-1), "from weak and strong")
             new = layouts[i][1].combine_genetically(layouts[-i - 1][1])
             # evolve, then append
-            new, cost = deepcopy(evolve(new, letters, repeats, trigrams, iterations=iterations, quiet=True))
+            new, cost = evolve(new, letters, repeats, trigrams, iterations=iterations, quiet=True)
             # make sure we have no clones :)
             tries = 0
             while (cost, new) in layouts and tries < max_unique_tries:
                 new = layouts[i][1].combine_genetically(layouts[-i - 1][1])
-                new, cost = deepcopy(evolve(layout, letters, repeats, trigrams, iterations=iterations, quiet=True))
+                new, cost = evolve(layout, letters, repeats, trigrams, iterations=iterations, quiet=True)
                 tries += 1
             layouts.append((cost, new))
 
@@ -548,12 +547,12 @@ def evolution_challenge(layout, challengers=100, rounds=10, iterations=20, prera
          info("\n# and fill up the ranks with random layouts")
          for i in range(challengers - len(layouts)):
              info(i, "of", int(challengers/2))
-             lay, keypairs, switched_letters = deepcopy(randomize_keyboard(layout, prerandomize))
+             lay, keypairs, switched_letters = randomize_keyboard(layout, prerandomize)
              lay, cost = evolve(lay, letters, repeats, trigrams, iterations=iterations, quiet=True)
              # make sure we have no clones :)
              tries = 0
              while (cost, lay) in layouts and tries < max_unique_tries:
-                 lay, keypairs, switched_letters = deepcopy(randomize_keyboard(layout, prerandomize))
+                 lay, keypairs, switched_letters = randomize_keyboard(layout, prerandomize)
                  lay, cost = evolve(lay, letters, repeats, trigrams, iterations=iterations, quiet=True)
                  tries += 1
              layouts.append((cost, lay))
