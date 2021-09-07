@@ -9,7 +9,7 @@
 # TODO: Add cost when the position of keys is inverted (g lower, k upper, but d upper and t lower).
 # Reason: Being easy to learn is essential.
 
-from copy import deepcopy
+from copy import copy
 from math import log, sqrt
 from pprint import pprint
 from random import sample
@@ -633,7 +633,7 @@ def irregularity_from_trigrams(all_trigrams, switched_letters=None, trigram_cost
     if switched_letters and trigram_cost_dic and len(switched_letters) > 0 and len(switched_letters) < 80: # 80 because it's the max. number of switched_letters when 10 keys are replaced.
         if print_output:
             print(len(switched_letters), "moved letters:", switched_letters)
-        new_trigram_cost_dic = deepcopy(trigram_cost_dic)
+        new_trigram_cost_dic = copy(trigram_cost_dic)
         # select which trigrams actually need testing
         for trigram_tuple in all_trigrams:
             trig = trigram_tuple[1]

@@ -95,7 +95,6 @@ def result(*args, **kwds):
     else:
         info(*args, **kwds)
 
-from copy import deepcopy
 from math import log10, log
 from pprint import pprint
 
