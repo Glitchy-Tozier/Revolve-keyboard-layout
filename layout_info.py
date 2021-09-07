@@ -140,8 +140,7 @@ def bigram_info(layout, secondary=True, only_layer_0=False, filepath=None, repea
             addition =  fing_rep_cost*(num-critical_point)/num*WEIGHT_FINGER_REPEATS_CRITICAL_FRACTION_MULTIPLIER
             cost = (cost[0] + addition, ) + cost[1:]
         reps.append((num, cost, rep))
-    reps.sort()
-    reps.reverse()
+    reps.sort(reverse=True)
     return reps
 
 
@@ -160,8 +159,7 @@ def trigram_info(layout, only_layer_0=False, filepath=None):
     for trig, num in trigrams.items():
         tmp = split_uppercase_trigrams_correctly([(1, trig)], layout=layout)
         trigs.append((num, total_cost(layout, data=None, letters=[(1, trig[0]), (1, trig[1]), (1, trig[2])], repeats=[(1, trig[:2]), (1, trig[1:])], cost_per_key=COST_PER_KEY, trigrams=tmp, intended_balance=WEIGHT_INTENDED_FINGER_LOAD_LEFT_PINKY_TO_RIGHT_PINKY, return_weighted=True), trig))
-    trigs.sort()
-    trigs.reverse()
+    trigs.sort(reverse=True)
     return trigs
 
 

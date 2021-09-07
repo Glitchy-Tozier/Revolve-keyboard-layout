@@ -235,8 +235,7 @@ def repeats_in_file(data):
         except KeyError:
             repeats[rep] = 1
     sorted_repeats = [(repeats[i], i) for i in repeats]
-    sorted_repeats.sort()
-    sorted_repeats.reverse()
+    sorted_repeats.sort(reverse=True)
     #reps = split_uppercase_repeats(sorted_repeats) # wrong place
     return sorted_repeats
 
@@ -292,8 +291,7 @@ def letters_in_file(data):
         else:
             letters[letter] = 1
     sort = [(letters[i], i) for i in letters]
-    sort.sort()
-    sort.reverse()
+    sort.sort(reverse=True)
     return sort
 
 def unique_sort(liste):
@@ -468,8 +466,7 @@ def split_uppercase_trigrams(trigs):
         try: t[r] += num
         except KeyError: t[r] = num
     trigs = [(num, r) for r, num in t.items()]
-    trigs.sort()
-    trigs.reverse()
+    trigs.sort(reverse=True)
     return trigs
 
 
@@ -591,8 +588,7 @@ def split_uppercase_trigrams_correctly(trigs, layout, just_record_the_mod_key=Fa
     print (up)
     trigs.extend(up)
     trigs = [(int(num), r) for num, r in trigs if r[1:]]
-    trigs.sort()
-    trigs.reverse()
+    trigs.sort(reverse=True)
     return trigs
 
 
@@ -616,8 +612,7 @@ def trigrams_in_file(data, only_existing=True):
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:] and i[0] in all_keys and i[1] in all_keys and i[2] in all_keys]
     else:
         sorted_trigs = [(trigs[i], i) for i in trigs if i[2:]]
-    sorted_trigs.sort()
-    sorted_trigs.reverse()
+    sorted_trigs.sort(reverse=True)
     trigs = split_uppercase_trigrams(sorted_trigs)
     return trigs
 
@@ -682,16 +677,13 @@ def ngrams_in_filepath(datapath, slicelength=1000000):
        
     
     letters = [(letters[i], i) for i in letters]
-    letters.sort()
-    letters.reverse()
+    letters.sort(reverse=True)
 
     repeats = [(repeats[i], i) for i in repeats]
-    repeats.sort()
-    repeats.reverse()
+    repeats.sort(reverse=True)
 
     trigs = [(trigs[i], i) for i in trigs]
-    trigs.sort()
-    trigs.reverse()
+    trigs.sort(reverse=True)
     # split uppercase trigrams here, because we really want to do that only *once*.
     trigs = split_uppercase_trigrams(trigs)
     return letters, repeats, trigs
