@@ -198,12 +198,12 @@ FINGER_SWITCH_COST = { # iu td < ui dt dr ua rd au < ai rt < nd eu
         "Klein_R": 0.1
         },
     "Mittel_R": {
-        "Zeige_L": 0.6,
+        "Zeige_R": 0.6,
         "Klein_R": 3,
         "Ring_R": 9
         },
     "Ring_R": {
-        "Zeige_L": 0.1,
+        "Zeige_R": 0.1,
         "Mittel_R": 6,
         "Klein_R": 12
         }, 
