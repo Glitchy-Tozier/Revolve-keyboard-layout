@@ -170,7 +170,7 @@ def asymmetry_cost(layout, symmetries=SIMILAR_LETTERS):
                         hand_dists.append(-1)
                     # switch the fingers to the left hand so movements
                     # between similar keys are mirrored
-                    fing1 = POS_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
+                    fing1 = POS_TO_FINGER[pos0[:2] + (0, )][:-2] + "_L"
                     fing2 = POS_TO_FINGER[pos1[:2] + (0, )][:-2] + "_L"
                     if fing1 is not None and fing2 is not None:
                         fingidx1 = FINGER_NAMES.index(fing1)
