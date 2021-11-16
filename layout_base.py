@@ -168,7 +168,7 @@ def _is_position_cost_lower(old_pos: tuple, new_pos: tuple, doubled_layer=True):
     """
     # use tripled layer cost, because it ignores the additional bigrams.
     new_cost = single_key_position_cost(
-        new_pos) + COST_LAYER_ADDITION[new_pos[2]]
+        new_pos) + 2*COST_LAYER_ADDITION[new_pos[2]]
     cost = single_key_position_cost(
         old_pos) + 2*COST_LAYER_ADDITION[old_pos[2]]
     return new_cost < cost
